@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class Security{
 
-    @Bean(name = "securityConfigBean")  // שים שם מותאם אישית ל-Bean
+    @Bean(name = "securityConfigBean")  
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
@@ -30,17 +30,17 @@ public class Security{
         return http.build();
     }
 
-    @Bean(name = "userDetailsServiceBean")  // שם מותאם אישית ל-Bean
+    @Bean(name = "userDetailsServiceBean")  
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("admin")
-                .password(passwordEncoder().encode("your-secure-password"))
+        UserDetails user = User.withUsername("lingo")
+                .password(passwordEncoder().encode("Avigail&&123456"))
                 .roles("USER")
                 .build();
 
         return new InMemoryUserDetailsManager(user);
     }
 
-    @Bean(name = "passwordEncoderBean")  // שם מותאם אישית ל-Bean
+    @Bean(name = "passwordEncoderBean")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
