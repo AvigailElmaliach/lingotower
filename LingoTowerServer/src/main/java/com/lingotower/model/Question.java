@@ -1,6 +1,8 @@
 package com.lingotower.model;
 
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.List;
 //import com.lingotower.model.Quiz; //לבדוק אם הכרחי
 
