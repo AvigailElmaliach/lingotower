@@ -1,0 +1,57 @@
+/* Main application styles */
+
+/* להחליט אם העיצוב הוא רק פה או גם דרך ה FMXL כרגע זה גם וגם*/
+
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #f5f5f5;
+}
+
+/* Login form styles */
+.login-form {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-padding: 20px;
+}
+
+.login-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitle {
+    -fx-font-size: 14px;
+}
+
+/* Form elements */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 3px;
+    -fx-pref-width: 300px;
+}
+
+.button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 3px;
+}
+
+.button:hover {
+    -fx-background-color: derive(#3f51b5, 20%);
+}
+
+.button.success {
+    -fx-background-color: #4caf50;
+}
+
+.button.success:hover {
+    -fx-background-color: derive(#4caf50, 20%);
+}
+
+/* Error messages */
+.error-label {
+    -fx-text-fill: red;
+}
