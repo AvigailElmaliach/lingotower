@@ -45,8 +45,26 @@ public class User {
         inverseJoinColumns = {@JoinColumn(name = "word_id")}
     )
 	private List<Word> learnedWords = new ArrayList<>();
-
+    
 	public User() {}
+	 //  בנאי מלא (כולל ID)
+    public User(Long id, String username, String password, String email, String language, LocalDateTime atCreated, Admin admin, List<Word> learnedWords) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.language = language;
+        this.atCreated = atCreated;
+        this.admin = admin;
+        this.learnedWords = learnedWords != null ? learnedWords : new ArrayList<>();
+    }
+	// בנאי לרישום משתמש חדש (ללא ID)
+    public User(String username, String password, String email, String language) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.language = language;
+    }
 
 	public Long getId() {
 		return id;
