@@ -1,6 +1,8 @@
 package com.lingotower.ui;
 
+import com.lingotower.model.User;
 import com.lingotower.ui.views.LoginView;
+import com.lingotower.ui.views.RegisterView;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -9,47 +11,117 @@ import javafx.stage.Stage;
 public class LingotowerApp extends Application {
 
 	private Stage primaryStage;
+	private LoginView loginView;
+	private RegisterView registerView;
+
+	// Current user
+	private User currentUser;
 
 	@Override
 	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
+		try {
+			this.primaryStage = primaryStage;
 
-		// Set window title
-		primaryStage.setTitle("LingoTower - Language Learning");
+			// Initialize services
+//			categoryService = new CategoryService();
 
-		// Show the login screen
-		showLoginScreen();
+			// Configure stage
+			primaryStage.setTitle("LingoTower - Language Learning");
 
-		// Display the window
-		primaryStage.show();
+			// Start with login screen
+			showLoginScreen();
+
+			primaryStage.show();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
+//	private void showLoginScreen() {
+//		// Create login view with callbacks
+//		if (loginView == null) {
+//			loginView = new LoginView(
+//					// On login success
+//					user -> {
+//						System.out.println("User logged in: " + user.getUsername());
+//						// In the future, we'll show the main application here
+//					},
+//					// On switch to register
+//					this::showRegisterScreen);
+//		} else {
+//			// Important: Refresh the view each time it's displayed
+//			loginView.refresh();
+//		}
+//
+//		// Create a NEW scene each time - don't reuse the old scene
+//		Scene scene = new Scene(loginView.getView(), 800, 600);
+//
+//		// Try to load CSS
+//		try {
+//			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+//		} catch (Exception e) {
+//			System.out.println("CSS not found, continuing without styles");
+//		}
+//
+//		// Set scene to stage
+//		primaryStage.setScene(scene);
+//		primaryStage.setTitle("LingoTower - Login");
+//	}
+
 	private void showLoginScreen() {
-		// Create login view with callbacks
-		LoginView loginView = new LoginView(
+		// Initialize login and register views with callbacks
+		loginView = new LoginView(
 				// On login success
 				user -> {
+					this.currentUser = user;
 					System.out.println("User logged in: " + user.getUsername());
 					// In the future, we'll show the main application here
+
+//                  showMainApplication();
+
 				},
 				// On switch to register
-				() -> {
-					System.out.println("Switch to register screen");
-					// In the future, we'll show the register screen here
-				});
+				this::showRegisterScreen);
 
-		// Create and set scene
-		Scene scene = new Scene(loginView.getView(), 800, 600);
+		// Create scene for login
+		Scene loginScene = new Scene(loginView.getView(), 800, 600);
+//		loginScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
-		// Try to load CSS, but don't crash if it doesn't exist yet
+		// Try to load CSS
 		try {
-			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+			loginScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 		} catch (Exception e) {
 			System.out.println("CSS not found, continuing without styles");
 		}
 
 		// Set scene to stage
-		primaryStage.setScene(scene);
+		primaryStage.setScene(loginScene);
+	}
+
+	private void showRegisterScreen() {
+		// Initialize register view if not already done
+		if (registerView == null) {
+			registerView = new RegisterView(
+					// On register success
+					user -> {
+						this.currentUser = user;
+						System.out.println("User logged in: " + user.getUsername());
+						// In the future, we'll show the main application here
+
+//                  showMainApplication();
+
+					},
+					// On switch to login
+					this::showLoginScreen);
+		}
+
+		// Create scene for register
+		Scene registerScene = new Scene(registerView.getView(), 800, 600);
+		registerScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+
+		// Set scene to stage
+		primaryStage.setScene(registerScene);
 	}
 
 	public static void main(String[] args) {

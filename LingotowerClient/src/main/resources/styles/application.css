@@ -1,7 +1,5 @@
 /* Main application styles */
 
-/* להחליט אם העיצוב הוא רק פה או גם דרך ה FMXL כרגע זה גם וגם*/
-
 .root {
     -fx-font-family: "System";
     -fx-background-color: #f5f5f5;
