@@ -1,4 +1,4 @@
-package com.lingotower.ui.views;
+package com.lingotower.ui.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;

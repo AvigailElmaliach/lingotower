@@ -1,4 +1,4 @@
-package com.lingotower.ui.views;
+package com.lingotower.ui.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -59,7 +59,7 @@ public class RegisterViewController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Initialize language combo box
-		languageComboBox.setItems(FXCollections.observableArrayList("English", "Hebrew", "Spanish", "French"));
+		languageComboBox.setItems(FXCollections.observableArrayList("English", "Hebrew"));
 		languageComboBox.setValue("English");
 
 		// Set up event handlers

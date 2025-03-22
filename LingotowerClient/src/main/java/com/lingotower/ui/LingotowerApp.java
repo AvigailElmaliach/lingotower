@@ -1,10 +1,16 @@
 package com.lingotower.ui;
 
+import java.io.IOException;
+
 import com.lingotower.model.User;
+import com.lingotower.ui.controllers.MainApplicationController;
+import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.LoginView;
 import com.lingotower.ui.views.RegisterView;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -13,6 +19,11 @@ public class LingotowerApp extends Application {
 	private Stage primaryStage;
 	private LoginView loginView;
 	private RegisterView registerView;
+	// Add these new variables:
+	private DashboardView dashboardView;
+//	private LearnWordsView learnWordsView;
+//	private QuizView quizView;
+//	private UserProfileView userProfileView;
 
 	// Current user
 	private User currentUser;
@@ -38,37 +49,6 @@ public class LingotowerApp extends Application {
 		}
 	}
 
-//	private void showLoginScreen() {
-//		// Create login view with callbacks
-//		if (loginView == null) {
-//			loginView = new LoginView(
-//					// On login success
-//					user -> {
-//						System.out.println("User logged in: " + user.getUsername());
-//						// In the future, we'll show the main application here
-//					},
-//					// On switch to register
-//					this::showRegisterScreen);
-//		} else {
-//			// Important: Refresh the view each time it's displayed
-//			loginView.refresh();
-//		}
-//
-//		// Create a NEW scene each time - don't reuse the old scene
-//		Scene scene = new Scene(loginView.getView(), 800, 600);
-//
-//		// Try to load CSS
-//		try {
-//			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
-//		} catch (Exception e) {
-//			System.out.println("CSS not found, continuing without styles");
-//		}
-//
-//		// Set scene to stage
-//		primaryStage.setScene(scene);
-//		primaryStage.setTitle("LingoTower - Login");
-//	}
-
 	private void showLoginScreen() {
 		// Initialize login and register views with callbacks
 		loginView = new LoginView(
@@ -76,16 +56,15 @@ public class LingotowerApp extends Application {
 				user -> {
 					this.currentUser = user;
 					System.out.println("User logged in: " + user.getUsername());
-					// In the future, we'll show the main application here
 
-//                  showMainApplication();
+					showMainApplication();
 
 				},
 				// On switch to register
 				this::showRegisterScreen);
 
 		// Create scene for login
-		Scene loginScene = new Scene(loginView.getView(), 800, 600);
+		Scene loginScene = new Scene(loginView.createView(), 800, 600);
 //		loginScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 		// Try to load CSS
@@ -97,6 +76,8 @@ public class LingotowerApp extends Application {
 
 		// Set scene to stage
 		primaryStage.setScene(loginScene);
+		primaryStage.setTitle("LingoTower - Login");
+
 	}
 
 	private void showRegisterScreen() {
@@ -109,7 +90,7 @@ public class LingotowerApp extends Application {
 						System.out.println("User logged in: " + user.getUsername());
 						// In the future, we'll show the main application here
 
-//                  showMainApplication();
+						showMainApplication();
 
 					},
 					// On switch to login
@@ -117,12 +98,96 @@ public class LingotowerApp extends Application {
 		}
 
 		// Create scene for register
-		Scene registerScene = new Scene(registerView.getView(), 800, 600);
+		Scene registerScene = new Scene(registerView.createView(), 800, 800);
 		registerScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 		// Set scene to stage
 		primaryStage.setScene(registerScene);
+		primaryStage.setTitle("LingoTower - Regiser");
+
 	}
+
+	/**
+	 * Shows the main application screen after successful login/registration
+	 */
+	private void showMainApplication() {
+		try {
+			// Create views if they don't exist
+			if (dashboardView == null) {
+				dashboardView = new DashboardView();
+//				learnWordsView = new LearnWordsView();
+//				quizView = new QuizView();
+//				userProfileView = new UserProfileView();
+			}
+
+			// Load main application layout
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainApplication.fxml"));
+			Parent root = loader.load();
+
+			// Get controller and configure it
+			MainApplicationController controller = loader.getController();
+//			controller.setUser(currentUser);
+//			controller.setViews(dashboardView, learnWordsView, quizView, userProfileView);
+			controller.setViews(dashboardView);
+
+			controller.setOnLogout(() -> {
+				currentUser = null;
+				showLoginScreen();
+			});
+
+			// Initialize the controller (this will show the dashboard)
+			controller.initialize();
+
+			// Set up the scene
+			Scene scene = new Scene(root, 800, 600);
+			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+
+			// Set scene to stage
+			primaryStage.setScene(scene);
+			primaryStage.setTitle("LingoTower - Welcome " + currentUser.getUsername());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Error loading main application: " + e.getMessage());
+		}
+	}
+
+//	private void loadCategories() {
+//		try {
+//			// Fetch categories from server
+//			java.util.List<Category> categories = categoryService.getAllCategories();
+//			if (categories != null && !categories.isEmpty()) {
+//				// Update dashboard with categories
+//				dashboardView.updateCategories(categories);
+//			} else {
+//				// Create some mock categories for testing
+//				java.util.List<Category> mockCategories = new java.util.ArrayList<>();
+//				mockCategories.add(createMockCategory(1L, "Basics"));
+//				mockCategories.add(createMockCategory(2L, "Food"));
+//				mockCategories.add(createMockCategory(3L, "Travel"));
+//				mockCategories.add(createMockCategory(4L, "Business"));
+//				dashboardView.updateCategories(mockCategories);
+//			}
+//		} catch (Exception e) {
+//			System.err.println("Error loading categories: " + e.getMessage());
+//			e.printStackTrace();
+//
+//			// Create some mock categories for testing
+//			java.util.List<Category> mockCategories = new java.util.ArrayList<>();
+//			mockCategories.add(createMockCategory(1L, "Basics"));
+//			mockCategories.add(createMockCategory(2L, "Food"));
+//			mockCategories.add(createMockCategory(3L, "Travel"));
+//			mockCategories.add(createMockCategory(4L, "Business"));
+//			dashboardView.updateCategories(mockCategories);
+//		}
+//	}
+//
+//	private Category createMockCategory(Long id, String name) {
+//		Category category = new Category();
+//		category.setId(id);
+//		category.setName(name);
+//		return category;
+//	}
 
 	public static void main(String[] args) {
 		launch(args);

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+
+<BorderPane fx:id="mainLayout" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.MainApplicationController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="navbar">
+         <children>
+            <Button fx:id="homeBtn" onAction="#handleHomeBtnClick" text="Home" />
+            <Button fx:id="learnBtn" onAction="#handleLearnBtnClick" text="Learn Words" />
+            <Button fx:id="quizBtn" onAction="#handleQuizBtnClick" text="Quizzes" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="profileBtn" onAction="#handleProfileBtnClick" text="My Profile" />
+            <Button fx:id="logoutBtn" onAction="#handleLogoutBtnClick" text="Logout" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
+</BorderPane>

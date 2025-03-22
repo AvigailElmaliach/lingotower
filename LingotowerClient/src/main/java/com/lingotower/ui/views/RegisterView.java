@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import com.lingotower.model.User;
+import com.lingotower.ui.controllers.RegisterViewController;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,7 +26,7 @@ public class RegisterView implements View {
 	}
 
 	@Override
-	public Parent getView() {
+	public Parent createView() {
 		try {
 			// Load a fresh copy of the FXML each time getView is called
 			Parent view = loader.load();

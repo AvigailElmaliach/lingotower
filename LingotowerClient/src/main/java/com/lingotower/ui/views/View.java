@@ -12,7 +12,7 @@ public interface View {
 	 * 
 	 * @return The root javafx node
 	 */
-	Parent getView();
+	Parent createView();
 
 	/**
 	 * Refreshes the view content with updated data

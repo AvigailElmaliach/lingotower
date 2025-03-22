@@ -5,6 +5,26 @@
     -fx-background-color: #f5f5f5;
 }
 
+/* Navigation bar */
+.navbar {
+    -fx-background-color: #3f51b5;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+}
+
+.navbar .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-font-weight: bold;
+}
+
+.navbar .button:hover {
+    -fx-background-color: derive(#3f51b5, 30%);
+}
+
+
 /* Login form styles */
 .login-form {
     -fx-background-color: white;
@@ -52,4 +72,97 @@
 /* Error messages */
 .error-label {
     -fx-text-fill: red;
+}
+.category-button {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 100px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
+}
+
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.info-label {
+    -fx-text-fill: #666666;
+    -fx-font-style: italic;
+}
+
+/* Category Box Styling */
+.category-box {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5px;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-alignment: center;
+    -fx-transition: all 0.2s ease;
+}
+
+.category-box:hover {
+    -fx-background-color: #e8e8e8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+
+.category-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.explore-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 3px;
+    -fx-cursor: hand;
+    -fx-padding: 5px 15px;
+}
+
+.explore-button:hover {
+    -fx-background-color: #3e8e41;
+}
+
+/* Label styling */
+.error-label {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+}
+
+.info-label {
+    -fx-text-fill: #546e7a;
+    -fx-font-style: italic;
+}
+/* Dashboard */
+.category-box {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-padding: 15px;
+}
+
+.category-box:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-cursor: hand;
+}
+
+.category-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.section-header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 0;
+}
+/* RTL support for Hebrew */
+.rtl {
+    -fx-node-orientation: right-to-left;
+
 }
