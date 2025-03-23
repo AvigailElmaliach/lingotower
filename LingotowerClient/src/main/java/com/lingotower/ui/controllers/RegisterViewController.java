@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import com.lingotower.model.User;
+import com.lingotower.service.AuthService;
 import com.lingotower.service.UserService;
 
 import javafx.collections.FXCollections;
@@ -72,6 +73,47 @@ public class RegisterViewController implements Initializable {
 		this.onSwitchToLogin = onSwitchToLogin;
 	}
 
+//	private void handleRegister(ActionEvent event) {
+//		String username = usernameField.getText().trim();
+//		String email = emailField.getText().trim();
+//		String password = passwordField.getText();
+//		String confirmPassword = confirmPasswordField.getText();
+//		String language = languageComboBox.getValue();
+//
+//		// Validate fields
+//		if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+//			showError("All fields are required");
+//			return;
+//		}
+//
+//		if (!password.equals(confirmPassword)) {
+//			showError("Passwords do not match");
+//			return;
+//		}
+//
+//		if (!isValidEmail(email)) {
+//			showError("Please enter a valid email address");
+//			return;
+//		}
+//
+//		// In a real application, register with the server
+//		if (registerUser(username, email, password, language)) {
+//			// Create user object for the UI
+//			User user = new User();
+//			user.setUsername(username);
+//			user.setEmail(email);
+//			user.setLanguage(language);
+//
+//			// Notify success handler
+//			if (onRegisterSuccess != null) {
+//				onRegisterSuccess.accept(user);
+//			}
+//		} else {
+//			showError("Registration failed. Username may already be taken.");
+//		}
+//	}
+
+	@FXML
 	private void handleRegister(ActionEvent event) {
 		String username = usernameField.getText().trim();
 		String email = emailField.getText().trim();
@@ -79,36 +121,34 @@ public class RegisterViewController implements Initializable {
 		String confirmPassword = confirmPasswordField.getText();
 		String language = languageComboBox.getValue();
 
-		// Validate fields
+		// בדיקות תקינות
 		if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-			showError("All fields are required");
+			showError("כל השדות חובה");
 			return;
 		}
 
 		if (!password.equals(confirmPassword)) {
-			showError("Passwords do not match");
+			showError("הסיסמאות אינן תואמות");
 			return;
 		}
 
-		if (!isValidEmail(email)) {
-			showError("Please enter a valid email address");
-			return;
-		}
+		try {
+			AuthService authService = new AuthService();
+			User user = authService.register(username, password, email, language);
 
-		// In a real application, register with the server
-		if (registerUser(username, email, password, language)) {
-			// Create user object for the UI
-			User user = new User();
-			user.setUsername(username);
-			user.setEmail(email);
-			user.setLanguage(language);
+			if (user != null) {
+				// הרשמה הצליחה
+				resetError();
 
-			// Notify success handler
-			if (onRegisterSuccess != null) {
-				onRegisterSuccess.accept(user);
+				// הפעלת callback להרשמה מוצלחת
+				if (onRegisterSuccess != null) {
+					onRegisterSuccess.accept(user);
+				}
+			} else {
+				showError("הרשמה נכשלה. ייתכן ששם המשתמש כבר קיים");
 			}
-		} else {
-			showError("Registration failed. Username may already be taken.");
+		} catch (Exception e) {
+			showError("שגיאה בהרשמה: " + e.getMessage());
 		}
 	}
 
