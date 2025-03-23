@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="view" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.LoginViewController">
+   <center>
+      <VBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" maxWidth="400.0" spacing="15.0" styleClass="login-form" style="-fx-background-color: white; -fx-background-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);">
+               <children>
+                  <Label text="Welcome to LingoTower" styleClass="login-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sign in to continue your language learning journey" wrappingWidth="350.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+                  <Label text="" />  <!-- Spacer -->
+                  <Label fx:id="errorLabel" style="-fx-text-fill: red;" text="Error message" visible="false" />
+                  <Label text="Username or Email" />
+                  <TextField fx:id="usernameField" prefWidth="300.0" promptText="Username or Email" />
+                  <Label text="Password" />
+                  <PasswordField fx:id="passwordField" prefWidth="300.0" promptText="Password" />
+                  <Button fx:id="loginButton" prefWidth="300.0" styleClass="success" text="Sign In" />
+                  <Hyperlink fx:id="forgotPasswordLink" text="Forgot password?" />
+                  <Label text="" />  <!-- Spacer -->
+                  <HBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Label text="Don't have an account?" />
+                        <Hyperlink fx:id="registerLink" text="Sign up now" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>
