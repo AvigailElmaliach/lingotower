@@ -1,0 +1,15 @@
+com\lingotower\service\UserService.class
+com\lingotower\model\Category.class
+com\lingotower\service\QuizService.class
+com\lingotower\model\Question.class
+com\lingotower\model\Word.class
+com\lingotower\service\AdminService.class
+com\lingotower\model\Difficulty.class
+com\lingotower\model\User.class
+com\lingotower\Main.class
+com\lingotower\service\WordService.class
+com\lingotower\model\Quiz.class
+com\lingotower\service\CategoryService.class
+com\lingotower\model\Admin.class
+com\lingotower\ui\LingotowerApp.class
+com\lingotower\service\CategoryService$1.class
