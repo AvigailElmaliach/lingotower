@@ -20,7 +20,6 @@ public class UserAuthController {
         try {
             return ResponseEntity.ok(userAuthService.registerUser(request));
         } catch (IllegalArgumentException e) {
-            // במקרה של שגיאה נפנה ל-ExceptionHandler
             throw new IllegalArgumentException(e.getMessage());
         }
     }

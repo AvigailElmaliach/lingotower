@@ -22,17 +22,6 @@ public class AdminAuthController {
         this.adminRepository = adminRepository;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Admin> registerAdmin(@RequestBody AdminCreateDTO adminCreateDTO,
-//                                               @RequestParam String currentAdminEmail) {
-//        // מחפשים את האדמין הנוכחי ב- AdminRepository
-//        Admin currentAdmin = adminRepository.findByEmail1(currentAdminEmail)
-//                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
-//
-//        // רושמים את האדמין החדש
-//        Admin newAdmin = adminAuthService.registerAdmin(adminCreateDTO, currentAdmin);
-//        return ResponseEntity.ok(newAdmin);
-//    }
     @PostMapping("/register")
     public ResponseEntity<BaseUser> registerAdmin(@RequestBody AdminRegisterRequest request) {
         // מציאת האדמין שמנסה לבצע את ההרשמה
