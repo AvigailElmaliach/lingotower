@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import com.lingotower.model.User;
+import com.lingotower.service.UserAuthService;
 import com.lingotower.service.UserService;
 
 import javafx.event.ActionEvent;
@@ -61,30 +62,60 @@ public class LoginViewController implements Initializable {
 		this.onSwitchToRegister = onSwitchToRegister;
 	}
 
+//	private void handleLogin(ActionEvent event) {
+//		String username = usernameField.getText().trim();
+//		String password = passwordField.getText();
+//
+//		if (username.isEmpty() || password.isEmpty()) {
+//			showError("Please enter both username and password");
+//			return;
+//		}
+//
+//		// In a real application, authenticate with server
+//		// For demo purposes, we'll use a mock authentication
+//		if (authenticateUser(username, password)) {
+//			// Create a mock user for demonstration
+//			User user = new User();
+//			user.setId(1L); // Mock ID
+//			user.setUsername(username);
+//			user.setLanguage("English"); // Default language
+//
+//			// Notify success handler
+//			if (onLoginSuccess != null) {
+//				onLoginSuccess.accept(user);
+//			}
+//		} else {
+//			showError("Invalid username or password");
+//		}
+//	}
+
+	@FXML
 	private void handleLogin(ActionEvent event) {
 		String username = usernameField.getText().trim();
 		String password = passwordField.getText();
 
 		if (username.isEmpty() || password.isEmpty()) {
-			showError("Please enter both username and password");
+			showError("נא להזין שם משתמש וסיסמה");
 			return;
 		}
 
-		// In a real application, authenticate with server
-		// For demo purposes, we'll use a mock authentication
-		if (authenticateUser(username, password)) {
-			// Create a mock user for demonstration
-			User user = new User();
-			user.setId(1L); // Mock ID
-			user.setUsername(username);
-			user.setLanguage("English"); // Default language
+		try {
+			UserAuthService authService = new UserAuthService();
+			User user = authService.login(username, password);
 
-			// Notify success handler
-			if (onLoginSuccess != null) {
-				onLoginSuccess.accept(user);
+			if (user != null) {
+				// התחברות הצליחה
+				resetError();
+
+				// הפעלת callback להתחברות מוצלחת
+				if (onLoginSuccess != null) {
+					onLoginSuccess.accept(user);
+				}
+			} else {
+				showError("שם משתמש או סיסמה שגויים");
 			}
-		} else {
-			showError("Invalid username or password");
+		} catch (Exception e) {
+			showError("שגיאה בהתחברות: " + e.getMessage());
 		}
 	}
 

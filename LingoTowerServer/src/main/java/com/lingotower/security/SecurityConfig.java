@@ -10,26 +10,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.lingotower.security.JwtTokenProvider;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // נסה לבטל CSRF אם אתה משתמש ב-Postman
             .authorizeHttpRequests(authz -> authz
-            		  .requestMatchers("/api/categories/**").hasRole("USER") // אם למשל רק למשתמשים עם תפקיד USER
-            	.requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
-            		    .requestMatchers("/", "/about", "/contact", "/api/auth/register","/api/auth/login").permitAll()
-
-            	.anyRequest().authenticated()
+                .requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
+                .requestMatchers("/api/admin/**").hasRole("ADMIN") // רק למנהלים
+                .requestMatchers("/api/user/**").hasRole("USER") // רק למשתמשים רגילים
+                .anyRequest().authenticated() // כל בקשה אחרת חייבת להיות מאומתת
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -38,6 +37,41 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); 
+    }
+}
+
+
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig {
+//
+//	private final JwtTokenProvider jwtTokenProvider;
+//
+//    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+//        this.jwtTokenProvider = jwtTokenProvider;
+//    }
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//            .csrf(csrf -> csrf.disable()) // נסה לבטל CSRF אם אתה משתמש ב-Postman
+//            .authorizeHttpRequests(authz -> authz
+//            		//  .requestMatchers("/api/categories/**").hasRole("USER") // אם למשל רק למשתמשים עם תפקיד USER
+//            	.requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
+//            		    .requestMatchers("/", "/about", "/contact", "/api/auth/register","/api/auth/login").permitAll()
+//
+//            	.anyRequest().authenticated()
+//            )
+//            .sessionManagement(session -> session
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            )
+//            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
 
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,8 +89,8 @@ public class SecurityConfig {
 //        return http.build(); 
 //    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); 
-    }
-}
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder(); 
+//    }
+//}

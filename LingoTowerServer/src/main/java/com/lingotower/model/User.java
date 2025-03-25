@@ -1,155 +1,58 @@
 package com.lingotower.model;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
-//import javax.persistence.Id;
-//import javax.persistence.JoinTable;
-//import javax.persistence.ManyToMany;
-//import javax.persistence.ManyToOne;
-//import javax.persistence.JoinColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-
-
-import org.hibernate.annotations.CreationTimestamp;
-
 @Entity
-public class User {
+public class User extends BaseUser {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @CreationTimestamp
+    private LocalDateTime atCreated;
 
-	private String username;
-	private String password;
-	private String email;
-	private String language;
-	@CreationTimestamp
-	private LocalDateTime atCreated;
-	@ManyToOne
-	private Admin admin;;
-	@ManyToMany
+    @ManyToOne
+    @JoinColumn(name = "admin_id") 
+    private Admin admin;
+
+    @ManyToMany
     @JoinTable(
         name = "user_learned_words",
-        joinColumns = {@JoinColumn(name = "user_id")},
-        inverseJoinColumns = {@JoinColumn(name = "word_id")}
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "word_id")
     )
-	private List<Word> learnedWords = new ArrayList<>();
-    
-	public User() {}
-	 //  בנאי מלא (כולל ID)
-    public User(Long id, String username, String password, String email, String language, LocalDateTime atCreated, Admin admin, List<Word> learnedWords) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.language = language;
-        this.atCreated = atCreated;
+    private List<Word> learnedWords = new ArrayList<>();
+
+    public User() {}
+
+    public User(String username, String password, String email, String language, Role role) {
+        super(username, password, email, language, role);
+    }
+
+    public LocalDateTime getAtCreated() {
+        return atCreated;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
         this.admin = admin;
-        this.learnedWords = learnedWords != null ? learnedWords : new ArrayList<>();
-    }
-	// בנאי לרישום משתמש חדש (ללא ID)
-    public User(String username, String password, String email, String language) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.language = language;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public List<Word> getLearnedWords() {
+        return learnedWords;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void addLearnedWord(Word word) {
+        if (!learnedWords.contains(word)) {
+            learnedWords.add(word);
+        }
+    }
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	public LocalDateTime getAtCreated() {
-		return atCreated;
-	}
-
-	public void setAtCreated(LocalDateTime atCreated) {
-		this.atCreated = atCreated;
-	}
-	public Admin getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Admin admin) {
-		this.admin = admin;
-	}
-	public List<Word> getLearnedWords() {
-		return learnedWords;
-	}
-
-	public void setLearnedWords(List<Word> learnedWords) {
-		this.learnedWords = learnedWords;
-	}
-	// Helper method to add a word to the learned list
-	public void addLearnedWord(Word word) {
-		if (!learnedWords.contains(word)) {
-			learnedWords.add(word);
-		}
-	}
-	// Helper method to remove a word from the learned list
-	public void removeLearnedWord(Word word) {
-		learnedWords.remove(word);
-	}
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		User user = (User) o;
-		return id != null && id.equals(user.id);
-	}
-
-
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", username='" + username + '\'' +
-				", language='" + language + '\'' +
-				'}';
-	}
+    public void removeLearnedWord(Word word) {
+        learnedWords.remove(word);
+    }
 }
