@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import com.lingotower.model.User;
-import com.lingotower.service.AuthService;
+import com.lingotower.service.UserAuthService;
 import com.lingotower.service.UserService;
 
 import javafx.event.ActionEvent;
@@ -100,7 +100,7 @@ public class LoginViewController implements Initializable {
 		}
 
 		try {
-			AuthService authService = new AuthService();
+			UserAuthService authService = new UserAuthService();
 			User user = authService.login(username, password);
 
 			if (user != null) {

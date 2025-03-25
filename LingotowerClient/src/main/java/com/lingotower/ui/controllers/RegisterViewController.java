@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import com.lingotower.model.User;
-import com.lingotower.service.AuthService;
+import com.lingotower.service.UserAuthService;
 import com.lingotower.service.UserService;
 
 import javafx.collections.FXCollections;
@@ -133,7 +133,7 @@ public class RegisterViewController implements Initializable {
 		}
 
 		try {
-			AuthService authService = new AuthService();
+			UserAuthService authService = new UserAuthService();
 			User user = authService.register(username, password, email, language);
 
 			if (user != null) {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
-import com.lingotower.service.AuthService;
+import com.lingotower.service.UserAuthService;
 import com.lingotower.service.CategoryService;
 import com.lingotower.ui.LingotowerApp;
 
@@ -12,7 +12,7 @@ import javafx.application.Application;
 
 public class MainApplication {
 	public static void main(String[] args) {
-		AuthService authService = new AuthService();
+		UserAuthService authService = new UserAuthService();
 		boolean authenticated = false;
 
 		// Step 1: Try to login with existing user first

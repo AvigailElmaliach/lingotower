@@ -16,11 +16,13 @@ import com.lingotower.security.TokenStorage;
 /**
  * שירות אימות מעודכן שעובד עם JWT
  */
-public class AuthService {
-	private static final String BASE_URL = "http://localhost:8080/api/auth";
+public class UserAuthService {
+	private static final String USER_BASE_URL = "http://localhost:8080/api/auth/user";
+	
+
 	private RestTemplate restTemplate;
 
-	public AuthService() {
+	public UserAuthService() {
 		this.restTemplate = new RestTemplate();
 	}
 
@@ -34,12 +36,12 @@ public class AuthService {
 			loginRequest.setUsername(username);
 			loginRequest.setPassword(password);
 
-			System.out.println("שולח בקשת התחברות ל-" + BASE_URL + "/login");
+			System.out.println("שולח בקשת התחברות ל-" + USER_BASE_URL + "/login");
 			System.out.println("שם משתמש: " + username);
 			System.out.println("סיסמה: " + password);
 
 			// שליחת בקשת ההתחברות לשרת
-			ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/login", loginRequest,
+			ResponseEntity<String> response = restTemplate.postForEntity(USER_BASE_URL + "/login", loginRequest,
 					String.class);
 
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
@@ -82,7 +84,7 @@ public class AuthService {
 			HttpEntity<RegisterRequest> entity = new HttpEntity<>(registerRequest, headers);
 
 			// שליחת בקשת ההרשמה לשרת
-			ResponseEntity<String> response = restTemplate.exchange(BASE_URL + "/register", HttpMethod.POST, entity,
+			ResponseEntity<String> response = restTemplate.exchange(USER_BASE_URL + "/register", HttpMethod.POST, entity,
 					String.class);
 
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
