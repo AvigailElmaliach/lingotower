@@ -1,8 +1,10 @@
 package com.lingotower.dto.admin;
 
-	public class AdminUpdateDTO {
+import com.lingotower.model.Role;
+
+public class AdminUpdateDTO {
 	    private String username;
-	    private String role;
+	    private Role role;
 	    private String password; // אופציונלי: לשינוי סיסמה
 
 	    public String getUsername() {
@@ -13,11 +15,11 @@ package com.lingotower.dto.admin;
 	        this.username = username;
 	    }
 
-	    public String getRole() {
+	    public Role getRole() {
 	        return role;
 	    }
 
-	    public void setRole(String role) {
+	    public void setRole(Role role) {
 	        this.role = role;
 	    }
 
