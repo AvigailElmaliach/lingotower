@@ -1,11 +1,13 @@
 package com.lingotower.ui.controllers;
 
+import com.lingotower.model.Category;
 import com.lingotower.model.User;
 import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.View;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 
 public class MainApplicationController {
@@ -48,6 +50,14 @@ public class MainApplicationController {
 	}
 
 	@FXML
+	private void handleCategorySelected(Category category) {
+		// This will be implemented later when we add more views
+		System.out.println("Category selected in main controller: " + category.getName());
+
+		// Future: Switch to word learning view for this category
+	}
+
+	@FXML
 	private void handleHomeBtnClick(ActionEvent event) {
 		showDashboard();
 	}
@@ -75,6 +85,16 @@ public class MainApplicationController {
 	}
 
 	private void showDashboard() {
-		mainLayout.setCenter(dashboardView.createView());
+		try {
+			// Get dashboard view
+			Parent dashboardRoot = dashboardView.createView();
+
+			// Set it as the center content
+			mainLayout.setCenter(dashboardRoot);
+		} catch (Exception e) {
+			// Handle error
+			System.err.println("Error showing dashboard: " + e.getMessage());
+		}
 	}
+
 }
