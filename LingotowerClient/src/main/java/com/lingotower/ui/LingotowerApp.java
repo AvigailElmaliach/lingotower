@@ -3,6 +3,7 @@ package com.lingotower.ui;
 import java.io.IOException;
 
 import com.lingotower.model.User;
+import com.lingotower.ui.controllers.DashboardViewController;
 import com.lingotower.ui.controllers.MainApplicationController;
 import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.LoginView;
@@ -19,7 +20,6 @@ public class LingotowerApp extends Application {
 	private Stage primaryStage;
 	private LoginView loginView;
 	private RegisterView registerView;
-	// Add these new variables:
 	private DashboardView dashboardView;
 //	private LearnWordsView learnWordsView;
 //	private QuizView quizView;
@@ -88,7 +88,6 @@ public class LingotowerApp extends Application {
 					user -> {
 						this.currentUser = user;
 						System.out.println("User logged in: " + user.getUsername());
-						// In the future, we'll show the main application here
 
 						showMainApplication();
 
@@ -112,13 +111,8 @@ public class LingotowerApp extends Application {
 	 */
 	private void showMainApplication() {
 		try {
-			// Create views if they don't exist
-			if (dashboardView == null) {
-				dashboardView = new DashboardView();
-//				learnWordsView = new LearnWordsView();
-//				quizView = new QuizView();
-//				userProfileView = new UserProfileView();
-			}
+			// Create dashboard view
+			dashboardView = new DashboardView();
 
 			// Load main application layout
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainApplication.fxml"));
@@ -126,9 +120,18 @@ public class LingotowerApp extends Application {
 
 			// Get controller and configure it
 			MainApplicationController controller = loader.getController();
-//			controller.setUser(currentUser);
-//			controller.setViews(dashboardView, learnWordsView, quizView, userProfileView);
-			controller.setViews(dashboardView);
+			controller.setUser(currentUser);
+			controller.setDashboardView(dashboardView);
+
+			// IMPORTANT: Get the dashboard controller and set the main controller reference
+			FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("/fxml/DashboardView.fxml"));
+			Parent dashboardRoot = dashboardLoader.load();
+			DashboardViewController dashboardController = dashboardLoader.getController();
+			dashboardController.setMainController(controller);
+
+			// Store the dashboardRoot in the dashboardView
+			dashboardView.setRoot(dashboardRoot);
+			dashboardView.setController(dashboardController);
 
 			controller.setOnLogout(() -> {
 				currentUser = null;

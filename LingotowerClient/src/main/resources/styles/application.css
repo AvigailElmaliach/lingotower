@@ -169,3 +169,33 @@
 .category-title.rtl {
     -fx-font-family: "Arial"; /*  a font that supports Hebrew well */
 }
+
+/* Word card styling */
+.word-card {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.word-text {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.translation-text {
+    -fx-font-size: 24px;
+    -fx-font-style: italic;
+}
+
+/* Button styling */
+.primary-button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+}
+
+.success-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="view" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.WordLearningController">
+   <top>
+      <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="categoryNameLabel" styleClass="section-header" text="Category Name">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Label text="Progress:" />
+                  <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+                  <Label fx:id="progressLabel" text="0/0" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="wordCard" alignment="CENTER" minHeight="200.0" spacing="20.0" styleClass="word-card">
+               <children>
+                  <Label fx:id="wordLabel" styleClass="word-text" text="Word">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="translationLabel" styleClass="translation-text" text="Translation" visible="false">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+            <HBox alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button fx:id="showTranslationButton" mnemonicParsing="false" onAction="#handleShowTranslation" styleClass="primary-button" text="Show Translation" />
+                  <Button fx:id="nextWordButton" mnemonicParsing="false" onAction="#handleNextWord" styleClass="success-button" text="Next Word" />
+               </children>
+            </HBox>
+            <Label fx:id="messageLabel" styleClass="info-label" text="Click 'Show Translation' to reveal the meaning" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackToDashboard" text="Back to Dashboard" />
+            <Button fx:id="markLearnedButton" mnemonicParsing="false" onAction="#handleMarkLearned" styleClass="success-button" text="Mark as Learned" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>
