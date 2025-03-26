@@ -166,3 +166,6 @@
     -fx-node-orientation: right-to-left;
 
 }
+.category-title.rtl {
+    -fx-font-family: "Arial"; /*  a font that supports Hebrew well */
+}
