@@ -36,6 +36,7 @@ public class DashboardViewController {
 	private User currentUser;
 	private Runnable onLogoutCallback;
 	private CategoryService categoryService;
+	private MainApplicationController mainController;
 
 	/**
 	 * Initializes the controller class. This method is automatically called after
@@ -60,6 +61,10 @@ public class DashboardViewController {
 		if (logoutButton != null) {
 			logoutButton.setOnAction(e -> handleLogout());
 		}
+	}
+
+	public void setMainController(MainApplicationController mainController) {
+		this.mainController = mainController;
 	}
 
 	/**
@@ -90,7 +95,7 @@ public class DashboardViewController {
 		}
 	}
 
-	private void loadCategories() {
+	public void loadCategories() {
 		try {
 			// Show loading indicator (if you have one)
 
@@ -106,7 +111,6 @@ public class DashboardViewController {
 		}
 	}
 
-	// Update the categories displayed in the UI
 	public void updateCategories(List<Category> categories) {
 		// Clear existing content
 		categoriesContainer.getChildren().clear();
@@ -136,9 +140,14 @@ public class DashboardViewController {
 
 				// Set callback for when category is selected
 				tileController.setOnCategorySelected(() -> {
-					// This will be called when the "Explore" button is clicked
-					System.out.println("Category selected: " + category.getName());
-					// Later we'll navigate to the word learning view for this category
+					System.out.println("Category selected callback triggered for: " + category.getName());
+					// Navigate to word learning view
+					if (mainController != null) {
+						System.out.println("Calling mainController.showWordLearningForCategory()");
+						mainController.showWordLearningForCategory(category);
+					} else {
+						System.out.println("ERROR: mainController is null!");
+					}
 				});
 
 				// Add to container

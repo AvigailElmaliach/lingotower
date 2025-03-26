@@ -41,12 +41,17 @@ public class CategoryTileController {
 	@FXML
 	public void handleExploreClick(ActionEvent event) {
 		if (category != null) {
-			System.out.println("Exploring category: " + category.getName());
+			System.out.println("Explore button clicked for category: " + category.getName());
 
 			// Call the callback if set
 			if (onCategorySelected != null) {
+				System.out.println("Calling onCategorySelected callback");
 				onCategorySelected.run();
+			} else {
+				System.out.println("ERROR: onCategorySelected callback is null!");
 			}
+		} else {
+			System.out.println("ERROR: category is null!");
 		}
 	}
 
