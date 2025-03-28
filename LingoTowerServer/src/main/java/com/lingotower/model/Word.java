@@ -2,14 +2,9 @@ package com.lingotower.model;
 import java.util.ArrayList;
 import java.util.List;
 
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
-//import javax.persistence.Id;
-//import javax.persistence.JoinColumn;
-//import javax.persistence.ManyToMany;
-//import javax.persistence.ManyToOne; 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,19 +31,42 @@ public class Word {
 	@ManyToMany(mappedBy = "learnedWords")
 	private List<User> users = new ArrayList<>();
 
-	private String language;
+	private String sourceLanguage;
+	
+	@Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+	private String targetLanguage;
 
 	public Word() {}
 
+	public Word(String word, String translation, String sourceLanguage) {
+        this.word = word;
+        this.translation = translation;
+        this.sourceLanguage = sourceLanguage;
+       
+    }
+	 public Word(String word, String translation, String sourceLanguage, String targetLanguage) {
+	        this.word = word;
+	        this.translation = translation;
+	        this.sourceLanguage = sourceLanguage;
+	        this.targetLanguage = targetLanguage; // שפת היעד
+	    }
+
+	
+	
+	public Word(Object object, String word, String translation, String sourceLanguage, String targetLanguage,
+			Difficulty difficulty, Category category) {
+		this.word = word;
+        this.translation = translation;
+        this.sourceLanguage = sourceLanguage;
+        this.targetLanguage = targetLanguage;
+        this.difficulty=difficulty;
+        this.category=category;
+	}
 
 	public Long getId() {
 		return id;
 	}
-	public Word(String word, String translation, String language) {
-        this.word = word;
-        this.translation = translation;
-        this.language = language;
-    }
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -86,14 +104,28 @@ public class Word {
 	public void addUser(User user) {
 		users.add(user);
 	}
-	 public String getLanguage() {
-	        return language;
+	 public String getSourceLanguage() {
+	        return sourceLanguage;
 	    }
 
-	    public void setLanguage(String language) {
-	        this.language = language;
+	    public void setSourceLanguage(String sourceLanguage) {
+	        this.sourceLanguage = sourceLanguage;
 	    }
+	    public Difficulty getDifficulty() {
+			return  difficulty;
+		}
 
+
+		public void setDifficulty(Difficulty difficulty) {
+		this. difficulty= difficulty;
+		}
+		 public String getTargetLanguage() {
+		        return targetLanguage;
+		    }
+
+		    public void setTargetLanguage(String targetLanguage) {
+		        this.targetLanguage = targetLanguage;
+		    }
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -112,6 +144,9 @@ public class Word {
 				", category='" + (category != null ? category.getName() : "None") + '\'' +
 				'}';
 	}
+
+
+	
 
 
 }

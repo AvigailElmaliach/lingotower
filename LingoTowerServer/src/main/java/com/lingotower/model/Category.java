@@ -32,8 +32,18 @@ public class Category {
 	 @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	 @JsonIgnore
 	    private List<Question> questions = new ArrayList<>();
-
+	 
+//	 @OneToMany(mappedBy = "category")
+//	 private List<Word> words;
 	public Category() {}
+
+	public Category(String name) {
+	 this.name=name;
+	}
+//	 public Category(String name, List<Word> words) {
+//	        this.name = name;
+//	        this.words = words;
+//	    }
 
 	public Long getId() {
 		return id;

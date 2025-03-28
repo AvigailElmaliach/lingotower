@@ -25,7 +25,7 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
+    private Difficulty difficulty;
     public Question() {}
 
     public Long getId() { return id; }
@@ -45,4 +45,7 @@ public class Question {
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+    public Difficulty getDifficulty() { return difficulty; }
+    public void setDifficulty(Difficulty difficulty) {this.difficulty=difficulty;}
+    
 }
