@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // רק למנהלים
                 .requestMatchers("/api/user/**").hasRole("USER") // רק למשתמשים רגילים
+               // .requestMatchers("/word/upload").permitAll() 
                 .anyRequest().authenticated() // כל בקשה אחרת חייבת להיות מאומתת
             )
             .sessionManagement(session -> session
