@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="view" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.UserProfileController">
+   <padding>
+      <Insets bottom="20" left="20" right="20" top="20" />
+   </padding>
+   
+   <top>
+      <VBox alignment="CENTER" spacing="10">
+         <Label fx:id="welcomeLabel" text="Welcome, User!">
+            <font>
+               <Font name="System Bold" size="24" />
+            </font>
+         </Label>
+      </VBox>
+   </top>
+   
+   <center>
+      <TabPane fx:id="tabPane">
+         <Tab closable="false" text="Profile Information">
+            <GridPane alignment="CENTER" hgap="10" vgap="10">
+               <padding>
+                  <Insets bottom="25" left="25" right="25" top="25" />
+               </padding>
+               
+               <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+               <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+               
+               <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+               <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               
+               <Label text="Learning Language:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+               <ComboBox fx:id="languageComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               
+               <Label text="New Password:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+               <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               
+               <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+               <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               
+               <Button fx:id="saveButton" onAction="#handleSaveButtonClick" text="Save Changes" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+               
+               <Label fx:id="statusLabel" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+         </Tab>
+         
+         <Tab closable="false" text="Learning Progress">
+            <VBox alignment="CENTER" spacing="20">
+               <padding>
+                  <Insets bottom="25" left="25" right="25" top="25" />
+               </padding>
+               
+               <Label styleClass="section-header" text="Your Learning Progress">
+                  <font>
+                     <Font name="System Bold" size="18" />
+                  </font>
+               </Label>
+               
+               <!-- Chart will be loaded programmatically -->
+               <Pane fx:id="chartContainer" prefHeight="200" />
+               
+               <!-- Stats section -->
+               <GridPane fx:id="statsGrid" hgap="15" vgap="10">
+                  <Label text="Words Learned:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <Label fx:id="wordsLearnedLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  
+                  <Label text="Total Available Words:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <Label fx:id="totalWordsLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  
+                  <Label text="Quizzes Completed:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <Label fx:id="quizzesCompletedLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  
+                  <Label text="Quiz Success Rate:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <Label fx:id="quizSuccessRateLabel" text="0%" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+               
+               <!-- Recommendations section -->
+               <VBox fx:id="recommendationsBox" spacing="10">
+                  <Label styleClass="section-header" text="Recommended Next Steps">
+                     <font>
+                        <Font name="System Bold" size="16" />
+                     </font>
+                  </Label>
+                  
+                  <Label text="• Complete the ....." />
+                  <Label text="• Review words in the....." />
+                  <Label text="• Try the ...." />
+               </VBox>
+            </VBox>
+         </Tab>
+         
+         <Tab closable="false" text="Learned Words">
+            <VBox spacing="15">
+               <padding>
+                  <Insets bottom="25" left="25" right="25" top="25" />
+               </padding>
+               
+               <Label styleClass="section-header" text="Words You've Learned">
+                  <font>
+                     <Font name="System Bold" size="18" />
+                  </font>
+               </Label>
+               
+               <!-- Filter options -->
+               <HBox alignment="CENTER_LEFT" spacing="10">
+                  <Label text="Category:" />
+                  <ComboBox fx:id="categoryFilter" />
+                  <Button fx:id="filterButton" onAction="#handleFilterButtonClick" text="Filter" />
+               </HBox>
+               
+               <!-- Word list -->
+               <ListView fx:id="wordsList" prefHeight="250" />
+               
+               <!-- Action buttons -->
+               <HBox alignment="CENTER" spacing="10">
+                  <Button fx:id="practiceButton" onAction="#handlePracticeButtonClick" text="Practice Selected Words" />
+                  <Button fx:id="exportButton" onAction="#handleExportButtonClick" text="Export to Flashcards" />
+               </HBox>
+            </VBox>
+         </Tab>
+      </TabPane>
+   </center>
+</BorderPane>
