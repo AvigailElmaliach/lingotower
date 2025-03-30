@@ -41,6 +41,22 @@ public class CategoryService {
                          .map(this::convertToDTO)
                          .collect(Collectors.toList());
     }
+    // שיטה לחפש קטגוריה לפי שם
+    public Optional<Category> findByName(String name) {
+        return categoryRepository.findByName(name);
+    }
+
+    // שיטה לקבל או ליצור קטגוריה חדשה
+    public Category getOrCreateCategory(String name) {
+        Optional<Category> existingCategory = findByName(name);
+        if (existingCategory.isPresent()) {
+            return existingCategory.get();
+        } else {
+            Category newCategory = new Category();
+            newCategory.setName(name);
+            return categoryRepository.save(newCategory);
+        }
+    }
 
     public Category getCategoryById(Long id) throws CategoryNotFoundException {
         return categoryRepository.findById(id)
@@ -88,9 +104,5 @@ public class CategoryService {
 //    	}
 //        return objectMapper.readValue(new File(categoryName + ".json"), Category.class);
 //    }
-    public Category getOrCreateCategory(String name) {
-        return categoryRepository.findByName(name)
-                .orElseGet(() -> categoryRepository.save(new Category(name)));
-    }
-
+  
 }
