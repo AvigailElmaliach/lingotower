@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
 	  @Query("SELECT w FROM Word w WHERE w.category.id = :categoryId")
@@ -17,4 +18,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
   //  List<Word> getCategoryById(Long categoryId);
    // List<Word> findByCategoryId(Long categoryId);
     List<Word> findByCategoryIdAndDifficulty(Long categoryId, Difficulty difficulty);
+    Optional<Word> findByWord(String word);
 }

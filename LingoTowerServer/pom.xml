@@ -129,7 +129,6 @@
     
 </dependency>
 
-
     	<dependency>
     		<groupId>com.lingotower</groupId>
     		<artifactId>lingotower-client</artifactId>

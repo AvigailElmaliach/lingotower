@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Everyday Life and Essential Vocabulary"
+    },
+    {
+        "id": 2,
+        "name": "People and Relationships"
+    },
+    {
+        "id": 3,
+        "name": "Work and Education"
+    },
+    {
+        "id": 4,
+        "name": "Health and Well-being"
+    },
+    {
+        "id": 5,
+        "name": "Travel and Leisure"
+    },
+    {
+        "id": 6,
+        "name": "Environment and Nature"
+    }
+]

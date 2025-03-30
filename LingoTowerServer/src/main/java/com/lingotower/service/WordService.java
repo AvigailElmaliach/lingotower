@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,20 @@ public class WordService {
     public void deleteAllWords() {
         wordRepository.deleteAll();
     }
+    // שיטה לשמור מילה
+    public Word saveWord(Word word) {
+        return wordRepository.save(word);
+    }
 
+    // שיטה לחפש מילה לפי הטקסט שלה
+    public Optional<Word> findByWord(String wordText) {
+        return wordRepository.findByWord(wordText);
+    }
 
+  
+
+   
+  
     public void addWordWithTranslation(WordDTO wordDTO, String targetLang) {
         final String translatedText = translationService.translateText(wordDTO.getWord(), wordDTO.getLanguage(), targetLang);
 
@@ -146,4 +159,6 @@ public class WordService {
         Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
         return new TranslationResponseDTO(word.getWord(), word.getTranslation());
     }
+  
+   
 }
