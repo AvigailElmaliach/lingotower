@@ -50,6 +50,5 @@ public class LoginView implements View {
 
 	@Override
 	public void refresh() {
-		// No need to do anything here as we'll create a fresh view each time
 	}
 }

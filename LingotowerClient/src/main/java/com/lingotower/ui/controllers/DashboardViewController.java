@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
-import com.lingotower.ui.controllers.CategoryTileController;
+import com.lingotower.service.CategoryService;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +35,8 @@ public class DashboardViewController {
 
 	private User currentUser;
 	private Runnable onLogoutCallback;
+	private CategoryService categoryService;
+	private MainApplicationController mainController;
 
 	/**
 	 * Initializes the controller class. This method is automatically called after
@@ -42,6 +44,14 @@ public class DashboardViewController {
 	 */
 	@FXML
 	private void initialize() {
+		categoryService = new CategoryService();
+
+		// Initialize the category service
+		categoryService = new CategoryService();
+
+		// Load categories when the view initializes
+		loadCategories();
+
 		// Hide error message initially
 		if (errorMessageLabel != null) {
 			errorMessageLabel.setVisible(false);
@@ -51,6 +61,10 @@ public class DashboardViewController {
 		if (logoutButton != null) {
 			logoutButton.setOnAction(e -> handleLogout());
 		}
+	}
+
+	public void setMainController(MainApplicationController mainController) {
+		this.mainController = mainController;
 	}
 
 	/**
@@ -81,11 +95,22 @@ public class DashboardViewController {
 		}
 	}
 
-	/**
-	 * Updates the categories displayed in the UI
-	 * 
-	 * @param categories The list of categories to display
-	 */
+	public void loadCategories() {
+		try {
+			// Show loading indicator (if you have one)
+
+			// Fetch categories from server
+			List<Category> categories = categoryService.getAllCategories();
+
+			// Update UI with categories
+			updateCategories(categories);
+		} catch (Exception e) {
+			// Handle error, show error message
+			showErrorMessage("Error loading categories: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void updateCategories(List<Category> categories) {
 		// Clear existing content
 		categoriesContainer.getChildren().clear();
@@ -112,6 +137,18 @@ public class DashboardViewController {
 				// Configure the controller
 				CategoryTileController tileController = loader.getController();
 				tileController.setCategory(category);
+
+				// Set callback for when category is selected
+				tileController.setOnCategorySelected(() -> {
+					System.out.println("Category selected callback triggered for: " + category.getName());
+					// Navigate to word learning view
+					if (mainController != null) {
+						System.out.println("Calling mainController.showWordLearningForCategory()");
+						mainController.showWordLearningForCategory(category);
+					} else {
+						System.out.println("ERROR: mainController is null!");
+					}
+				});
 
 				// Add to container
 				categoriesContainer.getChildren().add(categoryTile);

@@ -20,14 +20,11 @@ public abstract class BaseService {
 		this.restTemplate.setErrorHandler(new AuthenticationErrorHandler());
 	}
 
-	/**
-	 * יצירת כותרות HTTP עם טוקן האימות
-	 */
+	// Method to create headers with authentication token
 	protected HttpHeaders createAuthHeaders() {
 		HttpHeaders headers = new HttpHeaders();
+		// Add the authentication token if available
 		if (TokenStorage.hasToken()) {
-			// הוספת טוקן JWT לכותרת Authorization
-			// בפורמט "Bearer [הטוקן]"
 			headers.set("Authorization", "Bearer " + TokenStorage.getToken());
 		}
 		return headers;
