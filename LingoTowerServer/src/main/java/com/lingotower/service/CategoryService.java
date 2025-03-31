@@ -1,108 +1,95 @@
 package com.lingotower.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lingotower.data.CategoryRepository;
 import com.lingotower.dto.category.CategoryDTO;
 import com.lingotower.exception.CategoryAlreadyExistsException;
 import com.lingotower.exception.CategoryNotFoundException;
 import com.lingotower.model.Category;
-import com.lingotower.model.Word;
-import java.io.File;
-import java.io.IOException;
-import com.lingotower.exception.FileExceptionHandler;
-//import io.jsonwebtoken.io.IOException;
 
-import com.lingotower.data.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-//import com.lingotower.service.TranslationService;
 @Service
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-//    @Autowired
-//    private TranslationService translationService;
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+	private final CategoryRepository categoryRepository;
 
-    private CategoryDTO convertToDTO(Category category) {
-        return new CategoryDTO(category.getId(), category.getName());
-    }
+	@Autowired
+	public CategoryService(CategoryRepository categoryRepository) {
+		this.categoryRepository = categoryRepository;
+	}
 
-    public List<CategoryDTO> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        return categories.stream()
-                         .map(this::convertToDTO)
-                         .collect(Collectors.toList());
-    }
-    // שיטה לחפש קטגוריה לפי שם
-    public Optional<Category> findByName(String name) {
-        return categoryRepository.findByName(name);
-    }
+	private CategoryDTO convertToDTO(Category category) {
+		return new CategoryDTO(category.getId(), category.getName());
+	}
 
-    // שיטה לקבל או ליצור קטגוריה חדשה
-    public Category getOrCreateCategory(String name) {
-        Optional<Category> existingCategory = findByName(name);
-        if (existingCategory.isPresent()) {
-            return existingCategory.get();
-        } else {
-            Category newCategory = new Category();
-            newCategory.setName(name);
-            return categoryRepository.save(newCategory);
-        }
-    }
+	public List<CategoryDTO> getAllCategories() {
+		List<Category> categories = categoryRepository.findAll();
 
-    public Category getCategoryById(Long id) throws CategoryNotFoundException {
-        return categoryRepository.findById(id)
-            .orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
-    }
-    public Category addCategory(Category category) {
-        // בדיקה אם קטגוריה עם אותו שם כבר קיימת
-        Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
-        if (existingCategory.isPresent()) {
-            // אם הקטגוריה קיימת, זרוק שגיאה או החזר ערך מתאים
-            throw new CategoryAlreadyExistsException("קטגוריה עם שם זה כבר קיימת");
-        }
+		// Define the correct order for category names
+		Map<String, Integer> categoryOrder = new HashMap<>();
+		categoryOrder.put("Everyday Life and Essential Vocabulary", 1);
+		categoryOrder.put("People and Relationships", 2);
+		categoryOrder.put("Work and Education", 3);
+		categoryOrder.put("Health and Well-being", 4);
+		categoryOrder.put("Travel and Leisure", 5);
+		categoryOrder.put("Environment and Nature", 6);
 
-        // אם לא קיימת, שמור את הקטגוריה
-        return categoryRepository.save(category);
-    }
-    
-    public void deleteCategory(Long id) throws CategoryNotFoundException {
-        if (!categoryRepository.existsById(id)) {
-            throw new CategoryNotFoundException("Category not found with id: " + id);
-        }
-        categoryRepository.deleteById(id);
-    }
+		// Sort by the predefined order
+		categories.sort(Comparator.comparing(c -> categoryOrder.getOrDefault(c.getName(), Integer.MAX_VALUE)));
 
-    public Category updateCategory(Long id, CategoryDTO categoryDTO) throws CategoryNotFoundException {
-        Category existingCategory = getCategoryById(id); // זורק חריגה אם לא נמצא
-        existingCategory.setName(categoryDTO.getName());
-        return categoryRepository.save(existingCategory);
-    }
+		return categories.stream().map(this::convertToDTO).collect(Collectors.toList());
+	}
 
-    public void deleteAllCategories() {
-        categoryRepository.deleteAll();
-    }
-//    // ✅ כתיבה לקובץ JSON
-//    public void writeCategoryToFile(String categoryName, List<Word> words) throws IOException {
-//        Category category = new Category(categoryName, words);
-//        objectMapper.writeValue(new File(categoryName + ".json"), category);
-//    }
-//
-//    // ✅ קריאה מקובץ JSON (תיקון ההכרזה על החריגות)
-//    public Category readCategoryFromFile(String categoryName) throws IOException {
-//    	File file = new File(categoryName + ".json");
-//    	if (!file.exists()) {
-//    	    throw new RuntimeException("הקובץ לא נמצא: " + file.getAbsolutePath());
-//    	}
-//        return objectMapper.readValue(new File(categoryName + ".json"), Category.class);
-//    }
-  
+	public Optional<Category> findByName(String name) {
+		return categoryRepository.findByName(name);
+	}
+
+	public Category getOrCreateCategory(String name) {
+		return categoryRepository.findByName(name).orElseGet(() -> {
+			Category newCategory = new Category();
+			newCategory.setName(name);
+			return categoryRepository.save(newCategory);
+		});
+	}
+
+	public Category getCategoryById(Long id) throws CategoryNotFoundException {
+		return categoryRepository.findById(id)
+				.orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
+	}
+
+	public Category addCategory(Category category) {
+		// Check if category with this name already exists
+		Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
+		if (existingCategory.isPresent()) {
+			throw new CategoryAlreadyExistsException("קטגוריה עם שם זה כבר קיימת");
+		}
+
+		// Save the new category and let the database assign an ID
+		return categoryRepository.save(category);
+	}
+
+	public void deleteCategory(Long id) throws CategoryNotFoundException {
+		if (!categoryRepository.existsById(id)) {
+			throw new CategoryNotFoundException("Category not found with id: " + id);
+		}
+		categoryRepository.deleteById(id);
+	}
+
+	public Category updateCategory(Long id, CategoryDTO categoryDTO) throws CategoryNotFoundException {
+		Category existingCategory = getCategoryById(id); // throws exception if not found
+		existingCategory.setName(categoryDTO.getName());
+		return categoryRepository.save(existingCategory);
+	}
+
+	public void deleteAllCategories() {
+		categoryRepository.deleteAll();
+	}
 }
