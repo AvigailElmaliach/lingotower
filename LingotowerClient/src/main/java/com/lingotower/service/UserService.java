@@ -1,56 +1,180 @@
 package com.lingotower.service;
 
-
-import com.lingotower.model.User;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class UserService {
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-    private static final String BASE_URL = "http://localhost:8080/users";
-    private RestTemplate restTemplate;
+import com.lingotower.model.User;
+import com.lingotower.model.Word;
 
-    public UserService() {
-        this.restTemplate = new RestTemplate();
-    }
+public class UserService extends BaseService {
 
-    public List<User> getAllUsers() {
-        ResponseEntity<List> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
-        return response.getBody();
-    }
+	private static final String BASE_URL = "http://localhost:8080/users";
 
-    public User getUserById(Long id) {
-        String url = BASE_URL + "/" + id;
-        ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, null, User.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
-        }
-        return null;
-    }
+	public UserService() {
+		super(); // Initialize the base service with RestTemplate and error handler
+	}
 
-    public User createUser(User user) {
-        ResponseEntity<User> response = restTemplate.exchange(
-                BASE_URL, HttpMethod.POST, new HttpEntity<>(user), User.class);
-        return response.getBody();
-    }
+	public List<User> getAllUsers() {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-    public boolean deleteUser(Long id) {
-        String url = BASE_URL + "/" + id;
-        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
-        return response.getStatusCode() == HttpStatus.NO_CONTENT;
-    }
+			ResponseEntity<List<User>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<User>>() {
+					});
 
-    public Double getUserLearningProgress(Long userId) {
-        String url = BASE_URL + "/" + userId + "/progress";
-        ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, null, Double.class);
-        return response.getBody();
-    }
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error getting all users: " + e.getMessage());
+			return new ArrayList<>();
+		}
+	}
 
-    public boolean addLearnedWord(Long userId, Long wordId) {
-        String url = BASE_URL + "/" + userId + "/learn-word/" + wordId;
-        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, null, Void.class);
-        return response.getStatusCode() == HttpStatus.OK;
-    }
+	public User getUserById(Long id) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + id;
+			ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
+
+			if (response.getStatusCode() == HttpStatus.OK) {
+				return response.getBody();
+			}
+			return null;
+		} catch (Exception e) {
+			System.err.println("Error getting user by ID: " + e.getMessage());
+			return null;
+		}
+	}
+
+	public User createUser(User user) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<User> entity = new HttpEntity<>(user, headers);
+
+			ResponseEntity<User> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, entity, User.class);
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error creating user: " + e.getMessage());
+			return null;
+		}
+	}
+
+	public boolean updateUser(User user) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<User> entity = new HttpEntity<>(user, headers);
+
+			String url = BASE_URL + "/" + user.getId();
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+
+			return response.getStatusCode() == HttpStatus.OK;
+		} catch (Exception e) {
+			System.err.println("Error updating user: " + e.getMessage());
+			return false;
+		}
+	}
+
+	public boolean deleteUser(Long id) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + id;
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+			return response.getStatusCode() == HttpStatus.NO_CONTENT;
+		} catch (Exception e) {
+			System.err.println("Error deleting user: " + e.getMessage());
+			return false;
+		}
+	}
+
+	public Double getUserLearningProgress(Long userId) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + userId + "/progress";
+			ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, entity, Double.class);
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error getting user learning progress: " + e.getMessage());
+			return 0.0;
+		}
+	}
+
+	public List<Word> getLearnedWords(Long userId) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + userId + "/learned-words";
+			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<Word>>() {
+					});
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error getting learned words: " + e.getMessage());
+			return new ArrayList<>();
+		}
+	}
+
+	public List<Word> getLearnedWordsByCategory(Long userId, Long categoryId) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + userId + "/learned-words/category/" + categoryId;
+			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<Word>>() {
+					});
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error getting learned words by category: " + e.getMessage());
+			return new ArrayList<>();
+		}
+	}
+
+	public boolean addLearnedWord(Long userId, Long wordId) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + userId + "/learn-word/" + wordId;
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
+
+			return response.getStatusCode() == HttpStatus.OK;
+		} catch (Exception e) {
+			System.err.println("Error adding learned word: " + e.getMessage());
+			return false;
+		}
+	}
+
+	public boolean removeLearnedWord(Long userId, Long wordId) {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/" + userId + "/learned-word/" + wordId;
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+			return response.getStatusCode() == HttpStatus.OK;
+		} catch (Exception e) {
+			System.err.println("Error removing learned word: " + e.getMessage());
+			return false;
+		}
+	}
 }
