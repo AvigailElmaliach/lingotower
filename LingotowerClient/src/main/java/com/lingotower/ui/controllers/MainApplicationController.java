@@ -3,6 +3,7 @@ package com.lingotower.ui.controllers;
 
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
+import com.lingotower.ui.views.DailyWordView;
 import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.QuizView;
 import com.lingotower.ui.views.UserProfileView;
@@ -42,6 +43,11 @@ public class MainApplicationController {
 	}
 
 	@FXML
+	private void handleDailyWordButtonClick(ActionEvent event) {
+		showDailyWord();
+	}
+
+	@FXML
 	private void handleHomeBtnClick(ActionEvent event) {
 		showDashboard();
 	}
@@ -68,6 +74,20 @@ public class MainApplicationController {
 	private void handleLogoutBtnClick(ActionEvent event) {
 		if (onLogout != null) {
 			onLogout.run();
+		}
+	}
+
+	public void showDailyWord() {
+		try {
+			// Create daily word view with current user
+			DailyWordView dailyWordView = new DailyWordView(currentUser, this::showDashboard);
+			Parent dailyWordRoot = dailyWordView.createView();
+
+			// Set mainLayout center to daily word view
+			mainLayout.setCenter(dailyWordRoot);
+		} catch (Exception e) {
+			System.err.println("Error showing daily word view: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
