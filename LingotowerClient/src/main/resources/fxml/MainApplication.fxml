@@ -14,6 +14,7 @@
             <Button fx:id="learnBtn" onAction="#handleLearnBtnClick" text="Learn Words" />
             <Button fx:id="quizBtn" onAction="#handleQuizBtnClick" text="Quizzes" />
             <Button fx:id="dailyWordBtn" onAction="#handleDailyWordButtonClick" text="Daily Word" />
+            <Button fx:id="translatorBtn" onAction="#handleTranslatorBtnClick" text="Translator" />
             <HBox HBox.hgrow="ALWAYS" />
             <Button fx:id="profileBtn" onAction="#handleProfileBtnClick" text="My Profile" />
             <Button fx:id="logoutBtn" onAction="#handleLogoutBtnClick" text="Logout" />
