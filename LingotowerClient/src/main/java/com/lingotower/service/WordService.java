@@ -110,15 +110,19 @@ public class WordService extends BaseService {
 		}
 	}
 
-	// Get words for a specific category
-	public List<Word> getWordsByCategory(Long categoryId) {
+	/**
+	 * Gets all words from a specific category
+	 * 
+	 * @param categoryId The category ID
+	 * @return A list of words in the category or empty list if none found
+	 */
+	public List<Word> getWordsByCategory(long categoryId) {
 		try {
 			// Create headers with authentication
 			HttpHeaders headers = createAuthHeaders();
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			// Make the request to a hypothetical endpoint - might need to add this to
-			// the server
+			// Make the request to the endpoint
 			String url = BASE_URL + "/category/" + categoryId;
 
 			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
@@ -127,7 +131,7 @@ public class WordService extends BaseService {
 
 			return response.getBody();
 		} catch (Exception e) {
-			System.err.println("Error getting words for category: " + e.getMessage());
+			System.err.println("Error fetching words by category: " + e.getMessage());
 			e.printStackTrace();
 			return new ArrayList<>();
 		}
@@ -193,4 +197,37 @@ public class WordService extends BaseService {
 			return null;
 		}
 	}
+
+	/**
+	 * Gets a random set of words from a specific category and difficulty level
+	 * 
+	 * @param categoryId The category ID
+	 * @param difficulty The difficulty level (EASY, MEDIUM, HARD)
+	 * @param sourceLang Source language code (e.g., "en")
+	 * @param targetLang Target language code (e.g., "he")
+	 * @return A list of random words or empty list if none found
+	 */
+	public List<Word> getRandomWordsByCategory(long categoryId, String difficulty, String sourceLang,
+			String targetLang) {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the request to the endpoint
+			String url = BASE_URL + "/category/" + categoryId + "/difficulty/" + difficulty
+					+ "/translate/random?sourceLang=" + sourceLang + "&targetLang=" + targetLang;
+
+			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<Word>>() {
+					});
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error fetching random words: " + e.getMessage());
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
 }
