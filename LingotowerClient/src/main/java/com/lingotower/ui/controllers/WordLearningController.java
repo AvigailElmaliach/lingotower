@@ -1,6 +1,5 @@
 package com.lingotower.ui.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.lingotower.model.Category;
@@ -95,14 +94,9 @@ public class WordLearningController {
 
 	private void loadWords() {
 		try {
-			// Try to fetch words from server
-			List<Word> fetchedWords = wordService.getAllWords();
-
-			if (fetchedWords == null || fetchedWords.isEmpty()) {
-				System.out.println("No words found from server, using mock data");
-				// Create mock data for testing
-				fetchedWords = createMockWords();
-			}
+			// Try to fetch words with translations from server
+			System.out.println("Fetching words with translations for category ID: " + currentCategory.getId());
+			List<Word> fetchedWords = wordService.getWordsByCategoryWithTranslation(currentCategory.getId());
 
 			this.words = fetchedWords;
 
@@ -127,58 +121,6 @@ public class WordLearningController {
 			wordLabel.setText("Error loading words");
 			messageLabel.setText("Could not load words: " + e.getMessage());
 		}
-	}
-
-	private List<Word> createMockWords() {
-		List<Word> mockWords = new ArrayList<>();
-
-		// For a Food category
-		if (currentCategory.getName().equals("אוכל")) {
-			Word word1 = new Word("apple", "תפוח", "en");
-			word1.setId(1L);
-
-			Word word2 = new Word("bread", "לחם", "en");
-			word2.setId(2L);
-
-			Word word3 = new Word("water", "מים", "en");
-			word3.setId(3L);
-
-			mockWords.add(word1);
-			mockWords.add(word2);
-			mockWords.add(word3);
-		}
-		// For Basic Words category
-		else if (currentCategory.getName().equals("מילים בסיסיות")) {
-			Word word1 = new Word("hello", "שלום", "en");
-			word1.setId(4L);
-
-			Word word2 = new Word("thank you", "תודה", "en");
-			word2.setId(5L);
-
-			Word word3 = new Word("please", "בבקשה", "en");
-			word3.setId(6L);
-
-			mockWords.add(word1);
-			mockWords.add(word2);
-			mockWords.add(word3);
-		}
-		// For Trips and Flights category
-		else if (currentCategory.getName().equals("טיולים וטיסות")) {
-			Word word1 = new Word("airport", "שדה תעופה", "en");
-			word1.setId(7L);
-
-			Word word2 = new Word("passport", "דרכון", "en");
-			word2.setId(8L);
-
-			Word word3 = new Word("hotel", "מלון", "en");
-			word3.setId(9L);
-
-			mockWords.add(word1);
-			mockWords.add(word2);
-			mockWords.add(word3);
-		}
-
-		return mockWords;
 	}
 
 	private void showCurrentWord() {
@@ -221,9 +163,21 @@ public class WordLearningController {
 	}
 
 	@FXML
-	private void handleShowTranslation(ActionEvent event) {
+	public void handleShowTranslation(ActionEvent event) {
 		// Show translation
+		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
+			System.out.println("No words loaded or invalid index");
+			return;
+		}
+
+		Word currentWord = words.get(currentWordIndex);
+		System.out.println("Current word: " + currentWord.getWord());
+		System.out.println("Translation: " + currentWord.getTranslation());
+
 		translationLabel.setVisible(true);
+
+		// Check if the label has text
+		System.out.println("Translation label text: " + translationLabel.getText());
 
 		// Enable next word button
 		nextWordButton.setDisable(false);
