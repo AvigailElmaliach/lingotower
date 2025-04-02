@@ -1,4 +1,5 @@
 package com.lingotower.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,27 +19,28 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-
 @Entity
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(unique = true, nullable = false)
 	private String name;
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL,orphanRemoval = true)
-	 @JsonIgnore 
-    private List<Quiz> quizzes = new ArrayList<>();
-	 @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-	 @JsonIgnore
-	    private List<Question> questions = new ArrayList<>();
-	 
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Quiz> quizzes = new ArrayList<>();
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Question> questions = new ArrayList<>();
+
 //	 @OneToMany(mappedBy = "category")
 //	 private List<Word> words;
-	public Category() {}
+	public Category() {
+	}
 
 	public Category(String name) {
-	 this.name=name;
+		this.name = name;
 	}
 //	 public Category(String name, List<Word> words) {
 //	        this.name = name;
@@ -60,40 +62,37 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public List<Quiz> getQuizzes() {
-        return quizzes;
-    }
+		return quizzes;
+	}
 
-    public void addQuiz(Quiz quiz) {
-        quizzes.add(quiz);
-        quiz.setCategory(this);
-    }
-    public List<Question> getQuestions() { return questions; }
+	public void addQuiz(Quiz quiz) {
+		quizzes.add(quiz);
+		quiz.setCategory(this);
+	}
 
-    public void addQuestion(Question question) {
-        questions.add(question);
-        question.setCategory(this);
-    }
+	public List<Question> getQuestions() {
+		return questions;
+	}
 
+	public void addQuestion(Question question) {
+		questions.add(question);
+		question.setCategory(this);
+	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Category category = (Category) o;
 		return id != null && id.equals(category.id);
 	}
-	
 
-	/*   @Override
-	    public String toString() {
-	        return "Category{" +
-	                "id=" + id +
-	                ", name='" + name + '\'' +
-	                '}';
-	    }*/
+	/*
+	 * @Override public String toString() { return "Category{" + "id=" + id +
+	 * ", name='" + name + '\'' + '}'; }
+	 */
 }
-
-
-
-

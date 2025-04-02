@@ -67,4 +67,5 @@ public class CategoryService extends BaseService {
 		String url = BASE_URL + "/" + id;
 		restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
 	}
+
 }

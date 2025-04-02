@@ -61,9 +61,7 @@ public class WordController {
             @PathVariable Difficulty difficulty,
             @RequestParam String targetLang) {
         List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty,sourceLang, targetLang);
-        return translatedWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(translatedWords);
+        return ResponseEntity.ok(translatedWords); // גם אם הרשימה ריקה, מחזירים 200 OK עם []
     }
     // קבלת 10 מילים אקראיות לפי קטגוריה ורמת קושי
     @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate/random")

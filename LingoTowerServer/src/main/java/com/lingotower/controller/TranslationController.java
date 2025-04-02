@@ -36,6 +36,11 @@ public class TranslationController {
         String translatedText = translationService.translateText(text, source, target);
         return ResponseEntity.ok(translatedText);
     }
+    @PostMapping("/translate")
+    public ResponseEntity<String> translateTextPost(@RequestBody TranslationRequestDTO request) {
+        String translatedText = translationService.translateText(request.getWord(), request.getSourceLang(), request.getTargetLang());
+        return ResponseEntity.ok(translatedText);
+    }
 
     /**
      * Endpoint to translate a list of words from a source language to a target language.
