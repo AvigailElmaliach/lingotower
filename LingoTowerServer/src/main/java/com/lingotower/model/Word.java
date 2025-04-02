@@ -14,13 +14,17 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
+import jakarta.persistence.*;
 
 @Entity
 @Table(
-	    name = "word", 
-	    uniqueConstraints = @UniqueConstraint(columnNames = {"word", "category_id"})
-	)
+    name = "word", 
+    uniqueConstraints = @UniqueConstraint(columnNames = {"word", "category_id"}),
+    indexes = {
+        @Index(name = "idx_category_id", columnList = "category_id"),
+        @Index(name = "idx_difficulty", columnList = "difficulty")
+    }
+)
 public class Word {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +46,11 @@ public class Word {
 	private List<User> users = new ArrayList<>();
 
 	private String sourceLanguage;
+	private String targetLanguage;
 	
 	@Enumerated(EnumType.STRING)
     private Difficulty difficulty;
-	private String targetLanguage;
+	
 
 	public Word() {}
 
@@ -59,7 +64,7 @@ public class Word {
 	        this.word = word;
 	        this.translation = translation;
 	        this.sourceLanguage = sourceLanguage;
-	        this.targetLanguage = targetLanguage; // שפת היעד
+	        this.targetLanguage = targetLanguage; 
 	    }
 
 	

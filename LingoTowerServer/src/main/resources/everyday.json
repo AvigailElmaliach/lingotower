@@ -67,5 +67,16 @@
   { "word": "moon", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
   { "word": "star", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
   { "word": "sky", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
-  { "word": "cloud", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" }
+  { "word": "cloud", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+  { "word": "rain", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "snow", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "wind", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "storm", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "thunder", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "lightning", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "hot", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "cold", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "warm", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" },
+    { "word": "cool", "sourceLanguage": "en", "targetLanguage": "he", "difficulty": "EASY" }
+  
 ]

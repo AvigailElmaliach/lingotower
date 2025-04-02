@@ -2,6 +2,7 @@ package com.lingotower.config;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingotower.model.Category;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
+import com.lingotower.service.TranslationService;
 import com.lingotower.service.WordService;
 
 @Component
@@ -32,6 +34,13 @@ public class DataInitializer implements CommandLineRunner {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private TranslationService translationService;
+
+	 @Autowired
+	    public DataInitializer(TranslationService translationService) {
+	        this.translationService = translationService;
+	    }
+	
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("🔹 מתחיל לטעון נתונים מקובצי JSON...");
@@ -57,6 +66,11 @@ public class DataInitializer implements CommandLineRunner {
 			}
 
 			System.out.println("✅ כל הנתונים נטענו בהצלחה!");
+			// שלב 4: עדכון מילים ללא תרגום
+            updateWordsWithoutTranslation();
+			System.out.println("יששששש");
+
+			
 
 		} catch (Exception e) {
 			handleError(e);
@@ -105,42 +119,67 @@ public class DataInitializer implements CommandLineRunner {
 	}
 
 	private void loadWordsFromJson(String resourcePath, String categoryName) {
-		try {
-			System.out.println("📂 טוען מילים מהקובץ: " + resourcePath + " לקטגוריה: " + categoryName);
-			Resource resource = resourceLoader.getResource(resourcePath);
+	    try {
+	        System.out.println("📂 טוען מילים מהקובץ: " + resourcePath + " לקטגוריה: " + categoryName);
+	        Resource resource = resourceLoader.getResource(resourcePath);
 
-			if (!resource.exists()) {
-				System.out.println("⚠ קובץ מילים לא נמצא: " + resourcePath);
-				return;
-			}
+	        if (!resource.exists()) {
+	            System.out.println("⚠ קובץ מילים לא נמצא: " + resourcePath);
+	            return;
+	        }
 
-			// שליפת הקטגוריה או יצירת חדשה
-			Category category = categoryService.getOrCreateCategory(categoryName);
+	        Category category = categoryService.getOrCreateCategory(categoryName);
+	        Word[] wordsArray = objectMapper.readValue(resource.getInputStream(), Word[].class);
+	        System.out.println("✅ נטענו " + wordsArray.length + " מילים מהקובץ");
 
-			// קריאה מקובץ JSON
-			Word[] wordsArray = objectMapper.readValue(resource.getInputStream(), Word[].class);
-			System.out.println("✅ נטענו " + wordsArray.length + " מילים מהקובץ");
+	        int addedCount = 0, existingCount = 0;
+	        for (Word word : wordsArray) {
+	            word.setCategory(category);
 
-			// שיוך כל מילה לקטגוריה ושמירה למסד הנתונים
-			int addedCount = 0, existingCount = 0;
-			for (Word word : wordsArray) {
-				word.setCategory(category);
+	            // בדיקה אם המילה כבר קיימת במסד הנתונים
+	            Optional<Word> existingWord = wordService.findByWord(word.getWord());
+	            if (existingWord.isEmpty()) {
+	                // תרגום ושמירה
+	                String translatedText = translationService.translateText(word.getWord(), "en", "he");
+	                word.setTranslation(translatedText);
 
-				// אם המילה כבר קיימת, לא נוסיף אותה
-				if (wordService.findByWord(word.getWord()).isEmpty()) {
-					wordService.saveWord(word);
-					addedCount++;
-				} else {
-					existingCount++;
-				}
-			}
+	                wordService.saveWord(word, "en", "he");
+	                addedCount++;
+	            } else {
+	                existingCount++;
+	            }
+	        }
 
-			System.out.println("✔ נוספו " + addedCount + " מילים חדשות, " + existingCount + " מילים קיימות.");
-		} catch (IOException e) {
-			System.out.println("❌ שגיאה בטעינת מילים מהקובץ " + resourcePath + ": " + e.getMessage());
-			e.printStackTrace();
-		}
+	        System.out.println("✔ נוספו " + addedCount + " מילים חדשות, " + existingCount + " מילים כבר קיימות.");
+	    } catch (IOException e) {
+	        System.out.println("❌ שגיאה בטעינת מילים מהקובץ " + resourcePath + ": " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
+	private void updateWordsWithoutTranslation() {
+        try {
+            System.out.println(" מחפש מילים ישנות ללא תרגום...");
+            // חיפוש מילים שאין להם תרגום
+            List<Word> wordsWithoutTranslation = wordService.findWordsWithoutTranslation();
+            
+            int translatedCount = 0;
+            
+            // עבור כל מילה, תבצע תרגום
+            for (Word word : wordsWithoutTranslation) {
+                String translatedText = translationService.translateText(word.getWord(), "en", "he");
+                word.setTranslation(translatedText);
+                wordService.saveWord(word, "en", "he");
+                translatedCount++;
+            }
+            
+            System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " מילים.");
+            
+        } catch (Exception e) {
+            System.out.println("❌ שגיאה בעדכון מילים ללא תרגום: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
 	private void handleError(Exception e) {
 		// טיפול בשגיאות - הצגת הודעה מפורטת

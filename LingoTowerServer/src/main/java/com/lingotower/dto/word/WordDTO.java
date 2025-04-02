@@ -5,19 +5,20 @@ import com.lingotower.model.Difficulty;
 public class WordDTO {
     private String word;
     private Difficulty difficulty;
-    private String language;
+    private String sourceLanguage;
+    private String targetLanguage;
     private String category;
+    
     
 
     public WordDTO() {}
 
-    public WordDTO(String word, Difficulty difficulty, String language, String category) {
+    public WordDTO(String word, Difficulty difficulty, String sourceLanguage,String targetLanguage, String category) {
         this.word = word;
         this.difficulty = difficulty;
-        this.language = language;
+        this.sourceLanguage = sourceLanguage;
+        this.targetLanguage = targetLanguage;
         this.category = category;
-        
-    
     }
 
     public String getWord() {
@@ -36,12 +37,21 @@ public class WordDTO {
         this.difficulty = difficulty;
     }
 
-    public String getLanguage() {
-        return language;
+    public String getSourceLanguage() {
+        return sourceLanguage;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setSourceLanguage(String SourceLanguage) {
+        this.sourceLanguage = SourceLanguage;
+    }
+    
+    
+    public String getTargetLanguage() {
+        return targetLanguage;
+    }
+
+    public void setTargetLanguage(String targetLanguage) {
+        this.targetLanguage = targetLanguage;
     }
 
     public String getCategory() {
