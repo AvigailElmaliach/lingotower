@@ -66,6 +66,7 @@ public class DataInitializer implements CommandLineRunner {
 			}
 
 			System.out.println("✅ כל הנתונים נטענו בהצלחה!");
+			updateCategoriesWithoutTranslation();
 			// שלב 4: עדכון מילים ללא תרגום
             updateWordsWithoutTranslation();
 			System.out.println("יששששש");
@@ -76,6 +77,7 @@ public class DataInitializer implements CommandLineRunner {
 			handleError(e);
 		}
 	}
+	
 
 	private void loadCategoriesFromJson(String resourcePath) {
 		try {
@@ -98,7 +100,12 @@ public class DataInitializer implements CommandLineRunner {
 						// Create a new category with only the name
 						Category newCategory = new Category();
 						newCategory.setName(categoryName);
-
+	
+	  String translatedCategoryName = translationService.translateText(categoryName, "en", "he");
+      newCategory.setTranslation(translatedCategoryName);
+      
+      
+      
 						// Save the category and let the database assign an ID
 						try {
 							Category savedCategory = categoryService.addCategory(newCategory);
@@ -180,6 +187,30 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+	private void updateCategoriesWithoutTranslation() {
+	    try {
+	        System.out.println("🔍 מחפש קטגוריות ללא תרגום...");
+
+	        // חיפוש קטגוריות שאין להן תרגום
+	        List<Category> categoriesWithoutTranslation = categoryService.findCategoriesWithoutTranslation();
+
+	        int translatedCount = 0;
+
+	        // עדכון כל קטגוריה עם תרגום
+	        for (Category category : categoriesWithoutTranslation) {
+	            String translatedName = translationService.translateText(category.getName(), "en", "he");
+	            category.setTranslation(translatedName);
+	            categoryService.saveCategory(category);
+	            translatedCount++;
+	        }
+
+	        System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " קטגוריות.");
+
+	    } catch (Exception e) {
+	        System.out.println("❌ שגיאה בעדכון קטגוריות ללא תרגום: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
 
 	private void handleError(Exception e) {
 		// טיפול בשגיאות - הצגת הודעה מפורטת

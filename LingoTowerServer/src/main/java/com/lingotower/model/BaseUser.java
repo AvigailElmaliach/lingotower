@@ -43,7 +43,8 @@ public abstract class BaseUser {
      * The preferred language of the user.
      * This field can be used for localization purposes.
      */
-    private String language;
+    private String sourceLanguage="en";
+    private String targetLanguage="he";
 
     /**
      * The role of the user. This defines the level of access or permissions a user has.
@@ -67,11 +68,12 @@ public abstract class BaseUser {
      * @param language The language preference of the user.
      * @param role The role of the user.
      */
-    public BaseUser(String username, String password, String email, String language, Role role) {
+    public BaseUser(String username, String password, String email, String sourceLanguage,String targetLanguage, Role role) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.language = language;
+        this.sourceLanguage = sourceLanguage;
+        this.targetLanguage = targetLanguage;
         this.role = role;
     }
 
@@ -135,8 +137,8 @@ public abstract class BaseUser {
     /**
      * @return The preferred language of the user.
      */
-    public String getLanguage() {
-        return language;
+    public String getSourceLanguage() {
+        return sourceLanguage;
     }
 
     /**
@@ -144,8 +146,18 @@ public abstract class BaseUser {
      * 
      * @param language The language to set.
      */
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setSourceLanguage(String sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
+    }
+    
+    
+    public String getTargetLanguage () {
+    	return targetLanguage;
+    }
+    
+    
+    public void setTargetLanguage (String targetLanguage) {
+    	this.targetLanguage=targetLanguage;
     }
 
     /**
@@ -163,4 +175,5 @@ public abstract class BaseUser {
     public void setRole(Role role) {
         this.role = role;
     }
+   
 }

@@ -21,17 +21,18 @@ import com.lingotower.model.Difficulty;
 import com.lingotower.model.Word;
 import com.lingotower.util.TranslationUtils;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service
 public class WordService {
 	private final WordRepository wordRepository;
 	private final CategoryRepository categoryRepository;
-
-	@Autowired
 	private final TranslationService translationService;
-	@Autowired
+	
+	 @PersistenceContext
 	private EntityManager entityManager;
-
+	
+	@Autowired
 	public WordService(WordRepository wordRepository, TranslationService translationService,
 			CategoryRepository categoryRepository) {
 		this.wordRepository = wordRepository;
@@ -67,6 +68,7 @@ public class WordService {
 	    }
 	    return wordRepository.save(word);
 	}
+	
 	public List<Word> findWordsWithoutTranslation() {
 	    // מניח שמדובר בשדה 'translation' במילת המפתח
 	    return wordRepository.findByTranslationIsNull();
@@ -145,7 +147,9 @@ public class WordService {
                 .map(word -> TranslationUtils.convertWordToDTO(word, sourceLang, targetLang))
                 .collect(Collectors.toList());
     }
-
+    public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
+        return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
+    }
 
 	// קבלת מילה לפי מזהה
 	public TranslationResponseDTO getTranslatedWordById(Long id, String targetLang) {

@@ -43,6 +43,27 @@ public class UserAuthService {
      * @return A JWT token for the newly registered user.
      * @throws IllegalArgumentException if the email or username is already taken.
      */
+//    public String registerUser(RegisterRequest request) {
+//        if (userRepository.existsByEmail(request.getEmail())) {
+//            throw new IllegalArgumentException("Email already exists");
+//        }
+//
+//        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+//            throw new IllegalArgumentException("Username is already taken");
+//        }
+//        String target=request.getSourceLanguage();
+//        User newUser = new User(
+//            request.getUsername(),
+//            passwordEncoder.encode(request.getPassword()),
+//            request.getEmail(),
+//            target,
+//            request.getTargetLanguage(target),//לשנות את זה בהמשך לא טוב
+//            Role.USER  
+//        );
+//
+//        userRepository.save(newUser);
+//        return jwtTokenProvider.generateToken(newUser);
+//    }
     public String registerUser(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
@@ -56,13 +77,15 @@ public class UserAuthService {
             request.getUsername(),
             passwordEncoder.encode(request.getPassword()),
             request.getEmail(),
-            request.getLanguage(),
+            request.getSourceLanguage(),
+            request.getTargetLanguage(), 
             Role.USER  
         );
 
         userRepository.save(newUser);
         return jwtTokenProvider.generateToken(newUser);
     }
+
 
     /**
      * Authenticates a user and generates a JWT token.
@@ -72,13 +95,26 @@ public class UserAuthService {
      * @throws IllegalArgumentException if the user is not found or credentials are invalid.
      */
     public String login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        User user = userRepository.findByUsername(request.getIdentifier())
+                .orElseGet(() -> userRepository.findByEmail(request.getIdentifier())
+                .orElseThrow(() -> new IllegalArgumentException("User not found")));
+        
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
         return jwtTokenProvider.generateToken(user);
     }
+
+//    public String login(LoginRequest request) {
+//        User user = userRepository.findByUsername(request.getUsername())
+//                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+//
+//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//            throw new IllegalArgumentException("Invalid credentials");
+//        }
+//
+//        return jwtTokenProvider.generateToken(user);
+//    }
 }

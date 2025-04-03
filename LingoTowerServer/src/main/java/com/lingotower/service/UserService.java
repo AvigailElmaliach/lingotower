@@ -4,6 +4,8 @@ import com.lingotower.data.UserRepository;
 import com.lingotower.data.WordRepository;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,8 @@ import com.lingotower.exception.WordNotFoundException;
 public class UserService {
     private final UserRepository userRepository;
     private final WordRepository wordRepository;
-
+    
+    @Autowired
     public UserService(UserRepository userRepository, WordRepository wordRepository) {
         this.userRepository = userRepository;
         this.wordRepository = wordRepository;
@@ -54,4 +57,19 @@ public class UserService {
             userRepository.save(user);
         }
     }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+    public boolean updateUserLanguages(String username, String sourceLang, String targetLang) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setSourceLanguage(sourceLang);
+            user.setTargetLanguage(targetLang);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+	
 }

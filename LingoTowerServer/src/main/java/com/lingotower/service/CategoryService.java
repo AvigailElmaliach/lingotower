@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.lingotower.data.CategoryRepository;
 import com.lingotower.dto.category.CategoryDTO;
 import com.lingotower.exception.CategoryAlreadyExistsException;
+//import com.lingotower.exception.CategoryAlreadyExistsException;
 import com.lingotower.exception.CategoryNotFoundException;
 import com.lingotower.model.Category;
 
@@ -29,6 +30,7 @@ public class CategoryService {
 	private CategoryDTO convertToDTO(Category category) {
 		return new CategoryDTO(category.getId(), category.getName());
 	}
+	
 
 	public List<CategoryDTO> getAllCategories() {
 		List<Category> categories = categoryRepository.findAll();
@@ -51,6 +53,10 @@ public class CategoryService {
 	public Optional<Category> findByName(String name) {
 		return categoryRepository.findByName(name);
 	}
+	public List<Category> findCategoriesWithoutTranslation() {
+	    return categoryRepository.findByTranslationIsNullOrTranslationIs("");
+	}
+
 
 	public Category getOrCreateCategory(String name) {
 		return categoryRepository.findByName(name).orElseGet(() -> {
@@ -74,6 +80,9 @@ public class CategoryService {
 
 		// Save the new category and let the database assign an ID
 		return categoryRepository.save(category);
+	}
+	public Category saveCategory(Category category) {
+	    return categoryRepository.save(category);
 	}
 
 	public void deleteCategory(Long id) throws CategoryNotFoundException {

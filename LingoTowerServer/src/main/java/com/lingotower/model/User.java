@@ -26,8 +26,8 @@ public class User extends BaseUser {
 
     public User() {}
 
-    public User(String username, String password, String email, String language, Role role) {
-        super(username, password, email, language, role);
+    public User(String username, String password, String email, String sourceLanguage,String targetLanguage, Role role) {
+        super(username, password,email,sourceLanguage,targetLanguage, role);
     }
 
     public LocalDateTime getAtCreated() {

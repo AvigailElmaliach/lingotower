@@ -17,6 +17,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
    // List<Word> findByCategory(Long categoryId);
   //  List<Word> getCategoryById(Long categoryId);
    // List<Word> findByCategoryId(Long categoryId);
+	  Optional<Word> findByWordAndSourceLanguage(String word, String sourceLanguage);
     List<Word> findByCategoryIdAndDifficulty(Long categoryId, Difficulty difficulty);
     Optional<Word> findByWord(String word);
     List<Word> findByCategoryIdAndDifficultyAndTranslation(Long categoryId, Difficulty difficulty, String translation);

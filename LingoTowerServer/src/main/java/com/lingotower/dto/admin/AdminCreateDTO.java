@@ -7,17 +7,20 @@ public class AdminCreateDTO {
     private String password;
     private String email;
     private Role role;
-   private String language;
+   private String sourceLanguage;
+   private String targetLanguage;
 
 
     public AdminCreateDTO() {
     }
 
-    public AdminCreateDTO(String username, String password,Role role,String email,String language ) {
+    public AdminCreateDTO(String username, String password,Role role,String email,String sourceLanguage ,String targetLanguage ) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.email= email;
+        this.sourceLanguage = sourceLanguage;
+        this.targetLanguage=targetLanguage;
     }
     
     public String getUsername() {
@@ -52,11 +55,11 @@ public class AdminCreateDTO {
 		this.email=email;
 	}
 
-	public String getLanguage() {
-	return language;
-	}
-	public void setLanguage(String language) {
-	this.language=language;
+	  public String getSourceLanguage() { return sourceLanguage; }
+	    public String getTargetLanguage() { return targetLanguage; }
+	    
+	public void setSourceLanguage(String language) {
+	this.sourceLanguage=sourceLanguage;
 	}
 	
 }
