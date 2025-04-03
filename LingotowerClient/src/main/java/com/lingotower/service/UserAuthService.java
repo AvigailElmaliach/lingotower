@@ -18,7 +18,6 @@ import com.lingotower.security.TokenStorage;
  */
 public class UserAuthService {
 	private static final String USER_BASE_URL = "http://localhost:8080/api/auth/user";
-	
 
 	private RestTemplate restTemplate;
 
@@ -33,7 +32,7 @@ public class UserAuthService {
 		try {
 			// יצירת בקשת התחברות
 			LoginRequest loginRequest = new LoginRequest();
-			loginRequest.setUsername(username);
+			loginRequest.setIdentifier(username);
 			loginRequest.setPassword(password);
 
 			System.out.println("שולח בקשת התחברות ל-" + USER_BASE_URL + "/login");
@@ -84,8 +83,8 @@ public class UserAuthService {
 			HttpEntity<RegisterRequest> entity = new HttpEntity<>(registerRequest, headers);
 
 			// שליחת בקשת ההרשמה לשרת
-			ResponseEntity<String> response = restTemplate.exchange(USER_BASE_URL + "/register", HttpMethod.POST, entity,
-					String.class);
+			ResponseEntity<String> response = restTemplate.exchange(USER_BASE_URL + "/register", HttpMethod.POST,
+					entity, String.class);
 
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
 				String token = response.getBody();

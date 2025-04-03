@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+      prefHeight="400.0" prefWidth="600.0" spacing="10.0" styleClass="translator-dialog"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label text="Text Translator" styleClass="dialog-title">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label text="Source Language:" />
+                        <ComboBox fx:id="sourceLanguageComboBox" prefWidth="120.0" />
+                     </children>
+                  </HBox>
+                  <TextArea fx:id="sourceTextArea" prefHeight="150.0" wrapText="true" promptText="Enter text to translate" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
+                  <Button fx:id="translateButton" mnemonicParsing="false" text="Translate ➜" styleClass="primary-button" />
+                  <Button fx:id="swapButton" mnemonicParsing="false" text="⇄" styleClass="secondary-button" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label text="Target Language:" />
+                        <ComboBox fx:id="targetLanguageComboBox" prefWidth="120.0" />
+                     </children>
+                  </HBox>
+                  <TextArea fx:id="targetTextArea" prefHeight="150.0" wrapText="true" promptText="Translation will appear here" editable="false" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <Label fx:id="statusLabel" text="Enter text and click Translate" />
+      <HBox alignment="CENTER_RIGHT" spacing="10.0">
+         <children>
+            <Button fx:id="closeButton" mnemonicParsing="false" text="Close" />
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

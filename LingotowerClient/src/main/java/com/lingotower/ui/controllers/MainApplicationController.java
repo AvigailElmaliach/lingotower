@@ -71,6 +71,12 @@ public class MainApplicationController {
 	}
 
 	@FXML
+	private void handleTranslatorBtnClick(ActionEvent event) {
+		// Open the translator dialog
+		new com.lingotower.ui.components.TranslatorDialog(mainLayout.getScene().getWindow()).show();
+	}
+
+	@FXML
 	private void handleLogoutBtnClick(ActionEvent event) {
 		if (onLogout != null) {
 			onLogout.run();

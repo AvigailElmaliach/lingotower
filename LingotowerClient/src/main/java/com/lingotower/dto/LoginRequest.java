@@ -1,25 +1,31 @@
 package com.lingotower.dto;
 
 public class LoginRequest {
-    private String username;
-    private String password;
 
-    public LoginRequest() {
-    }
+	private String identifier; // יכול להיות username או email
+	private String password;
 
-    public String getUsername() {
-        return username;
-    }
+	public LoginRequest() {
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public LoginRequest(String identifier, String password) {
+		this.identifier = identifier;
+		this.password = password;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getIdentifier() {
+		return identifier;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }
