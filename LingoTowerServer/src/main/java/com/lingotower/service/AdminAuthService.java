@@ -40,7 +40,8 @@ public class AdminAuthService {
             adminCreateDTO.getUsername(),
             passwordEncoder.encode(adminCreateDTO.getPassword()),
             adminCreateDTO.getEmail(),
-            adminCreateDTO.getLanguage(),
+            adminCreateDTO.getSourceLanguage(),
+            adminCreateDTO.getTargetLanguage(),
             Role.ADMIN
         );
 

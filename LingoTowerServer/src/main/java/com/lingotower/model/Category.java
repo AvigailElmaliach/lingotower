@@ -33,7 +33,10 @@ public class Category {
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<Question> questions = new ArrayList<>();
-
+	private String translation;
+	private String sourceLanguage;
+	private String targetLanguage;
+	
 //	 @OneToMany(mappedBy = "category")
 //	 private List<Word> words;
 	public Category() {
@@ -90,7 +93,15 @@ public class Category {
 		Category category = (Category) o;
 		return id != null && id.equals(category.id);
 	}
+	public String getTranslation() {
+	    return translation;
+	}
 
+	public void setTranslation(String translation) {
+	    this.translation = translation;
+	}
+
+	
 	/*
 	 * @Override public String toString() { return "Category{" + "id=" + id +
 	 * ", name='" + name + '\'' + '}'; }

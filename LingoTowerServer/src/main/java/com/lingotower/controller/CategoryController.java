@@ -1,11 +1,17 @@
 package com.lingotower.controller;
 
 import com.lingotower.dto.category.CategoryDTO;
+import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.model.Category;
+import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
+import com.lingotower.service.UserService;
+import com.lingotower.service.WordService;
 
 import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.lingotower.exception.*;
 import com.lingotower.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,13 +28,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
-
+	private final CategoryService categoryService;
+    private final UserService userService;  // שירות ניהול משתמשים
+    private final WordService wordService;
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, UserService userService,WordService wordService) {
         this.categoryService = categoryService;
+        this.userService = userService;
+        this.wordService=wordService;
     }
-
+    
     private CategoryDTO convertToDTO(Category category) {
         return new CategoryDTO(category.getId(), category.getName());
     }
@@ -37,13 +47,39 @@ public class CategoryController {
                          .map(this::convertToDTO)
                          .collect(Collectors.toList());
     }
- 
+    
+    //-------------------------//--------------//
+    @GetMapping("/category/{categoryId}/translate")
+    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
+            @PathVariable Long categoryId,
+            HttpServletRequest request) {
+
+        String sourceLang = (String) request.getAttribute("sourceLanguage");
+        String targetLang = (String) request.getAttribute("targetLanguage");
+        
+        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, sourceLang, targetLang);
+        
+        return translatedWords.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                : ResponseEntity.ok(translatedWords);
+    }
 
     @GetMapping
-    public List<CategoryDTO> getAllCategories() {
-        List<CategoryDTO> categoryDTOList = categoryService.getAllCategories();
-        return categoryDTOList;  // מחזירים ישירות את רשימת ה-DTO
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        List<CategoryDTO> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
+
+//    @GetMapping
+//    public List<CategoryDTO> getAllCategories() {
+//        List<CategoryDTO> categoryDTOList = categoryService.getAllCategories();
+//        return categoryDTOList;  // מחזירים ישירות את רשימת ה-DTO
+//    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {

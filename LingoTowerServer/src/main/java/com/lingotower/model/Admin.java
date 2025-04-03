@@ -17,8 +17,8 @@ public class Admin extends BaseUser {
 
     public Admin() {}
     
-    public Admin(String username, String password, String email, String language, Role role) {
-        super(username, password, email, language, role);  // מעביר את הערכים ל־BaseUser
+    public Admin(String username, String password, String email, String sourceLanguage,String targetLanguage,Role role) {
+        super(username, password, email,sourceLanguage,targetLanguage,  role);  // מעביר את הערכים ל־BaseUser
     }
     
   
