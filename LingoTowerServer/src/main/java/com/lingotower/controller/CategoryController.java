@@ -29,8 +29,9 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
 	private final CategoryService categoryService;
-    private final UserService userService;  // שירות ניהול משתמשים
+    private final UserService userService;  
     private final WordService wordService;
+    
     @Autowired
     public CategoryController(CategoryService categoryService, UserService userService,WordService wordService) {
         this.categoryService = categoryService;

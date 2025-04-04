@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-        // כאן אפשר להוסיף אימות אם המשתמש כבר קיים
+       //אם המשתמש קיים  לא עשתי בדיקה
         return userRepository.save(user);
     }
 

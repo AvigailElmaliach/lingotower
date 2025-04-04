@@ -10,7 +10,6 @@ package com.lingotower.model;
 public enum Role {
     USER,       // Player in the system
     ADMIN,      // Content manager (cannot manage users)
-    SUPERADMIN; // Full control over the system
 }
 
 

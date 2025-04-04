@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.lingotower.model.Role;
-
+import com.lingotower.security.JwtTokenProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +21,13 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+   
+    private final JwtTokenProvider jwtTokenProvider;  // הוספת תלות ב־JwtTokenProvider
 
+    public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider) {
+        this.adminService = adminService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
     @GetMapping
     public List<AdminResponseDTO> getAllAdmins() {
         List<Admin> admins = adminService.getAllAdmins();
@@ -41,7 +44,17 @@ public class AdminController {
     }
 
     @PostMapping
-    public ResponseEntity<AdminResponseDTO> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO) {
+    public ResponseEntity<AdminResponseDTO> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO, 
+                                                        @RequestHeader("Authorization") String token) {
+        // שליפת תפקיד המשתמש מהטוקן
+        String role = jwtTokenProvider.extractRole(token.replace("Bearer ", ""));
+        
+        // אם המשתמש לא מנהל, לא נאפשר לו להוסיף מנהל חדש
+        if (!role.equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        // אם המשתמש הוא מנהל, ניצור את המנהל החדש
         Admin admin = new Admin();
         admin.setUsername(adminCreateDTO.getUsername());
         admin.setPassword(adminCreateDTO.getPassword());

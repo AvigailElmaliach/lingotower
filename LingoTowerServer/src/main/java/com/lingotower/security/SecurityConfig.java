@@ -27,9 +27,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // רק למנהלים
-                .requestMatchers("/api/user/**").hasRole("USER") // רק למשתמשים רגילים
+                .requestMatchers("/api/user/**").hasRole("USER") 
                // .requestMatchers("/word/upload").permitAll() 
-                .anyRequest().authenticated() // כל בקשה אחרת חייבת להיות מאומתת
+                .anyRequest().authenticated() 
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

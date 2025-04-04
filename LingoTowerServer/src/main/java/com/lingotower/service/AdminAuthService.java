@@ -25,7 +25,7 @@ public class AdminAuthService {
 
     public Admin registerAdmin(AdminCreateDTO adminCreateDTO, Admin currentAdmin) {
         // בדיקה שהמשתמש הנוכחי הוא אכן אדמין
-    	if ( currentAdmin.getRole() != Role.SUPERADMIN) {
+    	if ( currentAdmin.getRole() != Role.ADMIN) {
     	    throw new SecurityException("Only an admin or superadmin can register another admin!");
     	}
 

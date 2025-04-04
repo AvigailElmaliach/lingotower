@@ -65,7 +65,8 @@ public class UserController {
             User user = userOptional.get();
             user.setUsername(userUpdateDTO.getUsername());
             user.setEmail(userUpdateDTO.getEmail());
-            user.setSourceLanguage(userUpdateDTO.getLanguage());
+            user.setSourceLanguage(userUpdateDTO.getSourceLanguage());
+            user.setTargetLanguage(userUpdateDTO.getTargetLanguage());
             User updatedUser = userService.saveUser(user);
             return ResponseEntity.ok(new UserDTO(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getEmail(), updatedUser.getSourceLanguage()));
         }
