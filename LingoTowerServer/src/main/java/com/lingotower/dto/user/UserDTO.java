@@ -17,4 +17,5 @@ public class UserDTO {
     public String getUsername() { return username; }
     public String getEmail() { return email; }
     public String getLanguage() { return language; }
+    
 }

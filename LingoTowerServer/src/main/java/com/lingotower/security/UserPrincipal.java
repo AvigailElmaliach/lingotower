@@ -1,29 +1,25 @@
 package com.lingotower.security;
 
 import java.util.Collection;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.lingotower.model.Admin;
-import com.lingotower.model.User;
-
+import com.lingotower.model.BaseUser;
+import com.lingotower.model.Role;
 import java.util.Collections;
-
 
 public class UserPrincipal implements UserDetails {
 
-    private final User user;
+    private final BaseUser user;
 
-    public UserPrincipal(User user) {
+    public UserPrincipal(BaseUser user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // אם התפקיד הוא "admin", ניתן לו הרשאה של ROLE_ADMIN, אחרת ROLE_USER
-        if ("admin".equals(user.getRole())) {
+        // אם התפקיד הוא ADMIN, ניתן לו הרשאה של ROLE_ADMIN, אחרת ROLE_USER
+        if (Role.ADMIN.equals(user.getRole())) {
             return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -39,5 +35,21 @@ public class UserPrincipal implements UserDetails {
         return user.getUsername();
     }
 
-    // שאר המתודות
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // רק אם נצטרך את הפונקציות האלה והפונקציות שלמטה
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // 
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // 
+    }
+    @Override
+    public boolean isEnabled() {
+        return true; //
+    }
 }
