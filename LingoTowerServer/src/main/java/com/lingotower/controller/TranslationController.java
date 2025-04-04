@@ -1,5 +1,6 @@
 package com.lingotower.controller;
 
+import com.lingotower.dto.translation.FreeTranslationRequest;
 import com.lingotower.dto.translation.TranslationRequestDTO;
 import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.service.TranslationService;
@@ -51,6 +52,16 @@ public class TranslationController {
 
         return ResponseEntity.ok(translatedSentence);
     }
+    @PostMapping("/free-translate")
+    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {
+        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());
+        return ResponseEntity.ok(translatedText);
+    }
+//    @PostMapping("/translate")
+//    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {
+//        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());
+//        return ResponseEntity.ok(translatedText);
+//    }
 
 
 //    @PostMapping("/translate-batch")

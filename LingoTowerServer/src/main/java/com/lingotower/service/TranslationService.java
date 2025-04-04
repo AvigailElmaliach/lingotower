@@ -46,6 +46,34 @@ public class TranslationService {
             return "Translation errorרררר";
         }
     }
+   
+    public String freeTranslateText(String text, String sourceLang, String targetLang) {
+        RestTemplate restTemplate = new RestTemplate();
+        sourceLang = sourceLang.trim();
+        targetLang = targetLang.trim();
+
+        String url = UriComponentsBuilder.fromUriString(TRANSLATE_API_URL)
+                .buildAndExpand(text, sourceLang, targetLang)
+                .toUriString();
+
+        try {
+            logger.info("Translating word: {} from {} to {}", text, sourceLang, targetLang);
+            TranslationResponse response = restTemplate.getForObject(url, TranslationResponse.class);
+
+            if (response != null && response.getResponseData() != null) {
+                String translatedText = response.getResponseData().getTranslatedText();
+                logger.info("Translation result: {}", translatedText);
+                return translatedText;
+            } else {
+                logger.error("Translation response is null or has no data.");
+                return "Translation error";
+            }
+        } catch (Exception e) {
+            logger.error("Error during translation: ", e);
+            return "Translation error";
+        }
+    }
+
 
 //    public List<TranslationResponseDTO> translateWords(List<TranslationRequestDTO> translationRequestList) {
 //        List<TranslationResponseDTO> translatedWords = new ArrayList<>();
