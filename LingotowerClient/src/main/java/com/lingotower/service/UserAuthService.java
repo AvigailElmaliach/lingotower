@@ -74,7 +74,7 @@ public class UserAuthService {
 			registerRequest.setUsername(username);
 			registerRequest.setPassword(password);
 			registerRequest.setEmail(email);
-			registerRequest.setLanguage(language);
+			registerRequest.setSourceLanguage(language);
 
 			// הגדרת כותרות
 			HttpHeaders headers = new HttpHeaders();
