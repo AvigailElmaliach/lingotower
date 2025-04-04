@@ -51,7 +51,8 @@ public class Word {
 	@Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 	
-
+	 @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<ExampleSentence> sentences;
 	public Word() {}
 
 	public Word(String word, String translation, String sourceLanguage) {
