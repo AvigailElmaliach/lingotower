@@ -4,13 +4,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-// Import necessary classes
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
 import com.lingotower.model.User;
 import com.lingotower.service.AdminAuthService;
 import com.lingotower.service.UserAuthService;
-// Removed unused import: import com.lingotower.service.UserService; // Assuming it's not used for login
 
 import javafx.concurrent.Task; // Import Task
 import javafx.event.ActionEvent;
@@ -21,8 +19,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-// Consider adding a ProgressIndicator or similar in FXML and connecting it
-// import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 
 public class LoginViewController implements Initializable {
@@ -48,10 +44,6 @@ public class LoginViewController implements Initializable {
 	@FXML
 	private Label errorLabel;
 
-	// Optional: Add a progress indicator to your FXML and connect it
-	// @FXML
-	// private ProgressIndicator loadingIndicator;
-
 	// Services for both user and admin authentication
 	private UserAuthService userAuthService;
 	private AdminAuthService adminAuthService;
@@ -70,10 +62,6 @@ public class LoginViewController implements Initializable {
 		loginButton.setOnAction(this::handleLogin);
 		forgotPasswordLink.setOnAction(this::handleForgotPassword);
 		registerLink.setOnAction(this::handleRegister);
-		// Ensure indicator is initially hidden if you add one
-		// if (loadingIndicator != null) {
-		// loadingIndicator.setVisible(false);
-		// }
 	}
 
 	public void setCallbacks(Consumer<User> onLoginSuccess, Runnable onSwitchToRegister) {
@@ -159,15 +147,6 @@ public class LoginViewController implements Initializable {
 			// loadingIndicator.setVisible(false);
 			// }
 		});
-
-		// Optional: Handle cancellation if you add a cancel button
-		// loginTask.setOnCancelled(workerStateEvent -> {
-		// loginButton.setDisable(false);
-		// if (loadingIndicator != null) {
-		// loadingIndicator.setVisible(false);
-		// }
-		// // Maybe show a "Login cancelled" message
-		// });
 
 		// Run the task on a separate thread
 		new Thread(loginTask).start();
