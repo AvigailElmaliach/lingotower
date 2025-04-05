@@ -153,7 +153,14 @@ public class UserManagementController {
 	@FXML
 	private void handleBackButton() {
 		if (returnToDashboard != null) {
-			returnToDashboard.run();
+			try {
+				returnToDashboard.run();
+			} catch (Exception e) {
+				System.err.println("Error executing dashboard callback: " + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			System.err.println("Dashboard callback is not set.");
 		}
 	}
 

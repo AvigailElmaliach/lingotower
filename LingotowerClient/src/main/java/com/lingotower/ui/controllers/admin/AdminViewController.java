@@ -42,6 +42,7 @@ public class AdminViewController {
 
 	private Admin currentAdmin;
 	private Runnable onLogout;
+	private Stage primaryStage;
 
 	private UserService userService;
 	private CategoryService categoryService;
@@ -74,6 +75,10 @@ public class AdminViewController {
 		loadSystemStats();
 	}
 
+	public void setPrimaryStage(Stage stage) {
+		this.primaryStage = stage;
+	}
+
 	public void setOnLogout(Runnable onLogout) {
 		this.onLogout = onLogout;
 	}
@@ -88,26 +93,47 @@ public class AdminViewController {
 	@FXML
 	private void handleUserManagementClick() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin/UserManagementView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/UserManagementView.fxml"));
 			Parent userManagementRoot = loader.load();
 
 			UserManagementController controller = loader.getController();
 			controller.setAdmin(currentAdmin);
+
+			// Pass the stage to the controller for proper back navigation
 			controller.setReturnToDashboard(() -> {
-				Stage stage = (Stage) view.getScene().getWindow();
-				stage.setScene(view.getScene());
+				if (primaryStage != null) {
+					primaryStage.setScene(view.getScene());
+				} else {
+					System.err.println("Primary stage is null in UserManagementController");
+				}
 			});
 
 			// Load users list
 			controller.loadUsers();
 
 			// Show user management view
-			Scene scene = new Scene(userManagementRoot, 800, 600);
-			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+			if (primaryStage != null) {
+				Scene scene = new Scene(userManagementRoot, 800, 600);
 
-			Stage stage = (Stage) view.getScene().getWindow();
-			stage.setScene(scene);
-			stage.setTitle("LingoTower Admin - User Management");
+				// Add stylesheets
+				try {
+					scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+					scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+				} catch (Exception e) {
+					// Try with different paths
+					try {
+						scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
+						scene.getStylesheets().add(getClass().getResource("/admin-styles.css").toExternalForm());
+					} catch (Exception ex) {
+						System.out.println("CSS not found, continuing without styles: " + ex.getMessage());
+					}
+				}
+
+				primaryStage.setScene(scene);
+				primaryStage.setTitle("LingoTower Admin - User Management");
+			} else {
+				System.err.println("Primary stage is null, cannot show UserManagementView");
+			}
 
 		} catch (IOException e) {
 			System.err.println("Error loading user management view: " + e.getMessage());
@@ -119,26 +145,47 @@ public class AdminViewController {
 	@FXML
 	private void handleContentManagementClick() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin/ContentManagementView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/ContentManagementView.fxml"));
 			Parent contentManagementRoot = loader.load();
 
 			ContentManagementController controller = loader.getController();
 			controller.setAdmin(currentAdmin);
+
+			// Pass the stage to the controller for proper back navigation
 			controller.setReturnToDashboard(() -> {
-				Stage stage = (Stage) view.getScene().getWindow();
-				stage.setScene(view.getScene());
+				if (primaryStage != null) {
+					primaryStage.setScene(view.getScene());
+				} else {
+					System.err.println("Primary stage is null in ContentManagementController");
+				}
 			});
 
 			// Load initial content
 			controller.initialize();
 
 			// Show content management view
-			Scene scene = new Scene(contentManagementRoot, 800, 600);
-			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+			if (primaryStage != null) {
+				Scene scene = new Scene(contentManagementRoot, 800, 600);
 
-			Stage stage = (Stage) view.getScene().getWindow();
-			stage.setScene(scene);
-			stage.setTitle("LingoTower Admin - Content Management");
+				// Add stylesheets
+				try {
+					scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+					scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+				} catch (Exception e) {
+					// Try with different paths
+					try {
+						scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
+						scene.getStylesheets().add(getClass().getResource("/admin-styles.css").toExternalForm());
+					} catch (Exception ex) {
+						System.out.println("CSS not found, continuing without styles: " + ex.getMessage());
+					}
+				}
+
+				primaryStage.setScene(scene);
+				primaryStage.setTitle("LingoTower Admin - Content Management");
+			} else {
+				System.err.println("Primary stage is null, cannot show ContentManagementView");
+			}
 
 		} catch (IOException e) {
 			System.err.println("Error loading content management view: " + e.getMessage());
