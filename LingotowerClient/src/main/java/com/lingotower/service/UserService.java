@@ -8,8 +8,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import com.lingotower.dto.UserUpdateDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 
@@ -58,6 +60,7 @@ public class UserService extends BaseService {
 	public User createUser(User user) {
 		try {
 			HttpHeaders headers = createAuthHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
 			ResponseEntity<User> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, entity, User.class);
@@ -71,15 +74,28 @@ public class UserService extends BaseService {
 
 	public boolean updateUser(User user) {
 		try {
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<User> entity = new HttpEntity<>(user, headers);
+			// Create a DTO with only the fields that can be updated
+			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+			userUpdateDTO.setUsername(user.getUsername());
+			userUpdateDTO.setEmail(user.getEmail());
+			userUpdateDTO.setLanguage(user.getLanguage());
 
+			// Set up headers with authentication and content type
+			HttpHeaders headers = createAuthHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			// Create HTTP entity with the DTO and headers
+			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
+
+			// Make the PUT request to update the user
 			String url = BASE_URL + "/" + user.getId();
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
 
+			// Return true if successful (HTTP 200 OK)
 			return response.getStatusCode() == HttpStatus.OK;
 		} catch (Exception e) {
 			System.err.println("Error updating user: " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
