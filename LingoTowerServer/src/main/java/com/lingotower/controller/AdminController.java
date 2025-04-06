@@ -44,28 +44,6 @@ public class AdminController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-//    @PostMapping
-//    public ResponseEntity<AdminResponseDTO> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO, 
-//                                                        @RequestHeader("Authorization") String token) {
-//        // שליפת תפקיד המשתמש מהטוקן
-//        String role = jwtTokenProvider.extractRole(token.replace("Bearer ", ""));
-//        
-//        // אם המשתמש לא מנהל, לא נאפשר לו להוסיף מנהל חדש
-//        if (!role.equals("ADMIN")) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-//        }
-//
-//        // אם המשתמש הוא מנהל, ניצור את המנהל החדש
-//        Admin admin = new Admin();
-//        admin.setUsername(adminCreateDTO.getUsername());
-//        admin.setPassword(adminCreateDTO.getPassword());
-//        admin.setRole(adminCreateDTO.getRole());
-//
-//        Admin savedAdmin = adminService.saveAdmin(admin);
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(new AdminResponseDTO(savedAdmin.getUsername(), savedAdmin.getRole()));
-//    }
-
     @PostMapping("/register")
     public ResponseEntity<String> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO,
                                               @RequestHeader("Authorization") String token) {
@@ -82,18 +60,9 @@ public class AdminController {
     
     @PutMapping("/{id}")
     public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateDTO adminUpdateDTO) {
-        Optional<Admin> existingAdmin = adminService.getAdminById(id);
-        if (existingAdmin.isPresent()) {
-            Admin admin = existingAdmin.get();
-            admin.setUsername(adminUpdateDTO.getUsername());
-            admin.setRole(adminUpdateDTO.getRole());
-            
-            if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
-                admin.setPassword(adminUpdateDTO.getPassword());
-            }
-
-            Admin updatedAdmin = adminService.saveAdmin(admin);
-            return ResponseEntity.ok(new AdminResponseDTO(updatedAdmin.getUsername(), updatedAdmin.getRole()));
+        Optional<Admin> updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);
+        if (updatedAdmin.isPresent()) {
+            return ResponseEntity.ok(new AdminResponseDTO(updatedAdmin.get().getUsername(), updatedAdmin.get().getRole()));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

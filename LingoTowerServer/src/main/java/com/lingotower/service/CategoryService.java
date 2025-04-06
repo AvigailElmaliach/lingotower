@@ -1,5 +1,6 @@
 package com.lingotower.service;
 
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -12,42 +13,48 @@ import org.springframework.stereotype.Service;
 
 import com.lingotower.data.CategoryRepository;
 import com.lingotower.dto.category.CategoryDTO;
+import com.lingotower.dto.mapper.CategoryMapper;
 import com.lingotower.exception.CategoryAlreadyExistsException;
 //import com.lingotower.exception.CategoryAlreadyExistsException;
 import com.lingotower.exception.CategoryNotFoundException;
+import com.lingotower.exception.UserNotFoundException;
 import com.lingotower.model.Category;
+import com.lingotower.model.User;
 
 @Service
 public class CategoryService {
 
-	private final CategoryRepository categoryRepository;
+	  private final UserService userService;
+	    private final CategoryRepository categoryRepository;
+	    private final CategoryMapper categoryMapper;
 
-	@Autowired
-	public CategoryService(CategoryRepository categoryRepository) {
-		this.categoryRepository = categoryRepository;
-	}
+	    @Autowired
+	    public CategoryService(UserService userService, CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+	        this.userService = userService;
+	        this.categoryRepository = categoryRepository;
+	        this.categoryMapper = categoryMapper;
+	    }
 
+	
 	private CategoryDTO convertToDTO(Category category) {
-		return new CategoryDTO(category.getId(), category.getName());
+		return new CategoryDTO(category.getId(), category.getName(),category.getTranslation());
 	}
 	
 
-	public List<CategoryDTO> getAllCategories() {
-		List<Category> categories = categoryRepository.findAll();
+	public List<CategoryDTO> getAllCategories(String targetLanguage) {
+	    List<Category> categories = categoryRepository.findAll();
+	    
+	    for (Category category : categories) {
+	        if ("he".equalsIgnoreCase(targetLanguage)) {
+	            category.setName(category.getTranslation());
+	        } else {
+	            category.setName(category.getName());
+	        }
+	    }
 
-		// Define the correct order for category names
-		Map<String, Integer> categoryOrder = new HashMap<>();
-		categoryOrder.put("Everyday Life and Essential Vocabulary", 1);
-		categoryOrder.put("People and Relationships", 2);
-		categoryOrder.put("Work and Education", 3);
-		categoryOrder.put("Health and Well-being", 4);
-		categoryOrder.put("Travel and Leisure", 5);
-		categoryOrder.put("Environment and Nature", 6);
-
-		// Sort by the predefined order
-		categories.sort(Comparator.comparing(c -> categoryOrder.getOrDefault(c.getName(), Integer.MAX_VALUE)));
-
-		return categories.stream().map(this::convertToDTO).collect(Collectors.toList());
+	    return categories.stream()
+	            .map(this::convertToDTO)
+	            .collect(Collectors.toList());
 	}
 
 	public Optional<Category> findByName(String name) {
@@ -71,16 +78,26 @@ public class CategoryService {
 				.orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
 	}
 
+
+	public CategoryDTO getCategoryById(Long id, String userLanguage) {
+	    Category category = categoryRepository.findById(id)
+	            .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+	    String categoryName = userLanguage.equals("he") ? category.getTranslation() : category.getName();
+	    
+	    return new CategoryDTO(category.getId(), categoryName, category.getTranslation());//לשים לב שcategoryName מביא את השם בשפת המשתמש
+	}
+
+	 
 	public Category addCategory(Category category) {
-		// Check if category with this name already exists
 		Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
 		if (existingCategory.isPresent()) {
 			throw new CategoryAlreadyExistsException("קטגוריה עם שם זה כבר קיימת");
 		}
 
-		// Save the new category and let the database assign an ID
 		return categoryRepository.save(category);
 	}
+	
 	public Category saveCategory(Category category) {
 	    return categoryRepository.save(category);
 	}

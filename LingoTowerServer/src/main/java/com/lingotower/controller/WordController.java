@@ -5,9 +5,11 @@ import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.dto.word.WordDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
+import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.TranslationService;
+import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +29,17 @@ public class WordController {
     private final WordService wordService;
     private final CategoryService categoryService;
     private TranslationService translationService;
+    private final UserService userService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
 
-    public WordController(WordService wordService,CategoryService categoryService,TranslationService translationService) {
+    public WordController(WordService wordService,CategoryService categoryService,TranslationService translationService,UserService userService) {
         this.wordService = wordService;
         this.categoryService=categoryService;
         this.translationService=translationService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -41,41 +47,63 @@ public class WordController {
         return ResponseEntity.ok(wordService.getAllWords());
     }
 
+
+ // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
     @GetMapping("/category/{categoryId}/translate")
     public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam String sourceLang,
-            @RequestParam String targetLang) {
-    	
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId,sourceLang, targetLang);
+            Principal principal) {
+
+        // קבלת פרטי המשתמש והעברית או אנגלית
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userLanguage = user.getTargetLanguage();
+
+        // שליפת המילים בקטגוריה לפי שפת המשתמש
+        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, userLanguage);
         
         return translatedWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
                 : ResponseEntity.ok(translatedWords);
     }
-
+    
+    // שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
     @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
     public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategoryAndDifficulty(
             @PathVariable Long categoryId,
-            @RequestParam String sourceLang,
             @PathVariable Difficulty difficulty,
-            @RequestParam String targetLang) {
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty,sourceLang, targetLang);
-        return ResponseEntity.ok(translatedWords); // גם אם הרשימה ריקה, מחזירים 200 OK עם []
+            Principal principal) {
+
+        // קבלת פרטי המשתמש והעברית או אנגלית
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userLanguage = user.getTargetLanguage();
+
+        // שליפת המילים לפי רמת קושי ושפת המשתמש
+        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
+        
+        return ResponseEntity.ok(translatedWords);
     }
-    // קבלת 10 מילים אקראיות לפי קטגוריה ורמת קושי
-    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate/random")
+ // שיטה להחזרת מילים אקראיות לפי קטגוריה, רמת קושי ושפת המשתמש
+    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random/translate")
     public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
             @PathVariable Long categoryId,
             @PathVariable Difficulty difficulty,
-            @RequestParam String sourceLang,
-            @RequestParam String targetLang) {
-        
-        List<TranslationResponseDTO> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, sourceLang, targetLang);
-        
-        if (translatedWords.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            Principal principal) {
+
+        // קבלת פרטי המשתמש והעברית או אנגלית
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        String userLanguage = user.getTargetLanguage();
+
+        // שליפת מילים אקראיות לפי רמת קושי ושפת המשתמש
+        List<TranslationResponseDTO> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
         
         return ResponseEntity.ok(translatedWords);
     }
