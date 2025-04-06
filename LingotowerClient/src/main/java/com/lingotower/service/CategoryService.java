@@ -1,5 +1,6 @@
 package com.lingotower.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +15,8 @@ import com.lingotower.model.Category;
 public class CategoryService extends BaseService {
 
 	private static final String BASE_URL = "http://localhost:8080/categories";
+	private List<Category> categories = new ArrayList<>();
+	private long nextId = 1;
 
 	public CategoryService() {
 		super(); // זה יאתחל את ה-RestTemplate עם מטפל השגיאות
@@ -60,12 +63,20 @@ public class CategoryService extends BaseService {
 		return response.getBody();
 	}
 
-	public void deleteCategory(Long id) {
+	public boolean deleteCategory(Long id) {
 		HttpHeaders headers = createAuthHeaders();
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
 		String url = BASE_URL + "/" + id;
-		restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+		ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+		return response.getStatusCode() == HttpStatus.NO_CONTENT;
+	}
+
+	public Category addCategory(Category category) {
+		category.setId(nextId++);
+		categories.add(category);
+		return category;
 	}
 
 }

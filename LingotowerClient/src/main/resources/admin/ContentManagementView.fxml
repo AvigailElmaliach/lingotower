@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="view" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.admin.ContentManagementController">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="header-bar">
+         <padding>
+            <Insets bottom="10.0" />
+         </padding>
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" text="Back to Dashboard" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Label text="Content Management">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <!-- Status message -->
+            <Label fx:id="statusLabel" styleClass="status-message" text="Status message" visible="false" />
+            
+            <!-- Content Tabs -->
+            <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+              <tabs>
+                <!-- Categories Tab -->
+                <Tab text="Categories">
+                  <content>
+                    <VBox spacing="10.0">
+                       <padding>
+                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                       </padding>
+                       <children>
+                          <!-- Category Tools -->
+                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                             <children>
+                                <Label text="Category Management">
+                                   <font>
+                                      <Font name="System Bold" size="16.0" />
+                                   </font>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS" />
+                                <Button mnemonicParsing="false" onAction="#handleAddCategory" text="Add New Category" />
+                                <Button mnemonicParsing="false" onAction="#handleRefreshCategories" text="Refresh" />
+                             </children>
+                          </HBox>
+                          
+                          <!-- Category Table -->
+                          <TableView fx:id="categoryTableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                              <TableColumn fx:id="categoryIdColumn" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="categoryNameColumn" prefWidth="250.0" text="Category Name" />
+                              <TableColumn fx:id="categoryTranslationColumn" prefWidth="250.0" text="Translation" />
+                              <TableColumn fx:id="categoryActionsColumn" prefWidth="150.0" text="Actions" />
+                            </columns>
+                          </TableView>
+                          
+                          <!-- Category Edit Form - Hidden initially -->
+                          <VBox fx:id="categoryEditForm" spacing="10.0" visible="false">
+                             <children>
+                                <Label fx:id="categoryFormTitle" text="Add New Category">
+                                   <font>
+                                      <Font name="System Bold" size="14.0" />
+                                   </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Name:" />
+                                      <TextField fx:id="categoryNameField" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Translation:" />
+                                      <TextField fx:id="categoryTranslationField" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                   <children>
+                                      <Button mnemonicParsing="false" onAction="#handleCancelCategoryEdit" styleClass="secondary-button" text="Cancel" />
+                                      <Button mnemonicParsing="false" onAction="#handleSaveCategory" styleClass="primary-button" text="Save Category" />
+                                   </children>
+                                </HBox>
+                             </children>
+                             <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                             </padding>
+                          </VBox>
+                       </children>
+                    </VBox>
+                  </content>
+                </Tab>
+                
+                <!-- Words Tab -->
+                <Tab text="Words">
+                  <content>
+                    <VBox spacing="10.0">
+                       <padding>
+                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                       </padding>
+                       <children>
+                          <!-- Word Filter Tools -->
+                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                             <children>
+                                <Label text="Word Management">
+                                   <font>
+                                      <Font name="System Bold" size="16.0" />
+                                   </font>
+                                </Label>
+                                <Label text="Category:" />
+                                <ComboBox fx:id="wordCategoryFilter" prefWidth="150.0" />
+                                <Button mnemonicParsing="false" onAction="#handleFilterWords" text="Filter" />
+                                <HBox HBox.hgrow="ALWAYS" />
+                                <Button mnemonicParsing="false" onAction="#handleAddWord" text="Add New Word" />
+                                <Button mnemonicParsing="false" onAction="#handleRefreshWords" text="Refresh" />
+                             </children>
+                          </HBox>
+                          
+                          <!-- Words Table -->
+                          <TableView fx:id="wordTableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                              <TableColumn fx:id="wordIdColumn" prefWidth="50.0" text="ID" />
+                              <TableColumn fx:id="wordTextColumn" prefWidth="150.0" text="Word" />
+                              <TableColumn fx:id="wordTranslationColumn" prefWidth="150.0" text="Translation" />
+                              <TableColumn fx:id="wordCategoryColumn" prefWidth="150.0" text="Category" />
+                              <TableColumn fx:id="wordDifficultyColumn" prefWidth="100.0" text="Difficulty" />
+                              <TableColumn fx:id="wordActionsColumn" prefWidth="150.0" text="Actions" />
+                            </columns>
+                          </TableView>
+                          
+                          <!-- Word Edit Form - Hidden initially -->
+                          <VBox fx:id="wordEditForm" spacing="10.0" visible="false">
+                             <children>
+                                <Label fx:id="wordFormTitle" text="Add New Word">
+                                   <font>
+                                      <Font name="System Bold" size="14.0" />
+                                   </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Word:" />
+                                      <TextField fx:id="wordTextField" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Translation:" />
+                                      <TextField fx:id="wordTranslationField" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Category:" />
+                                      <ComboBox fx:id="wordCategoryComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                   <children>
+                                      <Label prefWidth="100.0" text="Difficulty:" />
+                                      <ComboBox fx:id="wordDifficultyComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+                                   </children>
+                                </HBox>
+                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                   <children>
+                                      <Button mnemonicParsing="false" onAction="#handleCancelWordEdit" styleClass="secondary-button" text="Cancel" />
+                                      <Button mnemonicParsing="false" onAction="#handleSaveWord" styleClass="primary-button" text="Save Word" />
+                                   </children>
+                                </HBox>
+                             </children>
+                             <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                             </padding>
+                          </VBox>
+                       </children>
+                    </VBox>
+                  </content>
+                </Tab>
+                
+                <!-- Quizzes Tab -->
+                <Tab text="Quizzes">
+                  <content>
+                    <VBox spacing="10.0">
+                       <padding>
+                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                       </padding>
+                       <children>
+                          <Label text="Quiz management functionality will be implemented in a future update">
+                             <font>
+                                <Font size="14.0" />
+                             </font>
+                          </Label>
+                       </children>
+                    </VBox>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -68,6 +68,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -296,6 +297,29 @@ public class WordService extends BaseService {
 			e.printStackTrace();
 			return new ArrayList<>();
 		}
+	}
+
+//	public Word updateWord(Word word) {
+//		try {
+//
+//			System.out.println("Updating word with id: " + word.getId());
+//			return word;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	public Word updateWord(Long id, Word wordDetails) {
+		String url = BASE_URL + "/" + id;
+		ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(wordDetails),
+				Word.class);
+		return response.getBody(); // מחזירים את המילה המעודכנת
+	}
+
+	public boolean deleteWord(Long id) {
+		String url = BASE_URL + "/" + id;
+		ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return response.getStatusCode() == HttpStatus.NO_CONTENT; // מחזירים true אם נמחק בהצלחה
 	}
 
 }

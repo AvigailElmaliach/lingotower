@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import com.lingotower.model.User;
 import com.lingotower.service.UserAuthService;
-import com.lingotower.service.UserService;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -49,17 +48,12 @@ public class RegisterViewController implements Initializable {
 	@FXML
 	private Label errorLabel;
 
-	private UserService userService;
 	private Consumer<User> onRegisterSuccess;
 	private Runnable onSwitchToLogin;
 
-	public RegisterViewController() {
-		this.userService = new UserService();
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// Initialize language combo box
+		// Initialize language combo box with only the supported languages
 		languageComboBox.setItems(FXCollections.observableArrayList("English", "Hebrew"));
 		languageComboBox.setValue("English");
 
@@ -73,118 +67,73 @@ public class RegisterViewController implements Initializable {
 		this.onSwitchToLogin = onSwitchToLogin;
 	}
 
-//	private void handleRegister(ActionEvent event) {
-//		String username = usernameField.getText().trim();
-//		String email = emailField.getText().trim();
-//		String password = passwordField.getText();
-//		String confirmPassword = confirmPasswordField.getText();
-//		String language = languageComboBox.getValue();
-//
-//		// Validate fields
-//		if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-//			showError("All fields are required");
-//			return;
-//		}
-//
-//		if (!password.equals(confirmPassword)) {
-//			showError("Passwords do not match");
-//			return;
-//		}
-//
-//		if (!isValidEmail(email)) {
-//			showError("Please enter a valid email address");
-//			return;
-//		}
-//
-//		// In a real application, register with the server
-//		if (registerUser(username, email, password, language)) {
-//			// Create user object for the UI
-//			User user = new User();
-//			user.setUsername(username);
-//			user.setEmail(email);
-//			user.setLanguage(language);
-//
-//			// Notify success handler
-//			if (onRegisterSuccess != null) {
-//				onRegisterSuccess.accept(user);
-//			}
-//		} else {
-//			showError("Registration failed. Username may already be taken.");
-//		}
-//	}
-
 	@FXML
 	private void handleRegister(ActionEvent event) {
 		String username = usernameField.getText().trim();
 		String email = emailField.getText().trim();
 		String password = passwordField.getText();
 		String confirmPassword = confirmPasswordField.getText();
-		String language = languageComboBox.getValue();
 
-		// בדיקות תקינות
+		// Get the language code for the language the user wants to learn
+		String targetLanguage = mapUiLanguageToCode(languageComboBox.getValue());
+
+		// Set the source language as the opposite of the target language
+		// If user wants to learn Hebrew (target="he"), then source is English
+		// (source="en")
+		// If user wants to learn English (target="en"), then source is Hebrew
+		// (source="he")
+		String sourceLanguage = targetLanguage.equals("en") ? "he" : "en";
+
+		// Validate fields
 		if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-			showError("כל השדות חובה");
+			showError("All fields are required");
 			return;
 		}
 
 		if (!password.equals(confirmPassword)) {
-			showError("הסיסמאות אינן תואמות");
+			showError("Passwords do not match");
 			return;
 		}
 
 		try {
 			UserAuthService authService = new UserAuthService();
-			User user = authService.register(username, password, email, language);
+
+			// Note: We're passing sourceLanguage as the parameter - this is what the user
+			// already knows
+			User user = authService.register(username, password, email, sourceLanguage);
 
 			if (user != null) {
-				// הרשמה הצליחה
+				// Registration successful
 				resetError();
 
-				// הפעלת callback להרשמה מוצלחת
+				// Call the success callback
 				if (onRegisterSuccess != null) {
 					onRegisterSuccess.accept(user);
 				}
 			} else {
-				showError("הרשמה נכשלה. ייתכן ששם המשתמש כבר קיים");
+				showError("Registration failed. Username may already exist.");
 			}
 		} catch (Exception e) {
-			showError("שגיאה בהרשמה: " + e.getMessage());
+			showError("Error during registration: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Converts UI-friendly language name to language code
+	 */
+	private String mapUiLanguageToCode(String uiLanguage) {
+		if (uiLanguage == null)
+			return "en";
+
+		return switch (uiLanguage) {
+		case "Hebrew" -> "he";
+		default -> "en"; // Default to English
+		};
 	}
 
 	private void handleSwitchToLogin(ActionEvent event) {
-		System.out.println("Switch to login button clicked");
 		if (onSwitchToLogin != null) {
-			System.out.println("Callback is not null, running it now");
 			onSwitchToLogin.run();
-		} else {
-			System.out.println("ERROR: onSwitchToLogin callback is null!");
-		}
-	}
-
-	private boolean isValidEmail(String email) {
-		// Simple email validation
-		return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
-	}
-
-	private boolean registerUser(String username, String email, String password, String language) {
-		// In a real application, send registration to server
-		// For demo purposes, we'll simulate a successful registration
-		try {
-			User user = new User();
-			user.setUsername(username);
-			user.setEmail(email);
-			user.setPassword(password);
-			user.setLanguage(language);
-
-			// In a real application, you would call:
-			// User createdUser = userService.createUser(user);
-			// return createdUser != null;
-
-			return true; // Simulated success
-		} catch (Exception e) {
-			System.err.println("Registration error: " + e.getMessage());
-			return false;
 		}
 	}
 

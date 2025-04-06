@@ -2,9 +2,12 @@ package com.lingotower.ui;
 
 import java.io.IOException;
 
+import com.lingotower.model.Admin;
 import com.lingotower.model.User;
+import com.lingotower.service.AdminAuthService;
 import com.lingotower.ui.controllers.DashboardViewController;
 import com.lingotower.ui.controllers.MainApplicationController;
+import com.lingotower.ui.controllers.admin.AdminViewController;
 import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.LoginView;
 import com.lingotower.ui.views.RegisterView;
@@ -13,6 +16,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 public class LingotowerApp extends Application {
@@ -20,21 +25,15 @@ public class LingotowerApp extends Application {
 	private Stage primaryStage;
 	private LoginView loginView;
 	private RegisterView registerView;
-	private DashboardView dashboardView;
-//	private LearnWordsView learnWordsView;
-//	private QuizView quizView;
-//	private UserProfileView userProfileView;
-
-	// Current user
 	private User currentUser;
+	private Admin currentAdmin;
+	private DashboardView dashboardView;
+	private AdminAuthService adminAuthService = new AdminAuthService();
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			this.primaryStage = primaryStage;
-
-			// Initialize services
-//			categoryService = new CategoryService();
 
 			// Configure stage
 			primaryStage.setTitle("LingoTower - Language Learning");
@@ -57,15 +56,27 @@ public class LingotowerApp extends Application {
 					this.currentUser = user;
 					System.out.println("User logged in: " + user.getUsername());
 
-					showMainApplication();
+					// Determine if the user is an admin and show the appropriate screen
+					if (user.getRole() != null && "ADMIN".equalsIgnoreCase(user.getRole().toString())) {
+						// Convert user to admin and show admin dashboard
+						Admin admin = new Admin();
+						admin.setId(user.getId());
+						admin.setUsername(user.getUsername());
+						admin.setEmail(user.getEmail());
+						admin.setRole(user.getRole());
 
+						this.currentAdmin = admin;
+						showAdminDashboard();
+					} else {
+						// Show regular user dashboard
+						showMainApplication();
+					}
 				},
 				// On switch to register
 				this::showRegisterScreen);
 
 		// Create scene for login
 		Scene loginScene = new Scene(loginView.createView(), 800, 600);
-//		loginScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 		// Try to load CSS
 		try {
@@ -77,7 +88,6 @@ public class LingotowerApp extends Application {
 		// Set scene to stage
 		primaryStage.setScene(loginScene);
 		primaryStage.setTitle("LingoTower - Login");
-
 	}
 
 	private void showRegisterScreen() {
@@ -87,10 +97,8 @@ public class LingotowerApp extends Application {
 					// On register success
 					user -> {
 						this.currentUser = user;
-						System.out.println("User logged in: " + user.getUsername());
-
+						System.out.println("User registered and logged in: " + user.getUsername());
 						showMainApplication();
-
 					},
 					// On switch to login
 					this::showLoginScreen);
@@ -98,12 +106,58 @@ public class LingotowerApp extends Application {
 
 		// Create scene for register
 		Scene registerScene = new Scene(registerView.createView(), 800, 800);
-		registerScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+
+		try {
+			registerScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+		} catch (Exception e) {
+			System.out.println("CSS not found, continuing without styles");
+		}
 
 		// Set scene to stage
 		primaryStage.setScene(registerScene);
-		primaryStage.setTitle("LingoTower - Regiser");
+		primaryStage.setTitle("LingoTower - Register");
+	}
 
+	/**
+	 * Shows the admin dashboard after successful admin login
+	 */
+	private void showAdminDashboard() {
+		try {
+			// Load admin dashboard layout
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminView.fxml"));
+			Parent root = loader.load();
+
+			// Get controller and configure it
+			AdminViewController controller = loader.getController();
+			controller.setAdmin(currentAdmin);
+
+			// Set logout callback
+			controller.setOnLogout(() -> {
+				currentAdmin = null;
+				currentUser = null;
+				adminAuthService.logout();
+				showLoginScreen();
+			});
+
+			// Create scene
+			Scene scene = new Scene(root, 800, 600);
+
+			// Add stylesheets
+			try {
+				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+			} catch (Exception e) {
+				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
+			}
+
+			// Set scene to stage
+			primaryStage.setScene(scene);
+			primaryStage.setTitle("LingoTower Admin - " + currentAdmin.getUsername());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			showError("Error loading admin dashboard: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -155,42 +209,18 @@ public class LingotowerApp extends Application {
 		}
 	}
 
-//	private void loadCategories() {
-//		try {
-//			// Fetch categories from server
-//			java.util.List<Category> categories = categoryService.getAllCategories();
-//			if (categories != null && !categories.isEmpty()) {
-//				// Update dashboard with categories
-//				dashboardView.updateCategories(categories);
-//			} else {
-//				// Create some mock categories for testing
-//				java.util.List<Category> mockCategories = new java.util.ArrayList<>();
-//				mockCategories.add(createMockCategory(1L, "Basics"));
-//				mockCategories.add(createMockCategory(2L, "Food"));
-//				mockCategories.add(createMockCategory(3L, "Travel"));
-//				mockCategories.add(createMockCategory(4L, "Business"));
-//				dashboardView.updateCategories(mockCategories);
-//			}
-//		} catch (Exception e) {
-//			System.err.println("Error loading categories: " + e.getMessage());
-//			e.printStackTrace();
-//
-//			// Create some mock categories for testing
-//			java.util.List<Category> mockCategories = new java.util.ArrayList<>();
-//			mockCategories.add(createMockCategory(1L, "Basics"));
-//			mockCategories.add(createMockCategory(2L, "Food"));
-//			mockCategories.add(createMockCategory(3L, "Travel"));
-//			mockCategories.add(createMockCategory(4L, "Business"));
-//			dashboardView.updateCategories(mockCategories);
-//		}
-//	}
-//
-//	private Category createMockCategory(Long id, String name) {
-//		Category category = new Category();
-//		category.setId(id);
-//		category.setName(name);
-//		return category;
-//	}
+	/**
+	 * Shows an error dialog
+	 * 
+	 * @param message The error message
+	 */
+	private void showError(String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("An error occurred");
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 
 	public static void main(String[] args) {
 		launch(args);
