@@ -32,24 +32,6 @@ public class AdminAuthController {
         this.adminRepository = adminRepository;
     }
 
-    /**
-     * Registers a new admin and returns a JWT token.
-     *
-     * @param request The request containing details for the new admin registration.
-     * @return A response with a JWT token and HTTP status 201 (Created).
-     */
-//    @PostMapping("/register")
-//    public ResponseEntity<String> registerAdmin(@RequestBody AdminRegisterRequest request) {
-//        // Retrieve the current admin who is attempting to perform the registration
-//        Admin currentAdmin = adminRepository.findByEmail(request.getCurrentAdminEmail())
-//                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
-//
-//        // Call service to register the new admin and generate a JWT token
-//        String token = adminAuthService.registerAdmin(request.getAdminCreateDTO(), currentAdmin);
-//
-//        // Return the JWT token in the response with HTTP status 201 (Created)
-//        return ResponseEntity.status(HttpStatus.CREATED).body(token);
-//    }
 
     /**
      * Authenticates an admin and generates a JWT token.

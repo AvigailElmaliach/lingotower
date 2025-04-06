@@ -2,6 +2,7 @@ package com.lingotower.service;
 
 import com.lingotower.data.AdminRepository;
 import com.lingotower.dto.admin.AdminCreateDTO;
+import com.lingotower.dto.admin.AdminUpdateDTO;
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
 import com.lingotower.security.JwtTokenProvider;
@@ -70,5 +71,24 @@ public class AdminService {
 
         adminRepository.save(newAdmin);
     }
+    public Optional<Admin> updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
+        Optional<Admin> existingAdmin = adminRepository.findById(id);
+        if (existingAdmin.isPresent()) {
+            Admin admin = existingAdmin.get();
+            admin.setUsername(adminUpdateDTO.getUsername());
+            admin.setRole(adminUpdateDTO.getRole());
+            
+            if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
+                admin.setPassword(encodedPassword);
+            }
+
+
+            return Optional.of(adminRepository.save(admin));
+        } else {
+            return Optional.empty();
+        }
+    }
+
 
 }

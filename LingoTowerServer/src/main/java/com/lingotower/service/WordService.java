@@ -63,7 +63,7 @@ public class WordService {
 	        if (translatedText != null && !translatedText.isEmpty()) {
 	            word.setTranslation(translatedText);
 	        } else {
-	            System.out.println("⚠ תרגום לא נמצא עבור: " + word.getWord());
+	            System.out.println(" תרגום לא נמצא עבור: " + word.getWord());
 	        }
 	    }
 	    return wordRepository.save(word);
@@ -103,36 +103,57 @@ public class WordService {
 	    wordRepository.save(word);
 	}
 	
-	
-	//החלטתי שאם אין תרגום אז לא ישלח לתרגום סתם סוחב זמן  וגם ההנחה שכל מילה נכנס לה תרגום בכניסתה
-	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String sourceLang, String targetLang) { 
-	    List<Word> words = wordRepository.findByCategoryId(categoryId);
 
-	    if (words.isEmpty()) {
-	        return Collections.emptyList();
-	    }
+ // שיטה להחזרת מילה לפי מזהה ושפת משתמש
+    public TranslationResponseDTO getTranslatedWordById(Long id, String userLanguage) {
+        Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
 
-	    return words.stream()
-	            .map(word -> TranslationUtils.convertWordToDTO(word, sourceLang, targetLang)) // שימוש בפונקציה העזר
-	            .collect(Collectors.toList());
-	}
+        // מבצע את המיפוי של המילה בהתאם לשפת המשתמש
+        String translation = "he".equals(userLanguage) ? word.getTranslation() : word.getWord();
+        return new TranslationResponseDTO(word.getWord(), translation);
+    }
+
+    // שיטה להחזרת מילה לפי טקסט ומקור שפה
+    public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
+        return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
+    }
+    
+
+    private List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
+        return words.stream()
+                .map(word -> {
+                    if( "he".equals(userLanguage))
+                    return new TranslationResponseDTO(word.getTranslation(), word.getWord());
+                    return new TranslationResponseDTO(word.getWord(), word.getTranslation());
+                })
+                .collect(Collectors.toList());
+    }
 
 
-////מכיוון שהריפוזיטורי ממייין כבר לפי קטוגירה ורמ אין צורך להשתמש בפונקציה הקודמה 
-    public List<TranslationResponseDTO> getTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String sourceLang, String targetLang) {
+    public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
+        List<Word> words = wordRepository.findByCategoryId(categoryId);
+
+        if (words.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return mapWordsToLanguage(words, userLanguage);
+    }
+
+
+
+    public List<TranslationResponseDTO> getTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
         List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
 
         if (words.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return words.stream()
-                .map(word -> TranslationUtils.convertWordToDTO(word, sourceLang, targetLang)) 
-                .collect(Collectors.toList());
+        return mapWordsToLanguage(words, userLanguage);
     }
-    
-    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String sourceLang, String targetLang) {
-        // שליפת כל המילים לפי קטגוריה ורמת קושי
+
+
+    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
         List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
 
         if (words.isEmpty()) {
@@ -143,18 +164,8 @@ public class WordService {
         Collections.shuffle(words, random);
         List<Word> randomWords = words.stream().limit(10).collect(Collectors.toList());
 
-        return randomWords.stream()
-                .map(word -> TranslationUtils.convertWordToDTO(word, sourceLang, targetLang))
-                .collect(Collectors.toList());
-    }
-    public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
-        return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
+        return mapWordsToLanguage(randomWords, userLanguage);
     }
 
-	// קבלת מילה לפי מזהה
-	public TranslationResponseDTO getTranslatedWordById(Long id, String targetLang) {
-		Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
-		return new TranslationResponseDTO(word.getWord(), word.getTranslation());
-	}
 
 }

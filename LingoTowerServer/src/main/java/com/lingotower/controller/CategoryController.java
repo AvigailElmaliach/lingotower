@@ -40,7 +40,7 @@ public class CategoryController {
     }
     
     private CategoryDTO convertToDTO(Category category) {
-        return new CategoryDTO(category.getId(), category.getName());
+        return new CategoryDTO(category.getId(), category.getName(),category.getTranslation());
     }
 
     private List<CategoryDTO> convertToDTOList(List<Category> categories) {
@@ -48,49 +48,36 @@ public class CategoryController {
                          .map(this::convertToDTO)
                          .collect(Collectors.toList());
     }
-    
-    //-------------------------//--------------//
-    @GetMapping("/category/{categoryId}/translate")
-    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
-            @PathVariable Long categoryId,
-            HttpServletRequest request) {
-
-        String sourceLang = (String) request.getAttribute("sourceLanguage");
-        String targetLang = (String) request.getAttribute("targetLanguage");
-        
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, sourceLang, targetLang);
-        
-        return translatedWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(translatedWords);
-    }
-
+ 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories(Principal principal) {
+    	
         User user = userService.getUserByUsername(principal.getName());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        
-        List<CategoryDTO> categories = categoryService.getAllCategories();
+
+        String userLanguage = user.getTargetLanguage();  
+
+        List<CategoryDTO> categories = categoryService.getAllCategories(userLanguage);//ByLanguage
+
         return ResponseEntity.ok(categories);
     }
 
-//    @GetMapping
-//    public List<CategoryDTO> getAllCategories() {
-//        List<CategoryDTO> categoryDTOList = categoryService.getAllCategories();
-//        return categoryDTOList;  // מחזירים ישירות את רשימת ה-DTO
-//    }
+    
 
+    //לומר לו לקחת את הname שבו יש לפי שפת המשתמש
     @GetMapping("/id/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        try {
-            Category category = categoryService.getCategoryById(id);
-            return ResponseEntity.ok(convertToDTO(category));
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); 
-        }
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id, Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        String userLanguage = user.getTargetLanguage();
+        
+        CategoryDTO categoryDTO = categoryService.getCategoryById(id, userLanguage);
+        return ResponseEntity.ok(categoryDTO);
     }
+
+
+
 //    @GetMapping("/word/{word}")
 //    public ResponseEntity<CategoryDTO> getCategoryByWord(@PathVariable String word) {
 //        try {
@@ -147,4 +134,40 @@ public class CategoryController {
 //        Category category = categoryService.readCategoryFromFile(categoryName);
 //        return ResponseEntity.ok(category);
 //    }
+    
+    
+    
+    
+    
+    //-------------------------//--------------//
+//    @GetMapping("/category/{categoryId}/translate")
+//    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
+//            @PathVariable Long categoryId,
+//            HttpServletRequest request) {
+//
+//        String sourceLang = (String) request.getAttribute("sourceLanguage");
+//        String targetLang = (String) request.getAttribute("targetLanguage");
+//        
+//        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, sourceLang, targetLang);
+//        
+//        return translatedWords.isEmpty()
+//                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+//                : ResponseEntity.ok(translatedWords);
+//    }
+
+//    @GetMapping
+//    public ResponseEntity<List<CategoryDTO>> getAllCategories(Principal principal) {
+//        User user = userService.getUserByUsername(principal.getName());
+//        if (user == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        
+//        List<CategoryDTO> categories = categoryService.getAllCategories();
+//        return ResponseEntity.ok(categories);
+//    }
+//  @GetMapping
+//  public List<CategoryDTO> getAllCategories() {
+//      List<CategoryDTO> categoryDTOList = categoryService.getAllCategories();
+//      return categoryDTOList;  // מחזירים ישירות את רשימת ה-DTO
+//  }
 }

@@ -17,6 +17,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
    // public List<Word> findByCategory(Category category);//שינוי אחרון 
    // public List<Word> findByCategory_Id(Long categoryId);
     List<Category> findByTranslationIsNullOrTranslationIs(String translation);
+  
 
     void deleteAll();
 
