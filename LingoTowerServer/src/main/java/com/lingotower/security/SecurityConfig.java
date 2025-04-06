@@ -25,8 +25,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // נסה לבטל CSRF אם אתה משתמש ב-Postman
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") // רק למנהלים
+                .requestMatchers("/api/auth/**").permitAll() 
+                .requestMatchers("/api/admin/**").hasRole("ADMIN") 
                 .requestMatchers("/api/user/**").hasRole("USER") 
                // .requestMatchers("/word/upload").permitAll() 
                 .anyRequest().authenticated() 

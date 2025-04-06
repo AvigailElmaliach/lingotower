@@ -35,9 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtTokenProvider.extractUsername(token);
                 String role = jwtTokenProvider.extractRole(token); // הוספת שליפת תפקיד
 
+                // >>> פה תכניסי את ההדפסות:
+                System.out.println("Token received: " + token);
                 System.out.println("Extracted username: " + username);
                 System.out.println("Extracted role: " + role);
 
+                
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // יצירת GrantedAuthority על בסיס ה-role מהטוקן
                     SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());

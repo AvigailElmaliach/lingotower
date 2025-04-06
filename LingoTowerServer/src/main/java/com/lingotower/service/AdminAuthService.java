@@ -44,33 +44,33 @@ public class AdminAuthService {
      * @throws IllegalArgumentException if the email or username is already taken.
      * @throws SecurityException if the current user is not an admin.
      */
-    public String registerAdmin(AdminCreateDTO adminCreateDTO, Admin currentAdmin) {
-        // Check if the current user is an admin or superadmin
-        if (currentAdmin.getRole() != Role.ADMIN ) {
-            throw new SecurityException("Only an admin can register another admin!");
-        }
-
-        // Check if the email already exists
-        if (adminRepository.existsByEmail(adminCreateDTO.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
-        // Create a new admin object
-        Admin newAdmin = new Admin(
-            adminCreateDTO.getUsername(),
-            passwordEncoder.encode(adminCreateDTO.getPassword()),
-            adminCreateDTO.getEmail(),
-            adminCreateDTO.getSourceLanguage(),
-            adminCreateDTO.getTargetLanguage(),
-            Role.ADMIN
-        );
-
-        // Save the new admin to the database
-        Admin savedAdmin = adminRepository.save(newAdmin);
-
-        // Generate and return a JWT token for the new admin
-        return jwtTokenProvider.generateToken(savedAdmin);
-    }
+//    public String registerAdmin(AdminCreateDTO adminCreateDTO, Admin currentAdmin) {
+//        // Check if the current user is an admin or superadmin
+//        if (currentAdmin.getRole() != Role.ADMIN ) {
+//            throw new SecurityException("Only an admin can register another admin!");
+//        }
+//
+//        // Check if the email already exists
+//        if (adminRepository.existsByEmail(adminCreateDTO.getEmail())) {
+//            throw new IllegalArgumentException("Email already exists");
+//        }
+//
+//        // Create a new admin object
+//        Admin newAdmin = new Admin(
+//            adminCreateDTO.getUsername(),
+//            passwordEncoder.encode(adminCreateDTO.getPassword()),
+//            adminCreateDTO.getEmail(),
+//            adminCreateDTO.getSourceLanguage(),
+//            adminCreateDTO.getTargetLanguage(),
+//            Role.ADMIN
+//        );
+//
+//        // Save the new admin to the database
+//        Admin savedAdmin = adminRepository.save(newAdmin);
+//
+//        // Generate and return a JWT token for the new admin
+//        return jwtTokenProvider.generateToken(savedAdmin);
+//    }
 
     /**
      * Authenticates an admin and generates a JWT token.

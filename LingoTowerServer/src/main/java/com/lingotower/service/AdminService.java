@@ -1,7 +1,11 @@
 package com.lingotower.service;
 
-import com.lingotower.model.Admin;
 import com.lingotower.data.AdminRepository;
+import com.lingotower.dto.admin.AdminCreateDTO;
+import com.lingotower.model.Admin;
+import com.lingotower.model.Role;
+import com.lingotower.security.JwtTokenProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,29 +15,60 @@ import java.util.Optional;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    // קונסטרקטור
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository,
+                        JwtTokenProvider jwtTokenProvider,
+                        PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // פעולה לקבלת כל המנהלים
+    // קבלת כל המנהלים
     public List<Admin> getAllAdmins() {
         return adminRepository.findAll();
     }
 
-    // פעולה לקבלת מנהל לפי מזהה
+    // קבלת מנהל לפי מזהה
     public Optional<Admin> getAdminById(Long id) {
         return adminRepository.findById(id);
     }
 
-    // פעולה לשמירת מנהל
+    // שמירת מנהל
     public Admin saveAdmin(Admin admin) {
         return adminRepository.save(admin);
     }
 
-    // פעולה למחיקת מנהל
+    // מחיקת מנהל
     public void deleteAdmin(Long id) {
         adminRepository.deleteById(id);
     }
+
+ // רישום מנהל חדש
+    public void registerAdmin(AdminCreateDTO adminCreateDTO, String token) {
+        String cleanToken = token.replace("Bearer ", "");
+        String role = jwtTokenProvider.extractRole(cleanToken);
+
+        if (!role.equals("ADMIN")) {
+            throw new SecurityException("Only admins can register new admins.");
+        }
+
+        if (adminRepository.existsByEmail(adminCreateDTO.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Admin newAdmin = new Admin(
+                adminCreateDTO.getUsername(),
+                passwordEncoder.encode(adminCreateDTO.getPassword()),
+                adminCreateDTO.getEmail(),
+                adminCreateDTO.getSourceLanguage(),
+                adminCreateDTO.getTargetLanguage(),
+                Role.ADMIN
+        );
+
+        adminRepository.save(newAdmin);
+    }
+
 }
