@@ -30,8 +30,9 @@ public class AdminSetup {
 	                // יצירת מנהל ראשוני
 	                Admin admin = new Admin();
 	                admin.setUsername("admin");
-	                admin.setPassword(passwordEncoder.encode("admin_password")); // אל תשכח להצפין את הסיסמה
-	                admin.setRole(Role.ADMIN);  // תפקיד "ADMIN"
+	                admin.setPassword(passwordEncoder.encode("admin_password")); 
+	                admin.setEmail("admin@lingotower.com");
+	                admin.setRole(Role.ADMIN);  
 	                adminRepository.save(admin);
 	                System.out.println("Admin user created");
 	            }

@@ -7,8 +7,6 @@ import java.util.List;
 @Entity
 public class Admin extends BaseUser {
 
-    
-
     @OneToMany(mappedBy = "admin")
     private List<User> users = new ArrayList<>();
 
