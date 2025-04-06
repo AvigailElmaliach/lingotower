@@ -25,6 +25,7 @@ public abstract class BaseUser {
      * The username of the user.
      * It is used to uniquely identify a user in the system.
      */
+    @Column(unique = true)
     private String username;
 
     /**
@@ -37,6 +38,7 @@ public abstract class BaseUser {
      * The email address of the user.
      * It can be used for communication or as a unique identifier.
      */
+    @Column(unique = true)
     private String email;
 
     /**
@@ -174,6 +176,10 @@ public abstract class BaseUser {
      */
     public void setRole(Role role) {
         this.role = role;
+    }
+    
+    private String determineTargetLanguage(String sourceLanguage) {
+        return "he".equals(sourceLanguage) ? "en" : "he";
     }
    
 }

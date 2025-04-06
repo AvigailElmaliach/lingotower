@@ -1,0 +1,336 @@
+[1mdiff --git a/LingoTowerServer/pom.xml b/LingoTowerServer/pom.xml[m
+[1mindex 27742a9..ac6ff2d 100644[m
+[1m--- a/LingoTowerServer/pom.xml[m
+[1m+++ b/LingoTowerServer/pom.xml[m
+[36m@@ -134,6 +134,12 @@[m
+     		<artifactId>lingotower-client</artifactId>[m
+     		<version>1.0-SNAPSHOT</version>[m
+     	</dependency>[m
+[32m+[m[41m    [m	[32m <dependency>[m[41m [m
+[32m+[m[32m    <groupId>org.json</groupId>[m[41m[m
+[32m+[m[32m    <artifactId>json</artifactId>[m[41m[m
+[32m+[m[32m    <version>20230227</version>[m[41m[m
+[32m+[m[32m</dependency>[m[41m[m
+[32m+[m[41m[m
+     </dependencies>[m
+ [m
+     <build>[m
+[1mdiff --git a/LingoTowerServer/src/main/java/com/lingotower/controller/TranslationController.java b/LingoTowerServer/src/main/java/com/lingotower/controller/TranslationController.java[m
+[1mindex 838af38..40f75e7 100644[m
+[1m--- a/LingoTowerServer/src/main/java/com/lingotower/controller/TranslationController.java[m
+[1m+++ b/LingoTowerServer/src/main/java/com/lingotower/controller/TranslationController.java[m
+[36m@@ -1,5 +1,6 @@[m
+ package com.lingotower.controller;[m
+ [m
+[32m+[m[32mimport com.lingotower.dto.translation.FreeTranslationRequest;[m[41m[m
+ import com.lingotower.dto.translation.TranslationRequestDTO;[m
+ import com.lingotower.dto.translation.TranslationResponseDTO;[m
+ import com.lingotower.service.TranslationService;[m
+[36m@@ -51,6 +52,16 @@[m [mpublic class TranslationController {[m
+ [m
+         return ResponseEntity.ok(translatedSentence);[m
+     }[m
+[32m+[m[32m    @PostMapping("/free-translate")[m[41m[m
+[32m+[m[32m    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {[m[41m[m
+[32m+[m[32m        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());[m[41m[m
+[32m+[m[32m        return ResponseEntity.ok(translatedText);[m[41m[m
+[32m+[m[32m    }[m[41m[m
+[32m+[m[32m//    @PostMapping("/translate")[m[41m[m
+[32m+[m[32m//    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {[m[41m[m
+[32m+[m[32m//        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());[m[41m[m
+[32m+[m[32m//        return ResponseEntity.ok(translatedText);[m[41m[m
+[32m+[m[32m//    }[m[41m[m
+ [m
+ [m
+ //    @PostMapping("/translate-batch")[m
+[1mdiff --git a/LingoTowerServer/src/main/java/com/lingotower/model/Word.java b/LingoTowerServer/src/main/java/com/lingotower/model/Word.java[m
+[1mindex 626ade6..1b3b01d 100644[m
+[1m--- a/LingoTowerServer/src/main/java/com/lingotower/model/Word.java[m
+[1m+++ b/LingoTowerServer/src/main/java/com/lingotower/model/Word.java[m
+[36m@@ -51,7 +51,8 @@[m [mpublic class Word {[m
+ 	@Enumerated(EnumType.STRING)[m
+     private Difficulty difficulty;[m
+ 	[m
+[31m-[m
+[32m+[m	[32m @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)[m[41m[m
+[32m+[m	[32m    private List<ExampleSentence> sentences;[m[41m[m
+ 	public Word() {}[m
+ [m
+ 	public Word(String word, String translation, String sourceLanguage) {[m
+[1mdiff --git a/LingoTowerServer/src/main/java/com/lingotower/service/TranslationService.java b/LingoTowerServer/src/main/java/com/lingotower/service/TranslationService.java[m
+[1mindex 43768eb..2707f14 100644[m
+[1m--- a/LingoTowerServer/src/main/java/com/lingotower/service/TranslationService.java[m
+[1m+++ b/LingoTowerServer/src/main/java/com/lingotower/service/TranslationService.java[m
+[36m@@ -46,6 +46,34 @@[m [mpublic class TranslationService {[m
+             return "Translation errorרררר";[m
+         }[m
+     }[m
+[32m+[m[41m   [m
+[32m+[m[32m    public String freeTranslateText(String text, String sourceLang, String targetLang) {[m[41m[m
+[32m+[m[32m        RestTemplate restTemplate = new RestTemplate();[m[41m[m
+[32m+[m[32m        sourceLang = sourceLang.trim();[m[41m[m
+[32m+[m[32m        targetLang = targetLang.trim();[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m        String url = UriComponentsBuilder.fromUriString(TRANSLATE_API_URL)[m[41m[m
+[32m+[m[32m                .buildAndExpand(text, sourceLang, targetLang)[m[41m[m
+[32m+[m[32m                .toUriString();[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m        try {[m[41m[m
+[32m+[m[32m            logger.info("Translating word: {} from {} to {}", text, sourceLang, targetLang);[m[41m[m
+[32m+[m[32m            TranslationResponse response = restTemplate.getForObject(url, TranslationResponse.class);[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m            if (response != null && response.getResponseData() != null) {[m[41m[m
+[32m+[m[32m                String translatedText = response.getResponseData().getTranslatedText();[m[41m[m
+[32m+[m[32m                logger.info("Translation result: {}", translatedText);[m[41m[m
+[32m+[m[32m                return translatedText;[m[41m[m
+[32m+[m[32m            } else {[m[41m[m
+[32m+[m[32m                logger.error("Translation response is null or has no data.");[m[41m[m
+[32m+[m[32m                return "Translation error";[m[41m[m
+[32m+[m[32m            }[m[41m[m
+[32m+[m[32m        } catch (Exception e) {[m[41m[m
+[32m+[m[32m            logger.error("Error during translation: ", e);[m[41m[m
+[32m+[m[32m            return "Translation error";[m[41m[m
+[32m+[m[32m        }[m[41m[m
+[32m+[m[32m    }[m[41m[m
+[32m+[m[41m[m
+ [m
+ //    public List<TranslationResponseDTO> translateWords(List<TranslationRequestDTO> translationRequestList) {[m
+ //        List<TranslationResponseDTO> translatedWords = new ArrayList<>();[m
+[1mdiff --git a/LingotowerClient/src/main/java/com/lingotower/ui/components/TranslatorDialog.java b/LingotowerClient/src/main/java/com/lingotower/ui/components/TranslatorDialog.java[m
+[1mindex 1172b64..c4f210c 100644[m
+[1m--- a/LingotowerClient/src/main/java/com/lingotower/ui/components/TranslatorDialog.java[m
+[1m+++ b/LingotowerClient/src/main/java/com/lingotower/ui/components/TranslatorDialog.java[m
+[36m@@ -1,8 +1,6 @@[m
+ package com.lingotower.ui.components;[m
+ [m
+ import java.io.IOException;[m
+[31m-import java.util.HashMap;[m
+[31m-import java.util.Map;[m
+ [m
+ import org.springframework.http.HttpEntity;[m
+ import org.springframework.http.HttpHeaders;[m
+[36m@@ -31,221 +29,198 @@[m [mimport javafx.util.Duration;[m
+ [m
+ public class TranslatorDialog {[m
+ [m
+[31m-    @FXML[m
+[31m-    private ComboBox<String> sourceLanguageComboBox;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private ComboBox<String> targetLanguageComboBox;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private TextArea sourceTextArea;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private TextArea targetTextArea;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private Button translateButton;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private Button swapButton;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private Button closeButton;[m
+[31m-[m
+[31m-    @FXML[m
+[31m-    private Label statusLabel;[m
+[31m-[m
+[31m-    private Stage dialogStage;[m
+[31m-    private VBox root;[m
+[31m-    private RestTemplate restTemplate;[m
+[31m-    private static final String TRANSLATE_API_URL = "http://localhost:8080/api/translate/translate-sentence";[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Creates and initializes the translator dialog.[m
+[31m-     * [m
+[31m-     * @param owner The owner window for this dialog.[m
+[31m-     */[m
+[31m-    public TranslatorDialog(Window owner) {[m
+[31m-        try {[m
+[31m-            // Load FXML[m
+[31m-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TranslatorDialog.fxml"));[m
+[31m-            loader.setController(this);[m
+[31m-            root = loader.load();[m
+[31m-[m
+[31m-            // Initialize RestTemplate[m
+[31m-            restTemplate = new RestTemplate();[m
+[31m-[m
+[31m-            // Create dialog stage[m
+[31m-            dialogStage = new Stage();[m
+[31m-            dialogStage.setTitle("Text Translator");[m
+[31m-            dialogStage.initOwner(owner);[m
+[31m-            dialogStage.initModality(Modality.WINDOW_MODAL);[m
+[31m-            dialogStage.initStyle(StageStyle.DECORATED);[m
+[31m-            dialogStage.setScene(new Scene(root));[m
+[31m-[m
+[31m-            // Initialize UI[m
+[31m-            initializeUI();[m
+[31m-[m
+[31m-        } catch (IOException e) {[m
+[31m-            e.printStackTrace();[m
+[31m-        }[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Initializes the UI components.[m
+[31m-     */[m
+[31m-    private void initializeUI() {[m
+[31m-        // Set up language options[m
+[31m-        sourceLanguageComboBox.setItems(FXCollections.observableArrayList("English", "Hebrew"));[m
+[31m-        targetLanguageComboBox.setItems(FXCollections.observableArrayList("Hebrew", "English"));[m
+[31m-[m
+[31m-        // Set default values[m
+[31m-        sourceLanguageComboBox.setValue("English");[m
+[31m-        targetLanguageComboBox.setValue("Hebrew");[m
+[31m-[m
+[31m-        // Set up buttons[m
+[31m-        translateButton.setOnAction(event -> handleTranslate());[m
+[31m-        swapButton.setOnAction(event -> handleSwap());[m
+[31m-        closeButton.setOnAction(event -> dialogStage.close());[m
+[31m-[m
+[31m-        // Initial status[m
+[31m-        statusLabel.setText("Enter text and click Translate");[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Shows the dialog.[m
+[31m-     */[m
+[31m-    public void show() {[m
+[31m-        dialogStage.show();[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Handles the translate button click.[m
+[31m-     */[m
+[31m-[m
+[31m-    private void handleTranslate() {[m
+[31m-        String sourceText = sourceTextArea.getText().trim();[m
+[31m-        if (sourceText.isEmpty()) {[m
+[31m-            statusLabel.setText("Please enter text to translate");[m
+[31m-            return;[m
+[31m-        }[m
+[31m-[m
+[31m-        boolean swapLanguages = !sourceLanguageComboBox.getValue().equals(targetLanguageComboBox.getValue());[m
+[31m-        translateText(sourceText, swapLanguages);[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Handles the swap button click.[m
+[31m-     */[m
+[31m-    private void handleSwap() {[m
+[31m-        // Swap languages in combo boxes[m
+[31m-        String tempLang = sourceLanguageComboBox.getValue();[m
+[31m-        sourceLanguageComboBox.setValue(targetLanguageComboBox.getValue());[m
+[31m-        targetLanguageComboBox.setValue(tempLang);[m
+[31m-[m
+[31m-        // Swap text between source and target text areas[m
+[31m-        String tempText = sourceTextArea.getText();[m
+[31m-        sourceTextArea.setText(targetTextArea.getText());[m
+[31m-        targetTextArea.setText(tempText);[m
+[31m-[m
+[31m-        // Send request to server to update language preferences[m
+[31m-        try {[m
+[31m-            TranslationRequest request = new TranslationRequest(sourceTextArea.getText(), true);[m
+[31m-[m
+[31m-            HttpHeaders headers = new HttpHeaders();[m
+[31m-            headers.setContentType(MediaType.APPLICATION_JSON);[m
+[31m-[m
+[31m-            if (TokenStorage.hasToken()) {[m
+[31m-                headers.set("Authorization", "Bearer " + TokenStorage.getToken());[m
+[31m-            }[m
+[31m-[m
+[31m-            HttpEntity<TranslationRequest> entity = new HttpEntity<>(request, headers);[m
+[31m-[m
+[31m-            // Call the same endpoint but with swapLanguages=true[m
+[31m-            restTemplate.postForEntity(TRANSLATE_API_URL, entity, String.class);[m
+[31m-        } catch (Exception e) {[m
+[31m-            // Log errors but don't bother the user[m
+[31m-            System.err.println("Error updating language preferences: " + e.getMessage());[m
+[31m-        }[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Translates the text using the API.[m
+[31m-     * [m
+[31m-     * @param text           The text to translate.[m
+[31m-     * @param swapLanguages A flag indicating whether the languages should be swapped.[m
+[31m-     */[m
+[31m-    private void translateText(String text, boolean swapLanguages) {[m
+[31m-        try {[m
+[31m-            // Show loading status[m
+[31m-            statusLabel.setText("Translating...");[m
+[31m-[m
+[31m-            // Create request body with the exact field names expected by the server[m
+[31m-            Map<String, Object> requestBody = new HashMap<>();[m
+[31m-            requestBody.put("word", text);[m
+[31m-            requestBody.put("swapLanguages", swapLanguages);[m
+[31m-[m
+[31m-            // Set up headers[m
+[31m-            HttpHeaders headers = new HttpHeaders();[m
+[31m-            headers.setContentType(MediaType.APPLICATION_JSON);[m
+[31m-[m
+[31m-            // Add authentication token if available[m
+[31m-            if (TokenStorage.hasToken()) {[m
+[31m-                headers.set("Authorization", "Bearer " + TokenStorage.getToken());[m
+[31m-            }[m
+[31m-[m
+[31m-            // Create HTTP entity with headers and body[m
+[31m-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);[m
+[31m-[m
+[31m-            // Log request details for debugging[m
+[31m-            System.out.println("Request URL: http://localhost:8080/api/translate/translate-sentence");[m
+[31m-            System.out.println("Request Body: " + requestBody);[m
+[31m-            System.out.println("Request Headers: " + headers);[m
+[31m-[m
+[31m-            // Make the API call[m
+[31m-            String endpointUrl = "http://localhost:8080/api/translate/translate-sentence";[m
+[31m-            ResponseEntity<String> response = restTemplate.postForEntity(endpointUrl, entity, String.class);[m
+[31m-[m
+[31m-            // Process response[m
+[31m-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {[m
+[31m-                String translatedText = response.getBody();[m
+[31m-                targetTextArea.setText(translatedText);[m
+[31m-                statusLabel.setText("Translation complete");[m
+[31m-[m
+[31m-                // Reset status message after 3 seconds[m
+[31m-                Timeline timeline = new Timeline([m
+[31m-                        new KeyFrame(Duration.seconds(3), e -> statusLabel.setText("Enter text and click Translate"))[m
+[31m-                );[m
+[31m-                timeline.play();[m
+[31m-            } else {[m
+[31m-                targetTextArea.setText("");[m
+[31m-                statusLabel.setText("Translation failed: " + response.getStatusCode());[m
+[31m-            }[m
+[31m-        } catch (Exception e) {[m
+[31m-            targetTextArea.setText("");[m
+[31m-            statusLabel.setText("Error: " + e.getMessage());[m
+[31m-            e.printStackTrace();[m
+[31m-        }[m
+[31m-    }[m
+[31m-[m
+[31m-    /**[m
+[31m-     * Inner class to represent the translation request.[m
+[31m-     */[m
+[31m-    private static class TranslationRequest {[m
+[31m-        private String word;[m
+[31m-        private boolean swapLanguages;[m
+[31m-[m
+[31m-        public TranslationRequest(String word, boolean swapLanguages) {[m
+[31m-            this.word = word;[m
+[31m-            this.swapLanguages = swapLanguages;[m
+[31m-        }[m
+[31m-[m
+[31m-        public String getWord() {[m
+[31m-            return word;[m
+[31m-        }[m
+[31m-[m
+[31m-        public boolean isSwapLanguages() {[m
+[31m-            return swapLanguages;[m
+[31m-        }[m
+[31m-    }[m
+[31m-}[m
+[32m+[m	[32m@FXML[m[41m[m
+[32m+[m	[32mprivate ComboBox<String> sourceLanguageComboBox;[m[41m[m
+
