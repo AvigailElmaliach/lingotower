@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.lingotower.model.Role;
 import com.lingotower.security.JwtTokenProvider;
 
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,28 +44,42 @@ public class AdminController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping
-    public ResponseEntity<AdminResponseDTO> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO, 
-                                                        @RequestHeader("Authorization") String token) {
-        // שליפת תפקיד המשתמש מהטוקן
-        String role = jwtTokenProvider.extractRole(token.replace("Bearer ", ""));
-        
-        // אם המשתמש לא מנהל, לא נאפשר לו להוסיף מנהל חדש
-        if (!role.equals("ADMIN")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+//    @PostMapping
+//    public ResponseEntity<AdminResponseDTO> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO, 
+//                                                        @RequestHeader("Authorization") String token) {
+//        // שליפת תפקיד המשתמש מהטוקן
+//        String role = jwtTokenProvider.extractRole(token.replace("Bearer ", ""));
+//        
+//        // אם המשתמש לא מנהל, לא נאפשר לו להוסיף מנהל חדש
+//        if (!role.equals("ADMIN")) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+//        }
+//
+//        // אם המשתמש הוא מנהל, ניצור את המנהל החדש
+//        Admin admin = new Admin();
+//        admin.setUsername(adminCreateDTO.getUsername());
+//        admin.setPassword(adminCreateDTO.getPassword());
+//        admin.setRole(adminCreateDTO.getRole());
+//
+//        Admin savedAdmin = adminService.saveAdmin(admin);
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(new AdminResponseDTO(savedAdmin.getUsername(), savedAdmin.getRole()));
+//    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO,
+                                              @RequestHeader("Authorization") String token) {
+        try {
+            adminService.registerAdmin(adminCreateDTO, token);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Admin registered successfully");
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
-        // אם המשתמש הוא מנהל, ניצור את המנהל החדש
-        Admin admin = new Admin();
-        admin.setUsername(adminCreateDTO.getUsername());
-        admin.setPassword(adminCreateDTO.getPassword());
-        admin.setRole(adminCreateDTO.getRole());
-
-        Admin savedAdmin = adminService.saveAdmin(admin);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AdminResponseDTO(savedAdmin.getUsername(), savedAdmin.getRole()));
     }
 
+    
     @PutMapping("/{id}")
     public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateDTO adminUpdateDTO) {
         Optional<Admin> existingAdmin = adminService.getAdminById(id);
