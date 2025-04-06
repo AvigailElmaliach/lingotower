@@ -10,6 +10,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.lingotower.model.BaseUser;
 import com.lingotower.model.User;
 
 @Component
@@ -26,7 +27,7 @@ public class JwtTokenProvider {
 //                .compact();
 //    }
 
-    public String generateToken(User user) {
+    public String generateToken(BaseUser user) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(user.getUsername())
@@ -36,6 +37,7 @@ public class JwtTokenProvider {
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), Jwts.SIG.HS256)
                 .compact();
     }
+    
 
     public String extractUsername(String token) {
         return Jwts.parser() // שינוי ל-parser() במקום parserBuilder()
