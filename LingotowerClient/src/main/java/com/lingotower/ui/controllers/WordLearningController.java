@@ -3,6 +3,7 @@ package com.lingotower.ui.controllers;
 import java.util.List;
 
 import com.lingotower.model.Category;
+import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
@@ -60,6 +61,7 @@ public class WordLearningController {
 	private List<Word> words;
 	private int currentWordIndex = 0;
 	private Runnable onBackToDashboard;
+	private User currentUser;
 
 	@FXML
 	private void initialize() {
@@ -75,6 +77,10 @@ public class WordLearningController {
 
 		// Disable mark learned button until translation is shown
 		markLearnedButton.setDisable(true);
+	}
+
+	public void setUser(User user) {
+		this.currentUser = user;
 	}
 
 	public void setCategory(Category category) {
@@ -220,18 +226,24 @@ public class WordLearningController {
 		Word currentWord = words.get(currentWordIndex);
 
 		try {
-			// Mark word as learned (user ID would come from the logged-in user)
-			// For now, we'll use a mock user ID
-			Long userId = 1L; // This would come from the logged-in user in a real app
-			userService.addLearnedWord(userId, currentWord.getId());
+			if (currentUser == null) {
+				messageLabel.setText("Error: No authenticated user found.");
+				return;
+			}
 
-			// Show success message
-			messageLabel.setText("Word marked as learned! Click 'Next Word' to continue.");
+			// Use the UserService to add the word to the user's learned list
+			UserService userService = new UserService();
+			boolean success = userService.addWordToLearned(currentWord.getId());
+
+			if (success) {
+				messageLabel.setText("Word marked as learned! Click 'Next Word' to continue.");
+				markLearnedButton.setDisable(true); // Disable button after marking as learned
+			} else {
+				messageLabel.setText("Error marking word as learned. Please try again.");
+			}
 		} catch (Exception e) {
 			System.err.println("Error marking word as learned: " + e.getMessage());
 			e.printStackTrace();
-
-			// Show error message
 			messageLabel.setText("Error marking word as learned: " + e.getMessage());
 		}
 	}

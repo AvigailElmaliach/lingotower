@@ -130,19 +130,28 @@ public class UserService extends BaseService {
 		}
 	}
 
-	public List<Word> getLearnedWords(Long userId) {
+	/**
+	 * Gets learned words for the authenticated user
+	 * 
+	 * @return List of learned words
+	 */
+	public List<Word> getLearnedWords() {
 		try {
+			// Create headers with authentication
 			HttpHeaders headers = createAuthHeaders();
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			String url = BASE_URL + "/" + userId + "/learned-words";
+			// Make the request to the endpoint - no user ID needed
+			String url = BASE_URL + "/users/learned";
+
 			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
 			return response.getBody();
 		} catch (Exception e) {
-			System.err.println("Error getting learned words: " + e.getMessage());
+			System.err.println("Error fetching learned words: " + e.getMessage());
+			e.printStackTrace();
 			return new ArrayList<>();
 		}
 	}
@@ -164,17 +173,28 @@ public class UserService extends BaseService {
 		}
 	}
 
-	public boolean addLearnedWord(Long userId, Long wordId) {
+	/**
+	 * Adds a word to the authenticated user's learned words list
+	 * 
+	 * @param wordId The ID of the word to add
+	 * @return true if successful, false otherwise
+	 */
+	public boolean addWordToLearned(Long wordId) {
 		try {
+			// Create headers with authentication
 			HttpHeaders headers = createAuthHeaders();
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			String url = BASE_URL + "/" + userId + "/learn-word/" + wordId;
+			// Make the POST request - note that we don't include a user ID
+			// The endpoint will determine the user from the JWT token
+			String url = BASE_URL + "/users/learned/" + wordId;
+
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
 
-			return response.getStatusCode() == HttpStatus.OK;
+			return response.getStatusCode().is2xxSuccessful();
 		} catch (Exception e) {
-			System.err.println("Error adding learned word: " + e.getMessage());
+			System.err.println("Error adding word to learned: " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}

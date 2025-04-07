@@ -241,21 +241,66 @@ public class ContentManagementController {
 		}
 	}
 
-	// Category Management Methods
-
 	private void loadCategories() {
 		try {
+			// Show loading indicator or status message
+			showStatusMessage("Loading categories...", false);
+
+			// Clear existing list
 			categoryList.clear();
+
+			// Get categories from service
 			List<Category> categories = categoryService.getAllCategories();
+
+			// Check if we got valid data
+			if (categories == null || categories.isEmpty()) {
+				showStatusMessage("No categories found or unable to connect to server", true);
+				return;
+			}
+
+			// Add categories to the list
 			categoryList.addAll(categories);
 
-			// Also update category dropdown for word editing
+			// Update dropdowns and other UI elements
 			updateCategoryComboBoxes();
+
+			// Show success message
+			showStatusMessage("Loaded " + categories.size() + " categories successfully", false);
 
 		} catch (Exception e) {
 			System.err.println("Error loading categories: " + e.getMessage());
 			e.printStackTrace();
 			showStatusMessage("Error loading categories: " + e.getMessage(), true);
+		}
+	}
+
+	private void loadWords() {
+		try {
+			// Show loading indicator or status message
+			showStatusMessage("Loading words...", false);
+
+			// Clear existing list
+			wordsList.clear();
+
+			// Get words from service
+			List<Word> words = wordService.getAllWords();
+
+			// Check if we got valid data
+			if (words == null || words.isEmpty()) {
+				showStatusMessage("No words found or unable to connect to server", true);
+				return;
+			}
+
+			// Add words to the list
+			wordsList.addAll(words);
+
+			// Show success message
+			showStatusMessage("Loaded " + words.size() + " words successfully", false);
+
+		} catch (Exception e) {
+			System.err.println("Error loading words: " + e.getMessage());
+			e.printStackTrace();
+			showStatusMessage("Error loading words: " + e.getMessage(), true);
 		}
 	}
 
@@ -368,20 +413,6 @@ public class ContentManagementController {
 	@FXML
 	private void handleRefreshCategories() {
 		loadCategories();
-	}
-
-	// Word Management Methods
-
-	private void loadWords() {
-		try {
-			wordsList.clear();
-			List<Word> words = wordService.getAllWords();
-			wordsList.addAll(words);
-		} catch (Exception e) {
-			System.err.println("Error loading words: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error loading words: " + e.getMessage(), true);
-		}
 	}
 
 	private void setupCategoryFilter() {

@@ -232,7 +232,7 @@ public class DailyWordController {
 
 		try {
 			// Add word to user's learned words
-			boolean success = userService.addLearnedWord(currentUserId, dailyWord.getId());
+			boolean success = userService.removeLearnedWord(currentUserId, dailyWord.getId());
 
 			if (success) {
 				// Disable the button to indicate it's been added
