@@ -73,6 +73,44 @@ public class WordService {
 	    // מניח שמדובר בשדה 'translation' במילת המפתח
 	    return wordRepository.findByTranslationIsNull();
 	}
+	
+	////
+	public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
+	    List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
+	    List<Word> randomWords = getRandomWords(words, 10);
+	    return mapWordsToLanguage(randomWords, userLanguage);
+	}
+
+	public List<TranslationResponseDTO> getRandomWordsByCategory(Long categoryId, String userLanguage) {
+	    List<Word> words = wordRepository.findByCategoryId(categoryId);
+	    List<Word> randomWords = getRandomWords(words, 10);
+	    return mapWordsToLanguage(randomWords, userLanguage);
+	}
+
+	public List<TranslationResponseDTO> getRandomWordsByDifficulty(Difficulty difficulty, String userLanguage) {
+	    List<Word> words = wordRepository.findByDifficulty(difficulty);
+	    List<Word> randomWords = getRandomWords(words, 10);
+	    return mapWordsToLanguage(randomWords, userLanguage);
+	}
+
+	public List<TranslationResponseDTO> getRandomTranslatedWordsForAllCategoriesAndDifficulties(String userLanguage) {
+	    List<Word> words = wordRepository.findAll();
+	    List<Word> randomWords = getRandomWords(words, 10);
+	    return mapWordsToLanguage(randomWords, userLanguage);
+	}
+////
+	
+	///
+	private List<Word> getRandomWords(List<Word> words, int limit) {
+	    if (words.isEmpty()) {
+	        return Collections.emptyList();
+	    }
+
+	    Random random = new Random();
+	    Collections.shuffle(words, random);
+	    return words.stream().limit(limit).collect(Collectors.toList());
+	}
+	
 
 
 	// שיטה לחפש מילה לפי הטקסט שלה
@@ -152,20 +190,20 @@ public class WordService {
         return mapWordsToLanguage(words, userLanguage);
     }
 
-
-    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
-        List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
-
-        if (words.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        Random random = new Random();
-        Collections.shuffle(words, random);
-        List<Word> randomWords = words.stream().limit(10).collect(Collectors.toList());
-
-        return mapWordsToLanguage(randomWords, userLanguage);
-    }
+//למחוק אם לא צריך
+//    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
+//        List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
+//
+//        if (words.isEmpty()) {
+//            return Collections.emptyList();
+//        }
+//
+//        Random random = new Random();
+//        Collections.shuffle(words, random);
+//        List<Word> randomWords = words.stream().limit(10).collect(Collectors.toList());
+//
+//        return mapWordsToLanguage(randomWords, userLanguage);
+//    }
 
 
 }

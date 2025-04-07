@@ -22,6 +22,8 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     Optional<Word> findByWord(String word);
     List<Word> findByCategoryIdAndDifficultyAndTranslation(Long categoryId, Difficulty difficulty, String translation);
     List<Word> findByTranslationIsNull();
+    List<Word> findByDifficulty(Difficulty difficulty);
+
 
 
 }
