@@ -24,4 +24,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String currentAdminEmail); 
+    @Query("SELECT u.learnedWords FROM User u WHERE u.username = :username")
+    List<Word> findLearnedWordsByUsername(@Param("username") String username);
+    @Query("SELECT w FROM User u JOIN u.learnedWords w WHERE u.username = :username AND w.targetLanguage = :targetLanguage")
+    List<Word> findLearnedWordsByUsernameAndTargetLanguage(@Param("username") String username, @Param("targetLanguage") String targetLanguage);
+
 }

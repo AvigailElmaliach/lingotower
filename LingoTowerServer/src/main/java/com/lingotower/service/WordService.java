@@ -119,7 +119,7 @@ public class WordService {
     }
     
 
-    private List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
+    public List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
         return words.stream()
                 .map(word -> {
                     if( "he".equals(userLanguage))
