@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.lingotower.dto.LoginRequest;
 import com.lingotower.model.Admin;
+import com.lingotower.model.Role;
 import com.lingotower.security.TokenStorage;
 
 /**
@@ -44,9 +45,9 @@ public class AdminAuthService {
 			// Create HTTP entity with request body and headers
 			HttpEntity<LoginRequest> entity = new HttpEntity<>(loginRequest, headers);
 
-			// Send login request
-			ResponseEntity<String> response = restTemplate.exchange(ADMIN_LOGIN_URL, HttpMethod.POST, entity,
-					String.class);
+			// Send login request to the admin login endpoint
+			ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/api/auth/admin/login",
+					HttpMethod.POST, entity, String.class);
 
 			// Check if login was successful
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
@@ -57,6 +58,7 @@ public class AdminAuthService {
 				// Create admin object
 				Admin admin = new Admin();
 				admin.setUsername(username);
+				admin.setRole(Role.ADMIN.toString());
 
 				return admin;
 			}
@@ -64,7 +66,6 @@ public class AdminAuthService {
 			return null;
 		} catch (Exception e) {
 			System.err.println("Error during admin login: " + e.getMessage());
-			e.printStackTrace();
 			return null;
 		}
 	}
