@@ -48,8 +48,9 @@ public class LingotowerApp extends Application {
 		}
 	}
 
+	// In LingotowerApp.java
 	private void showLoginScreen() {
-		// Initialize login and register views with callbacks
+		// Initialize login view with callbacks
 		loginView = new LoginView(
 				// On login success
 				user -> {
@@ -57,7 +58,7 @@ public class LingotowerApp extends Application {
 					System.out.println("User logged in: " + user.getUsername());
 
 					// Determine if the user is an admin and show the appropriate screen
-					if (user.getRole() != null && "ADMIN".equalsIgnoreCase(user.getRole().toString())) {
+					if (user.getRole() != null && "ADMIN".equalsIgnoreCase(user.getRole())) {
 						// Convert user to admin and show admin dashboard
 						Admin admin = new Admin();
 						admin.setId(user.getId());
@@ -90,6 +91,47 @@ public class LingotowerApp extends Application {
 		primaryStage.setTitle("LingoTower - Login");
 	}
 
+	private void showAdminDashboard() {
+		try {
+			// Load admin dashboard layout
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/AdminView.fxml"));
+			Parent root = loader.load();
+
+			// Get controller and configure it
+			AdminViewController controller = loader.getController();
+			controller.setAdmin(currentAdmin);
+			controller.setPrimaryStage(primaryStage);
+
+			// Set logout callback
+			controller.setOnLogout(() -> {
+				currentAdmin = null;
+				currentUser = null;
+				// Make sure to use the admin auth service for logout
+				adminAuthService.logout();
+				showLoginScreen();
+			});
+
+			// Create scene
+			Scene scene = new Scene(root, 800, 600);
+
+			// Add stylesheets
+			try {
+				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+			} catch (Exception e) {
+				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
+			}
+
+			// Set scene to stage
+			primaryStage.setScene(scene);
+			primaryStage.setTitle("LingoTower Admin - " + currentAdmin.getUsername());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			showError("Error loading admin dashboard: " + e.getMessage());
+		}
+	}
+
 	private void showRegisterScreen() {
 		// Initialize register view if not already done
 		if (registerView == null) {
@@ -116,48 +158,6 @@ public class LingotowerApp extends Application {
 		// Set scene to stage
 		primaryStage.setScene(registerScene);
 		primaryStage.setTitle("LingoTower - Register");
-	}
-
-	/**
-	 * Shows the admin dashboard after successful admin login
-	 */
-	private void showAdminDashboard() {
-		try {
-			// Load admin dashboard layout
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminView.fxml"));
-			Parent root = loader.load();
-
-			// Get controller and configure it
-			AdminViewController controller = loader.getController();
-			controller.setAdmin(currentAdmin);
-
-			// Set logout callback
-			controller.setOnLogout(() -> {
-				currentAdmin = null;
-				currentUser = null;
-				adminAuthService.logout();
-				showLoginScreen();
-			});
-
-			// Create scene
-			Scene scene = new Scene(root, 800, 600);
-
-			// Add stylesheets
-			try {
-				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
-				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
-			} catch (Exception e) {
-				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
-			}
-
-			// Set scene to stage
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("LingoTower Admin - " + currentAdmin.getUsername());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			showError("Error loading admin dashboard: " + e.getMessage());
-		}
 	}
 
 	/**

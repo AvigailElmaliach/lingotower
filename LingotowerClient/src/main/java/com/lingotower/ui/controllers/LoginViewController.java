@@ -82,9 +82,6 @@ public class LoginViewController implements Initializable {
 		// Disable button and show loading indicator during login attempt
 		loginButton.setDisable(true);
 		resetError(); // Clear previous errors
-		// if (loadingIndicator != null) {
-		// loadingIndicator.setVisible(true);
-		// }
 
 		// Create a background task for authentication
 		Task<User> loginTask = new Task<User>() {
@@ -92,16 +89,10 @@ public class LoginViewController implements Initializable {
 			protected User call() throws Exception {
 				// This runs on a background thread
 
-				// 1. Try User login
-				User user = userAuthService.login(username, password);
-				if (user != null) {
-					return user; // User found
-				}
-
-				// 2. Try Admin login if User login failed
+				// 1. Try Admin login first
 				Admin admin = adminAuthService.login(username, password);
 				if (admin != null) {
-					// Admin found, create User representation
+					// Admin found, create User representation with admin role
 					User adminUserRepresentation = new User();
 					adminUserRepresentation.setUsername(admin.getUsername());
 					adminUserRepresentation.setRole(Role.ADMIN.toString());
@@ -109,8 +100,9 @@ public class LoginViewController implements Initializable {
 					return adminUserRepresentation;
 				}
 
-				// 3. Neither User nor Admin found
-				return null;
+				// 2. If admin login failed, try regular user login
+				User user = userAuthService.login(username, password);
+				return user; // Will be null if login failed
 			}
 		};
 
@@ -131,9 +123,6 @@ public class LoginViewController implements Initializable {
 
 			// Re-enable button and hide indicator
 			loginButton.setDisable(false);
-			// if (loadingIndicator != null) {
-			// loadingIndicator.setVisible(false);
-			// }
 		});
 
 		loginTask.setOnFailed(workerStateEvent -> {
@@ -143,9 +132,6 @@ public class LoginViewController implements Initializable {
 
 			// Re-enable button and hide indicator
 			loginButton.setDisable(false);
-			// if (loadingIndicator != null) {
-			// loadingIndicator.setVisible(false);
-			// }
 		});
 
 		// Run the task on a separate thread
