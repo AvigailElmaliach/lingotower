@@ -46,7 +46,85 @@ public class WordController {
     public ResponseEntity<List<Word>> getAllWords() {
         return ResponseEntity.ok(wordService.getAllWords());
     }
+///
+//    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random")
+//    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
+//            @PathVariable Long categoryId, 
+//            @PathVariable Difficulty difficulty,
+//            Principal principal) {
+//        
+//        // קבלת המשתמש המחובר
+//        User user = userService.getUserByUsername(principal.getName());
+//        if (user == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        // קבלת שפת היעד של המשתמש
+//        String userLanguage = user.getTargetLanguage();
+//
+//        // קבלת המילים האקראיות לפי קטגוריה ודרגת קושי
+//        List<TranslationResponseDTO> randomWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
+//        
+//                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+//                : ResponseEntity.ok(randomWords);
+//    }
 
+    @GetMapping("/category/{categoryId}/random")
+    public ResponseEntity<List<TranslationResponseDTO>> getRandomWordsByCategory(
+            @PathVariable Long categoryId, 
+            Principal principal) {
+        
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String userLanguage = user.getTargetLanguage();
+
+        List<TranslationResponseDTO> randomWords = wordService.getRandomWordsByCategory(categoryId, userLanguage);
+        
+        return randomWords.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                : ResponseEntity.ok(randomWords);
+    }
+
+    @GetMapping("/difficulty/{difficulty}/random")
+    public ResponseEntity<List<TranslationResponseDTO>> getRandomWordsByDifficulty(
+            @PathVariable Difficulty difficulty, 
+            Principal principal) {
+        
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String userLanguage = user.getTargetLanguage();
+
+        List<TranslationResponseDTO> randomWords = wordService.getRandomWordsByDifficulty(difficulty, userLanguage);
+        
+        return randomWords.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                : ResponseEntity.ok(randomWords);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsForAllCategoriesAndDifficulties(
+            Principal principal) {
+        
+        User user = userService.getUserByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String userLanguage = user.getTargetLanguage();
+
+        List<TranslationResponseDTO> randomWords = wordService.getRandomTranslatedWordsForAllCategoriesAndDifficulties(userLanguage);
+        
+        return randomWords.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                : ResponseEntity.ok(randomWords);
+    }
+///
 
  // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
     @GetMapping("/category/{categoryId}/translate")
