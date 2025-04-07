@@ -2,13 +2,22 @@ package com.lingotower.service;
 
 import com.lingotower.data.UserRepository;
 import com.lingotower.data.WordRepository;
+import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
+import com.lingotower.service.WordService;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.lingotower.exception.UserNotFoundException;
 import com.lingotower.exception.WordNotFoundException;
@@ -17,11 +26,15 @@ import com.lingotower.exception.WordNotFoundException;
 public class UserService {
     private final UserRepository userRepository;
     private final WordRepository wordRepository;
+    @Autowired
+    private WordService wordService;
+
     
     @Autowired
-    public UserService(UserRepository userRepository, WordRepository wordRepository) {
+    public UserService(UserRepository userRepository, WordRepository wordRepository,WordService wordService) {
         this.userRepository = userRepository;
         this.wordRepository = wordRepository;
+        this.wordService=wordService;
     }
 
     public List<User> getAllUsers() {
@@ -71,5 +84,34 @@ public class UserService {
         }
         return false;
     }
-	
+
+
+    public List<TranslationResponseDTO> getLearnedWordsForUser(String username) {
+        User user = getUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        String targetLanguage = user.getTargetLanguage();
+
+        List<Word> learnedWords = userRepository
+            .findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
+
+        return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
+    }
+    
+    @Transactional
+    public void addLearnedWord(String username, Long wordId) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Word word = wordRepository.findById(wordId)
+            .orElseThrow(() -> new EntityNotFoundException("Word not found"));
+
+        user.getLearnedWords().add(word);
+        userRepository.save(user);
+    }
+
+
+
 }

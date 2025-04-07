@@ -1,6 +1,7 @@
 package com.lingotower.controller;
 
 import com.lingotower.dto.language.LanguageUpdateRequest;
+import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.dto.user.UserCreateDTO;
 import com.lingotower.dto.user.UserDTO;
 import com.lingotower.dto.user.UserProgressDTO;
@@ -8,10 +9,14 @@ import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.data.UserRepository;
 import com.lingotower.model.User;
 import com.lingotower.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.security.Principal;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -104,5 +109,20 @@ public class UserController {
 
         return ResponseEntity.ok("Languages updated successfully");
     }
+    
+    @GetMapping("/learned")
+    public ResponseEntity<List<TranslationResponseDTO>> getLearnedWords(Principal principal) {
+        List<TranslationResponseDTO> learnedDTOs = userService.getLearnedWordsForUser(principal.getName());
+        return ResponseEntity.ok(learnedDTOs);
+    }
+    
+    @PostMapping("/learned/{wordId}")
+    public ResponseEntity<Void> addLearnedWord(@PathVariable Long wordId, Principal principal) {
+        userService.addLearnedWord(principal.getName(), wordId);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }
 
