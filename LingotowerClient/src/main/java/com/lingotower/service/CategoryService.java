@@ -22,15 +22,38 @@ public class CategoryService extends BaseService {
 		super(); // זה יאתחל את ה-RestTemplate עם מטפל השגיאות
 	}
 
+//	public List<Category> getAllCategories() {
+//		// יצירת ישות HTTP עם כותרות אימות
+//		HttpHeaders headers = createAuthHeaders();
+//		HttpEntity<?> entity = new HttpEntity<>(headers);
+//
+//		ResponseEntity<List<Category>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
+//				new ParameterizedTypeReference<List<Category>>() {
+//				});
+//		return response.getBody();
+//	}
 	public List<Category> getAllCategories() {
-		// יצירת ישות HTTP עם כותרות אימות
-		HttpHeaders headers = createAuthHeaders();
-		HttpEntity<?> entity = new HttpEntity<>(headers);
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		ResponseEntity<List<Category>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
-				new ParameterizedTypeReference<List<Category>>() {
-				});
-		return response.getBody();
+			// Make the request to http://localhost:8080/categories
+			ResponseEntity<List<Category>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<Category>>() {
+					});
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				return response.getBody() != null ? response.getBody() : new ArrayList<>();
+			} else {
+				System.err.println("Error response from server: " + response.getStatusCode());
+				return new ArrayList<>();
+			}
+		} catch (Exception e) {
+			System.err.println("Error fetching categories: " + e.getMessage());
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
 	}
 
 	public Category getCategoryById(Long id) {

@@ -97,7 +97,6 @@ public class DashboardViewController {
 
 	public void loadCategories() {
 		try {
-			// Show loading indicator (if you have one)
 
 			// Fetch categories from server
 			List<Category> categories = categoryService.getAllCategories();

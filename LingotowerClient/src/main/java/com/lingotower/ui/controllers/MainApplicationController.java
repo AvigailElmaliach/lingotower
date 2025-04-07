@@ -147,11 +147,12 @@ public class MainApplicationController {
 	public void showWordLearningForCategory(Category category) {
 		System.out.println("MainApplicationController.showWordLearningForCategory() called for: " + category.getName());
 		try {
-			// Create word learning view
+			// Create word learning view with the current user
 			System.out.println("Creating WordLearningView");
-			WordLearningView wordLearningView = new WordLearningView(category, this::showDashboard // Go back to
+			WordLearningView wordLearningView = new WordLearningView(category, this::showDashboard, // Go back to
 																									// dashboard when
 																									// finished
+					this.currentUser // Pass the current user
 			);
 
 			System.out.println("Setting main layout center to word learning view");

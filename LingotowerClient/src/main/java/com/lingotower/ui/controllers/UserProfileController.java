@@ -214,7 +214,7 @@ public class UserProfileController {
 			progressChart.setData(pieChartData);
 
 			// Get statistics
-			List<Word> learnedWords = userService.getLearnedWords(currentUser.getId());
+			List<Word> learnedWords = userService.getLearnedWords();
 			int learnedWordsCount = learnedWords != null ? learnedWords.size() : 0;
 			wordsLearnedLabel.setText(String.valueOf(learnedWordsCount));
 
@@ -281,7 +281,7 @@ public class UserProfileController {
 
 	private void loadUserLearnedWords() {
 		try {
-			List<Word> learnedWords = userService.getLearnedWords(currentUser.getId());
+			List<Word> learnedWords = userService.getLearnedWords();
 			ObservableList<String> wordItems = FXCollections.observableArrayList();
 
 			if (learnedWords != null) {
@@ -337,7 +337,7 @@ public class UserProfileController {
 
 			if ("All Categories".equals(selectedCategory)) {
 				// Get all learned words
-				filteredWords = userService.getLearnedWords(currentUser.getId());
+				filteredWords = userService.getLearnedWords();
 			} else {
 				// Get learned words for the selected category
 				List<Category> categories = categoryService.getAllCategories();
@@ -356,7 +356,7 @@ public class UserProfileController {
 					filteredWords = userService.getLearnedWordsByCategory(currentUser.getId(), categoryId);
 				} else {
 					// Category not found, show all words
-					filteredWords = userService.getLearnedWords(currentUser.getId());
+					filteredWords = userService.getLearnedWords();
 				}
 			}
 

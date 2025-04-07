@@ -83,30 +83,54 @@ public class WordService extends BaseService {
 	}
 
 	// Get all words
+//	public List<Word> getAllWords() {
+//		try {
+//			System.out.println("Fetching all words from server...");
+//
+//			// Create headers with authentication
+//			HttpHeaders headers = createAuthHeaders();
+//			HttpEntity<?> entity = new HttpEntity<>(headers);
+//
+//			// Make the request
+//			System.out.println("Sending request to: " + BASE_URL);
+//			ResponseEntity<List<Word>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
+//					new ParameterizedTypeReference<List<Word>>() {
+//					});
+//
+//			List<Word> words = response.getBody();
+//			System.out.println("Received " + (words != null ? words.size() : 0) + " words from server");
+//
+//			if (words != null && !words.isEmpty()) {
+//				System.out.println("First word: " + words.get(0).getWord());
+//			}
+//
+//			return words;
+//		} catch (Exception e) {
+//			System.err.println("Error getting all words: " + e.getMessage());
+//			e.printStackTrace();
+//			return new ArrayList<>();
+//		}
+//	}
+
 	public List<Word> getAllWords() {
 		try {
-			System.out.println("Fetching all words from server...");
-
 			// Create headers with authentication
 			HttpHeaders headers = createAuthHeaders();
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			// Make the request
-			System.out.println("Sending request to: " + BASE_URL);
+			// Make the request to http://localhost:8080/words
 			ResponseEntity<List<Word>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
-			List<Word> words = response.getBody();
-			System.out.println("Received " + (words != null ? words.size() : 0) + " words from server");
-
-			if (words != null && !words.isEmpty()) {
-				System.out.println("First word: " + words.get(0).getWord());
+			if (response.getStatusCode().is2xxSuccessful()) {
+				return response.getBody() != null ? response.getBody() : new ArrayList<>();
+			} else {
+				System.err.println("Error response from server: " + response.getStatusCode());
+				return new ArrayList<>();
 			}
-
-			return words;
 		} catch (Exception e) {
-			System.err.println("Error getting all words: " + e.getMessage());
+			System.err.println("Error fetching words: " + e.getMessage());
 			e.printStackTrace();
 			return new ArrayList<>();
 		}

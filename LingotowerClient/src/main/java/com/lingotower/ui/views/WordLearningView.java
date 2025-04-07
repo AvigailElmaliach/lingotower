@@ -3,6 +3,7 @@ package com.lingotower.ui.views;
 import java.io.IOException;
 
 import com.lingotower.model.Category;
+import com.lingotower.model.User;
 import com.lingotower.ui.controllers.WordLearningController;
 
 import javafx.fxml.FXMLLoader;
@@ -13,10 +14,12 @@ public class WordLearningView implements View {
 
 	private Category category;
 	private Runnable onBackToDashboard;
+	private User currentUser;
 
-	public WordLearningView(Category category, Runnable onBackToDashboard) {
+	public WordLearningView(Category category, Runnable onBackToDashboard, User currentUser) {
 		this.category = category;
 		this.onBackToDashboard = onBackToDashboard;
+		this.currentUser = currentUser;
 	}
 
 	@Override
@@ -28,6 +31,7 @@ public class WordLearningView implements View {
 			WordLearningController controller = loader.getController();
 			controller.setCategory(category);
 			controller.setOnBackToDashboard(onBackToDashboard);
+			controller.setUser(currentUser);
 
 			return view;
 		} catch (IOException e) {
