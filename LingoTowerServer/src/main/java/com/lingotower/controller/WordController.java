@@ -5,7 +5,9 @@ import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.dto.word.WordDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
+import com.lingotower.model.Role;
 import com.lingotower.model.User;
+import com.lingotower.model.BaseUser;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.TranslationService;
@@ -126,26 +128,42 @@ public class WordController {
     }
 ///
 
- // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
+// // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
+//    @GetMapping("/category/{categoryId}/translate")
+//    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
+//            @PathVariable Long categoryId,
+//            Principal principal) {
+//
+//        // קבלת פרטי המשתמש והעברית או אנגלית
+//        User user = userService.getUserByUsername(principal.getName());
+//        if (user == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        String userLanguage = user.getTargetLanguage();
+//
+//        // שליפת המילים בקטגוריה לפי שפת המשתמש
+//        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, userLanguage);
+//        
+//        return translatedWords.isEmpty()
+//                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+//                : ResponseEntity.ok(translatedWords);
+//    }
     @GetMapping("/category/{categoryId}/translate")
     public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
             @PathVariable Long categoryId,
             Principal principal) {
 
-        // קבלת פרטי המשתמש והעברית או אנגלית
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String userLanguage = user.getTargetLanguage();
+        String username = principal.getName();
 
-        // שליפת המילים בקטגוריה לפי שפת המשתמש
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, userLanguage);
         
+        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
+
         return translatedWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
                 : ResponseEntity.ok(translatedWords);
     }
+
+
     
     // שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
     @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
