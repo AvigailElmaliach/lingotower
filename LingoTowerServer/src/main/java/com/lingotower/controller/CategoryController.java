@@ -1,8 +1,12 @@
 package com.lingotower.controller;
 
+import com.lingotower.data.AdminRepository;
+import com.lingotower.data.UserRepository;
 import com.lingotower.dto.category.CategoryDTO;
 import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.model.Category;
+import com.lingotower.model.Admin;
+import com.lingotower.model.BaseUser;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
@@ -31,12 +35,17 @@ public class CategoryController {
 	private final CategoryService categoryService;
     private final UserService userService;  
     private final WordService wordService;
+    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+
     
     @Autowired
-    public CategoryController(CategoryService categoryService, UserService userService,WordService wordService) {
+    public CategoryController(CategoryService categoryService, UserService userService,WordService wordService,UserRepository userRepository, AdminRepository adminRepository) {
         this.categoryService = categoryService;
         this.userService = userService;
         this.wordService=wordService;
+        this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
     }
     
     private CategoryDTO convertToDTO(Category category) {
@@ -49,20 +58,47 @@ public class CategoryController {
                          .collect(Collectors.toList());
     }
  
+//    @GetMapping
+//    public ResponseEntity<List<CategoryDTO>> getAllCategories(Principal principal) {
+//    	
+//        User user = userService.getUserByUsername(principal.getName());
+//        if (user == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        String userLanguage = user.getTargetLanguage();  
+//
+//        List<CategoryDTO> categories = categoryService.getAllCategories(userLanguage);//ByLanguage
+//
+//        return ResponseEntity.ok(categories);
+//    }
+    
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories(Principal principal) {
-    	
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String username = principal.getName();
+
+        // ניסיון למצוא את המשתמש כמנהל
+        Optional<Admin> optionalAdmin = adminRepository.findByUsername(username);
+        if (optionalAdmin.isPresent()) {
+            Admin admin = optionalAdmin.get();
+            String sourceLanguage = admin.getSourceLanguage(); // שפת מקור של המנהל
+            List<CategoryDTO> categories = categoryService.getAllCategories(sourceLanguage);
+            return ResponseEntity.ok(categories);
         }
 
-        String userLanguage = user.getTargetLanguage();  
+        // אם לא מנהל, ננסה למצוא כמשתמש רגיל
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String targetLanguage = user.getTargetLanguage(); // שפת יעד של המשתמש
+            List<CategoryDTO> categories = categoryService.getAllCategories(targetLanguage);
+            return ResponseEntity.ok(categories);
+        }
 
-        List<CategoryDTO> categories = categoryService.getAllCategories(userLanguage);//ByLanguage
-
-        return ResponseEntity.ok(categories);
+        // אם לא נמצא לא כמנהל ולא כמשתמש רגיל
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 
     
 

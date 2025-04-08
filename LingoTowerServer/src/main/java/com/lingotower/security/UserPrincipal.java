@@ -16,14 +16,16 @@ public class UserPrincipal implements UserDetails {
         this.user = user;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // אם התפקיד הוא ADMIN, ניתן לו הרשאה של ROLE_ADMIN, אחרת ROLE_USER
-        if (Role.ADMIN.equals(user.getRole())) {
+        if (user.getRole().equals("ADMIN")) {
             return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
+
 
     @Override
     public String getPassword() {
