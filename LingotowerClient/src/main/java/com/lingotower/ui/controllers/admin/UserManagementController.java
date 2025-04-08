@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.lingotower.model.Admin;
 import com.lingotower.model.User;
+import com.lingotower.security.TokenStorage;
+import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 
 import javafx.collections.FXCollections;
@@ -70,13 +72,23 @@ public class UserManagementController {
 	private Admin currentAdmin;
 	private User selectedUser;
 	private Runnable returnToDashboard;
-
+	private AdminService adminService;
 	private UserService userService;
 	private ObservableList<User> usersList = FXCollections.observableArrayList();
 
 	public UserManagementController() {
 		// Initialize services
-		userService = new UserService();
+		this.userService = new UserService();
+		// Log the token status
+		System.out.println("UserManagementController constructor - Token status: "
+				+ (TokenStorage.hasToken() ? "Present" : "MISSING"));
+
+	}
+
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+		System.out.println("AdminService set in UserManagementController");
+		TokenStorage.logTokenStatus("After setting AdminService");
 	}
 
 	@FXML
@@ -136,13 +148,27 @@ public class UserManagementController {
 
 	public void loadUsers() {
 		try {
-			// Clear current list and load all users
-			usersList.clear();
-			List<User> users = userService.getAllUsers();
-			usersList.addAll(users);
+			System.out.println("Loading users...");
+			TokenStorage.logTokenStatus("Before loading users");
 
-			// Show success message
-			showStatusMessage("Loaded " + users.size() + " users", false);
+			if (adminService == null) {
+				System.err.println("AdminService not set, creating new instance");
+				adminService = new AdminService();
+			}
+
+			// Clear current list
+			usersList.clear();
+
+			// Load all users using the admin service
+			List<User> users = adminService.getAllUsers();
+			System.out.println("Users loaded: " + (users != null ? users.size() : "null"));
+
+			if (users != null) {
+				usersList.addAll(users);
+				showStatusMessage("Loaded " + users.size() + " users", false);
+			} else {
+				showStatusMessage("No users found", true);
+			}
 		} catch (Exception e) {
 			System.err.println("Error loading users: " + e.getMessage());
 			e.printStackTrace();
