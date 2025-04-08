@@ -21,97 +21,94 @@ import java.util.stream.Collectors;
 
 import com.lingotower.exception.UserNotFoundException;
 import com.lingotower.exception.WordNotFoundException;
+
 //import com.lingotower.exception;
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-    private final WordRepository wordRepository;
-    @Autowired
-    private WordService wordService;
+	private final UserRepository userRepository;
+	private final WordRepository wordRepository;
+	@Autowired
+	private WordService wordService;
 
-    
-    @Autowired
-    public UserService(UserRepository userRepository, WordRepository wordRepository,WordService wordService) {
-        this.userRepository = userRepository;
-        this.wordRepository = wordRepository;
-        this.wordService=wordService;
-    }
+	@Autowired
+	public UserService(UserRepository userRepository, WordRepository wordRepository, WordService wordService) {
+		this.userRepository = userRepository;
+		this.wordRepository = wordRepository;
+		this.wordService = wordService;
+	}
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
+	public Optional<User> getUserById(Long id) {
+		return userRepository.findById(id);
+	}
 
-    public User saveUser(User user) {
-       //אם המשתמש קיים  לא עשתי בדיקה
-        return userRepository.save(user);
-    }
+	public User saveUser(User user) {
+		// אם המשתמש קיים לא עשתי בדיקה
+		return userRepository.save(user);
+	}
 
-    public void deleteUser(Long id) {
-        // כאן אפשר להוסיף בדיקה אם המשתמש קיים לפני המחיקה
-        userRepository.deleteById(id);
-    }
+	public void deleteUser(Long id) {
+		// כאן אפשר להוסיף בדיקה אם המשתמש קיים לפני המחיקה
+		userRepository.deleteById(id);
+	}
 
-    public double getLearningProgress(Long userId) {
-        List<Word> learnedWords = userRepository.findLearnedWordsByUserId(userId);
-        long totalWords = wordRepository.count();
-        return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
-    }
-    
-    public void addLearnedWord(Long userId, Long wordId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        Word word = wordRepository.findById(wordId).orElseThrow(() -> new WordNotFoundException("Word not found"));
+	public double getLearningProgress(Long userId) {
+		List<Word> learnedWords = userRepository.findLearnedWordsByUserId(userId);
+		long totalWords = wordRepository.count();
+		return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
+	}
 
-        if (!user.getLearnedWords().contains(word)) {
-            user.getLearnedWords().add(word);
-            userRepository.save(user);
-        }
-    }
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
-    }
-    public boolean updateUserLanguages(String username, String sourceLang, String targetLang) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setSourceLanguage(sourceLang);
-            user.setTargetLanguage(targetLang);
-            userRepository.save(user);
-            return true;
-        }
-        return false;
-    }
+	public void addLearnedWord(Long userId, Long wordId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+		Word word = wordRepository.findById(wordId).orElseThrow(() -> new WordNotFoundException("Word not found"));
 
+		if (!user.getLearnedWords().contains(word)) {
+			user.getLearnedWords().add(word);
+			userRepository.save(user);
+		}
+	}
 
-    public List<TranslationResponseDTO> getLearnedWordsForUser(String username) {
-        User user = getUserByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
+	public User getUserByUsername(String username) {
+		return userRepository.findByUsername(username).orElse(null);
+	}
 
-        String targetLanguage = user.getTargetLanguage();
+	public boolean updateUserLanguages(String username, String sourceLang, String targetLang) {
+		Optional<User> userOptional = userRepository.findByUsername(username);
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			user.setSourceLanguage(sourceLang);
+			user.setTargetLanguage(targetLang);
+			userRepository.save(user);
+			return true;
+		}
+		return false;
+	}
 
-        List<Word> learnedWords = userRepository
-            .findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
+	public List<TranslationResponseDTO> getLearnedWordsForUser(String username) {
+		User user = getUserByUsername(username);
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found");
+		}
 
-        return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
-    }
-    
-    @Transactional
-    public void addLearnedWord(String username, Long wordId) {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		String targetLanguage = user.getTargetLanguage();
 
-        Word word = wordRepository.findById(wordId)
-            .orElseThrow(() -> new EntityNotFoundException("Word not found"));
+		List<Word> learnedWords = userRepository.findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
 
-        user.getLearnedWords().add(word);
-        userRepository.save(user);
-    }
+		return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
+	}
 
+	@Transactional
+	public void addLearnedWord(String username, Long wordId) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+		Word word = wordRepository.findById(wordId).orElseThrow(() -> new EntityNotFoundException("Word not found"));
+
+		user.getLearnedWords().add(word);
+		userRepository.save(user);
+	}
 
 }

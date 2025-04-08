@@ -28,10 +28,10 @@ public class WordService {
 	private final WordRepository wordRepository;
 	private final CategoryRepository categoryRepository;
 	private final TranslationService translationService;
-	
-	 @PersistenceContext
+
+	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	public WordService(WordRepository wordRepository, TranslationService translationService,
 			CategoryRepository categoryRepository) {
@@ -58,60 +58,59 @@ public class WordService {
 //		return wordRepository.save(word);
 //	}
 	public Word saveWord(Word word, String sourceLang, String targetLang) {
-	    if (word.getTranslation() == null || word.getTranslation().isEmpty()) {
-	        String translatedText = translationService.translateText(word.getWord(), sourceLang, targetLang);
-	        if (translatedText != null && !translatedText.isEmpty()) {
-	            word.setTranslation(translatedText);
-	        } else {
-	            System.out.println(" תרגום לא נמצא עבור: " + word.getWord());
-	        }
-	    }
-	    return wordRepository.save(word);
+		if (word.getTranslation() == null || word.getTranslation().isEmpty()) {
+			String translatedText = translationService.translateText(word.getWord(), sourceLang, targetLang);
+			if (translatedText != null && !translatedText.isEmpty()) {
+				word.setTranslation(translatedText);
+			} else {
+				System.out.println(" תרגום לא נמצא עבור: " + word.getWord());
+			}
+		}
+		return wordRepository.save(word);
 	}
-	
+
 	public List<Word> findWordsWithoutTranslation() {
-	    // מניח שמדובר בשדה 'translation' במילת המפתח
-	    return wordRepository.findByTranslationIsNull();
+		// מניח שמדובר בשדה 'translation' במילת המפתח
+		return wordRepository.findByTranslationIsNull();
 	}
-	
+
 	////
-	public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
-	    List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
-	    List<Word> randomWords = getRandomWords(words, 10);
-	    return mapWordsToLanguage(randomWords, userLanguage);
+	public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId,
+			Difficulty difficulty, String userLanguage) {
+		List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
+		List<Word> randomWords = getRandomWords(words, 10);
+		return mapWordsToLanguage(randomWords, userLanguage);
 	}
 
 	public List<TranslationResponseDTO> getRandomWordsByCategory(Long categoryId, String userLanguage) {
-	    List<Word> words = wordRepository.findByCategoryId(categoryId);
-	    List<Word> randomWords = getRandomWords(words, 10);
-	    return mapWordsToLanguage(randomWords, userLanguage);
+		List<Word> words = wordRepository.findByCategoryId(categoryId);
+		List<Word> randomWords = getRandomWords(words, 10);
+		return mapWordsToLanguage(randomWords, userLanguage);
 	}
 
 	public List<TranslationResponseDTO> getRandomWordsByDifficulty(Difficulty difficulty, String userLanguage) {
-	    List<Word> words = wordRepository.findByDifficulty(difficulty);
-	    List<Word> randomWords = getRandomWords(words, 10);
-	    return mapWordsToLanguage(randomWords, userLanguage);
+		List<Word> words = wordRepository.findByDifficulty(difficulty);
+		List<Word> randomWords = getRandomWords(words, 10);
+		return mapWordsToLanguage(randomWords, userLanguage);
 	}
 
 	public List<TranslationResponseDTO> getRandomTranslatedWordsForAllCategoriesAndDifficulties(String userLanguage) {
-	    List<Word> words = wordRepository.findAll();
-	    List<Word> randomWords = getRandomWords(words, 10);
-	    return mapWordsToLanguage(randomWords, userLanguage);
+		List<Word> words = wordRepository.findAll();
+		List<Word> randomWords = getRandomWords(words, 10);
+		return mapWordsToLanguage(randomWords, userLanguage);
 	}
 ////
-	
+
 	///
 	private List<Word> getRandomWords(List<Word> words, int limit) {
-	    if (words.isEmpty()) {
-	        return Collections.emptyList();
-	    }
+		if (words.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-	    Random random = new Random();
-	    Collections.shuffle(words, random);
-	    return words.stream().limit(limit).collect(Collectors.toList());
+		Random random = new Random();
+		Collections.shuffle(words, random);
+		return words.stream().limit(limit).collect(Collectors.toList());
 	}
-	
-
 
 	// שיטה לחפש מילה לפי הטקסט שלה
 	public Optional<Word> findByWord(String wordText) {
@@ -123,72 +122,67 @@ public class WordService {
 //				targetLang);
 
 	public void addWordWithTranslation(WordDTO wordDTO, String targetLang) {
-	    // מתרגמים את המילה לשפה הרצויה
-	    final String translatedText = translationService.translateText(wordDTO.getWord(), wordDTO.getSourceLanguage(), targetLang);
+		// מתרגמים את המילה לשפה הרצויה
+		final String translatedText = translationService.translateText(wordDTO.getWord(), wordDTO.getSourceLanguage(),
+				targetLang);
 
-	    // מציאת קטגוריה קיימת או יצירת חדשה
-	    Category category = categoryRepository.findByName(wordDTO.getCategory()).orElseGet(() -> {
-	        Category newCategory = new Category(wordDTO.getCategory());
-	        return categoryRepository.save(newCategory);
-	    });
+		// מציאת קטגוריה קיימת או יצירת חדשה
+		Category category = categoryRepository.findByName(wordDTO.getCategory()).orElseGet(() -> {
+			Category newCategory = new Category(wordDTO.getCategory());
+			return categoryRepository.save(newCategory);
+		});
 
-	    // יצירת מילה חדשה עם התרגום
-	    Word word = new Word(wordDTO.getWord(), translatedText, wordDTO.getSourceLanguage());
-	    word.setCategory(category);
-	    word.setDifficulty(wordDTO.getDifficulty()); // גם פה חשוב לוודא שממלאים את כל הפרטים
+		// יצירת מילה חדשה עם התרגום
+		Word word = new Word(wordDTO.getWord(), translatedText, wordDTO.getSourceLanguage());
+		word.setCategory(category);
+		word.setDifficulty(wordDTO.getDifficulty()); // גם פה חשוב לוודא שממלאים את כל הפרטים
 
-	    // שמירת המילה עם התרגום
-	    wordRepository.save(word);
+		// שמירת המילה עם התרגום
+		wordRepository.save(word);
 	}
-	
 
- // שיטה להחזרת מילה לפי מזהה ושפת משתמש
-    public TranslationResponseDTO getTranslatedWordById(Long id, String userLanguage) {
-        Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
+	// שיטה להחזרת מילה לפי מזהה ושפת משתמש
+	public TranslationResponseDTO getTranslatedWordById(Long id, String userLanguage) {
+		Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
 
-        // מבצע את המיפוי של המילה בהתאם לשפת המשתמש
-        String translation = "he".equals(userLanguage) ? word.getTranslation() : word.getWord();
-        return new TranslationResponseDTO(word.getWord(), translation);
-    }
+		// מבצע את המיפוי של המילה בהתאם לשפת המשתמש
+		String translation = "he".equals(userLanguage) ? word.getTranslation() : word.getWord();
+		return new TranslationResponseDTO(word.getWord(), translation);
+	}
 
-    // שיטה להחזרת מילה לפי טקסט ומקור שפה
-    public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
-        return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
-    }
-    
+	// שיטה להחזרת מילה לפי טקסט ומקור שפה
+	public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
+		return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
+	}
 
-    public List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
-        return words.stream()
-                .map(word -> {
-                    if( "he".equals(userLanguage))
-                    return new TranslationResponseDTO(word.getTranslation(), word.getWord());
-                    return new TranslationResponseDTO(word.getWord(), word.getTranslation());
-                })
-                .collect(Collectors.toList());
-    }
+	public List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
+		return words.stream().map(word -> {
+			if ("he".equals(userLanguage))
+				return new TranslationResponseDTO(word.getTranslation(), word.getWord());
+			return new TranslationResponseDTO(word.getWord(), word.getTranslation());
+		}).collect(Collectors.toList());
+	}
 
+	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
+		List<Word> words = wordRepository.findByCategoryId(categoryId);
 
-    public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
-        List<Word> words = wordRepository.findByCategoryId(categoryId);
+		if (words.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-        if (words.isEmpty()) {
-            return Collections.emptyList();
-        }
+		return mapWordsToLanguage(words, userLanguage);
+	}
 
-        return mapWordsToLanguage(words, userLanguage);
-    }
+	public List<TranslationResponseDTO> getTranslatedWordsByCategoryAndDifficulty(Long categoryId,
+			Difficulty difficulty, String userLanguage) {
+		List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
 
+		if (words.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-
-    public List<TranslationResponseDTO> getTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
-        List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
-
-        if (words.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return mapWordsToLanguage(words, userLanguage);
-    }
+		return mapWordsToLanguage(words, userLanguage);
+	}
 
 //למחוק אם לא צריך
 //    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
@@ -204,6 +198,5 @@ public class WordService {
 //
 //        return mapWordsToLanguage(randomWords, userLanguage);
 //    }
-
 
 }
