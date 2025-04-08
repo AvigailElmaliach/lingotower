@@ -23,9 +23,19 @@ public abstract class BaseService {
 	// Method to create headers with authentication token
 	protected HttpHeaders createAuthHeaders() {
 		HttpHeaders headers = new HttpHeaders();
+
+		// Important debugging
+		TokenStorage.logTokenStatus("Creating auth headers");
+
 		// Add the authentication token if available
 		if (TokenStorage.hasToken()) {
-			headers.set("Authorization", "Bearer " + TokenStorage.getToken());
+			String tokenValue = TokenStorage.getToken();
+			String authHeader = "Bearer " + tokenValue;
+			headers.set("Authorization", authHeader);
+			System.out.println("Added Authorization header: Bearer "
+					+ tokenValue.substring(0, Math.min(10, tokenValue.length())) + "...");
+		} else {
+			System.out.println("WARNING: No token available when creating auth headers!");
 		}
 		return headers;
 	}

@@ -17,8 +17,6 @@ import com.lingotower.security.TokenStorage;
  * Service for handling admin authentication
  */
 public class AdminAuthService {
-	private static final String ADMIN_AUTH_URL = "http://localhost:8080/api/auth/admin";
-	private static final String ADMIN_LOGIN_URL = "http://localhost:8080/api/auth/admin/login";
 
 	private RestTemplate restTemplate;
 
@@ -35,6 +33,8 @@ public class AdminAuthService {
 	 */
 	public Admin login(String username, String password) {
 		try {
+			System.out.println("Admin login attempt for: " + username);
+
 			// Create login request
 			LoginRequest loginRequest = new LoginRequest(username, password);
 
@@ -53,7 +53,11 @@ public class AdminAuthService {
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
 				// Store the JWT token
 				String token = response.getBody();
+				System.out.println("Admin login successful! Token received (length: " + token.length() + ")");
+
+				// CRITICAL: Store the token
 				TokenStorage.setToken(token);
+				TokenStorage.logTokenStatus("After admin login");
 
 				// Create admin object
 				Admin admin = new Admin();
@@ -61,11 +65,13 @@ public class AdminAuthService {
 				admin.setRole(Role.ADMIN.toString());
 
 				return admin;
+			} else {
+				System.out.println("Admin login failed: " + response.getStatusCode());
+				return null;
 			}
-
-			return null;
 		} catch (Exception e) {
 			System.err.println("Error during admin login: " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

@@ -12,8 +12,8 @@ public class TokenStorage {
 	}
 
 	public static String getToken() {
-		System.out.println("Token retrieved: " + jwtToken);
-		return jwtToken; // Return the stored token, not null
+		System.out.println("Token retrieved from storage: " + jwtToken);
+		return jwtToken;
 	}
 
 	public static boolean hasToken() {
@@ -23,4 +23,15 @@ public class TokenStorage {
 	public static void clearToken() {
 		jwtToken = null;
 	}
+
+	// Debug method to help troubleshoot
+	public static void logTokenStatus(String location) {
+		if (hasToken()) {
+			System.out.println("[" + location + "] Token is present: "
+					+ getToken().substring(0, Math.min(10, getToken().length())) + "...");
+		} else {
+			System.out.println("[" + location + "] No token stored!");
+		}
+	}
+
 }

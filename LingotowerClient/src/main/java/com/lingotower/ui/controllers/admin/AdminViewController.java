@@ -3,6 +3,7 @@ package com.lingotower.ui.controllers.admin;
 import java.io.IOException;
 
 import com.lingotower.model.Admin;
+import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.UserService;
@@ -92,28 +93,35 @@ public class AdminViewController {
 
 	@FXML
 	private void handleUserManagementClick() {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/UserManagementView.fxml"));
-			Parent userManagementRoot = loader.load();
+	    try {
+	        System.out.println("Manage Users button clicked");
+	        TokenStorage.logTokenStatus("Before loading user management");
+	        
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/UserManagementView.fxml"));
+	        Parent userManagementRoot = loader.load();
 
-			UserManagementController controller = loader.getController();
-			controller.setAdmin(currentAdmin);
+	        UserManagementController controller = loader.getController();
+	        controller.setAdmin(currentAdmin);
 
-			// Pass the stage to the controller for proper back navigation
-			controller.setReturnToDashboard(() -> {
-				if (primaryStage != null) {
-					primaryStage.setScene(view.getScene());
-				} else {
-					System.err.println("Primary stage is null in UserManagementController");
-				}
-			});
+	        // Important: Pass the token to the controller
+	        controller.setAdminService(new AdminService());
+	        
+	        // Pass the stage to the controller for proper back navigation
+	        controller.setReturnToDashboard(() -> {
+	            if (primaryStage != null) {
+	                primaryStage.setScene(view.getScene());
+	            } else {
+	                System.err.println("Primary stage is null");
+	            }
+	        });
 
-			// Load users list
-			controller.loadUsers();
-
-			// Show user management view
-			if (primaryStage != null) {
-				Scene scene = new Scene(userManagementRoot, 800, 600);
+	        // Load users list with token checking first
+	        TokenStorage.logTokenStatus("Before controller.loadUsers()");
+	        controller.loadUsers();
+	        
+	        // Show user management view
+	        if (primaryStage != null) {
+	            Scene scene = new Scene(userManagementRoot, 800, 600);
 
 				// Add stylesheets
 				try {
