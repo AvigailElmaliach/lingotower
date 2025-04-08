@@ -1,5 +1,6 @@
 package com.lingotower.data;
 
+import com.lingotower.model.Category;
 //import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Word;
@@ -23,6 +24,8 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     List<Word> findByCategoryIdAndDifficultyAndTranslation(Long categoryId, Difficulty difficulty, String translation);
     List<Word> findByTranslationIsNull();
     List<Word> findByDifficulty(Difficulty difficulty);
+    List<Word> findByCategoryAndDifficulty(Category category, Difficulty difficulty);
+
 
 
 

@@ -37,11 +37,12 @@ public class JwtTokenProvider {
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), Jwts.SIG.HS256)
                 .compact();
     }
-    
+   
+ 
 
     public String extractUsername(String token) {
-        return Jwts.parser() // שינוי ל-parser() במקום parserBuilder()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) // במקום setSigningKey
+        return Jwts.parser() 
+                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) 
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
@@ -58,5 +59,7 @@ public class JwtTokenProvider {
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
+    
+
 
 }

@@ -2,13 +2,17 @@ package com.lingotower.controller;
 
 import com.lingotower.dto.admin.AdminCreateDTO;
 import com.lingotower.dto.admin.AdminUpdateDTO;
+import com.lingotower.dto.user.UserDTO;
 import com.lingotower.dto.admin.AdminResponseDTO;
 import com.lingotower.model.Admin;
 import com.lingotower.service.AdminService;
+import com.lingotower.service.UserService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.lingotower.model.Role;
+import com.lingotower.model.User;
 import com.lingotower.security.JwtTokenProvider;
 
 
@@ -21,13 +25,15 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserService userService;
 
    
     private final JwtTokenProvider jwtTokenProvider;  // הוספת תלות ב־JwtTokenProvider
 
-    public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider) {
+    public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider,UserService userService) {
         this.adminService = adminService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userService=userService;
     }
     @GetMapping
     public List<AdminResponseDTO> getAllAdmins() {
@@ -77,5 +83,13 @@ public class AdminController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> userDTOs = users.stream()
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getSourceLanguage()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userDTOs);
     }
 }

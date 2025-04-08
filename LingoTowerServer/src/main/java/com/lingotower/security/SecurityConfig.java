@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // נסה לבטל CSRF אם אתה משתמש ב-Postman
+            .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") 

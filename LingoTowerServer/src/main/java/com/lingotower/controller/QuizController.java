@@ -1,10 +1,13 @@
 package com.lingotower.controller;
 
+import com.lingotower.dto.QuizResponse;
+import com.lingotower.dto.quiz.QuizRequest;
 import com.lingotower.model.Quiz;
 import com.lingotower.service.QuizService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.desktop.QuitResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,4 +49,8 @@ public class QuizController {
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
+//    @PostMapping("/generate")
+//    public QuizResponse generateExam(@RequestBody QuizRequest request) {
+//        return quizService.generateExam(request.getCategoryId(), request.getDifficulty(), request.getUserId());
+//    }
 }

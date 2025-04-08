@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.lingotower.data.AdminRepository;
 import com.lingotower.data.UserRepository;
 import com.lingotower.model.User;
 
@@ -14,6 +15,7 @@ import com.lingotower.model.User;
 
 	    @Autowired
 	    private UserRepository userRepository;
+	  
 
 	    @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

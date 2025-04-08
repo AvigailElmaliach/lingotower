@@ -37,12 +37,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers().stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getSourceLanguage()))
-                .collect(Collectors.toList());
-    }
+//    @GetMapping
+//    public List<UserDTO> getAllUsers() {
+//        return userService.getAllUsers().stream()
+//                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getSourceLanguage()))
+//                .collect(Collectors.toList());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
