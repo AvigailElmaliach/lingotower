@@ -281,19 +281,24 @@ public class UserProfileController {
 
 	private void loadUserLearnedWords() {
 		try {
+			System.out.println("Loading learned words for user...");
 			List<Word> learnedWords = userService.getLearnedWords();
 			ObservableList<String> wordItems = FXCollections.observableArrayList();
 
 			if (learnedWords != null) {
+				System.out.println("Received " + learnedWords.size() + " learned words");
 				for (Word word : learnedWords) {
 					// Format: English - Hebrew
 					wordItems.add(word.getWord() + " - " + word.getTranslation());
 				}
+			} else {
+				System.out.println("No learned words returned from server");
 			}
 
 			wordsList.setItems(wordItems);
 		} catch (Exception e) {
 			System.err.println("Error loading learned words: " + e.getMessage());
+			e.printStackTrace();
 			wordsList.setItems(FXCollections.observableArrayList());
 		}
 	}
@@ -331,12 +336,14 @@ public class UserProfileController {
 	@FXML
 	private void handleFilterButtonClick(ActionEvent event) {
 		String selectedCategory = categoryFilter.getValue();
+		System.out.println("Filtering words by category: " + selectedCategory);
 
 		try {
 			List<Word> filteredWords;
 
 			if ("All Categories".equals(selectedCategory)) {
 				// Get all learned words
+				System.out.println("Getting all learned words");
 				filteredWords = userService.getLearnedWords();
 			} else {
 				// Get learned words for the selected category
@@ -352,9 +359,11 @@ public class UserProfileController {
 				}
 
 				if (categoryId != null) {
-					// Get words filtered by category
-					filteredWords = userService.getLearnedWordsByCategory(currentUser.getId(), categoryId);
+					System.out.println("Getting learned words for category ID: " + categoryId);
+					// Use client-side filtering by category
+					filteredWords = userService.getLearnedWordsByCategory(categoryId);
 				} else {
+					System.out.println("Category not found, showing all words");
 					// Category not found, show all words
 					filteredWords = userService.getLearnedWords();
 				}
@@ -362,15 +371,25 @@ public class UserProfileController {
 
 			// Update the words list
 			ObservableList<String> wordItems = FXCollections.observableArrayList();
-			if (filteredWords != null) {
+			if (filteredWords != null && !filteredWords.isEmpty()) {
+				System.out.println("Found " + filteredWords.size() + " words to display");
 				for (Word word : filteredWords) {
 					wordItems.add(word.getWord() + " - " + word.getTranslation());
 				}
+				wordsList.setItems(wordItems);
+			} else {
+				System.out.println("No words found for the selected filter");
+				wordItems.add("No words found for the selected category");
+				wordsList.setItems(wordItems);
 			}
-
-			wordsList.setItems(wordItems);
 		} catch (Exception e) {
 			System.err.println("Error filtering words: " + e.getMessage());
+			e.printStackTrace();
+
+			// Show error message in the list
+			ObservableList<String> errorItems = FXCollections
+					.observableArrayList("Error loading words: " + e.getMessage());
+			wordsList.setItems(errorItems);
 		}
 	}
 

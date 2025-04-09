@@ -2,6 +2,7 @@ package com.lingotower.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -10,10 +11,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.lingotower.dto.UserUpdateDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
+import com.lingotower.security.TokenStorage;
 
 public class UserService extends BaseService {
 
@@ -141,34 +146,68 @@ public class UserService extends BaseService {
 			HttpHeaders headers = createAuthHeaders();
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			// Make the request to the endpoint - no user ID needed
-			String url = BASE_URL + "/users/learned";
+			// Make the request to the endpoint using the correct URL
+			// The endpoint is /users/learned according to the provided info
+			String url = BASE_URL + "/learned";
+
+			// Trace the HTTP request for debugging
+			System.out.println("\n==== GET LEARNED WORDS REQUEST ====");
+			System.out.println("URL: " + url);
+			System.out.println("Method: GET");
+			System.out.println("Headers: " + headers);
+			System.out.println("==================================\n");
 
 			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
-			return response.getBody();
+			List<Word> learnedWords = response.getBody();
+
+			System.out.println("\n==== GET LEARNED WORDS RESPONSE ====");
+			System.out.println("Status Code: " + response.getStatusCode().value());
+			System.out.println("Words Count: " + (learnedWords != null ? learnedWords.size() : "null"));
+			if (learnedWords != null && !learnedWords.isEmpty()) {
+				System.out.println("First word sample: " + learnedWords.get(0).getWord() + " (ID: "
+						+ learnedWords.get(0).getId() + ")");
+			}
+			System.out.println("====================================\n");
+
+			return learnedWords != null ? learnedWords : new ArrayList<>();
 		} catch (Exception e) {
-			System.err.println("Error fetching learned words: " + e.getMessage());
+			System.err.println("\n==== GET LEARNED WORDS ERROR ====");
+			System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
+			System.err.println("================================\n");
 			return new ArrayList<>();
 		}
 	}
 
-	public List<Word> getLearnedWordsByCategory(Long userId, Long categoryId) {
+	/**
+	 * Gets learned words for the authenticated user filtered by category The
+	 * filtering is done client-side since the server doesn't have a
+	 * category-specific endpoint
+	 * 
+	 * @param categoryId The category ID to filter by
+	 * @return List of learned words in the specified category
+	 */
+	public List<Word> getLearnedWordsByCategory(Long categoryId) {
 		try {
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
+			// Get all learned words first
+			List<Word> allLearnedWords = getLearnedWords();
+			System.out.println("Performing client-side filtering for category ID: " + categoryId);
 
-			String url = BASE_URL + "/" + userId + "/learned-words/category/" + categoryId;
-			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-					new ParameterizedTypeReference<List<Word>>() {
-					});
+			// Filter by category
+			List<Word> filteredWords = allLearnedWords.stream()
+					.filter(word -> word.getCategory() != null && word.getCategory().getId().equals(categoryId))
+					.collect(Collectors.toList());
 
-			return response.getBody();
+			System.out.println("Filtered from " + allLearnedWords.size() + " words to " + filteredWords.size()
+					+ " words in category " + categoryId);
+
+			return filteredWords;
 		} catch (Exception e) {
-			System.err.println("Error getting learned words by category: " + e.getMessage());
+			System.err.println("Error filtering learned words by category: " + e.getMessage());
+			e.printStackTrace();
 			return new ArrayList<>();
 		}
 	}
@@ -180,23 +219,29 @@ public class UserService extends BaseService {
 	 * @return true if successful, false otherwise
 	 */
 	public boolean addWordToLearned(Long wordId) {
-		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			// Make the POST request - note that we don't include a user ID
-			// The endpoint will determine the user from the JWT token
-			String url = BASE_URL + "/users/learned/" + wordId;
-
-			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
-
-			return response.getStatusCode().is2xxSuccessful();
-		} catch (Exception e) {
-			System.err.println("Error adding word to learned: " + e.getMessage());
-			e.printStackTrace();
+		if (wordId == null) {
+			System.err.println("Error: Word ID is null. Cannot mark as learned.");
 			return false;
 		}
+
+		try {
+			System.out.println("Sending POST request to mark word as learned. Word ID: " + wordId);
+			String url = "http://localhost:8080/users/learned/" + wordId;
+			RestTemplate restTemplate = new RestTemplate();
+
+			ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
+			System.out.println("Response Status Code: " + response.getStatusCode());
+			System.out.println("Response Body: " + response.getBody());
+
+			return response.getStatusCode() == HttpStatus.OK;
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			System.err.println("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+		} catch (Exception e) {
+			System.err.println("Unexpected Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	public boolean removeLearnedWord(Long userId, Long wordId) {
@@ -213,4 +258,34 @@ public class UserService extends BaseService {
 			return false;
 		}
 	}
+
+	/**
+	 * Creates HTTP headers with authentication token for API requests
+	 * 
+	 * @return HttpHeaders with Authorization header if token is available
+	 */
+	@Override
+	protected HttpHeaders createAuthHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+
+		// Log token status for debugging
+		TokenStorage.logTokenStatus("UserService createAuthHeaders");
+
+		// Add the authentication token if available
+		if (TokenStorage.hasToken()) {
+			String tokenValue = TokenStorage.getToken();
+			String authHeader = "Bearer " + tokenValue;
+			headers.set("Authorization", authHeader);
+			System.out.println("Added Authorization header: Bearer "
+					+ tokenValue.substring(0, Math.min(10, tokenValue.length())) + "...");
+
+			// Set content type to application/json for POST requests
+			headers.setContentType(MediaType.APPLICATION_JSON);
+		} else {
+			System.err.println("WARNING: No authentication token available when creating auth headers!");
+		}
+
+		return headers;
+	}
+
 }

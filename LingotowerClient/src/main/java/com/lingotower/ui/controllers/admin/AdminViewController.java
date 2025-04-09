@@ -1,8 +1,13 @@
+// Modified AdminViewController to properly handle token storage and loading system stats
 package com.lingotower.ui.controllers.admin;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.lingotower.model.Admin;
+import com.lingotower.model.Category;
+import com.lingotower.model.User;
+import com.lingotower.model.Word;
 import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.CategoryService;
@@ -60,7 +65,10 @@ public class AdminViewController {
 
 	@FXML
 	private void initialize() {
-		// This method is automatically called after the FXML is loaded
+		// Hide error message initially
+		errorMessageLabel.setVisible(false);
+
+		// Load system stats in a background thread
 		loadSystemStats();
 	}
 
@@ -93,35 +101,38 @@ public class AdminViewController {
 
 	@FXML
 	private void handleUserManagementClick() {
-	    try {
-	        System.out.println("Manage Users button clicked");
-	        TokenStorage.logTokenStatus("Before loading user management");
-	        
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/UserManagementView.fxml"));
-	        Parent userManagementRoot = loader.load();
+		try {
+			System.out.println("Manage Users button clicked");
+			TokenStorage.logTokenStatus("Before loading user management");
 
-	        UserManagementController controller = loader.getController();
-	        controller.setAdmin(currentAdmin);
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/UserManagementView.fxml"));
+			Parent userManagementRoot = loader.load();
 
-	        // Important: Pass the token to the controller
-	        controller.setAdminService(new AdminService());
-	        
-	        // Pass the stage to the controller for proper back navigation
-	        controller.setReturnToDashboard(() -> {
-	            if (primaryStage != null) {
-	                primaryStage.setScene(view.getScene());
-	            } else {
-	                System.err.println("Primary stage is null");
-	            }
-	        });
+			UserManagementController controller = loader.getController();
+			controller.setAdmin(currentAdmin);
 
-	        // Load users list with token checking first
-	        TokenStorage.logTokenStatus("Before controller.loadUsers()");
-	        controller.loadUsers();
-	        
-	        // Show user management view
-	        if (primaryStage != null) {
-	            Scene scene = new Scene(userManagementRoot, 800, 600);
+			// Pass the adminService with token validation
+			AdminService adminServiceInstance = new AdminService();
+			controller.setAdminService(adminServiceInstance);
+
+			// Pass the stage to the controller for proper back navigation
+			controller.setReturnToDashboard(() -> {
+				if (primaryStage != null) {
+					primaryStage.setScene(view.getScene());
+					// Refresh stats when returning
+					loadSystemStats();
+				} else {
+					System.err.println("Primary stage is null");
+				}
+			});
+
+			// Load users list with token checking first
+			TokenStorage.logTokenStatus("Before controller.loadUsers()");
+			controller.loadUsers();
+
+			// Show user management view
+			if (primaryStage != null) {
+				Scene scene = new Scene(userManagementRoot, 800, 600);
 
 				// Add stylesheets
 				try {
@@ -163,6 +174,8 @@ public class AdminViewController {
 			controller.setReturnToDashboard(() -> {
 				if (primaryStage != null) {
 					primaryStage.setScene(view.getScene());
+					// Refresh stats when returning
+					loadSystemStats();
 				} else {
 					System.err.println("Primary stage is null in ContentManagementController");
 				}
@@ -204,20 +217,81 @@ public class AdminViewController {
 
 	private void loadSystemStats() {
 		try {
+			System.out.println("Loading system stats...");
+
+			// Clear current values
+			totalUsersLabel.setText("Loading...");
+			totalCategoriesLabel.setText("Loading...");
+			totalWordsLabel.setText("Loading...");
+
 			// Get counts from services
-			int userCount = userService.getAllUsers().size();
-			int categoryCount = categoryService.getAllCategories().size();
-			int wordCount = wordService.getAllWords().size();
+			UserService userService = new UserService();
+			CategoryService categoryService = new CategoryService();
+			WordService wordService = new WordService();
+
+			// Load users
+			List<User> users = null;
+			try {
+				// First try with AdminService
+				System.out.println("Trying to load users with AdminService...");
+				if (adminService == null) {
+					adminService = new AdminService();
+				}
+				users = adminService.getAllUsers();
+
+				// If that fails, try with UserService
+				if (users == null || users.isEmpty()) {
+					System.out.println("AdminService returned no users, trying UserService...");
+					users = userService.getAllUsers();
+				}
+			} catch (Exception e) {
+				System.err.println("Error loading users with AdminService: " + e.getMessage());
+				System.out.println("Falling back to UserService...");
+				try {
+					users = userService.getAllUsers();
+				} catch (Exception ex) {
+					System.err.println("Error loading users with UserService: " + ex.getMessage());
+				}
+			}
+
+			int userCount = users != null ? users.size() : 0;
+			System.out.println("User count: " + userCount);
+
+			// Load categories
+			List<Category> categories = null;
+			try {
+				categories = categoryService.getAllCategories();
+			} catch (Exception e) {
+				System.err.println("Error loading categories: " + e.getMessage());
+			}
+			int categoryCount = categories != null ? categories.size() : 0;
+
+			// Load words
+			List<Word> words = null;
+			try {
+				words = wordService.getAllWords();
+			} catch (Exception e) {
+				System.err.println("Error loading words: " + e.getMessage());
+			}
+			int wordCount = words != null ? words.size() : 0;
 
 			// Update UI labels
 			totalUsersLabel.setText(String.valueOf(userCount));
 			totalCategoriesLabel.setText(String.valueOf(categoryCount));
 			totalWordsLabel.setText(String.valueOf(wordCount));
 
+			System.out.println("System stats loaded: " + userCount + " users, " + categoryCount + " categories, "
+					+ wordCount + " words");
+
 		} catch (Exception e) {
 			System.err.println("Error loading system stats: " + e.getMessage());
 			e.printStackTrace();
 			showError("Error loading system statistics: " + e.getMessage());
+
+			// Set default values
+			totalUsersLabel.setText("Error");
+			totalCategoriesLabel.setText("Error");
+			totalWordsLabel.setText("Error");
 		}
 	}
 

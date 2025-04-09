@@ -220,31 +220,32 @@ public class WordLearningController {
 	@FXML
 	private void handleMarkLearned(ActionEvent event) {
 		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
+			System.err.println("Cannot mark word as learned: words list is empty or index out of bounds");
+			messageLabel.setText("Error: No word to mark as learned");
 			return;
 		}
 
 		Word currentWord = words.get(currentWordIndex);
+		if (currentWord == null || currentWord.getId() == null) {
+			System.err.println("Error: Word or Word ID is null. Current word: " + currentWord);
+			messageLabel.setText("Error: Invalid word data");
+			return;
+		}
+
+		System.out.println(
+				"Attempting to mark word as learned: " + currentWord.getWord() + " (ID: " + currentWord.getId() + ")");
 
 		try {
-			if (currentUser == null) {
-				messageLabel.setText("Error: No authenticated user found.");
-				return;
-			}
-
-			// Use the UserService to add the word to the user's learned list
-			UserService userService = new UserService();
 			boolean success = userService.addWordToLearned(currentWord.getId());
-
 			if (success) {
-				messageLabel.setText("Word marked as learned! Click 'Next Word' to continue.");
-				markLearnedButton.setDisable(true); // Disable button after marking as learned
+				messageLabel.setText("Word marked as learned!");
 			} else {
-				messageLabel.setText("Error marking word as learned. Please try again.");
+				messageLabel.setText("Error marking word as learned.");
 			}
 		} catch (Exception e) {
 			System.err.println("Error marking word as learned: " + e.getMessage());
 			e.printStackTrace();
-			messageLabel.setText("Error marking word as learned: " + e.getMessage());
+			messageLabel.setText("Error marking word as learned.");
 		}
 	}
 

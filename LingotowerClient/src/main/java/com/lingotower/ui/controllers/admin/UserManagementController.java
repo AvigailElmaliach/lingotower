@@ -1,3 +1,4 @@
+// Modified UserManagementController with improved UI handling
 package com.lingotower.ui.controllers.admin;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -79,10 +81,6 @@ public class UserManagementController {
 	public UserManagementController() {
 		// Initialize services
 		this.userService = new UserService();
-		// Log the token status
-		System.out.println("UserManagementController constructor - Token status: "
-				+ (TokenStorage.hasToken() ? "Present" : "MISSING"));
-
 	}
 
 	public void setAdminService(AdminService adminService) {
@@ -93,6 +91,20 @@ public class UserManagementController {
 
 	@FXML
 	private void initialize() {
+		// Hide status message initially
+		if (statusLabel != null) {
+			statusLabel.setVisible(false);
+		}
+
+		// Hide forms initially
+		if (editUserForm != null) {
+			editUserForm.setVisible(false);
+		}
+
+		if (confirmationDialog != null) {
+			confirmationDialog.setVisible(false);
+		}
+
 		// Initialize table columns
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -134,8 +146,13 @@ public class UserManagementController {
 			}
 		});
 
-		// Set table items and configure row selection
+		// Set table items
 		userTableView.setItems(usersList);
+
+		// Add search field listener for real-time filtering
+		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+			handleSearchButton();
+		});
 	}
 
 	public void setAdmin(Admin admin) {
@@ -147,33 +164,49 @@ public class UserManagementController {
 	}
 
 	public void loadUsers() {
-		try {
-			System.out.println("Loading users...");
-			TokenStorage.logTokenStatus("Before loading users");
+		showStatusMessage("Loading users...", false);
 
-			if (adminService == null) {
-				System.err.println("AdminService not set, creating new instance");
-				adminService = new AdminService();
+		// Create a background thread to load users
+		Thread loadThread = new Thread(() -> {
+			try {
+				System.out.println("Loading users in background thread...");
+				TokenStorage.logTokenStatus("Before loading users");
+
+				if (adminService == null) {
+					System.err.println("AdminService not set, creating new instance");
+					adminService = new AdminService();
+				}
+
+				// Load all users using the admin service
+				List<User> users = adminService.getAllUsers();
+				System.out.println("Users loaded: " + (users != null ? users.size() : "null"));
+
+				// Update UI on JavaFX thread
+				Platform.runLater(() -> {
+					// Clear current list
+					usersList.clear();
+
+					if (users != null && !users.isEmpty()) {
+						usersList.addAll(users);
+						showStatusMessage("Loaded " + users.size() + " users", false);
+					} else {
+						showStatusMessage("No users found", true);
+					}
+				});
+			} catch (Exception e) {
+				System.err.println("Error loading users: " + e.getMessage());
+				e.printStackTrace();
+
+				// Show error on JavaFX thread
+				Platform.runLater(() -> {
+					showStatusMessage("Error loading users: " + e.getMessage(), true);
+				});
 			}
+		});
 
-			// Clear current list
-			usersList.clear();
-
-			// Load all users using the admin service
-			List<User> users = adminService.getAllUsers();
-			System.out.println("Users loaded: " + (users != null ? users.size() : "null"));
-
-			if (users != null) {
-				usersList.addAll(users);
-				showStatusMessage("Loaded " + users.size() + " users", false);
-			} else {
-				showStatusMessage("No users found", true);
-			}
-		} catch (Exception e) {
-			System.err.println("Error loading users: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error loading users: " + e.getMessage(), true);
-		}
+		// Start the background thread
+		loadThread.setDaemon(true);
+		loadThread.start();
 	}
 
 	@FXML
@@ -199,33 +232,30 @@ public class UserManagementController {
 	private void handleSearchButton() {
 		String searchText = searchField.getText().trim().toLowerCase();
 
+		// If search is empty, show all users
 		if (searchText.isEmpty()) {
-			loadUsers(); // If search is empty, reload all
+			userTableView.setItems(usersList);
 			return;
 		}
 
-		try {
-			// Filter the users list based on search text
-			List<User> allUsers = userService.getAllUsers();
-			List<User> filteredUsers = allUsers.stream()
-					.filter(user -> user.getUsername().toLowerCase().contains(searchText)
-							|| user.getEmail().toLowerCase().contains(searchText))
-					.toList();
-
-			// Update the table
-			usersList.clear();
-			usersList.addAll(filteredUsers);
-
-			// Show status message
-			showStatusMessage("Found " + filteredUsers.size() + " matching users", false);
-		} catch (Exception e) {
-			System.err.println("Error searching users: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error searching users: " + e.getMessage(), true);
+		// Filter the users list based on search text
+		ObservableList<User> filteredList = FXCollections.observableArrayList();
+		for (User user : usersList) {
+			if (user.getUsername().toLowerCase().contains(searchText)
+					|| (user.getEmail() != null && user.getEmail().toLowerCase().contains(searchText))) {
+				filteredList.add(user);
+			}
 		}
+
+		// Update the table view with filtered results
+		userTableView.setItems(filteredList);
+		showStatusMessage("Found " + filteredList.size() + " matching users", false);
 	}
 
 	private void showEditForm(User user) {
+		// Hide confirmation dialog if visible
+		confirmationDialog.setVisible(false);
+
 		// Store the selected user
 		this.selectedUser = user;
 
@@ -236,7 +266,6 @@ public class UserManagementController {
 
 		// Show the edit form
 		editUserForm.setVisible(true);
-		confirmationDialog.setVisible(false);
 	}
 
 	@FXML
@@ -252,35 +281,72 @@ public class UserManagementController {
 			return;
 		}
 
-		try {
-			// Update user data
-			selectedUser.setUsername(usernameField.getText().trim());
-			selectedUser.setEmail(emailField.getText().trim());
-			selectedUser.setLanguage(languageField.getText().trim());
+		// Get updated values from form
+		String username = usernameField.getText().trim();
+		String email = emailField.getText().trim();
+		String language = languageField.getText().trim();
 
-			// Save the user
-			boolean success = userService.updateUser(selectedUser);
-
-			if (success) {
-				// Hide the form
-				editUserForm.setVisible(false);
-
-				// Refresh the list
-				loadUsers();
-
-				// Show success message
-				showStatusMessage("User updated successfully", false);
-			} else {
-				showStatusMessage("Failed to update user", true);
-			}
-		} catch (Exception e) {
-			System.err.println("Error updating user: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error updating user: " + e.getMessage(), true);
+		// Validate inputs
+		if (username.isEmpty() || email.isEmpty()) {
+			showStatusMessage("Username and email are required", true);
+			return;
 		}
+
+		// Show loading status
+		showStatusMessage("Updating user...", false);
+
+		// Update in background thread
+		Thread updateThread = new Thread(() -> {
+			try {
+				// Update user data
+				selectedUser.setUsername(username);
+				selectedUser.setEmail(email);
+				selectedUser.setLanguage(language);
+
+				// Save the user
+				boolean success = userService.updateUser(selectedUser);
+
+				// Update UI on JavaFX thread
+				Platform.runLater(() -> {
+					if (success) {
+						// Hide the form
+						editUserForm.setVisible(false);
+
+						// Refresh the table (maintain full list)
+						int index = usersList.indexOf(selectedUser);
+						if (index >= 0) {
+							usersList.set(index, selectedUser);
+						}
+
+						// Reset selection
+						selectedUser = null;
+
+						// Show success message
+						showStatusMessage("User updated successfully", false);
+					} else {
+						showStatusMessage("Failed to update user", true);
+					}
+				});
+			} catch (Exception e) {
+				System.err.println("Error updating user: " + e.getMessage());
+				e.printStackTrace();
+
+				// Show error on JavaFX thread
+				Platform.runLater(() -> {
+					showStatusMessage("Error updating user: " + e.getMessage(), true);
+				});
+			}
+		});
+
+		// Start the background thread
+		updateThread.setDaemon(true);
+		updateThread.start();
 	}
 
 	private void showDeleteConfirmation(User user) {
+		// Hide edit form if visible
+		editUserForm.setVisible(false);
+
 		// Store the selected user
 		this.selectedUser = user;
 
@@ -289,7 +355,6 @@ public class UserManagementController {
 
 		// Show the confirmation dialog
 		confirmationDialog.setVisible(true);
-		editUserForm.setVisible(false);
 	}
 
 	@FXML
@@ -305,27 +370,47 @@ public class UserManagementController {
 			return;
 		}
 
-		try {
-			// Delete the user
-			boolean success = userService.deleteUser(selectedUser.getId());
+		// Show loading status
+		showStatusMessage("Deleting user...", false);
 
-			if (success) {
-				// Hide the dialog
-				confirmationDialog.setVisible(false);
+		// Delete in background thread
+		Thread deleteThread = new Thread(() -> {
+			try {
+				// Delete the user
+				boolean success = userService.deleteUser(selectedUser.getId());
 
-				// Refresh the list
-				loadUsers();
+				// Update UI on JavaFX thread
+				Platform.runLater(() -> {
+					if (success) {
+						// Hide the dialog
+						confirmationDialog.setVisible(false);
 
-				// Show success message
-				showStatusMessage("User deleted successfully", false);
-			} else {
-				showStatusMessage("Failed to delete user", true);
+						// Remove from the list
+						usersList.remove(selectedUser);
+
+						// Reset selection
+						selectedUser = null;
+
+						// Show success message
+						showStatusMessage("User deleted successfully", false);
+					} else {
+						showStatusMessage("Failed to delete user", true);
+					}
+				});
+			} catch (Exception e) {
+				System.err.println("Error deleting user: " + e.getMessage());
+				e.printStackTrace();
+
+				// Show error on JavaFX thread
+				Platform.runLater(() -> {
+					showStatusMessage("Error deleting user: " + e.getMessage(), true);
+				});
 			}
-		} catch (Exception e) {
-			System.err.println("Error deleting user: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error deleting user: " + e.getMessage(), true);
-		}
+		});
+
+		// Start the background thread
+		deleteThread.setDaemon(true);
+		deleteThread.start();
 	}
 
 	private void showStatusMessage(String message, boolean isError) {
@@ -333,5 +418,17 @@ public class UserManagementController {
 		statusLabel.getStyleClass().removeAll("error-message", "success-message");
 		statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
 		statusLabel.setVisible(true);
+
+		// Automatically hide success messages after 5 seconds
+		if (!isError) {
+			new Thread(() -> {
+				try {
+					Thread.sleep(5000);
+					Platform.runLater(() -> statusLabel.setVisible(false));
+				} catch (InterruptedException e) {
+					// Ignore
+				}
+			}).start();
+		}
 	}
 }
