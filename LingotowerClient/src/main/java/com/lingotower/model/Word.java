@@ -3,11 +3,14 @@ package com.lingotower.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class Word {
 
 	private Long id;
 	private String word;
-	private String translation;
+	@JsonAlias({ "translation", "translatedText" })
+	private String translatedText;
 	private Category category;
 	private Admin adminByAdded;
 	private List<User> users = new ArrayList<>();
@@ -21,7 +24,7 @@ public class Word {
 
 	public Word(String word, String translation, String language) {
 		this.word = word;
-		this.translation = translation;
+		this.translatedText = translation;
 		this.language = language;
 	}
 
@@ -41,12 +44,12 @@ public class Word {
 		this.word = word;
 	}
 
-	public String getTranslation() {
-		return translation;
+	public String getTranslatedText() {
+		return translatedText;
 	}
 
-	public void setTranslation(String translation) {
-		this.translation = translation;
+	public void setTranslatedText(String translatedText) {
+		this.translatedText = translatedText;
 	}
 
 	public Category getCategory() {
@@ -117,7 +120,7 @@ public class Word {
 
 	@Override
 	public String toString() {
-		return "Word{" + "id=" + id + ", word='" + word + '\'' + ", translation='" + translation + '\'' + ", category="
-				+ (category != null ? category.getName() : "None") + '}';
+		return "Word{" + "id=" + id + ", word='" + word + '\'' + ", translation='" + translatedText + '\''
+				+ ", category=" + (category != null ? category.getName() : "None") + '}';
 	}
 }

@@ -289,7 +289,7 @@ public class UserProfileController {
 				System.out.println("Received " + learnedWords.size() + " learned words");
 				for (Word word : learnedWords) {
 					// Format: English - Hebrew
-					wordItems.add(word.getWord() + " - " + word.getTranslation());
+					wordItems.add(word.getWord() + " - " + word.getTranslatedText());
 				}
 			} else {
 				System.out.println("No learned words returned from server");
@@ -374,7 +374,7 @@ public class UserProfileController {
 			if (filteredWords != null && !filteredWords.isEmpty()) {
 				System.out.println("Found " + filteredWords.size() + " words to display");
 				for (Word word : filteredWords) {
-					wordItems.add(word.getWord() + " - " + word.getTranslation());
+					wordItems.add(word.getWord() + " - " + word.getTranslatedText());
 				}
 				wordsList.setItems(wordItems);
 			} else {

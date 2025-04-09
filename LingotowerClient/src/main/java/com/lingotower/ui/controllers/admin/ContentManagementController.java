@@ -168,7 +168,22 @@ public class ContentManagementController {
 		// Initialize word table columns
 		wordIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		wordTextColumn.setCellValueFactory(new PropertyValueFactory<>("word"));
-		wordTranslationColumn.setCellValueFactory(new PropertyValueFactory<>("translation"));
+		wordTranslationColumn.setCellValueFactory(cellData -> {
+			Word word = cellData.getValue();
+			if (word == null) {
+				System.out.println("Table Cell - Word object is null");
+				return new SimpleStringProperty("Error: Null Word");
+			}
+
+			String translation = word.getTranslatedText(); // Call the getter directly
+
+			// DEBUG: Print what's being retrieved for each row
+			System.out.println("Table Cell - Word: [" + word.getWord() + "], Getter Returned: [" + translation + "]");
+
+			return new SimpleStringProperty(translation != null ? translation : "<No Translation>"); // Display
+																										// something
+																										// even if null
+		});
 		wordCategoryColumn.setCellValueFactory(cellData -> {
 			Category category = cellData.getValue().getCategory();
 			return new SimpleStringProperty(category != null ? category.getName() : "N/A");
@@ -474,7 +489,7 @@ public class ContentManagementController {
 		// Prepare form for editing
 		wordFormTitle.setText("Edit Word");
 		wordTextField.setText(word.getWord());
-		wordTranslationField.setText(word.getTranslation());
+		wordTranslationField.setText(word.getTranslatedText());
 
 		// Set category
 		for (Category category : wordCategoryComboBox.getItems()) {
@@ -525,7 +540,7 @@ public class ContentManagementController {
 			if (isEditMode && selectedWord != null) {
 				// Update existing word
 				selectedWord.setWord(wordText);
-				selectedWord.setTranslation(translation);
+				selectedWord.setTranslatedText(translation);
 				selectedWord.setCategory(category);
 				selectedWord.setDifficulty(difficulty);
 
@@ -541,7 +556,7 @@ public class ContentManagementController {
 				// Create new word
 				Word newWord = new Word();
 				newWord.setWord(wordText);
-				newWord.setTranslation(translation);
+				newWord.setTranslatedText(translation);
 				newWord.setCategory(category);
 				newWord.setDifficulty(difficulty);
 
