@@ -6,6 +6,7 @@ import com.lingotower.dto.user.UserCreateDTO;
 import com.lingotower.dto.user.UserDTO;
 import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.dto.user.UserUpdateDTO;
+import com.lingotower.dto.word.WordByCategory;
 import com.lingotower.data.UserRepository;
 import com.lingotower.model.User;
 import com.lingotower.service.UserService;
@@ -111,8 +112,8 @@ public class UserController {
     }
     
     @GetMapping("/learned")
-    public ResponseEntity<List<TranslationResponseDTO>> getLearnedWords(Principal principal) {
-        List<TranslationResponseDTO> learnedDTOs = userService.getLearnedWordsForUser(principal.getName());
+    public ResponseEntity<List<WordByCategory>> getLearnedWords(Principal principal) {
+        List<WordByCategory> learnedDTOs = userService.getLearnedWordsForUser(principal.getName());
         return ResponseEntity.ok(learnedDTOs);
     }
     

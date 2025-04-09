@@ -1,5 +1,6 @@
 package com.lingotower.dto.word;
 
+import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 
 public class WordByCategory {
@@ -7,13 +8,13 @@ public class WordByCategory {
 		private Long id;
 	    private String word;
 	    private String translatedText;
-	    private String category;
+	    private Category category;
 	    private Difficulty difficulty;
 	    
 
 	    public WordByCategory() {}
 	    
-	    public WordByCategory(Long id, String word, String translatedText, String category, Difficulty difficulty) {
+	    public WordByCategory(Long id, String word, String translatedText, Category category, Difficulty difficulty) {
 	        this.id = id;
 	        this.word = word;
 	        this.translatedText = translatedText;
@@ -45,11 +46,11 @@ public class WordByCategory {
 	        this.translatedText = translatedText;
 	    }
 
-	    public String getCategory() {
+	    public Category getCategory() {
 	        return category;
 	    }
 
-	    public void setCategory(String category) {
+	    public void setCategory(Category category) {
 	        this.category = category;
 	    }
 
