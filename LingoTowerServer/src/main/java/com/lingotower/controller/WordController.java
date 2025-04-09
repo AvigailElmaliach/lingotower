@@ -2,6 +2,7 @@ package com.lingotower.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingotower.dto.translation.TranslationResponseDTO;
+import com.lingotower.dto.word.WordByCategory;
 import com.lingotower.dto.word.WordDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
@@ -74,7 +75,7 @@ public class WordController {
 //    }
 
     @GetMapping("/category/{categoryId}/random")
-    public ResponseEntity<List<TranslationResponseDTO>> getRandomWordsByCategory(
+    public ResponseEntity<List<WordByCategory>> getRandomWordsByCategory(
             @PathVariable Long categoryId, 
             Principal principal) {
         
@@ -85,7 +86,7 @@ public class WordController {
 
         String userLanguage = user.getTargetLanguage();
 
-        List<TranslationResponseDTO> randomWords = wordService.getRandomWordsByCategory(categoryId, userLanguage);
+        List<WordByCategory> randomWords = wordService.getRandomWordsByCategory(categoryId, userLanguage);
         
         return randomWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -93,7 +94,7 @@ public class WordController {
     }
 
     @GetMapping("/difficulty/{difficulty}/random")
-    public ResponseEntity<List<TranslationResponseDTO>> getRandomWordsByDifficulty(
+    public ResponseEntity<List<WordByCategory>> getRandomWordsByDifficulty(
             @PathVariable Difficulty difficulty, 
             Principal principal) {
         
@@ -104,7 +105,7 @@ public class WordController {
 
         String userLanguage = user.getTargetLanguage();
 
-        List<TranslationResponseDTO> randomWords = wordService.getRandomWordsByDifficulty(difficulty, userLanguage);
+        List<WordByCategory> randomWords = wordService.getRandomWordsByDifficulty(difficulty, userLanguage);
         
         return randomWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -112,7 +113,7 @@ public class WordController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsForAllCategoriesAndDifficulties(
+    public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsForAllCategoriesAndDifficulties(
             Principal principal) {
         
         User user = userService.getUserByUsername(principal.getName());
@@ -122,7 +123,7 @@ public class WordController {
 
         String userLanguage = user.getTargetLanguage();
 
-        List<TranslationResponseDTO> randomWords = wordService.getRandomTranslatedWordsForAllCategoriesAndDifficulties(userLanguage);
+        List<WordByCategory> randomWords = wordService.getRandomTranslatedWordsForAllCategoriesAndDifficulties(userLanguage);
         
         return randomWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -151,14 +152,14 @@ public class WordController {
 //                : ResponseEntity.ok(translatedWords);
 //    }
     @GetMapping("/category/{categoryId}/translate")
-    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
+    public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategory(
             @PathVariable Long categoryId,
             Principal principal) {
 
-        String username = principal.getName();
+    String username = principal.getName();
 
         
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
+        List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
 
         return translatedWords.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -169,7 +170,7 @@ public class WordController {
     
     // שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
     @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
-    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategoryAndDifficulty(
+    public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategoryAndDifficulty(
             @PathVariable Long categoryId,
             @PathVariable Difficulty difficulty,
             Principal principal) {
@@ -182,13 +183,13 @@ public class WordController {
         String userLanguage = user.getTargetLanguage();
 
         // שליפת המילים לפי רמת קושי ושפת המשתמש
-        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
+        List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
         
         return ResponseEntity.ok(translatedWords);
     }
  // שיטה להחזרת מילים אקראיות לפי קטגוריה, רמת קושי ושפת המשתמש
     @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random/translate")
-    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
+    public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsByCategoryAndDifficulty(
             @PathVariable Long categoryId,
             @PathVariable Difficulty difficulty,
             Principal principal) {
@@ -201,18 +202,18 @@ public class WordController {
         String userLanguage = user.getTargetLanguage();
 
         // שליפת מילים אקראיות לפי רמת קושי ושפת המשתמש
-        List<TranslationResponseDTO> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
+        List<WordByCategory> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
         
         return ResponseEntity.ok(translatedWords);
     }
 
 
     @GetMapping("/{id}/translate")
-    public ResponseEntity<TranslationResponseDTO> getTranslatedWordById(
+    public ResponseEntity<WordByCategory> getTranslatedWordById(
             @PathVariable Long id,
             @RequestParam String targetLang) {
         try {
-            TranslationResponseDTO translatedWord = wordService.getTranslatedWordById(id, targetLang);
+        	WordByCategory translatedWord = wordService.getTranslatedWordById(id, targetLang);
             return ResponseEntity.ok(translatedWord);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

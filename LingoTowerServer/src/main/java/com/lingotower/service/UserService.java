@@ -3,6 +3,7 @@ package com.lingotower.service;
 import com.lingotower.data.UserRepository;
 import com.lingotower.data.WordRepository;
 import com.lingotower.dto.translation.TranslationResponseDTO;
+import com.lingotower.dto.word.WordByCategory;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.WordService;
@@ -87,7 +88,7 @@ public class UserService {
 		return false;
 	}
 
-	public List<TranslationResponseDTO> getLearnedWordsForUser(String username) {
+	public List<WordByCategory> getLearnedWordsForUser(String username) {
 		User user = getUserByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
