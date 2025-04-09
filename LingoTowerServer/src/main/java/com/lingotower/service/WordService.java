@@ -10,14 +10,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.lingotower.data.AdminRepository;
 import com.lingotower.data.CategoryRepository;
+import com.lingotower.data.UserRepository;
 import com.lingotower.data.WordRepository;
 import com.lingotower.dto.translation.TranslationRequestDTO;
 import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.dto.word.WordDTO;
+import com.lingotower.model.Admin;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.User;
@@ -32,16 +36,20 @@ public class WordService {
 	private final WordRepository wordRepository;
 	private final CategoryRepository categoryRepository;
 	private final TranslationService translationService;
+	private final UserRepository userRepository;
+	private final AdminRepository adminRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Autowired
 	public WordService(WordRepository wordRepository, TranslationService translationService,
-			CategoryRepository categoryRepository) {
+			CategoryRepository categoryRepository,UserRepository userRepository, AdminRepository adminRepository) {
 		this.wordRepository = wordRepository;
 		this.translationService = translationService;
 		this.categoryRepository = categoryRepository;
+		this.userRepository=userRepository;
+		this.adminRepository=adminRepository;
 	}
 
 	public void saveWords(List<Word> words) {
@@ -167,15 +175,52 @@ public class WordService {
 		}).collect(Collectors.toList());
 	}
 
-	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
-		List<Word> words = wordRepository.findByCategoryId(categoryId);
+//	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
+//		List<Word> words = wordRepository.findByCategoryId(categoryId);
+//
+//		if (words.isEmpty()) {
+//			return Collections.emptyList();
+//		}
+//
+//		return mapWordsToLanguage(words, userLanguage);
+//	}
 
-		if (words.isEmpty()) {
-			return Collections.emptyList();
-		}
+	///3
+	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String username) {
+	    List<Word> words = wordRepository.findByCategoryId(categoryId);
+	    
+	    if (words.isEmpty()) {
+	        return Collections.emptyList();
+	    }
 
-		return mapWordsToLanguage(words, userLanguage);
+	    String userLanguage = getUserLanguage(username); // פונקציה שמחזירה את שפת המשתמש
+	    return mapWordsToLanguage(words, userLanguage);
 	}
+
+	private String getUserLanguage(String username) {
+	    // חיפוש המשתמש הרגיל ב-UserRepository
+	    Optional<User> user = userRepository.findByUsername(username);
+	    if (user.isPresent()) { // בודקים אם ה-Optional מכיל ערך
+	        return user.get().getTargetLanguage(); // אם כן, מחזירים את שפת היעד של המשתמש
+	    }
+
+	    // אם לא נמצא משתמש רגיל, ננסה לחפש את המנהל ב-AdminRepository
+	    Optional<Admin> admin = adminRepository.findByUsername(username);
+	    if (admin.isPresent()) { // בודקים אם ה-Optional מכיל ערך
+	        return admin.get().getTargetLanguage(); // אם כן, מחזירים את שפת היעד של המנהל
+	    }
+
+	    // אם לא נמצא אף אחד, החזר שגיאה או התנהגות ברירת מחדל
+	    throw new UsernameNotFoundException("User not found: " + username);
+	}
+
+
+
+///3	
+	
+	
+	
+	
 
 	public List<TranslationResponseDTO> getTranslatedWordsByCategoryAndDifficulty(Long categoryId,
 			Difficulty difficulty, String userLanguage) {

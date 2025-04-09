@@ -155,7 +155,7 @@ public class WordController {
             @PathVariable Long categoryId,
             Principal principal) {
 
-        String username = principal.getName();
+    String username = principal.getName();
 
         
         List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
