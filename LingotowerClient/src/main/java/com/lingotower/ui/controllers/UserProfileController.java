@@ -120,6 +120,12 @@ public class UserProfileController {
 
 		// Default to profile tab being active
 		showProfileTab();
+
+		// Set up responsive behavior
+		setupResponsiveLayout();
+		// Set up table for responsive behavior
+//		optimizeTableForSmallScreens();
+
 	}
 
 	@FXML
@@ -435,4 +441,91 @@ public class UserProfileController {
 			}
 		}
 	}
+
+	/**
+	 * Sets up responsive behavior for the profile view
+	 */
+	private void setupResponsiveLayout() {
+		// Listen for scene changes
+		view.sceneProperty().addListener((observable, oldScene, newScene) -> {
+			if (newScene != null) {
+				// Listen for window changes
+				newScene.windowProperty().addListener((prop, oldWindow, newWindow) -> {
+					if (newWindow != null) {
+						// Add listeners for width/height changes
+						newWindow.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+							adjustLayoutForWidth(newWidth.doubleValue());
+						});
+
+						// Initial adjustment
+						adjustLayoutForWidth(newWindow.getWidth());
+					}
+				});
+			}
+		});
+	}
+
+	/**
+	 * Adjusts the layout based on available width
+	 * 
+	 * @param width The current window width
+	 */
+	private void adjustLayoutForWidth(double width) {
+		// For very narrow screens
+		if (width < 500) {
+			// Make profile content more compact
+			if (profileContent != null) {
+				profileContent.setSpacing(10); // Reduce spacing
+			}
+
+			// Adjust progress chart size
+			if (progressChart != null) {
+				progressChart.setPrefSize(width * 0.8, width * 0.6);
+			}
+
+			// Make word list take full width
+			if (wordsList != null) {
+				wordsList.setPrefWidth(width * 0.9);
+			}
+		} else {
+			// For larger screens, reset to default
+			if (profileContent != null) {
+				profileContent.setSpacing(20); // Normal spacing
+			}
+
+			if (progressChart != null) {
+				progressChart.setPrefSize(300, 250); // Default size
+			}
+		}
+	}
+
+	/**
+	 * Handles table display for very small windows
+	 */
+//	private void optimizeTableForSmallScreens() {
+//		// Get the current scene's width property
+//		view.widthProperty().addListener((obs, oldVal, newVal) -> {
+//			double width = newVal.doubleValue();
+//
+//			// For very small screens
+//			if (width < 500) {
+//				// Set column priorities - keep ID and Username visible
+//				idColumn.setMinWidth(40);
+//				usernameColumn.setMinWidth(100);
+//				actionsColumn.setMinWidth(120);
+//
+//				// Hide less important columns
+//				emailColumn.setVisible(width > 400);
+//				languageColumn.setVisible(width > 450);
+//			} else {
+//				// Show all columns for larger screens
+//				emailColumn.setVisible(true);
+//				languageColumn.setVisible(true);
+//			}
+//
+//			// Force the table to refresh its layout
+//			userTableView.refresh();
+//		});
+//	}
+
 }

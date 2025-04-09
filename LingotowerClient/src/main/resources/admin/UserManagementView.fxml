@@ -32,7 +32,7 @@
       </HBox>
    </top>
    <center>
-      <VBox spacing="20.0" BorderPane.alignment="CENTER">
+      <VBox spacing="20.0" VBox.vgrow="ALWAYS" BorderPane.alignment="CENTER">
          <children>
             <!-- Header Section -->
             <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -43,7 +43,7 @@
                      </font>
                   </Label>
                   <HBox HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="searchField" promptText="Search users..." />
+                  <TextField fx:id="searchField" promptText="Search users..." HBox.hgrow="SOMETIMES" minWidth="150.0" prefWidth="250.0" />
                   <Button mnemonicParsing="false" onAction="#handleSearchButton" text="Search" />
                   <Button mnemonicParsing="false" onAction="#handleRefreshButton" text="Refresh" />
                </children>
@@ -52,19 +52,23 @@
             <!-- Status message -->
             <Label fx:id="statusLabel" styleClass="status-message" text="Status message" visible="false" />
             
-            <!-- User Table -->
-            <TableView fx:id="userTableView" VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
-                <TableColumn fx:id="usernameColumn" prefWidth="150.0" text="Username" />
-                <TableColumn fx:id="emailColumn" prefWidth="200.0" text="Email" />
-                <TableColumn fx:id="languageColumn" prefWidth="100.0" text="Language" />
-                <TableColumn fx:id="actionsColumn" prefWidth="200.0" text="Actions" />
-              </columns>
-            </TableView>
+<!-- User Table with improved responsiveness -->
+<TableView fx:id="userTableView" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="250.0">
+  <columns>
+    <TableColumn fx:id="idColumn" minWidth="40.0" prefWidth="50.0" text="ID" />
+    <TableColumn fx:id="usernameColumn" minWidth="100.0" prefWidth="150.0" text="Username" />
+    <TableColumn fx:id="emailColumn" minWidth="120.0" prefWidth="200.0" text="Email" />
+    <TableColumn fx:id="languageColumn" minWidth="80.0" prefWidth="100.0" text="Language" />
+    <TableColumn fx:id="actionsColumn" minWidth="120.0" prefWidth="150.0" text="Actions" />
+  </columns>
+  <columnResizePolicy>
+     <!-- Use CONSTRAINED_RESIZE_POLICY for better column resizing -->
+     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+  </columnResizePolicy>
+</TableView>
             
             <!-- Edit User Form - Initially hidden -->
-            <VBox fx:id="editUserForm" spacing="10.0" visible="false">
+            <VBox fx:id="editUserForm" spacing="10.0" visible="false" maxWidth="600.0">
                <children>
                   <Label text="Edit User">
                      <font>
@@ -102,7 +106,7 @@
             </VBox>
             
             <!-- Confirmation Dialog - Initially hidden -->
-            <VBox fx:id="confirmationDialog" alignment="CENTER" spacing="10.0" styleClass="confirmation-dialog" visible="false">
+            <VBox fx:id="confirmationDialog" alignment="CENTER" spacing="10.0" styleClass="confirmation-dialog" visible="false" maxWidth="500.0">
                <children>
                   <Label text="Are you sure you want to delete this user?">
                      <font>
