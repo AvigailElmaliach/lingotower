@@ -9,7 +9,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.lingotower.data.CategoryRepository;
 import com.lingotower.data.WordRepository;
@@ -18,10 +20,12 @@ import com.lingotower.dto.translation.TranslationResponseDTO;
 import com.lingotower.dto.word.WordDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
+import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.util.TranslationUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class WordService {
@@ -182,6 +186,30 @@ public class WordService {
 		}
 
 		return mapWordsToLanguage(words, userLanguage);
+	}
+	@Transactional
+	public void deleteWord(Long wordId, String username) {
+	    if (!wordRepository.existsById(wordId)) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Word not found");
+	    }
+
+	    wordRepository.deleteById(wordId);
+	}
+	
+	public void updateWord(Long wordId, WordDTO updateDTO, String username) {
+	    Word word = wordRepository.findById(wordId)
+	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Word not found"));
+
+	    word.setWord(updateDTO.getWord());
+	    word.setDifficulty(updateDTO.getDifficulty());
+	    word.setSourceLanguage(updateDTO.getSourceLanguage());
+	    word.setTargetLanguage(updateDTO.getTargetLanguage());
+
+	    Category category = categoryRepository.findByName(updateDTO.getCategory())
+	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found"));
+	    word.setCategory(category);
+
+	    wordRepository.save(word);
 	}
 
 //למחוק אם לא צריך

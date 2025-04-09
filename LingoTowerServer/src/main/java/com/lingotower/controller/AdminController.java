@@ -7,15 +7,18 @@ import com.lingotower.dto.admin.AdminResponseDTO;
 import com.lingotower.model.Admin;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
+import com.lingotower.service.WordService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.lingotower.model.Role;
 import com.lingotower.model.User;
 import com.lingotower.security.JwtTokenProvider;
 
-
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,11 +32,13 @@ public class AdminController {
 
    
     private final JwtTokenProvider jwtTokenProvider;  // הוספת תלות ב־JwtTokenProvider
+	private WordService wordService;
 
-    public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider,UserService userService) {
+    public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider,UserService userService,WordService wordService) {
         this.adminService = adminService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService=userService;
+        this.wordService=wordService;
     }
     @GetMapping
     public List<AdminResponseDTO> getAllAdmins() {
@@ -63,7 +68,16 @@ public class AdminController {
         }
     }
 
-    
+    //לחשוב אם כדאי לבדוק אם משתמש הוא מנהל
+    @DeleteMapping("word/{wordId}")
+    public ResponseEntity<Void> deleteWord(@PathVariable Long wordId, Principal principal) {
+        try {
+            wordService.deleteWord(wordId, principal.getName());
+            return ResponseEntity.ok().build();
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).build();//לבדוק אם נכון סטוטס קוד
+        }
+    }
     @PutMapping("/{id}")
     public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateDTO adminUpdateDTO) {
         Optional<Admin> updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);

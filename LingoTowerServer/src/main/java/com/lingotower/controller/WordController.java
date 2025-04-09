@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
@@ -48,6 +49,7 @@ public class WordController {
     public ResponseEntity<List<Word>> getAllWords() {
         return ResponseEntity.ok(wordService.getAllWords());
     }
+   
 ///
 //    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random")
 //    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
