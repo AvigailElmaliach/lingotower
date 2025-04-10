@@ -1,7 +1,5 @@
 package com.lingotower.ui.components;
 
-import com.lingotower.model.User;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,10 +9,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 
 /**
- * A custom table cell that contains Edit and Delete buttons for user
- * management.
+ * A custom generic table cell that contains Edit and Delete buttons.
+ * 
+ * @param <S> The type of the TableView items.
  */
-public class ActionButtonCell extends TableCell<User, String> {
+public class ActionButtonCell<S> extends TableCell<S, String> { // הפכנו לגנרי עם <S>
 
 	private final Button editButton = new Button("Edit");
 	private final Button deleteButton = new Button("Delete");
@@ -23,10 +22,10 @@ public class ActionButtonCell extends TableCell<User, String> {
 	public ActionButtonCell(EventHandler<ActionEvent> onEdit, EventHandler<ActionEvent> onDelete) {
 		// Style the buttons
 		editButton.getStyleClass().addAll("small-button", "edit-button");
-		editButton.setPrefWidth(80); // Fixed width for consistency
+		editButton.setPrefWidth(80);
 
-		deleteButton.getStyleClass().addAll("small-button", "danger-button", "delete-button");
-		deleteButton.setPrefWidth(80); // Fixed width for consistency
+		deleteButton.getStyleClass().addAll("small-button", "danger-button", "delete-button"); // <-- אם רוצים כפתור קטן
+		deleteButton.setPrefWidth(80);
 
 		// Set the action handlers
 		editButton.setOnAction(event -> {
@@ -34,9 +33,9 @@ public class ActionButtonCell extends TableCell<User, String> {
 				return; // Protect against index errors
 			}
 
-			User user = getTableView().getItems().get(getIndex());
-			// Call the provided edit handler
-			onEdit.handle(new ActionEvent(user, event.getTarget()));
+			S item = getTableView().getItems().get(getIndex()); // טיפוס הגנרי S
+			// Call the provided edit handler, sending the item itself as the source
+			onEdit.handle(new ActionEvent(item, event.getTarget()));
 		});
 
 		deleteButton.setOnAction(event -> {
@@ -44,15 +43,15 @@ public class ActionButtonCell extends TableCell<User, String> {
 				return; // Protect against index errors
 			}
 
-			User user = getTableView().getItems().get(getIndex());
-			// Call the provided delete handler
-			onDelete.handle(new ActionEvent(user, event.getTarget()));
+			S item = getTableView().getItems().get(getIndex()); // טיפוס הגנרי S
+			// Call the provided delete handler, sending the item itself as the source
+			onDelete.handle(new ActionEvent(item, event.getTarget()));
 		});
 
 		// Add buttons to the HBox pane with proper styling
 		pane.getChildren().addAll(editButton, deleteButton);
 		pane.setPadding(new Insets(2));
-		pane.setAlignment(Pos.CENTER); // Center the buttons
+		pane.setAlignment(Pos.CENTER); // Center the buttons in the HBox
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class ActionButtonCell extends TableCell<User, String> {
 			setGraphic(null);
 		} else {
 			setGraphic(pane);
-			// Center the cell content
+			// Center the cell content (HBox) vertically and horizontally
 			setAlignment(Pos.CENTER);
 		}
 	}

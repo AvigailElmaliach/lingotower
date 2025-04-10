@@ -132,7 +132,7 @@ public class AdminViewController {
 
 			// Show user management view
 			if (primaryStage != null) {
-				Scene scene = new Scene(userManagementRoot, 800, 600);
+				Scene scene = new Scene(userManagementRoot, 800, 700);
 
 				// Add stylesheets
 				try {
@@ -186,7 +186,7 @@ public class AdminViewController {
 
 			// Show content management view
 			if (primaryStage != null) {
-				Scene scene = new Scene(contentManagementRoot, 800, 600);
+				Scene scene = new Scene(contentManagementRoot, 800, 700);
 
 				// Add stylesheets
 				try {
