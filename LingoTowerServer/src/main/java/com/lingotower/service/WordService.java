@@ -208,7 +208,7 @@ public class WordService {
 		return mapWordsToLanguage(words, userLanguage);
 	}
 
-	private String getUserLanguage(String username) {
+	public String getUserLanguage(String username) {
 		// חיפוש המשתמש הרגיל ב-UserRepository
 		Optional<User> user = userRepository.findByUsername(username);
 		if (user.isPresent()) { // בודקים אם ה-Optional מכיל ערך

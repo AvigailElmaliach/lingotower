@@ -1,13 +1,16 @@
 package com.lingotower.controller;
 
 import com.lingotower.dto.QuizResponse;
-import com.lingotower.dto.quiz.QuizRequest;
+import com.lingotower.dto.quiz.QuestionDTO;
+//import com.lingotower.dto.quiz.QuizRequest;
+import com.lingotower.model.Difficulty;
 import com.lingotower.model.Quiz;
 import com.lingotower.service.QuizService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.desktop.QuitResponse;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +52,27 @@ public class QuizController {
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
-//    @PostMapping("/generate")
-//    public QuizResponse generateExam(@RequestBody QuizRequest request) {
-//        return quizService.generateExam(request.getCategoryId(), request.getDifficulty(), request.getUserId());
-//    }
-}
+
+    
+
+
+
+        @GetMapping("/generate")
+        public ResponseEntity<List<QuestionDTO>> generateQuiz(
+                @RequestParam Long categoryId,
+                @RequestParam Difficulty difficulty,
+                Principal principal) {
+            
+            // קבלת שם המשתמש מתוך ה-Principal (המשתמש המחובר)
+            String username = principal.getName();
+            
+            // קריאה לפונקציה generateQuiz של ה-QuizService
+            List<QuestionDTO> quiz = quizService.generateQuiz(categoryId, difficulty, username);
+            
+            // החזרת רשימת השאלות בתגובה
+            return ResponseEntity.ok(quiz);
+        }
+    }
+
+
+
