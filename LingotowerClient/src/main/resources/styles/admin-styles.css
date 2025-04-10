@@ -182,3 +182,24 @@
 .search-button {
     -fx-background-radius: 20px;
 }
+.category-card {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-margin: 5px 0;
+}
+
+.category-card:hover {
+    -fx-background-color: #f9f9f9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.category-card Label {
+    -fx-padding: 2px 0;
+}
+
+

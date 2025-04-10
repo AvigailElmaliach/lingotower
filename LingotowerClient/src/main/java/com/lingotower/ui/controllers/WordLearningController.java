@@ -81,10 +81,13 @@ public class WordLearningController {
 
 	public void setUser(User user) {
 		this.currentUser = user;
+		System.out.println("User set in WordLearningController: " + (user != null ? user.getUsername() : "null"));
 	}
 
 	public void setCategory(Category category) {
 		this.currentCategory = category;
+		System.out.println("Category set in WordLearningController: "
+				+ (category != null ? category.getName() + " (ID: " + category.getId() + ")" : "null"));
 
 		// Update category name label
 		categoryNameLabel.setText(category.getName());
@@ -101,12 +104,22 @@ public class WordLearningController {
 	private void loadWords() {
 		try {
 			// Try to fetch words with translations from server
-			System.out.println("Fetching words with translations for category ID: " + currentCategory.getId());
-			List<Word> fetchedWords = wordService.getWordsByCategoryWithTranslation(currentCategory.getId());
+			System.out.println("Fetching words for category ID: " + currentCategory.getId());
+
+			// Use getWordsByCategory method instead of getWordsByCategoryWithTranslation
+			// since the server endpoint returns the full Word objects with translation
+			List<Word> fetchedWords = wordService.getWordsByCategory(currentCategory.getId());
 
 			this.words = fetchedWords;
 
 			if (words != null && !words.isEmpty()) {
+				System.out.println("Loaded " + words.size() + " words successfully");
+
+				// Debug the first word
+				Word firstWord = words.get(0);
+				System.out.println("First word: " + firstWord.getWord());
+				System.out.println("Translation: " + firstWord.getTranslatedText());
+
 				// Update progress
 				updateProgress();
 
@@ -114,6 +127,7 @@ public class WordLearningController {
 				showCurrentWord();
 			} else {
 				// No words found
+				System.out.println("No words found for this category");
 				wordLabel.setText("No words found for this category");
 				showTranslationButton.setDisable(true);
 				nextWordButton.setDisable(true);
@@ -131,16 +145,19 @@ public class WordLearningController {
 
 	private void showCurrentWord() {
 		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
+			System.out.println("Cannot show current word: words list is empty or index out of bounds");
 			return;
 		}
 
 		Word currentWord = words.get(currentWordIndex);
+		System.out.println(
+				"Showing word: " + currentWord.getWord() + " (Translation: " + currentWord.getTranslatedText() + ")");
 
 		// Set word text
 		wordLabel.setText(currentWord.getWord());
 
 		// Set translation (hidden initially)
-		translationLabel.setText(currentWord.getTranslation());
+		translationLabel.setText(currentWord.getTranslatedText());
 		translationLabel.setVisible(false);
 
 		// Reset buttons
@@ -149,19 +166,17 @@ public class WordLearningController {
 		markLearnedButton.setDisable(true);
 
 		// Set RTL if needed for word
-		if (currentWord.getLanguage() != null
-				&& (currentWord.getLanguage().equals("he") || containsHebrew(currentWord.getWord()))) {
+		if (containsHebrew(currentWord.getWord())) {
 			wordLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		} else {
 			wordLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		}
 
 		// Set RTL if needed for translation
-		if (currentWord.getLanguage() != null
-				&& (currentWord.getLanguage().equals("en") || !containsHebrew(currentWord.getTranslation()))) {
-			translationLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-		} else {
+		if (containsHebrew(currentWord.getTranslatedText())) {
 			translationLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		} else {
+			translationLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		}
 
 		// Update message
@@ -171,19 +186,7 @@ public class WordLearningController {
 	@FXML
 	public void handleShowTranslation(ActionEvent event) {
 		// Show translation
-		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
-			System.out.println("No words loaded or invalid index");
-			return;
-		}
-
-		Word currentWord = words.get(currentWordIndex);
-		System.out.println("Current word: " + currentWord.getWord());
-		System.out.println("Translation: " + currentWord.getTranslation());
-
 		translationLabel.setVisible(true);
-
-		// Check if the label has text
-		System.out.println("Translation label text: " + translationLabel.getText());
 
 		// Enable next word button
 		nextWordButton.setDisable(false);
@@ -245,7 +248,7 @@ public class WordLearningController {
 		} catch (Exception e) {
 			System.err.println("Error marking word as learned: " + e.getMessage());
 			e.printStackTrace();
-			messageLabel.setText("Error marking word as learned.");
+			messageLabel.setText("Error marking word as learned: " + e.getMessage());
 		}
 	}
 

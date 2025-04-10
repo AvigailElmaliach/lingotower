@@ -25,16 +25,29 @@ public class WordLearningView implements View {
 	@Override
 	public Parent createView() {
 		try {
+			System.out.println("Creating WordLearningView for category: " + category.getName());
+
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/WordLearning.fxml"));
 			Parent view = loader.load();
 
 			WordLearningController controller = loader.getController();
+
+			// Set the user first
+			if (currentUser != null) {
+				System.out.println("Setting user in controller: " + currentUser.getUsername());
+				controller.setUser(currentUser);
+			} else {
+				System.out.println("WARNING: currentUser is null in WordLearningView");
+			}
+
+			// Set category and callbacks
+			System.out.println("Setting category in controller: " + category.getName());
 			controller.setCategory(category);
 			controller.setOnBackToDashboard(onBackToDashboard);
-			controller.setUser(currentUser);
 
 			return view;
 		} catch (IOException e) {
+			System.err.println("Error loading word learning view: " + e.getMessage());
 			e.printStackTrace();
 			return new Label("Error loading word learning view: " + e.getMessage());
 		}
@@ -42,6 +55,6 @@ public class WordLearningView implements View {
 
 	@Override
 	public void refresh() {
-		// Nothing to do here
+		// No refresh functionality needed
 	}
 }

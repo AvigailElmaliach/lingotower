@@ -168,7 +168,7 @@ public class DailyWordController {
 
 		// Update UI
 		wordLabel.setText(dailyWord.getWord());
-		translationLabel.setText(dailyWord.getTranslation());
+		translationLabel.setText(dailyWord.getTranslatedText());
 
 		// Set example text (mock data for now)
 		String exampleText = getExampleForWord(dailyWord.getWord());
@@ -255,7 +255,7 @@ public class DailyWordController {
 		}
 
 		// In a real application, this would open sharing options
-		String shareText = "Today I learned the word \"" + dailyWord.getWord() + "\" (" + dailyWord.getTranslation()
+		String shareText = "Today I learned the word \"" + dailyWord.getWord() + "\" (" + dailyWord.getTranslatedText()
 				+ ") on LingoTower!";
 
 		System.out.println("Sharing: " + shareText);
