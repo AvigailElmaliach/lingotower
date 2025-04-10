@@ -137,6 +137,12 @@ public class CategoryService {
 		return categoryRepository.save(category);
 	}
 
+	public Category addCategoryFromDTO(CategoryDTO dto) {
+	    Category category = new Category();
+	    category.setName(dto.getName());
+	    category.setTranslation(dto.getTranslation());
+	    return addCategory(category);
+	}
 	public Category saveCategory(Category category) {
 		return categoryRepository.save(category);
 	}

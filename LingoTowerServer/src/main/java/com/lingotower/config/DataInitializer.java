@@ -36,11 +36,11 @@ public class DataInitializer implements CommandLineRunner {
 
 	private TranslationService translationService;
 
-	 @Autowired
-	    public DataInitializer(TranslationService translationService) {
-	        this.translationService = translationService;
-	    }
-	
+	@Autowired
+	public DataInitializer(TranslationService translationService) {
+		this.translationService = translationService;
+	}
+
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("🔹 מתחיל לטעון נתונים מקובצי JSON...");
@@ -68,25 +68,22 @@ public class DataInitializer implements CommandLineRunner {
 			System.out.println("✅ כל הנתונים נטענו בהצלחה!");
 			updateCategoriesWithoutTranslation();
 			// שלב 4: עדכון מילים ללא תרגום
-            updateWordsWithoutTranslation();
+			updateWordsWithoutTranslation();
 			System.out.println("יששששש");
-
-			
 
 		} catch (Exception e) {
 			handleError(e);
 		}
 	}
-	
 
 	private void loadCategoriesFromJson(String resourcePath) {
 		try {
-			System.out.println("📂 מנסה לטעון קטגוריות מהקובץ: " + resourcePath);
+			System.out.println(" מנסה לטעון קטגוריות מהקובץ: " + resourcePath);
 			Resource resource = resourceLoader.getResource(resourcePath);
 
 			if (resource.exists()) {
 				Category[] categories = objectMapper.readValue(resource.getInputStream(), Category[].class);
-				System.out.println("✅ נטענו " + categories.length + " קטגוריות מהקובץ");
+				System.out.println(" נטענו " + categories.length + " קטגוריות מהקובץ");
 
 				for (Category categoryFromJson : categories) {
 					// Check if category exists by name
@@ -95,17 +92,15 @@ public class DataInitializer implements CommandLineRunner {
 
 					if (existingCategory.isPresent()) {
 						System.out.println(
-								"⚠ קטגוריה '" + categoryName + "' כבר קיימת עם ID " + existingCategory.get().getId());
+								" קטגוריה '" + categoryName + "' כבר קיימת עם ID " + existingCategory.get().getId());
 					} else {
 						// Create a new category with only the name
 						Category newCategory = new Category();
 						newCategory.setName(categoryName);
-	
-	  String translatedCategoryName = translationService.translateText(categoryName, "en", "he");
-      newCategory.setTranslation(translatedCategoryName);
-      
-      
-      
+
+						String translatedCategoryName = translationService.translateText(categoryName, "en", "he");
+						newCategory.setTranslation(translatedCategoryName);
+
 						// Save the category and let the database assign an ID
 						try {
 							Category savedCategory = categoryService.addCategory(newCategory);
@@ -126,90 +121,91 @@ public class DataInitializer implements CommandLineRunner {
 	}
 
 	private void loadWordsFromJson(String resourcePath, String categoryName) {
-	    try {
-	        System.out.println("📂 טוען מילים מהקובץ: " + resourcePath + " לקטגוריה: " + categoryName);
-	        Resource resource = resourceLoader.getResource(resourcePath);
+		try {
+			System.out.println("📂 טוען מילים מהקובץ: " + resourcePath + " לקטגוריה: " + categoryName);
+			Resource resource = resourceLoader.getResource(resourcePath);
 
-	        if (!resource.exists()) {
-	            System.out.println("⚠ קובץ מילים לא נמצא: " + resourcePath);
-	            return;
-	        }
+			if (!resource.exists()) {
+				System.out.println("⚠ קובץ מילים לא נמצא: " + resourcePath);
+				return;
+			}
 
-	        Category category = categoryService.getOrCreateCategory(categoryName);
-	        Word[] wordsArray = objectMapper.readValue(resource.getInputStream(), Word[].class);
-	        System.out.println("✅ נטענו " + wordsArray.length + " מילים מהקובץ");
+			Category category = categoryService.getOrCreateCategory(categoryName);
+			Word[] wordsArray = objectMapper.readValue(resource.getInputStream(), Word[].class);
+			System.out.println("✅ נטענו " + wordsArray.length + " מילים מהקובץ");
 
-	        int addedCount = 0, existingCount = 0;
-	        for (Word word : wordsArray) {
-	            word.setCategory(category);
+			int addedCount = 0, existingCount = 0;
+			for (Word word : wordsArray) {
+				word.setCategory(category);
 
-	            // בדיקה אם המילה כבר קיימת במסד הנתונים
-	            Optional<Word> existingWord = wordService.findByWord(word.getWord());
-	            if (existingWord.isEmpty()) {
-	                // תרגום ושמירה
-	                String translatedText = translationService.translateText(word.getWord(), "en", "he");
-	                word.setTranslation(translatedText);
+				// בדיקה אם המילה כבר קיימת במסד הנתונים
+				Optional<Word> existingWord = wordService.findByWord(word.getWord());
+				if (existingWord.isEmpty()) {
+					// תרגום ושמירה
+					String translatedText = translationService.translateText(word.getWord(), "en", "he");
+					word.setTranslation(translatedText);
 
-	                wordService.saveWord(word, "en", "he");
-	                addedCount++;
-	            } else {
-	                existingCount++;
-	            }
-	        }
+					wordService.saveWord(word, "en", "he");
+					addedCount++;
+				} else {
+					existingCount++;
+				}
+			}
 
-	        System.out.println("✔ נוספו " + addedCount + " מילים חדשות, " + existingCount + " מילים כבר קיימות.");
-	    } catch (IOException e) {
-	        System.out.println("❌ שגיאה בטעינת מילים מהקובץ " + resourcePath + ": " + e.getMessage());
-	        e.printStackTrace();
-	    }
+			System.out.println("✔ נוספו " + addedCount + " מילים חדשות, " + existingCount + " מילים כבר קיימות.");
+		} catch (IOException e) {
+			System.out.println("❌ שגיאה בטעינת מילים מהקובץ " + resourcePath + ": " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
+
 	private void updateWordsWithoutTranslation() {
-        try {
-            System.out.println(" מחפש מילים ישנות ללא תרגום...");
-            // חיפוש מילים שאין להם תרגום
-            List<Word> wordsWithoutTranslation = wordService.findWordsWithoutTranslation();
-            
-            int translatedCount = 0;
-            
-            // עבור כל מילה, תבצע תרגום
-            for (Word word : wordsWithoutTranslation) {
-                String translatedText = translationService.translateText(word.getWord(), "en", "he");
-                word.setTranslation(translatedText);
-                wordService.saveWord(word, "en", "he");
-                translatedCount++;
-            }
-            
-            System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " מילים.");
-            
-        } catch (Exception e) {
-            System.out.println("❌ שגיאה בעדכון מילים ללא תרגום: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+		try {
+			System.out.println(" מחפש מילים ישנות ללא תרגום...");
+			// חיפוש מילים שאין להם תרגום
+			List<Word> wordsWithoutTranslation = wordService.findWordsWithoutTranslation();
+
+			int translatedCount = 0;
+
+			// עבור כל מילה, תבצע תרגום
+			for (Word word : wordsWithoutTranslation) {
+				String translatedText = translationService.translateText(word.getWord(), "en", "he");
+				word.setTranslation(translatedText);
+				wordService.saveWord(word, "en", "he");
+				translatedCount++;
+			}
+
+			System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " מילים.");
+
+		} catch (Exception e) {
+			System.out.println("❌ שגיאה בעדכון מילים ללא תרגום: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
 	private void updateCategoriesWithoutTranslation() {
-	    try {
-	        System.out.println("🔍 מחפש קטגוריות ללא תרגום...");
+		try {
+			System.out.println("🔍 מחפש קטגוריות ללא תרגום...");
 
-	        // חיפוש קטגוריות שאין להן תרגום
-	        List<Category> categoriesWithoutTranslation = categoryService.findCategoriesWithoutTranslation();
+			// חיפוש קטגוריות שאין להן תרגום
+			List<Category> categoriesWithoutTranslation = categoryService.findCategoriesWithoutTranslation();
 
-	        int translatedCount = 0;
+			int translatedCount = 0;
 
-	        // עדכון כל קטגוריה עם תרגום
-	        for (Category category : categoriesWithoutTranslation) {
-	            String translatedName = translationService.translateText(category.getName(), "en", "he");
-	            category.setTranslation(translatedName);
-	            categoryService.saveCategory(category);
-	            translatedCount++;
-	        }
+			// עדכון כל קטגוריה עם תרגום
+			for (Category category : categoriesWithoutTranslation) {
+				String translatedName = translationService.translateText(category.getName(), "en", "he");
+				category.setTranslation(translatedName);
+				categoryService.saveCategory(category);
+				translatedCount++;
+			}
 
-	        System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " קטגוריות.");
+			System.out.println("✔ נוספו תרגומים ל-" + translatedCount + " קטגוריות.");
 
-	    } catch (Exception e) {
-	        System.out.println("❌ שגיאה בעדכון קטגוריות ללא תרגום: " + e.getMessage());
-	        e.printStackTrace();
-	    }
+		} catch (Exception e) {
+			System.out.println("❌ שגיאה בעדכון קטגוריות ללא תרגום: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	private void handleError(Exception e) {
