@@ -73,6 +73,25 @@ public class WordController {
 //                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 //                : ResponseEntity.ok(randomWords);
 //    }
+   
+
+        @PutMapping("/{wordId}")
+        public ResponseEntity<Void> updateWord(
+                @PathVariable Long wordId,
+                @RequestBody WordByCategory updateDTO,
+                Principal principal) {
+
+            // שליפת שם המשתמש מתוך ה־JWT
+            String username = principal.getName();
+
+            // בדיקה אם יש חוסר התאמה בין ה-ID ב־DTO ל־PathVariable (לא חובה, אבל מומלץ)
+            if (updateDTO.getId() != null && !updateDTO.getId().equals(wordId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and body ID");
+            }
+
+            wordService.updateWord(wordId, updateDTO, username);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        }
 
     @GetMapping("/category/{categoryId}/random")
     public ResponseEntity<List<WordByCategory>> getRandomWordsByCategory(
@@ -174,7 +193,6 @@ public class WordController {
             @PathVariable Long categoryId,
             @PathVariable Difficulty difficulty,
             Principal principal) {
-
         // קבלת פרטי המשתמש והעברית או אנגלית
         User user = userService.getUserByUsername(principal.getName());
         if (user == null) {
@@ -182,7 +200,6 @@ public class WordController {
         }
         String userLanguage = user.getTargetLanguage();
 
-        // שליפת המילים לפי רמת קושי ושפת המשתמש
         List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
         
         return ResponseEntity.ok(translatedWords);
@@ -194,14 +211,12 @@ public class WordController {
             @PathVariable Difficulty difficulty,
             Principal principal) {
 
-        // קבלת פרטי המשתמש והעברית או אנגלית
         User user = userService.getUserByUsername(principal.getName());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String userLanguage = user.getTargetLanguage();
 
-        // שליפת מילים אקראיות לפי רמת קושי ושפת המשתמש
         List<WordByCategory> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
         
         return ResponseEntity.ok(translatedWords);
