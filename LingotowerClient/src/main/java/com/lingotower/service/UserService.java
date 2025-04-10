@@ -79,11 +79,11 @@ public class UserService extends BaseService {
 
 	public boolean updateUser(User user) {
 		try {
-			// Create a DTO with only the fields that can be updated
+			// Create a DTO with the required fields
 			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
 			userUpdateDTO.setUsername(user.getUsername());
 			userUpdateDTO.setEmail(user.getEmail());
-			userUpdateDTO.setLanguage(user.getLanguage());
+			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
 
 			// Set up headers with authentication and content type
 			HttpHeaders headers = createAuthHeaders();
@@ -92,8 +92,10 @@ public class UserService extends BaseService {
 			// Create HTTP entity with the DTO and headers
 			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
 
-			// Make the PUT request to update the user
+			// Construct the URL with the user ID
 			String url = BASE_URL + "/" + user.getId();
+
+			// Make the PUT request to update the user
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
 
 			// Return true if successful (HTTP 200 OK)

@@ -311,6 +311,12 @@ public class UserManagementController {
 			return;
 		}
 
+		// Validate language field (case-sensitive)
+		if (!language.equals("English") && !language.equals("Hebrew")) {
+			showStatusMessage("Language must be 'English' or 'Hebrew'", true);
+			return;
+		}
+
 		// Show loading status
 		showStatusMessage("Updating user...", false);
 
