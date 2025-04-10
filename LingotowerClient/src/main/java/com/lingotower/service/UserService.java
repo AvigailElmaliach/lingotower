@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import com.lingotower.dto.UserUpdateDTO;
 import com.lingotower.model.User;
@@ -79,11 +78,11 @@ public class UserService extends BaseService {
 
 	public boolean updateUser(User user) {
 		try {
-			// Create a DTO with only the fields that can be updated
+			// Create a DTO with the required fields
 			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
 			userUpdateDTO.setUsername(user.getUsername());
 			userUpdateDTO.setEmail(user.getEmail());
-			userUpdateDTO.setLanguage(user.getLanguage());
+			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
 
 			// Set up headers with authentication and content type
 			HttpHeaders headers = createAuthHeaders();
@@ -92,8 +91,10 @@ public class UserService extends BaseService {
 			// Create HTTP entity with the DTO and headers
 			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
 
-			// Make the PUT request to update the user
+			// Construct the URL with the user ID
 			String url = BASE_URL + "/" + user.getId();
+
+			// Make the PUT request to update the user
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
 
 			// Return true if successful (HTTP 200 OK)
@@ -106,16 +107,43 @@ public class UserService extends BaseService {
 	}
 
 	public boolean deleteUser(Long id) {
+		if (id == null) {
+			System.err.println("Error: Cannot delete user with null ID");
+			return false;
+		}
+
 		try {
+			// Log the action
+			System.out.println("UserService: Attempting to delete user with ID: " + id);
+
+			// Get authentication headers
 			HttpHeaders headers = createAuthHeaders();
+
+			// Log headers for debugging
+			System.out.println("Request headers:");
+			headers.forEach((key, values) -> {
+				System.out.println(key + ": " + String.join(", ", values));
+			});
+
+			// Create the HTTP entity with headers
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
+			// Construct the URL
 			String url = BASE_URL + "/" + id;
+			System.out.println("Delete URL: " + url);
+
+			// Make the DELETE request
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
 
-			return response.getStatusCode() == HttpStatus.NO_CONTENT;
+			// Log the response
+			boolean success = response.getStatusCode() == HttpStatus.NO_CONTENT;
+			System.out.println("Delete response status: " + response.getStatusCode());
+			System.out.println("Delete operation successful: " + success);
+
+			return success;
 		} catch (Exception e) {
-			System.err.println("Error deleting user: " + e.getMessage());
+			System.err.println("Error deleting user with ID " + id + ": " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -212,12 +240,6 @@ public class UserService extends BaseService {
 		}
 	}
 
-	/**
-	 * Adds a word to the authenticated user's learned words list
-	 * 
-	 * @param wordId The ID of the word to add
-	 * @return true if successful, false otherwise
-	 */
 	public boolean addWordToLearned(Long wordId) {
 		if (wordId == null) {
 			System.err.println("Error: Word ID is null. Cannot mark as learned.");
@@ -225,14 +247,19 @@ public class UserService extends BaseService {
 		}
 
 		try {
-			System.out.println("Sending POST request to mark word as learned. Word ID: " + wordId);
-			String url = "http://localhost:8080/users/learned/" + wordId;
-			RestTemplate restTemplate = new RestTemplate();
+			// Construct the URL using BASE_URL
+			String url = BASE_URL + "/learned/" + wordId;
 
-			ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
-			System.out.println("Response Status Code: " + response.getStatusCode());
-			System.out.println("Response Body: " + response.getBody());
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
 
+			// Create an HTTP entity with headers
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the POST request
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
+
+			// Return true if the response status is HTTP 200 OK
 			return response.getStatusCode() == HttpStatus.OK;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			System.err.println("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());

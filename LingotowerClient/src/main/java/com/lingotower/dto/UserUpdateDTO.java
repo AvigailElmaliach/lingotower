@@ -3,15 +3,17 @@ package com.lingotower.dto;
 public class UserUpdateDTO {
 	private String username;
 	private String email;
-	private String language;
+	private String sourceLanguage;
+	private String targetLanguage;
 
 	public UserUpdateDTO() {
 	}
 
-	public UserUpdateDTO(String username, String email, String language) {
+	public UserUpdateDTO(String username, String email, String sourceLanguage) {
 		this.username = username;
 		this.email = email;
-		this.language = language;
+		this.sourceLanguage = sourceLanguage;
+		this.targetLanguage = determineTargetLanguage(sourceLanguage);
 	}
 
 	public String getUsername() {
@@ -30,11 +32,21 @@ public class UserUpdateDTO {
 		this.email = email;
 	}
 
-	public String getLanguage() {
-		return language;
+	public String getSourceLanguage() {
+		return sourceLanguage;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setSourceLanguage(String sourceLanguage) {
+		this.sourceLanguage = sourceLanguage;
+		this.targetLanguage = determineTargetLanguage(sourceLanguage);
 	}
+
+	public String getTargetLanguage() {
+		return targetLanguage;
+	}
+
+	private String determineTargetLanguage(String sourceLanguage) {
+		return "he".equals(sourceLanguage) ? "en" : "he";
+	}
+
 }

@@ -8,21 +8,19 @@ import com.lingotower.model.Difficulty;
 import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.WordService;
+import com.lingotower.ui.components.ActionButtonCell;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ContentManagementController {
@@ -130,40 +128,17 @@ public class ContentManagementController {
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		categoryTranslationColumn.setCellValueFactory(new PropertyValueFactory<>("translation"));
 
-		// Setup category actions column with buttons
-		categoryActionsColumn.setCellFactory(column -> new TableCell<Category, String>() {
-			private final Button editButton = new Button("Edit");
-			private final Button deleteButton = new Button("Delete");
-			private final HBox pane = new HBox(5);
-
-			{
-				editButton.getStyleClass().add("small-button");
-				deleteButton.getStyleClass().add("small-button");
-				deleteButton.getStyleClass().add("danger-button");
-
-				editButton.setOnAction(event -> {
-					Category category = getTableView().getItems().get(getIndex());
-					showCategoryEditForm(category);
-				});
-
-				deleteButton.setOnAction(event -> {
-					Category category = getTableView().getItems().get(getIndex());
-					deleteCategory(category);
-				});
-
-				pane.getChildren().addAll(editButton, deleteButton);
-			}
-
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if (empty) {
-					setGraphic(null);
-				} else {
-					setGraphic(pane);
-				}
-			}
-		});
+		// Setup category actions column using ActionButtonCell
+		// ****************************************************
+		// החלפת הקוד הקודם בשימוש ב-ActionButtonCell
+		// ****************************************************
+		categoryActionsColumn.setCellFactory(col -> new ActionButtonCell<>(event -> { // Edit handler
+			Category category = (Category) event.getSource(); // קבלת האובייקט מהאירוע
+			showCategoryEditForm(category);
+		}, event -> { // Delete handler
+			Category category = (Category) event.getSource(); // קבלת האובייקט מהאירוע
+			deleteCategory(category);
+		}));
 
 		// Initialize word table columns
 		wordIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -174,15 +149,8 @@ public class ContentManagementController {
 				System.out.println("Table Cell - Word object is null");
 				return new SimpleStringProperty("Error: Null Word");
 			}
-
-			String translation = word.getTranslatedText(); // Call the getter directly
-
-			// DEBUG: Print what's being retrieved for each row
-			System.out.println("Table Cell - Word: [" + word.getWord() + "], Getter Returned: [" + translation + "]");
-
-			return new SimpleStringProperty(translation != null ? translation : "<No Translation>"); // Display
-																										// something
-																										// even if null
+			String translation = word.getTranslatedText();
+			return new SimpleStringProperty(translation != null ? translation : "<No Translation>");
 		});
 		wordCategoryColumn.setCellValueFactory(cellData -> {
 			Category category = cellData.getValue().getCategory();
@@ -193,40 +161,17 @@ public class ContentManagementController {
 			return new SimpleStringProperty(difficulty != null ? difficulty.toString() : "N/A");
 		});
 
-		// Setup word actions column with buttons
-		wordActionsColumn.setCellFactory(column -> new TableCell<Word, String>() {
-			private final Button editButton = new Button("Edit");
-			private final Button deleteButton = new Button("Delete");
-			private final HBox pane = new HBox(5);
-
-			{
-				editButton.getStyleClass().add("small-button");
-				deleteButton.getStyleClass().add("small-button");
-				deleteButton.getStyleClass().add("danger-button");
-
-				editButton.setOnAction(event -> {
-					Word word = getTableView().getItems().get(getIndex());
-					showWordEditForm(word);
-				});
-
-				deleteButton.setOnAction(event -> {
-					Word word = getTableView().getItems().get(getIndex());
-					deleteWord(word);
-				});
-
-				pane.getChildren().addAll(editButton, deleteButton);
-			}
-
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if (empty) {
-					setGraphic(null);
-				} else {
-					setGraphic(pane);
-				}
-			}
-		});
+		// Setup word actions column using ActionButtonCell
+		// ****************************************************
+		// החלפת הקוד הקודם בשימוש ב-ActionButtonCell
+		// ****************************************************
+		wordActionsColumn.setCellFactory(col -> new ActionButtonCell<>(event -> { // Edit handler
+			Word word = (Word) event.getSource(); // קבלת האובייקט מהאירוע
+			showWordEditForm(word);
+		}, event -> { // Delete handler
+			Word word = (Word) event.getSource(); // קבלת האובייקט מהאירוע
+			deleteWord(word);
+		}));
 
 		// Initialize difficulty combo box
 		wordDifficultyComboBox.getItems().addAll(Difficulty.values());

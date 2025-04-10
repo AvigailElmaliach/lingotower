@@ -202,4 +202,51 @@
     -fx-padding: 2px 0;
 }
 
+/* Button styling for action cells */
+.edit-button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
 
+.edit-button:hover {
+    -fx-background-color: #303f9f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.delete-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.delete-button:hover {
+    -fx-background-color: #d32f2f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+/* Table styling improvements */
+.table-view .column-header.actions-column {
+    -fx-alignment: CENTER;
+}
+
+.table-cell.actions-cell {
+    -fx-alignment: CENTER;
+    -fx-padding: 5px;
+}
+
+/* Table row hover effect */
+.table-row-cell:hover {
+    -fx-background-color: #e8eaf6;
+}
+
+/* Ensure buttons maintain size in table */
+.table-cell .button {
+    -fx-min-width: 70px;
+    -fx-max-width: 70px;
+    -fx-min-height: 26px;
+}

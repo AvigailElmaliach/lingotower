@@ -52,20 +52,20 @@
             <!-- Status message -->
             <Label fx:id="statusLabel" styleClass="status-message" text="Status message" visible="false" />
             
-<!-- User Table with improved responsiveness -->
-<TableView fx:id="userTableView" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="250.0">
-  <columns>
-    <TableColumn fx:id="idColumn" minWidth="40.0" prefWidth="50.0" text="ID" />
-    <TableColumn fx:id="usernameColumn" minWidth="100.0" prefWidth="150.0" text="Username" />
-    <TableColumn fx:id="emailColumn" minWidth="120.0" prefWidth="200.0" text="Email" />
-    <TableColumn fx:id="languageColumn" minWidth="80.0" prefWidth="100.0" text="Language" />
-    <TableColumn fx:id="actionsColumn" minWidth="120.0" prefWidth="150.0" text="Actions" />
-  </columns>
-  <columnResizePolicy>
-     <!-- Use CONSTRAINED_RESIZE_POLICY for better column resizing -->
-     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-  </columnResizePolicy>
-</TableView>
+            <!-- User Table -->
+            <TableView fx:id="userTableView" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="250.0">
+              <columns>
+                <TableColumn fx:id="idColumn" minWidth="40.0" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="usernameColumn" minWidth="100.0" prefWidth="150.0" text="Username" />
+                <TableColumn fx:id="emailColumn" minWidth="120.0" prefWidth="200.0" text="Email" />
+                <TableColumn fx:id="languageColumn" minWidth="80.0" prefWidth="100.0" text="Language" />
+                <TableColumn fx:id="actionsColumn" minWidth="120.0" prefWidth="150.0" text="Actions" />
+              </columns>
+              <columnResizePolicy>
+                 <!-- Use CONSTRAINED_RESIZE_POLICY for better column resizing -->
+                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+              </columnResizePolicy>
+            </TableView>
             
             <!-- Edit User Form - Initially hidden -->
             <VBox fx:id="editUserForm" spacing="10.0" visible="false" maxWidth="600.0">
@@ -106,25 +106,26 @@
             </VBox>
             
             <!-- Confirmation Dialog - Initially hidden -->
-            <VBox fx:id="confirmationDialog" alignment="CENTER" spacing="10.0" styleClass="confirmation-dialog" visible="false" maxWidth="500.0">
-               <children>
-                  <Label text="Are you sure you want to delete this user?">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="confirmUserInfoLabel" text="Username: user1, Email: user1@example.com" />
-                  <HBox alignment="CENTER" spacing="20.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#handleCancelDelete" styleClass="secondary-button" text="Cancel" />
-                        <Button mnemonicParsing="false" onAction="#handleConfirmDelete" styleClass="danger-button" text="Delete User" />
-                     </children>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </VBox>
+<VBox fx:id="confirmationDialog" alignment="CENTER" spacing="10.0" styleClass="confirmation-dialog" visible="false" maxWidth="500.0">
+   <children>
+      <Label text="Are you sure you want to delete this user?">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="confirmUserInfoLabel" text="Username: user1, Email: user1@example.com" />
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <!-- Note the onAction attributes connecting to the controller methods -->
+            <Button mnemonicParsing="false" onAction="#handleCancelDelete" styleClass="secondary-button" text="Cancel" />
+            <Button mnemonicParsing="false" onAction="#handleConfirmDelete" styleClass="danger-button" text="Delete User" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
          </children>
       </VBox>
    </center>
