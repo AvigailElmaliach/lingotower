@@ -106,16 +106,43 @@ public class UserService extends BaseService {
 	}
 
 	public boolean deleteUser(Long id) {
+		if (id == null) {
+			System.err.println("Error: Cannot delete user with null ID");
+			return false;
+		}
+
 		try {
+			// Log the action
+			System.out.println("UserService: Attempting to delete user with ID: " + id);
+
+			// Get authentication headers
 			HttpHeaders headers = createAuthHeaders();
+
+			// Log headers for debugging
+			System.out.println("Request headers:");
+			headers.forEach((key, values) -> {
+				System.out.println(key + ": " + String.join(", ", values));
+			});
+
+			// Create the HTTP entity with headers
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
+			// Construct the URL
 			String url = BASE_URL + "/" + id;
+			System.out.println("Delete URL: " + url);
+
+			// Make the DELETE request
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
 
-			return response.getStatusCode() == HttpStatus.NO_CONTENT;
+			// Log the response
+			boolean success = response.getStatusCode() == HttpStatus.NO_CONTENT;
+			System.out.println("Delete response status: " + response.getStatusCode());
+			System.out.println("Delete operation successful: " + success);
+
+			return success;
 		} catch (Exception e) {
-			System.err.println("Error deleting user: " + e.getMessage());
+			System.err.println("Error deleting user with ID " + id + ": " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}

@@ -178,7 +178,7 @@ public class ContentManagementController {
 			String translation = word.getTranslatedText(); // Call the getter directly
 
 			// DEBUG: Print what's being retrieved for each row
-			System.out.println("Table Cell - Word: [" + word.getWord() + "], Getter Returned: [" + translation + "]");
+//			System.out.println("Table Cell - Word: [" + word.getWord() + "], Getter Returned: [" + translation + "]");
 
 			return new SimpleStringProperty(translation != null ? translation : "<No Translation>"); // Display
 																										// something
