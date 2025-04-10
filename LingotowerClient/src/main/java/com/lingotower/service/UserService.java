@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import com.lingotower.dto.UserUpdateDTO;
 import com.lingotower.model.User;
@@ -241,12 +240,6 @@ public class UserService extends BaseService {
 		}
 	}
 
-	/**
-	 * Adds a word to the authenticated user's learned words list
-	 * 
-	 * @param wordId The ID of the word to add
-	 * @return true if successful, false otherwise
-	 */
 	public boolean addWordToLearned(Long wordId) {
 		if (wordId == null) {
 			System.err.println("Error: Word ID is null. Cannot mark as learned.");
@@ -254,14 +247,19 @@ public class UserService extends BaseService {
 		}
 
 		try {
-			System.out.println("Sending POST request to mark word as learned. Word ID: " + wordId);
-			String url = "http://localhost:8080/users/learned/" + wordId;
-			RestTemplate restTemplate = new RestTemplate();
+			// Construct the URL using BASE_URL
+			String url = BASE_URL + "/learned/" + wordId;
 
-			ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
-			System.out.println("Response Status Code: " + response.getStatusCode());
-			System.out.println("Response Body: " + response.getBody());
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
 
+			// Create an HTTP entity with headers
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the POST request
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
+
+			// Return true if the response status is HTTP 200 OK
 			return response.getStatusCode() == HttpStatus.OK;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			System.err.println("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
