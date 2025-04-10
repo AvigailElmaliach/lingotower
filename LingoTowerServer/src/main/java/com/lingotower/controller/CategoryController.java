@@ -131,13 +131,13 @@ public class CategoryController {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 //        }
 //    }
+	
 	@PostMapping
 	public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO categoryDTO) {
-		Category category = new Category();
-		category.setName(categoryDTO.getName());
-		Category savedCategory = categoryService.addCategory(category);
-		return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedCategory));
+	    Category savedCategory = categoryService.addCategoryFromDTO(categoryDTO);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedCategory));
 	}
+
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {

@@ -120,36 +120,69 @@ public class QuizService {
 	}
 
 	public List<QuestionDTO> generateQuiz(Long categoryId, Difficulty difficulty, String username) {
-	    String userLanguage = wordService.getUserLanguage(username);
-	    List<WordByCategory> selectedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
-	    List<WordByCategory> allWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage); // for wrong options
-	    List<QuestionDTO> questions = new ArrayList<>();
+		String userLanguage = wordService.getUserLanguage(username);
+		List<WordByCategory> selectedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId,
+				difficulty, userLanguage);
+		List<WordByCategory> allWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty,
+				userLanguage);
 
-	    for (WordByCategory correctWord : selectedWords) {
-	        List<String> wrongOptions = allWords.stream()
-	                .filter(w -> !w.getTranslatedText().equals(correctWord.getTranslatedText()))
-	                .map(WordByCategory::getTranslatedText)
-	                .distinct()
-	                .limit(4)
-	                .collect(Collectors.toList());
+		List<QuestionDTO> questions = new ArrayList<>();
 
-	        List<String> options = new ArrayList<>(wrongOptions);
-	        options.add(correctWord.getTranslatedText());
+		for (WordByCategory correctWord : selectedWords) {
+			List<String> wrongOptions = getWrongOptions(allWords, correctWord);
+			List<String> options = new ArrayList<>(wrongOptions);
+			options.add(correctWord.getTranslatedText());
 
-	        Collections.shuffle(options);
+			Collections.shuffle(options);
 
-	        QuestionDTO question = new QuestionDTO(
-	                correctWord.getId(),
-	                correctWord.getWord(), 
-	                options,               
-	                correctWord.getTranslatedText(),
-	                correctWord.getCategory()
-	        );
+			QuestionDTO question = createQuestion(correctWord, options);
+			questions.add(question);
+		}
 
-	        questions.add(question);
-	    }
-
-	    return questions;
+		return questions;
 	}
+
+	private List<String> getWrongOptions(List<WordByCategory> allWords, WordByCategory correctWord) {
+		return allWords.stream().filter(w -> !w.getTranslatedText().equals(correctWord.getTranslatedText()))
+				.map(WordByCategory::getTranslatedText).distinct().limit(4).collect(Collectors.toList());
+	}
+
+	private QuestionDTO createQuestion(WordByCategory correctWord, List<String> options) {
+		return new QuestionDTO(correctWord.getId(), correctWord.getWord(), options, correctWord.getTranslatedText(),
+				correctWord.getCategory());
+	}
+
+//	public List<QuestionDTO> generateQuiz(Long categoryId, Difficulty difficulty, String username) {
+//	    String userLanguage = wordService.getUserLanguage(username);
+//	    List<WordByCategory> selectedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
+//	    List<WordByCategory> allWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage); // for wrong options
+//	    List<QuestionDTO> questions = new ArrayList<>();
+//
+//	    for (WordByCategory correctWord : selectedWords) {
+//	        List<String> wrongOptions = allWords.stream()
+//	                .filter(w -> !w.getTranslatedText().equals(correctWord.getTranslatedText()))
+//	                .map(WordByCategory::getTranslatedText)
+//	                .distinct()
+//	                .limit(4)
+//	                .collect(Collectors.toList());
+//
+//	        List<String> options = new ArrayList<>(wrongOptions);
+//	        options.add(correctWord.getTranslatedText());
+//
+//	        Collections.shuffle(options);
+//
+//	        QuestionDTO question = new QuestionDTO(
+//	                correctWord.getId(),
+//	                correctWord.getWord(), 
+//	                options,               
+//	                correctWord.getTranslatedText(),
+//	                correctWord.getCategory()
+//	        );
+//
+//	        questions.add(question);
+//	    }
+//
+//	    return questions;
+//	}
 
 }
