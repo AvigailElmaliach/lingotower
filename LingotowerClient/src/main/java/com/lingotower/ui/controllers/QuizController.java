@@ -1,21 +1,21 @@
 package com.lingotower.ui.controllers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
+import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -36,6 +36,8 @@ public class QuizController {
 	private ComboBox<String> difficultyComboBox;
 	@FXML
 	private ComboBox<String> categoryComboBox;
+	@FXML
+	private javafx.scene.control.ProgressBar progressBar;
 
 	// Different content containers
 	@FXML
@@ -84,12 +86,20 @@ public class QuizController {
 	private Label feedbackLabel;
 	@FXML
 	private Label correctAnswerLabel;
+	@FXML
+	private Button submitBtn;
+
+	@FXML
+	private Button nextBtn;
+	@FXML
+	private Button prevBtn;
 
 	// Summary elements
 	@FXML
 	private Label summaryLabel;
 
 	private QuizService quizService;
+	private CategoryService categoryService;
 	private ToggleGroup answerGroup;
 
 	private Quiz currentQuiz;
@@ -99,16 +109,15 @@ public class QuizController {
 	@FXML
 	private void initialize() {
 		this.quizService = new QuizService();
+		this.categoryService = new CategoryService();
 
-		// Initialize ComboBoxes
-		ObservableList<String> difficulties = FXCollections.observableArrayList("All Levels", "Easy", "Medium", "Hard");
+		// Initialize ComboBoxes for difficulties
+		ObservableList<String> difficulties = FXCollections.observableArrayList("EASY", "MEDIUM", "HARD");
 		difficultyComboBox.setItems(difficulties);
-		difficultyComboBox.setValue("All Levels");
+		difficultyComboBox.setValue("EASY");
 
-		ObservableList<String> categories = FXCollections.observableArrayList("All Categories", "Basics", "Food",
-				"Travel");
-		categoryComboBox.setItems(categories);
-		categoryComboBox.setValue("All Categories");
+		// Update categories to match the API
+		loadCategories();
 
 		// Set up ToggleGroup for radio buttons
 		answerGroup = new ToggleGroup();
@@ -130,32 +139,128 @@ public class QuizController {
 			}
 		});
 
-		// ListView selection listener
+		// Generate and add some sample quizzes to select from
+		generateSampleQuizzes();
+
+		// Ensure welcome content is visible initially
+		welcomeContent.setVisible(true);
+		previewContent.setVisible(false);
+		questionContent.setVisible(false);
+		summaryContent.setVisible(false);
+	}
+
+	/**
+	 * Load categories from the service
+	 */
+	private void loadCategories() {
+		try {
+			List<Category> categories = categoryService.getAllCategories();
+
+			if (categories != null && !categories.isEmpty()) {
+				ObservableList<String> categoryNames = FXCollections.observableArrayList();
+
+				for (Category category : categories) {
+					categoryNames.add(category.getName());
+				}
+
+				categoryComboBox.setItems(categoryNames);
+				categoryComboBox.setValue(categoryNames.get(0));
+			} else {
+				// Fallback categories if service returns none
+				ObservableList<String> fallbackCategories = FXCollections.observableArrayList(
+						"Everyday Life and Essential Vocabulary", "People and Relationships", "Work and Education",
+						"Health and Well-being", "Travel and Leisure", "Environment and Nature");
+				categoryComboBox.setItems(fallbackCategories);
+				categoryComboBox.setValue(fallbackCategories.get(0));
+			}
+		} catch (Exception e) {
+			System.err.println("Error loading categories: " + e.getMessage());
+
+			// Fallback categories
+			ObservableList<String> fallbackCategories = FXCollections.observableArrayList(
+					"Everyday Life and Essential Vocabulary", "People and Relationships", "Work and Education",
+					"Health and Well-being", "Travel and Leisure", "Environment and Nature");
+			categoryComboBox.setItems(fallbackCategories);
+			categoryComboBox.setValue(fallbackCategories.get(0));
+		}
+	}
+
+	/**
+	 * Generate sample quizzes for selection
+	 */
+	private void generateSampleQuizzes() {
+		// Clear existing quizzes first to prevent duplicates
+		ObservableList<Quiz> sampleQuizzes = FXCollections.observableArrayList();
+
+		// Get categories and difficulties
+		List<String> categories = new ArrayList<>(categoryComboBox.getItems());
+		List<String> difficulties = new ArrayList<>(difficultyComboBox.getItems());
+
+		// For each category, create a quiz for each difficulty
+		long quizId = 1;
+		for (String categoryName : categories) {
+			for (String difficultyName : difficulties) {
+				Quiz quiz = new Quiz();
+				quiz.setId(quizId++);
+				quiz.setName("10 Words Quiz - " + categoryName + " (" + difficultyName + ")");
+
+				// Set category
+				Category category = new Category();
+				category.setId(getCategoryIdByName(categoryName));
+				category.setName(categoryName);
+				quiz.setCategory(category);
+
+				// Set difficulty
+				quiz.setDifficulty(Difficulty.valueOf(difficultyName));
+
+				sampleQuizzes.add(quiz);
+			}
+		}
+
+		// Set the items to the new list (replacing any existing items)
+		quizListView.setItems(sampleQuizzes);
+
+		// Add selection listener to preview the selected quiz
 		quizListView.getSelectionModel().selectedItemProperty().addListener((obs, oldQuiz, newQuiz) -> {
 			if (newQuiz != null) {
 				currentQuiz = newQuiz;
 				showQuizPreview(newQuiz);
 			}
 		});
-
-		// Load quizzes (from service or fallback to mock data)
-		loadQuizzes();
 	}
 
 	/**
-	 * Loads quizzes from QuizService, falling back to mock data if necessary.
+	 * Maps category names to their IDs based on the provided API information.
 	 */
-	private void loadQuizzes() {
-		try {
-			List<Quiz> quizzes = quizService.getAllQuizzes();
-			if (quizzes != null && !quizzes.isEmpty()) {
-				quizListView.setItems(FXCollections.observableArrayList(quizzes));
-			} else {
-				createMockQuizzes();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			createMockQuizzes();
+	private Long getCategoryIdByName(String categoryName) {
+		switch (categoryName) {
+		case "Everyday Life and Essential Vocabulary":
+			return 1L;
+		case "People and Relationships":
+			return 2L;
+		case "Work and Education":
+			return 3L;
+		case "Health and Well-being":
+			return 4L;
+		case "Travel and Leisure":
+			return 5L;
+		case "Environment and Nature":
+			return 6L;
+		default:
+			// If not found, try to match partially
+			if (categoryName.contains("Everyday") || categoryName.contains("Essential"))
+				return 1L;
+			if (categoryName.contains("People") || categoryName.contains("Relationship"))
+				return 2L;
+			if (categoryName.contains("Work") || categoryName.contains("Education"))
+				return 3L;
+			if (categoryName.contains("Health") || categoryName.contains("Well"))
+				return 4L;
+			if (categoryName.contains("Travel") || categoryName.contains("Leisure"))
+				return 5L;
+			if (categoryName.contains("Environment") || categoryName.contains("Nature"))
+				return 6L;
+			return 1L; // Default to first category
 		}
 	}
 
@@ -171,89 +276,40 @@ public class QuizController {
 		System.out.println("Selected difficulty = " + selectedDifficulty);
 		System.out.println("Selected category = " + selectedCategory);
 
-		// Check for null values and set defaults
-		if (selectedDifficulty == null)
-			selectedDifficulty = "All Levels";
-		if (selectedCategory == null)
-			selectedCategory = "All Categories";
+		// Re-generate sample quizzes with filter
+		ObservableList<Quiz> filteredQuizzes = FXCollections.observableArrayList();
 
-		// Use a cached list of all quizzes if possible, or load from service if needed
-		List<Quiz> allQuizzes;
-		try {
-			// It's better to cache this list somewhere rather than reload every time
-			allQuizzes = quizService.getAllQuizzes();
-			if (allQuizzes == null || allQuizzes.isEmpty()) {
-				allQuizzes = createAndReturnMockQuizzes();
-				System.out.println("Using mock quizzes - service returned no data");
+		// Get all quizzes
+		ObservableList<Quiz> allQuizzes = quizListView.getItems();
+
+		// Filter by category and difficulty
+		for (Quiz quiz : allQuizzes) {
+			boolean matchesCategory = quiz.getCategory().getName().equals(selectedCategory);
+			boolean matchesDifficulty = quiz.getDifficulty().toString().equals(selectedDifficulty);
+
+			if (matchesCategory && matchesDifficulty) {
+				filteredQuizzes.add(quiz);
 			}
-		} catch (Exception e) {
-			allQuizzes = createAndReturnMockQuizzes();
-			System.out.println("Using mock quizzes due to service error: " + e.getMessage());
 		}
 
-		if (allQuizzes == null || allQuizzes.isEmpty()) {
-			System.out.println("No quizzes available to filter");
-			return;
+		if (filteredQuizzes.isEmpty()) {
+			// If no matches, create a new quiz with the selected criteria
+			Quiz filteredQuiz = new Quiz();
+			filteredQuiz.setId(System.currentTimeMillis());
+			filteredQuiz.setName("10 Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
+
+			Category category = new Category();
+			category.setId(getCategoryIdByName(selectedCategory));
+			category.setName(selectedCategory);
+			filteredQuiz.setCategory(category);
+
+			filteredQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
+
+			filteredQuizzes.add(filteredQuiz);
 		}
-
-		// Log what we're filtering
-		System.out.println("Filtering " + allQuizzes.size() + " quizzes");
-
-		// Filter quizzes by difficulty & category
-		final String finalDifficulty = selectedDifficulty;
-		final String finalCategory = selectedCategory;
-
-		List<Quiz> filteredQuizzes = allQuizzes.stream().filter(quiz -> filterByDifficulty(quiz, finalDifficulty))
-				.filter(quiz -> filterByCategory(quiz, finalCategory)).collect(Collectors.toList());
-
-		System.out.println("Filter result: " + filteredQuizzes.size() + " quizzes match criteria");
-
-		// Debug the filtered quizzes
-		filteredQuizzes.forEach(quiz -> {
-			System.out.println("Filtered quiz: " + quiz.getName() + ", Difficulty: "
-					+ (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "null") + ", Category: "
-					+ (quiz.getCategory() != null ? quiz.getCategory().getName() : "null"));
-		});
 
 		// Update the ListView
-		quizListView.setItems(FXCollections.observableArrayList(filteredQuizzes));
-	}
-
-	// Improved filter methods with better null handling and debugging
-	private boolean filterByDifficulty(Quiz quiz, String difficulty) {
-		if ("All Levels".equals(difficulty)) {
-			return true;
-		}
-
-		if (quiz.getDifficulty() == null) {
-			System.out.println("Warning: Quiz '" + quiz.getName() + "' has null difficulty");
-			return false;
-		}
-
-		boolean matches = quiz.getDifficulty().toString().equalsIgnoreCase(difficulty);
-		if (!matches) {
-			System.out.println("Difficulty mismatch for '" + quiz.getName() + "': Expected '" + difficulty
-					+ "', but found '" + quiz.getDifficulty().toString() + "'");
-		}
-		return matches;
-	}
-
-	private boolean filterByCategory(Quiz quiz, String category) {
-		if ("All Categories".equals(category)) {
-			return true;
-		}
-
-		if (quiz.getCategory() == null) {
-			System.out.println("Warning: Quiz '" + quiz.getName() + "' has null category");
-			return false;
-		}
-
-		boolean matches = quiz.getCategory().getName().equalsIgnoreCase(category);
-		if (!matches) {
-			System.out.println("Category mismatch for '" + quiz.getName() + "': Expected '" + category
-					+ "', but found '" + quiz.getCategory().getName() + "'");
-		}
-		return matches;
+		quizListView.setItems(filteredQuizzes);
 	}
 
 	/**
@@ -271,9 +327,10 @@ public class QuizController {
 		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
 		difficultyLabel
 				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
-		questionsLabel.setText("Questions: " + (quiz.getQuestions() != null ? quiz.getQuestions().size() : "0"));
+		questionsLabel.setText("Questions: 10"); // Always 10 questions from the API
 
-		sampleQuestionText.setText("Here is an example of what you'll see!");
+		sampleQuestionText
+				.setText("This quiz will generate 10 random questions based on the selected category and difficulty.");
 	}
 
 	/**
@@ -282,28 +339,81 @@ public class QuizController {
 	@FXML
 	private void handleStartQuizClick(ActionEvent event) {
 		if (currentQuiz != null) {
+			System.out.println("Starting quiz: " + currentQuiz.getName());
 			startQuiz(currentQuiz);
+		} else {
+			showError("Please select a quiz first");
 		}
 	}
 
 	private void startQuiz(Quiz quiz) {
+		// Clear previous state
 		currentQuestionIndex = 0;
 		correctAnswersCount = 0;
 
+		// Get category and difficulty from the quiz
+		Long categoryId = quiz.getCategory().getId();
+		String difficulty = quiz.getDifficulty().toString();
+
+		// Set a specific name for the quiz
+		String quizName = "10 Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
+		quiz.setName(quizName);
+
+		// Show loading indication
+		activeQuizNameLabel.setText("Loading quiz questions...");
+		questionContent.setVisible(true);
 		previewContent.setVisible(false);
 		welcomeContent.setVisible(false);
 		summaryContent.setVisible(false);
-		questionContent.setVisible(true);
-		feedbackBox.setVisible(false);
 
-		activeQuizNameLabel.setText(quiz.getName());
-		showCurrentQuestion();
+		// Disable controls while loading
+		answersBox.setDisable(true);
+		submitBtn.setDisable(true);
+		nextBtn.setDisable(true);
+		prevBtn.setDisable(true);
+
+		// Generate quiz questions from the API
+		try {
+			List<Question> generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
+
+			if (generatedQuestions != null && !generatedQuestions.isEmpty()) {
+				// Replace the quiz's questions with the generated ones
+				quiz.getQuestions().clear();
+				for (Question question : generatedQuestions) {
+					quiz.addQuestion(question);
+				}
+
+				currentQuiz = quiz;
+
+				// Update quiz name display
+				activeQuizNameLabel.setText(quizName);
+
+				// Enable controls
+				answersBox.setDisable(false);
+
+				// Show first question
+				showCurrentQuestion();
+			} else {
+				// Handle error - no questions generated
+				showError("Could not generate quiz questions. Please try again.");
+
+				// Go back to welcome screen
+				questionContent.setVisible(false);
+				welcomeContent.setVisible(true);
+			}
+		} catch (Exception e) {
+			showError("Error starting quiz: " + e.getMessage());
+			// Go back to welcome screen
+			questionContent.setVisible(false);
+			welcomeContent.setVisible(true);
+		}
 	}
 
 	private void showCurrentQuestion() {
-		if (currentQuiz == null || currentQuiz.getQuestions().isEmpty()) {
+		if (currentQuiz == null || currentQuiz.getQuestions() == null || currentQuiz.getQuestions().isEmpty()) {
 			return;
 		}
+
 		// Ensure index is valid
 		if (currentQuestionIndex < 0) {
 			currentQuestionIndex = 0;
@@ -311,32 +421,42 @@ public class QuizController {
 			currentQuestionIndex = currentQuiz.getQuestions().size() - 1;
 		}
 
-		// Hide feedback whenever a new question loads
-		feedbackBox.setVisible(false);
-
+		// Get current question
 		Question question = currentQuiz.getQuestions().get(currentQuestionIndex);
+
+		// Update question text
 		questionText.setText(question.getQuestionText());
 
-		// Create a list of possible answers (correct + wrong)
-		List<String> allAnswers = new ArrayList<>();
-		allAnswers.add(question.getCorrectAnswer());
-		allAnswers.addAll(question.getWrongAnswers());
+		// Get all options for this question
+		List<String> options = question.getOptions();
 
-		// Randomize the answers
-		Collections.shuffle(allAnswers);
+		if (options == null || options.isEmpty()) {
+			showError("No answer options available for this question");
+			return;
+		}
 
-		// Assign to the RadioButtons
-		answer1.setText(allAnswers.get(0));
-		answer2.setText(allAnswers.get(1));
-		answer3.setText(allAnswers.get(2));
-		answer4.setText(allAnswers.get(3));
+		// Update the radio buttons
+		answer1.setText(options.get(0));
+		answer2.setText(options.get(1));
+		answer3.setText(options.get(2));
+		answer4.setText(options.get(3));
 
-		// Clear any previous selection
+		// Clear previous selection
 		answerGroup.selectToggle(null);
 
+		// Hide feedback
+		feedbackBox.setVisible(false);
+
 		// Update progress label
+		// Update progress bar
 		int total = currentQuiz.getQuestions().size();
+		double progress = (double) (currentQuestionIndex + 1) / total;
+		progressBar.setProgress(progress);
 		progressLabel.setText(String.format("Question %d of %d", currentQuestionIndex + 1, total));
+
+		// Enable submit button, disable next button
+		submitBtn.setDisable(false);
+		nextBtn.setDisable(true);
 	}
 
 	/**
@@ -345,7 +465,7 @@ public class QuizController {
 	@FXML
 	private void handleSubmitAnswerClick(ActionEvent event) {
 		if (answerGroup.getSelectedToggle() == null) {
-			return; // no answer selected
+			return; // No answer selected
 		}
 
 		RadioButton selectedButton = (RadioButton) answerGroup.getSelectedToggle();
@@ -358,20 +478,27 @@ public class QuizController {
 			correctAnswersCount++;
 		}
 
+		// Show feedback
 		showAnswerFeedback(isCorrect, question.getCorrectAnswer());
+
+		// Disable submit button, enable next button
+		submitBtn.setDisable(true);
+		nextBtn.setDisable(false);
 	}
 
 	private void showAnswerFeedback(boolean correct, String correctAnswer) {
 		feedbackBox.setVisible(true);
+		feedbackBox.getStyleClass().removeAll("correct", "incorrect");
+
 		if (correct) {
-			feedbackBox.setStyle("-fx-background-color: #e8f5e9; -fx-background-radius: 5;");
+			feedbackBox.getStyleClass().add("correct");
 			feedbackLabel.setText("Correct!");
-			feedbackLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-font-size: 16px;");
+			feedbackLabel.setStyle("-fx-text-fill: #2e7d32;");
 			correctAnswerLabel.setVisible(false);
 		} else {
-			feedbackBox.setStyle("-fx-background-color: #ffebee; -fx-background-radius: 5;");
+			feedbackBox.getStyleClass().add("incorrect");
 			feedbackLabel.setText("Incorrect!");
-			feedbackLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 16px;");
+			feedbackLabel.setStyle("-fx-text-fill: #c62828;");
 			correctAnswerLabel.setText("The correct answer is: " + correctAnswer);
 			correctAnswerLabel.setVisible(true);
 		}
@@ -421,7 +548,7 @@ public class QuizController {
 	}
 
 	/**
-	 * (Optional) Return to quiz list from summary screen.
+	 * Return to quiz list from summary screen.
 	 */
 	@FXML
 	private void handleBackToQuizzesClick(ActionEvent event) {
@@ -431,100 +558,14 @@ public class QuizController {
 
 	// Public method to manually refresh quizzes if needed
 	public void refresh() {
-		loadQuizzes();
+		generateSampleQuizzes();
 	}
 
-	/**
-	 * Create mock quizzes if the service is unavailable or returns nothing.
-	 */
-	private void createMockQuizzes() {
-		List<Quiz> mockQuizzes = createAndReturnMockQuizzes();
-		quizListView.setItems(FXCollections.observableArrayList(mockQuizzes));
+	private void showError(String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
-
-	/**
-	 * Helper method to create a list of mock quizzes.
-	 */
-	private List<Quiz> createAndReturnMockQuizzes() {
-		List<Quiz> mockQuizzes = new ArrayList<>();
-
-		// Quiz 1
-		Quiz quiz1 = new Quiz();
-		quiz1.setId(1L);
-		quiz1.setName("Basic Hebrew Words");
-		Category category1 = new Category();
-		category1.setId(1L);
-		category1.setName("Basics");
-		quiz1.setCategory(category1);
-		quiz1.setDifficulty(Difficulty.EASY);
-
-		Question q1 = new Question();
-		q1.setId(1L);
-		q1.setQuestionText("What is the translation of 'Hello' in Hebrew?");
-		q1.setCorrectAnswer("שלום");
-		q1.setWrongAnswers(Arrays.asList("להתראות", "תודה", "בבקשה"));
-		quiz1.addQuestion(q1);
-
-		Question q2 = new Question();
-		q2.setId(2L);
-		q2.setQuestionText("What is the translation of 'Thank you' in Hebrew?");
-		q2.setCorrectAnswer("תודה");
-		q2.setWrongAnswers(Arrays.asList("שלום", "להתראות", "בבקשה"));
-		quiz1.addQuestion(q2);
-
-		// Quiz 2
-		Quiz quiz2 = new Quiz();
-		quiz2.setId(2L);
-		quiz2.setName("Food and Dining");
-		Category category2 = new Category();
-		category2.setId(2L);
-		category2.setName("Food");
-		quiz2.setCategory(category2);
-		quiz2.setDifficulty(Difficulty.MEDIUM);
-
-		Question q3 = new Question();
-		q3.setId(3L);
-		q3.setQuestionText("What is the translation of 'Food' in Hebrew?");
-		q3.setCorrectAnswer("אוכל");
-		q3.setWrongAnswers(Arrays.asList("מים", "לחם", "חלב"));
-		quiz2.addQuestion(q3);
-
-		Question q4 = new Question();
-		q4.setId(4L);
-		q4.setQuestionText("What is the translation of 'Water' in Hebrew?");
-		q4.setCorrectAnswer("מים");
-		q4.setWrongAnswers(Arrays.asList("אוכל", "לחם", "חלב"));
-		quiz2.addQuestion(q4);
-
-		// Quiz 3
-		Quiz quiz3 = new Quiz();
-		quiz3.setId(3L);
-		quiz3.setName("Travel Essentials");
-		Category category3 = new Category();
-		category3.setId(3L);
-		category3.setName("Travel");
-		quiz3.setCategory(category3);
-		quiz3.setDifficulty(Difficulty.HARD);
-
-		Question q5 = new Question();
-		q5.setId(5L);
-		q5.setQuestionText("What is the translation of 'Passport' in Hebrew?");
-		q5.setCorrectAnswer("דרכון");
-		q5.setWrongAnswers(Arrays.asList("מלון", "מטוס", "מונית"));
-		quiz3.addQuestion(q5);
-
-		Question q6 = new Question();
-		q6.setId(6L);
-		q6.setQuestionText("What is the translation of 'Hotel' in Hebrew?");
-		q6.setCorrectAnswer("מלון");
-		q6.setWrongAnswers(Arrays.asList("דרכון", "מטוס", "מונית"));
-		quiz3.addQuestion(q6);
-
-		mockQuizzes.add(quiz1);
-		mockQuizzes.add(quiz2);
-		mockQuizzes.add(quiz3);
-
-		return mockQuizzes;
-	}
-
 }

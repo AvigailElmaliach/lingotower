@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
 
 public class QuizService extends BaseService {
@@ -59,6 +61,43 @@ public class QuizService extends BaseService {
 		ResponseEntity<Quiz> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, new HttpEntity<>(quiz),
 				Quiz.class);
 		return response.getBody();
+	}
+
+	public List<Question> generateQuiz(Long categoryId, String difficulty) {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Construct the URL with parameters
+			String url = BASE_URL + "/generate?categoryId=" + categoryId + "&difficulty=" + difficulty;
+
+			System.out.println("Calling API: " + url);
+
+			// Make the request
+			ResponseEntity<List<Question>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<List<Question>>() {
+					});
+
+			List<Question> questions = response.getBody();
+
+			// Log the response for debugging
+			if (questions != null) {
+				System.out.println("Received " + questions.size() + " questions from API");
+				if (!questions.isEmpty()) {
+					Question firstQuestion = questions.get(0);
+					System.out.println("Sample question: " + firstQuestion.getQuestionText());
+					System.out.println("Correct answer: " + firstQuestion.getCorrectAnswer());
+					System.out.println("Options: " + firstQuestion.getOptions());
+				}
+			}
+
+			return questions;
+		} catch (Exception e) {
+			System.err.println("Error generating quiz: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
