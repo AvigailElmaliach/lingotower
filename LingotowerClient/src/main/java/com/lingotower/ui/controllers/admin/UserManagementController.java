@@ -116,21 +116,18 @@ public class UserManagementController {
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 		languageColumn.setCellValueFactory(new PropertyValueFactory<>("language"));
 
-		// Set up the actions column with our custom cell factory
-		actionsColumn.setCellFactory(column -> new ActionButtonCell(
+		// Set up the actions column column using ActionButtonCell
+		actionsColumn.setCellFactory(column -> new ActionButtonCell<>(
 				// Edit button handler
 				event -> {
-					if (event.getSource() instanceof User) {
-						showEditForm((User) event.getSource());
-					}
+					User user = (User) event.getSource(); // קבלת האובייקט מהאירוע
+					showEditForm(user);
 				},
 				// Delete button handler
 				event -> {
-					if (event.getSource() instanceof User) {
-						handleDeleteButtonClick((User) event.getSource());
-					}
+					User user = (User) event.getSource(); // קבלת האובייקט מהאירוע
+					handleDeleteButtonClick(user);
 				}));
-
 		// Set table items
 		userTableView.setItems(usersList);
 
@@ -312,8 +309,8 @@ public class UserManagementController {
 		}
 
 		// Validate language field (case-sensitive)
-		if (!language.equals("English") && !language.equals("Hebrew")) {
-			showStatusMessage("Language must be 'English' or 'Hebrew'", true);
+		if (!language.equals("en") && !language.equals("he")) {
+			showStatusMessage("Language must be 'en' or 'he'", true);
 			return;
 		}
 
