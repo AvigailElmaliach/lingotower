@@ -75,7 +75,7 @@ public class LoginViewController implements Initializable {
 		String password = passwordField.getText();
 
 		if (username.isEmpty() || password.isEmpty()) {
-			showError("נא להזין שם משתמש וסיסמה");
+			showError("נא להזין שם משתמש וסיסמה / Please enter a username and password");
 			return;
 		}
 
@@ -118,7 +118,7 @@ public class LoginViewController implements Initializable {
 				}
 			} else {
 				// Login failed (invalid credentials)
-				showError("שם משתמש או סיסמה שגויים");
+				showError("שם משתמש או סיסמה שגויים / Invalid username or password");
 			}
 
 			// Re-enable button and hide indicator
@@ -128,7 +128,7 @@ public class LoginViewController implements Initializable {
 		loginTask.setOnFailed(workerStateEvent -> {
 			Throwable exception = loginTask.getException(); // Get the exception
 			exception.printStackTrace(); // Log the exception
-			showError("שגיאה בהתחברות: " + exception.getMessage());
+			showError("שגיאה בהתחברות: " + exception.getMessage() + " / Login error: " + exception.getMessage());
 
 			// Re-enable button and hide indicator
 			loginButton.setDisable(false);

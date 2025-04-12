@@ -139,8 +139,8 @@ public class LingotowerApp extends Application {
 					// On register success
 					user -> {
 						this.currentUser = user;
-						System.out.println("User registered and logged in: " + user.getUsername());
-						showMainApplication();
+						System.out.println("Registration successful! Please log in.: " + user.getUsername());
+						showLoginScreen();
 					},
 					// On switch to login
 					this::showLoginScreen);
