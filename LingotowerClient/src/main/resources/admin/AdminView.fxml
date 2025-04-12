@@ -9,144 +9,153 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="view" prefHeight="750.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.admin.AdminViewController">
-   <padding>
-      <Insets bottom="15.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
-   <top>
-      <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-bar">
-         <padding>
-            <Insets bottom="5.0" />
-         </padding>
-         <children>
-            <Label fx:id="adminNameLabel" styleClass="welcome-label" text="Admin Console">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS" />
-            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
-         </children>
-      </HBox>
-   </top>
-   <center>
-      <VBox spacing="20.0" BorderPane.alignment="TOP_CENTER">
-         <children>
-            <VBox alignment="CENTER" spacing="10.0">
-               <children>
-                  <Label text="Admin Dashboard">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label text="Manage users and content">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
+<BorderPane fx:id="view" prefHeight="580.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.admin.AdminViewController">
 
-            <VBox spacing="15.0">
-               <children>
-                  <Label text="Administration Modules">
-                     <font>
+    <padding>
+        <Insets bottom="15.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-bar">
+            <padding>
+                <Insets bottom="5.0" />
+            </padding>
+            <children>
+                <Label fx:id="adminNameLabel" styleClass="welcome-label" text="Admin Console">
+                    <font>
                         <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="errorMessageLabel" styleClass="error-label" text="Error message" visible="false" />
-                  <TilePane fx:id="adminModulesTilePane" hgap="15.0" prefColumns="2" prefHeight="216.0" prefWidth="760.0" vgap="15.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <children>
-                        <VBox alignment="CENTER" minHeight="200.0" minWidth="350.0" spacing="15.0" styleClass="admin-tile">
-                           <padding>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </padding>
-                           <children>
-                              <Label styleClass="tile-title" text="User Management">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label text="View, edit, and manage user accounts" wrapText="true" />
-                              <Button mnemonicParsing="false" onAction="#handleUserManagementClick" styleClass="admin-button" text="Manage Users" />
-                           </children>
-                        </VBox>
+                    </font>
+                </Label>
+                <!-- Flexible spacer -->
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="header-button" text="Logout" />
+            </children>
+        </HBox>
+    </top>
 
-                        <VBox alignment="CENTER" minHeight="200.0" minWidth="350.0" spacing="15.0" styleClass="admin-tile">
-                           <padding>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </padding>
-                           <children>
-                              <Label styleClass="tile-title" text="Content Management">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label text="Manage categories, words, and quizzes" wrapText="true" />
-                              <Button mnemonicParsing="false" onAction="#handleContentManagementClick" styleClass="admin-button" text="Manage Content" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </TilePane>
-               </children>
-            </VBox>
+    <!-- CENTER CONTENT -->
+    <center>
+        <VBox spacing="20.0" BorderPane.alignment="TOP_CENTER">
+            <children>
 
-            <VBox prefHeight="86.0" prefWidth="760.0" spacing="10.0">
-               <children>
-                  <Label text="System Status">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <HBox spacing="20.0">
-                     <children>
-                        <VBox spacing="5.0" styleClass="status-box">
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <children>
-                              <Label text="Total Users" />
-                              <Label fx:id="totalUsersLabel" styleClass="status-value" text="0">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" styleClass="status-box">
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <children>
-                              <Label text="Total Categories" />
-                              <Label fx:id="totalCategoriesLabel" styleClass="status-value" text="0">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" styleClass="status-box">
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <children>
-                              <Label text="Total Words" />
-                              <Label fx:id="totalWordsLabel" styleClass="status-value" text="0">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+                <!-- Admin Dashboard Title -->
+                <VBox alignment="CENTER" spacing="10.0">
+                    <children>
+                        <Label styleClass="dashboard-title" text="Admin Dashboard">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Label styleClass="dashboard-subtitle" text="Manage your language learning platform">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" top="10.0" />
+                    </padding>
+                </VBox>
+
+                <!-- Administration Modules -->
+                <VBox spacing="15.0">
+                    <children>
+                        <Label styleClass="section-header" text="Administration Modules">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="errorMessageLabel" styleClass="error-label" text="Error message" visible="false" />
+
+                        <HBox fx:id="adminModulesContainer" alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 10px 0;"> <children>
+      <VBox alignment="CENTER" minHeight="180.0" spacing="10.0" styleClass="admin-tile" HBox.hgrow="ALWAYS"> <padding> <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" /> </padding>
+         <children>
+            <Label styleClass="tile-title" text="User Management" />
+            <Label alignment="CENTER" text="View, edit, and manage user accounts" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS"/>
+            <Button mnemonicParsing="false" onAction="#handleUserManagementClick" styleClass="admin-button" text="Manage Users" />
          </children>
       </VBox>
-   </center>
+
+      <VBox alignment="CENTER" minHeight="180.0" spacing="10.0" styleClass="admin-tile" HBox.hgrow="ALWAYS"> <padding> <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" /> </padding>
+         <children>
+            <Label styleClass="tile-title" text="Content Management" />
+            <Label alignment="CENTER" text="Manage categories, words, and quizzes" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS"/>
+            <Button mnemonicParsing="false" onAction="#handleContentManagementClick" styleClass="admin-button" text="Manage Content" />
+         </children>
+      </VBox>
+
+      <VBox alignment="CENTER" minHeight="180.0" spacing="10.0" styleClass="admin-tile" HBox.hgrow="ALWAYS"> <padding> <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" /> </padding>
+         <children>
+            <Label styleClass="tile-title" text="Admin Management" />
+            <Label alignment="CENTER" text="View, create, edit, and delete administrator accounts" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS"/>
+            <Button mnemonicParsing="false" onAction="#handleAdminManagementClick" styleClass="admin-button" text="Manage Admins" />
+         </children>
+      </VBox>
+   </children>
+</HBox>
+                    </children>
+                </VBox>
+
+                <!-- System Status Section -->
+                <VBox spacing="10.0">
+                    <children>
+                        <Label styleClass="section-header" text="System Status">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                        <HBox spacing="15.0">
+                            <children>
+                                <!-- Total Users -->
+                                <VBox spacing="5.0" styleClass="status-box" HBox.hgrow="NEVER">
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    </padding>
+                                    <children>
+                                        <Label styleClass="status-label" text="Total Users" />
+                                        <Label fx:id="totalUsersLabel" styleClass="status-value" text="0">
+                                            <font>
+                                                <Font name="System Bold" size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <!-- Total Categories -->
+                                <VBox spacing="5.0" styleClass="status-box" HBox.hgrow="NEVER">
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    </padding>
+                                    <children>
+                                        <Label styleClass="status-label" text="Total Categories" />
+                                        <Label fx:id="totalCategoriesLabel" styleClass="status-value" text="0">
+                                            <font>
+                                                <Font name="System Bold" size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <!-- Total Words -->
+                                <VBox spacing="5.0" styleClass="status-box" HBox.hgrow="NEVER">
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    </padding>
+                                    <children>
+                                        <Label styleClass="status-label" text="Total Words" />
+                                        <Label fx:id="totalWordsLabel" styleClass="status-value" text="0">
+                                            <font>
+                                                <Font name="System Bold" size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
 </BorderPane>

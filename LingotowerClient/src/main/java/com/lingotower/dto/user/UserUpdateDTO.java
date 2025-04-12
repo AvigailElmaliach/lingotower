@@ -1,4 +1,4 @@
-package com.lingotower.dto;
+package com.lingotower.dto.user;
 
 public class UserUpdateDTO {
 	private String username;

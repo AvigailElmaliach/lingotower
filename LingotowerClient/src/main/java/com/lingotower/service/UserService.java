@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import com.lingotower.dto.UserUpdateDTO;
+import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.security.TokenStorage;

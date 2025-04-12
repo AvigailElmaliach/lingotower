@@ -112,7 +112,7 @@ public class LingotowerApp extends Application {
 			});
 
 			// Create scene
-			Scene scene = new Scene(root, 800, 600);
+			Scene scene = new Scene(root, 1250, 680);
 
 			// Add stylesheets
 			try {
@@ -196,7 +196,7 @@ public class LingotowerApp extends Application {
 			controller.initialize();
 
 			// Set up the scene
-			Scene scene = new Scene(root, 800, 600);
+			Scene scene = new Scene(root, 1160, 750);
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			// Set scene to stage
