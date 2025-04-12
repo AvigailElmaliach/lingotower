@@ -83,7 +83,7 @@
 /* Category Box Styling */
 .category-box {
     -fx-background-color: white;
-    -fx-background-radius: 8px;
+    -fx-background-radius: 5px;
     -fx-border-color: #ddd;
     -fx-border-radius: 5px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
@@ -324,16 +324,3 @@
     -fx-background-color: #e8eaf6;
     -fx-text-fill: #3f51b5;
 }
-
-/* Styles for ScrollPane used as main content area */
-.content-scrollpane {
-    -fx-background-color: transparent; /* Make ScrollPane background transparent */
-    -fx-background: transparent;      /* Ensure background is fully transparent */
-    -fx-border-color: transparent;    /* Remove any potential border */
-}
-
-/* Style the viewport inside the ScrollPane */
-.content-scrollpane > .viewport {
-     -fx-background-color: transparent; /* Make the viewport background transparent */
-}
-
