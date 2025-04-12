@@ -83,7 +83,7 @@
 /* Category Box Styling */
 .category-box {
     -fx-background-color: white;
-    -fx-background-radius: 5px;
+    -fx-background-radius: 8px;
     -fx-border-color: #ddd;
     -fx-border-radius: 5px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
@@ -336,3 +336,4 @@
 .content-scrollpane > .viewport {
      -fx-background-color: transparent; /* Make the viewport background transparent */
 }
+

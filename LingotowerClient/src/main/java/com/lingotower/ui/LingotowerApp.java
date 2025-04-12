@@ -118,6 +118,8 @@ public class LingotowerApp extends Application {
 			try {
 				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/styles/quiz-styles.css").toExternalForm());
+
 			} catch (Exception e) {
 				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
 			}

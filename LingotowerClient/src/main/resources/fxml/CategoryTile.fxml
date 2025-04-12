@@ -6,10 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="categoryBox" alignment="CENTER" minHeight="120.0" minWidth="180.0" spacing="10.0" 
-      styleClass="category-box" xmlns="http://javafx.com/javafx/17" 
-      xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.lingotower.ui.controllers.CategoryTileController">
+<VBox fx:id="categoryBox" alignment="CENTER" minHeight="120.0" minWidth="180.0" spacing="10.0" styleClass="category-box" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.CategoryTileController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
@@ -19,6 +16,9 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button fx:id="exploreButton" mnemonicParsing="false" styleClass="explore-button" text="Explore" onAction="#handleExploreClick" />
+      <Button fx:id="exploreButton" mnemonicParsing="false" onAction="#handleExploreClick" styleClass="explore-button" text="Explore">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
    </children>
 </VBox>
