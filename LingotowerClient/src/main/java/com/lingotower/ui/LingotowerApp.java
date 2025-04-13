@@ -112,12 +112,14 @@ public class LingotowerApp extends Application {
 			});
 
 			// Create scene
-			Scene scene = new Scene(root, 800, 600);
+			Scene scene = new Scene(root, 1250, 680);
 
 			// Add stylesheets
 			try {
 				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/styles/quiz-styles.css").toExternalForm());
+
 			} catch (Exception e) {
 				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
 			}
@@ -139,8 +141,8 @@ public class LingotowerApp extends Application {
 					// On register success
 					user -> {
 						this.currentUser = user;
-						System.out.println("User registered and logged in: " + user.getUsername());
-						showMainApplication();
+						System.out.println("Registration successful! Please log in.: " + user.getUsername());
+						showLoginScreen();
 					},
 					// On switch to login
 					this::showLoginScreen);
@@ -196,7 +198,7 @@ public class LingotowerApp extends Application {
 			controller.initialize();
 
 			// Set up the scene
-			Scene scene = new Scene(root, 800, 600);
+			Scene scene = new Scene(root, 1160, 750);
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			// Set scene to stage

@@ -1,59 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="view" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.lingotower.ui.controllers.QuizController"
-            stylesheets="@quiz-styles.css">
+<BorderPane fx:id="view" stylesheets="@quiz-styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.QuizController">
     
-    <!-- Optional global padding around everything -->
+    <!-- Global padding around everything -->
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
     
     <!-- LEFT: Filter & Quiz Selection Panel -->
     <left>
-        <VBox fx:id="leftPane" spacing="15" styleClass="sidebar">
+        <VBox fx:id="leftPane" spacing="20" styleClass="sidebar">
             <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
+                <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
             <children>
                 
                 <!-- Title -->
-                <Label text="Language Quizzes" styleClass="title-label">
+                <Label styleClass="title-label" text="Language Quizzes">
                     <font>
-                        <Font size="22" />
+                        <Font size="24" />
                     </font>
                 </Label>
                 
                 <!-- Filters -->
-                <VBox spacing="8">
+                <VBox spacing="12" styleClass="filter-section">
                     <children>
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <children>
-                                <Label text="Difficulty:"/>
-                                <ComboBox fx:id="difficultyComboBox"/>
-                            </children>
-                        </HBox>
+                        <Label styleClass="filter-label" text="Difficulty:">
+                            <font>
+                                <Font size="16" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="difficultyComboBox" styleClass="filter-combo" />
                         
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <children>
-                                <Label text="Category:"/>
-                                <ComboBox fx:id="categoryComboBox"/>
-                            </children>
-                        </HBox>
+                        <Label styleClass="filter-label" text="Category:">
+                            <font>
+                                <Font size="16" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="10" />
+                            </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="categoryComboBox" styleClass="filter-combo" />
                         
-                        <Button fx:id="filterBtn" text="Apply" onAction="#handleFilterButtonClick"
-                                styleClass="filter-button"/>
+                        <Button fx:id="filterBtn" onAction="#handleFilterButtonClick" styleClass="filter-button" text="Apply Filter">
+                            <font>
+                                <Font size="14" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="10" />
+                            </VBox.margin>
+                        </Button>
                     </children>
                 </VBox>
                 
                 <!-- Quiz selection list -->
-                <Label text="Available Quizzes:" style="-fx-font-weight: bold;"/>
-                <ListView fx:id="quizListView" prefHeight="300" prefWidth="200"/>
+                <Label styleClass="section-header" text="Available Quizzes:">
+                    <font>
+                        <Font size="18" />
+                    </font>
+                </Label>
+                <ListView fx:id="quizListView" prefHeight="300" prefWidth="250" styleClass="quiz-list" />
                 
             </children>
         </VBox>
@@ -66,73 +86,188 @@
                 <StackPane styleClass="content-area">
                     
                     <!-- Welcome content -->
-                    <VBox fx:id="welcomeContent" alignment="CENTER" spacing="20">
-                        <Label text="Welcome to LingoTower Quizzes" styleClass="title-label"/>
-                        <Label text="Select a quiz from the list to begin."
-                               styleClass="section-header"/>
+                    <VBox fx:id="welcomeContent" alignment="CENTER" spacing="30">
+                        <padding>
+                            <Insets bottom="30" left="30" right="30" top="30" />
+                        </padding>
+                        <Label styleClass="welcome-title" text="LingoTower Quizzes">
+                            <font>
+                                <Font size="28" />
+                            </font>
+                        </Label>
+                        <Label styleClass="welcome-text" text="Select a quiz from the list to begin" wrapText="true">
+                            <font>
+                                <Font size="18" />
+                            </font>
+                        </Label>
                     </VBox>
                     
                     <!-- Preview content -->
-                    <VBox fx:id="previewContent" alignment="CENTER" spacing="20" visible="false">
-                        <Label fx:id="quizNameLabel" styleClass="title-label"/>
+                    <VBox fx:id="previewContent" alignment="CENTER" spacing="25" visible="false">
+                        <padding>
+                            <Insets bottom="30" left="40" right="40" top="30" />
+                        </padding>
+                        <Label fx:id="quizNameLabel" styleClass="preview-title">
+                            <font>
+                                <Font size="26" />
+                            </font>
+                        </Label>
                         
-                        <VBox alignment="CENTER_LEFT" spacing="6">
-                            <Label fx:id="categoryLabel" text="Category: N/A"/>
-                            <Label fx:id="difficultyLabel" text="Difficulty: N/A"/>
-                            <Label fx:id="questionsLabel" text="Questions: 0"/>
+                        <VBox alignment="CENTER_LEFT" spacing="12" styleClass="info-box">
+                            <padding>
+                                <Insets bottom="15" left="20" right="20" top="15" />
+                            </padding>
+                            <Label fx:id="categoryLabel" styleClass="info-label" text="Category: N/A">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Label>
+                            <Label fx:id="difficultyLabel" styleClass="info-label" text="Difficulty: N/A">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Label>
+                            <Label fx:id="questionsLabel" styleClass="info-label" text="Questions: 10">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Label>
                         </VBox>
                         
-                        <VBox fx:id="sampleQuestionBox" spacing="10"
-                              styleClass="sample-box">
-                            <Label text="Sample Question:" styleClass="section-header"/>
-                            <Label fx:id="sampleQuestionText"
-                                   text="Example of what you'll see!"
-                                   wrapText="true"
-                                   styleClass="question-text"/>
+                        <VBox fx:id="sampleQuestionBox" spacing="15" styleClass="sample-box">
+                            <padding>
+                                <Insets bottom="20" left="25" right="25" top="20" />
+                            </padding>
+                            <Label fx:id="sampleQuestionText" styleClass="sample-text" text="This quiz will generate 10 random questions based on the selected category and difficulty." wrapText="true">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Label>
                         </VBox>
                         
-                        <Button fx:id="startButton" text="Start Quiz"
-                                onAction="#handleStartQuizClick"/>
+                        <Button fx:id="startButton" onAction="#handleStartQuizClick" styleClass="start-button" text="Start Quiz">
+                            <font>
+                                <Font size="18" />
+                            </font>
+                        </Button>
                     </VBox>
                     
                     <!-- Question content -->
-                    <VBox fx:id="questionContent" alignment="CENTER" spacing="20" visible="false">
+                    <VBox fx:id="questionContent" alignment="CENTER" spacing="25" visible="false">
+                        <padding>
+                            <Insets bottom="30" left="40" right="40" top="30" />
+                        </padding>
                         
-                        <Label fx:id="activeQuizNameLabel" styleClass="title-label"/>
+                        <Label fx:id="activeQuizNameLabel" styleClass="quiz-title">
+                            <font>
+                                <Font size="24" />
+                            </font>
+                        </Label>
                         
-                        <Label fx:id="progressLabel" text="Question 1 of X"
-                               style="-fx-font-weight: bold;"/>
+                        <ProgressBar fx:id="progressBar" prefHeight="15" prefWidth="500" progress="0.5" styleClass="quiz-progress" />
                         
-                        <Label fx:id="questionText" wrapText="true" styleClass="question"/>
+                        <Label fx:id="progressLabel" styleClass="progress-label" text="Question 1 of 10">
+                            <font>
+                                <Font size="18" />
+                            </font>
+                        </Label>
+                        
+                        <Label fx:id="questionText" styleClass="question" wrapText="true">
+                            <font>
+                                <Font size="22" />
+                            </font>
+                        </Label>
                         
                         <!-- Possible answers -->
-                        <VBox fx:id="answersBox" spacing="10">
-                            <RadioButton fx:id="answer1"/>
-                            <RadioButton fx:id="answer2"/>
-                            <RadioButton fx:id="answer3"/>
-                            <RadioButton fx:id="answer4"/>
+                        <VBox fx:id="answersBox" spacing="15" styleClass="answers-container">
+                            <padding>
+                                <Insets bottom="15" left="15" right="15" top="15" />
+                            </padding>
+                            <RadioButton fx:id="answer1" styleClass="answer-option">
+                                <font>
+                                    <Font size="18" />
+                                </font>
+                            </RadioButton>
+                            <RadioButton fx:id="answer2" styleClass="answer-option">
+                                <font>
+                                    <Font size="18" />
+                                </font>
+                            </RadioButton>
+                            <RadioButton fx:id="answer3" styleClass="answer-option">
+                                <font>
+                                    <Font size="18" />
+                                </font>
+                            </RadioButton>
+                            <RadioButton fx:id="answer4" styleClass="answer-option">
+                                <font>
+                                    <Font size="18" />
+                                </font>
+                            </RadioButton>
                         </VBox>
                         
                         <!-- Feedback box (hidden initially) -->
-                        <VBox fx:id="feedbackBox" alignment="CENTER" spacing="10" visible="false">
-                            <Label fx:id="feedbackLabel"/>
-                            <Label fx:id="correctAnswerLabel" visible="false"/>
+                        <VBox fx:id="feedbackBox" alignment="CENTER" spacing="15" styleClass="feedback-box" visible="false">
+                            <padding>
+                                <Insets bottom="15" left="15" right="15" top="15" />
+                            </padding>
+                            <Label fx:id="feedbackLabel" styleClass="feedback-label">
+                                <font>
+                                    <Font size="20" />
+                                </font>
+                            </Label>
+                            <Label fx:id="correctAnswerLabel" styleClass="correct-answer-label" visible="false">
+                                <font>
+                                    <Font size="18" />
+                                </font>
+                            </Label>
                         </VBox>
                         
                         <!-- Navigation buttons -->
-                        <HBox alignment="CENTER" spacing="15">
-                            <Button fx:id="prevBtn" text="Previous" onAction="#handlePrevButtonClick"/>
-                            <Button fx:id="submitBtn" text="Submit Answer" onAction="#handleSubmitAnswerClick"/>
-                            <Button fx:id="nextBtn" text="Next" onAction="#handleNextButtonClick"/>
+                        <HBox alignment="CENTER" spacing="20">
+                            <Button fx:id="prevBtn" onAction="#handlePrevButtonClick" styleClass="nav-button" text="Previous">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Button>
+                            <Button fx:id="submitBtn" onAction="#handleSubmitAnswerClick" styleClass="submit-button" text="Submit Answer">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Button>
+                            <Button fx:id="nextBtn" onAction="#handleNextButtonClick" styleClass="nav-button" text="Next">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Button>
                         </HBox>
                         
                     </VBox>
                     
                     <!-- Summary content -->
-                    <VBox fx:id="summaryContent" alignment="CENTER" spacing="20" visible="false">
-                        <Label text="Quiz Summary" styleClass="title-label"/>
-                        <Label fx:id="summaryLabel" wrapText="true"/>
-                        <Button text="Back to Quizzes" onAction="#handleBackToQuizzesClick"/>
+                    <VBox fx:id="summaryContent" alignment="CENTER" spacing="30" visible="false">
+                        <padding>
+                            <Insets bottom="40" left="40" right="40" top="40" />
+                        </padding>
+                        <Label styleClass="summary-title" text="Quiz Summary">
+                            <font>
+                                <Font size="28" />
+                            </font>
+                        </Label>
+                        <VBox alignment="CENTER" spacing="20" styleClass="results-panel">
+                            <padding>
+                                <Insets bottom="25" left="25" right="25" top="25" />
+                            </padding>
+                            <Label fx:id="summaryLabel" styleClass="summary-text" wrapText="true">
+                                <font>
+                                    <Font size="22" />
+                                </font>
+                            </Label>
+                        </VBox>
+                        <Button onAction="#handleBackToQuizzesClick" styleClass="back-button" text="Back to Quizzes">
+                            <font>
+                                <Font size="18" />
+                            </font>
+                        </Button>
                     </VBox>
                     
                 </StackPane>
