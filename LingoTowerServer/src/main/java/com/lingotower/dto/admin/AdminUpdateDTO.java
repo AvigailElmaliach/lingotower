@@ -6,6 +6,9 @@ public class AdminUpdateDTO {
 	    private String username;
 	    private Role role;
 	    private String password; // אופציונלי: לשינוי סיסמה
+	    private String email;
+
+	    
 
 	    public String getUsername() {
 	        return username;
@@ -29,5 +32,12 @@ public class AdminUpdateDTO {
 
 	    public void setPassword(String password) {
 	        this.password = password;
+	    }
+	    public String getEmail() {
+	        return email;
+	    }
+
+	    public void setEmail(String email) {
+	        this.email = email;
 	    }
 	}

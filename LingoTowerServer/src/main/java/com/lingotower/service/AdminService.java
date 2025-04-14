@@ -71,24 +71,51 @@ public class AdminService {
 
         adminRepository.save(newAdmin);
     }
+//    public Optional<Admin> updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
+//        Optional<Admin> existingAdmin = adminRepository.findById(id);
+//        if (existingAdmin.isPresent()) {
+//            Admin admin = existingAdmin.get();
+//            admin.setUsername(adminUpdateDTO.getUsername());
+//            admin.setRole(adminUpdateDTO.getRole());
+//            
+//            if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
+//                String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
+//                admin.setPassword(encodedPassword);
+//            }
+//
+//
+//            return Optional.of(adminRepository.save(admin));
+//        } else {
+//            return Optional.empty();
+//        }
+//    }
+//
     public Optional<Admin> updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
         Optional<Admin> existingAdmin = adminRepository.findById(id);
         if (existingAdmin.isPresent()) {
             Admin admin = existingAdmin.get();
-            admin.setUsername(adminUpdateDTO.getUsername());
-            admin.setRole(adminUpdateDTO.getRole());
-            
+
+            if (adminUpdateDTO.getUsername() != null) {
+                admin.setUsername(adminUpdateDTO.getUsername());
+            }
+
+            if (adminUpdateDTO.getRole() != null) {
+                admin.setRole(adminUpdateDTO.getRole());
+            }
+
+            if (adminUpdateDTO.getEmail() != null) {
+                admin.setEmail(adminUpdateDTO.getEmail());
+            }
+
             if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
                 String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
                 admin.setPassword(encodedPassword);
             }
-
 
             return Optional.of(adminRepository.save(admin));
         } else {
             return Optional.empty();
         }
     }
-
 
 }
