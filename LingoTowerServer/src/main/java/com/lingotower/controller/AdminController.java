@@ -44,14 +44,15 @@ public class AdminController {
     public List<AdminResponseDTO> getAllAdmins() {
         List<Admin> admins = adminService.getAllAdmins();
         return admins.stream()
-                .map(admin -> new AdminResponseDTO(admin.getUsername(), admin.getRole()))
+                .map(admin -> new AdminResponseDTO(admin.getId(), admin.getUsername(),admin.getEmail(), admin.getRole()))
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AdminResponseDTO> getAdminById(@PathVariable Long id) {
         Optional<Admin> admin = adminService.getAdminById(id);
-        return admin.map(a -> ResponseEntity.ok(new AdminResponseDTO(a.getUsername(), a.getRole())))
+        return admin.map(a -> ResponseEntity.ok(
+                new AdminResponseDTO(a.getId(), a.getUsername(), a.getEmail(), a.getRole())))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
@@ -82,11 +83,19 @@ public class AdminController {
     public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateDTO adminUpdateDTO) {
         Optional<Admin> updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);
         if (updatedAdmin.isPresent()) {
-            return ResponseEntity.ok(new AdminResponseDTO(updatedAdmin.get().getUsername(), updatedAdmin.get().getRole()));
+            Admin a = updatedAdmin.get();
+            AdminResponseDTO responseDTO = new AdminResponseDTO(
+                a.getId(),
+                a.getUsername(),
+                a.getEmail(),
+                a.getRole()
+            );
+            return ResponseEntity.ok(responseDTO);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
