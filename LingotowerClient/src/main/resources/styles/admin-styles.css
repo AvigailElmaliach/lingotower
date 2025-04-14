@@ -1,12 +1,7 @@
-/* Admin Styles - LingoTower */
+/* Admin Styles */
 
-/* Basic styling */
-.root {
-    -fx-font-family: "Segoe UI", "Roboto", sans-serif;
-    -fx-background-color: #f7f9fc;
-}
 
-/* Header bar styling */
+/* ===== Header and Dashboard Elements ===== */
 .header-bar {
     -fx-background-color: #f7f9fc;
     -fx-padding: 15px;
@@ -20,19 +15,18 @@
 }
 
 .header-button {
-	-fx-font-size:20px;
+    -fx-font-size: 20px;
     -fx-background-color: #3f51b5;
     -fx-text-fill: white;
-    -fx-font-weight: regular;
+    -fx-font-weight: normal;
     -fx-padding: 8px 16px;
     -fx-background-radius: 4px;
 }
 
 .header-button:hover {
--fx-background-color: derive(#3f51b5, 20%);
-	
-   
+    -fx-background-color: derive(#3f51b5, 20%);
 }
+
 /* Dashboard title and subtitle */
 .dashboard-title {
     -fx-font-size: 24px;
@@ -45,7 +39,7 @@
     -fx-text-fill: #757575;
 }
 
-/* Section headers */
+/* Admin-specific section headers */
 .section-header {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -55,7 +49,7 @@
     -fx-border-width: 0 0 2px 0;
 }
 
-/* Admin tiles */
+/* ===== Admin Module Tiles ===== */
 .admin-tile {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -80,7 +74,7 @@
     -fx-text-alignment: center;
 }
 
-/* Status boxes */
+/* ===== Status Boxes ===== */
 .status-box {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -101,7 +95,8 @@
     -fx-text-fill: #3f51b5;
 }
 
-/* Buttons */
+/* ===== Admin-specific Button Styles ===== */
+/* Only needed if they differ from application.css */
 .admin-button {
     -fx-background-color: #3f51b5;
     -fx-text-fill: white;
@@ -126,20 +121,9 @@
     -fx-background-color: #d32f2f;
 }
 
-.secondary-button {
-    -fx-background-color: #e0e0e0;
-    -fx-text-fill: #424242;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5px;
-    -fx-padding: 10px 20px;
-}
-
-.secondary-button:hover {
-    -fx-background-color: #afafaf;
-}
-
-/* Error and success messages */
-.error-label {
+/* ===== Message Styles ===== */
+/* Error and success messages - Admin-specific */
+.error-message {
     -fx-text-fill: #f44336;
     -fx-font-weight: bold;
     -fx-background-color: #ffebee;
@@ -159,7 +143,7 @@
     -fx-padding: 8px 15px;
 }
 
-/* Table styling */
+/* ===== Admin Table Styling ===== */
 .table-view {
     -fx-background-color: transparent;
     -fx-border-color: #e0e0e0;
@@ -195,12 +179,12 @@
 .table-row-cell:selected {
     -fx-background-color: #c5cae9;
 }
+
 .table-view .corner {
     -fx-background-color: transparent;
 }
 
-
-/* Form styling */
+/* ===== Form Styling ===== */
 .edit-form {
     -fx-background-color: #f5f7fa;
     -fx-background-radius: 8px;
@@ -223,7 +207,7 @@
     -fx-padding: 8px;
 }
 
-/* Search field */
+/* ===== Search Field ===== */
 .search-container {
     -fx-spacing: 10px;
     -fx-padding: 0 0 10px 0;
@@ -244,11 +228,8 @@
     -fx-background-radius: 20px;
     -fx-padding: 8px 15px;
 }
-.primary-button{
-	
-}
 
-/* Confirmation dialog */
+/* ===== Confirmation Dialog ===== */
 .confirmation-dialog {
     -fx-background-color: #ffebee;
     -fx-background-radius: 8px;

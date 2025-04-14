@@ -1,10 +1,12 @@
-/* Main application styles */
+/* Main application styles  */
 
+/* ===== Base Styles ===== */
 .root {
     -fx-font-family: "System";
     -fx-background-color: #f5f5f5;
 }
 
+/* ===== Layout Components ===== */
 /* Navigation bar */
 .navbar {
     -fx-background-color: #3f51b5;
@@ -24,24 +26,7 @@
     -fx-background-color: derive(#3f51b5, 30%);
 }
 
-/* Login form styles */
-.login-form {
-    -fx-background-color: white;
-    -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
-    -fx-padding: 20px;
-}
-
-.login-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-}
-
-.login-subtitle {
-    -fx-font-size: 14px;
-}
-
-/* Form elements */
+/* ===== Form Elements ===== */
 .text-field, .password-field, .combo-box {
     -fx-background-color: white;
     -fx-border-color: #ccc;
@@ -49,6 +34,7 @@
     -fx-pref-width: 300px;
 }
 
+/* ===== Button Styles ===== */
 .button {
     -fx-background-color: #3f51b5;
     -fx-text-fill: white;
@@ -69,6 +55,27 @@
     -fx-background-color: derive(#4caf50, 20%);
 }
 
+.success-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+}
+
+.primary-button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+}
+
+.secondary-button {
+    -fx-background-color: #78909c;
+    -fx-text-fill: white;
+}
+
+.filter-button {
+    -fx-background-color: #607d8b;
+    -fx-text-fill: white;
+}
+
+/* ===== Message Styles ===== */
 /* Error messages */
 .error-label {
     -fx-text-fill: #d32f2f;
@@ -78,6 +85,24 @@
 .info-label {
     -fx-text-fill: #546e7a;
     -fx-font-style: italic;
+}
+
+/* ===== Card and Container Styles ===== */
+/* Login form styles */
+.login-form {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-padding: 20px;
+}
+
+.login-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitle {
+    -fx-font-size: 14px;
 }
 
 /* Category Box Styling */
@@ -122,6 +147,7 @@
     -fx-padding: 10px 0;
 }
 
+/* ===== RTL Support ===== */
 /* RTL support for Hebrew */
 .rtl {
     -fx-node-orientation: right-to-left;
@@ -131,7 +157,7 @@
     -fx-font-family: "Arial"; /* a font that supports Hebrew well */
 }
 
-/* Word card styling */
+/* ===== Word Card Styling ===== */
 .word-card {
     -fx-background-color: white;
     -fx-background-radius: 5px;
@@ -150,28 +176,7 @@
     -fx-font-style: italic;
 }
 
-/* Button styling */
-.primary-button {
-    -fx-background-color: #3f51b5;
-    -fx-text-fill: white;
-}
-
-.success-button {
-    -fx-background-color: #4caf50;
-    -fx-text-fill: white;
-}
-
-.secondary-button {
-    -fx-background-color: #78909c;
-    -fx-text-fill: white;
-}
-
-.filter-button {
-    -fx-background-color: #607d8b;
-    -fx-text-fill: white;
-}
-
-/* User Profile specific styles */
+/* ===== User Profile Styles ===== */
 .main-container {
     -fx-background-color: #f5f5f5;
 }

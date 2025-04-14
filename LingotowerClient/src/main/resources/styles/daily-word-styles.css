@@ -1,6 +1,8 @@
-/* Additional styles for Daily Word screen */
 
-/* Word card styling */
+/* Styles for Daily Word screen */
+
+
+/* Word card styling  */
 .word-card {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -10,6 +12,7 @@
     -fx-max-width: 600px;
 }
 
+/* Specific text styles for the daily word */
 .word-text {
     -fx-font-size: 36px;
     -fx-font-weight: bold;
@@ -34,24 +37,13 @@
     -fx-wrap-text: true;
 }
 
-/* Button styling */
-.secondary-button {
-    -fx-background-color: #9e9e9e;
-    -fx-text-fill: white;
-    -fx-background-radius: 3px;
-}
-
-.secondary-button:hover {
-    -fx-background-color: #757575;
-}
-
 /* Date style */
 .info-label {
     -fx-font-style: italic;
     -fx-text-fill: #757575;
 }
 
-/* RTL support for Hebrew */
+/* RTL support for Hebrew - if needed beyond what's in application.css */
 .rtl-word {
     -fx-node-orientation: right-to-left;
     -fx-font-family: "Arial";

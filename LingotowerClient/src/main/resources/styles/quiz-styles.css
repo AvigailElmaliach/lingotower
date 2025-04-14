@@ -1,11 +1,6 @@
-/* Base styles */
-.root {
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    -fx-background-color: #f5f7fa;
-    -fx-font-size: 14px;
-}
+/* Quiz-specific styles  */
 
-/* Sidebar styling */
+/* ===== Sidebar Styling ===== */
 .sidebar {
     -fx-background-color: #f0f2f5;
     -fx-background-radius: 8px;
@@ -20,7 +15,7 @@
     -fx-text-fill: #3f51b5;
 }
 
-/* Filter section styling */
+/* ===== Filter Section ===== */
 .filter-section {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -45,6 +40,7 @@
     -fx-pref-height: 35px;
 }
 
+/* Filter button - if it differs from the common button styles */
 .filter-button {
     -fx-font-size: 15px;
     -fx-background-color: #4caf50;
@@ -60,14 +56,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-/* Section headers */
-.section-header {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #424242;
-}
-
-/* Quiz list styling */
+/* ===== Quiz List ===== */
 .quiz-list {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -96,7 +85,7 @@
     -fx-cursor: hand;
 }
 
-/* Content area */
+/* ===== Content Area ===== */
 .content-scrollpane {
     -fx-background-color: transparent;
     -fx-background: transparent;
@@ -115,7 +104,7 @@
     -fx-padding: 20px;
 }
 
-/* Welcome screen */
+/* ===== Welcome Screen ===== */
 .welcome-title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
@@ -130,7 +119,7 @@
     -fx-max-width: 600px;
 }
 
-/* Preview screen */
+/* ===== Preview Screen ===== */
 .preview-title {
     -fx-font-size: 26px;
     -fx-font-weight: bold;
@@ -138,78 +127,6 @@
 }
 
 .info-box {
-    -fx-background-color: #f5f7fa;
-    -fx-background-radius: 8px;
-    -fx-border-color: #eaeef2;
-    -fx-border-radius: 8px;
-    -fx-min-width: 500px;
-    -fx-max-width: 600px;
-}
-
-.info-label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #424242;
-}
-
-.sample-box {
-    -fx-background-color: #e8eaf6;
-    -fx-background-radius: 8px;
-    -fx-border-color: #c5cae9;
-    -fx-border-radius: 8px;
-    -fx-min-width: 500px;
-    -fx-max-width: 600px;
-}
-
-.sample-text {
-    -fx-font-size: 16px;
-    -fx-text-fill: #424242;
-    -fx-wrap-text: true;
-}
-
-.start-button {
-    -fx-background-color: #3f51b5;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-padding: 15px 40px;
-    -fx-background-radius: 30px;
-    -fx-cursor: hand;
-}
-
-.start-button:hover {
-    -fx-background-color: #303f9f;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 3);
-}
-
-/* Question screen */
-.quiz-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #3f51b5;
-}
-
-.quiz-progress {
-    -fx-accent: #4caf50;
-    -fx-pref-height: 15px;
-}
-
-.progress-label {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #424242;
-}
-
-.question {
-    -fx-font-size: 22px;
-    -fx-text-fill: #212121;
-    -fx-font-weight: bold;
-    -fx-wrap-text: true;
-    -fx-max-width: 700px;
-    -fx-text-alignment: center;
-    -fx-alignment: center;
-}
-
-.answers-container {
     -fx-background-color: #f5f7fa;
     -fx-background-radius: 8px;
     -fx-border-color: #eaeef2;
@@ -294,7 +211,7 @@
     -fx-background-color: #bdbdbd;
 }
 
-/* Summary screen */
+/* ===== Summary Screen ===== */
 .summary-title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
@@ -330,9 +247,78 @@
 .back-button:hover {
     -fx-background-color: #303f9f;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+	-fx-border-radius: 8px;
+    -fx-min-width: 500px;
+    -fx-max-width: 600px;
 }
-.answer-option {
-    -fx-font-size: 18px;
+
+.info-label {
+    -fx-font-size: 16px;
     -fx-text-fill: #424242;
-    -fx-padding: 8px;
 }
+
+.sample-box {
+    -fx-background-color: #e8eaf6;
+    -fx-background-radius: 8px;
+    -fx-border-color: #c5cae9;
+    -fx-border-radius: 8px;
+    -fx-min-width: 500px;
+    -fx-max-width: 600px;
+}
+
+.sample-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #424242;
+    -fx-wrap-text: true;
+}
+
+/* Start button - if different from regular buttons */
+.start-button {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 15px 40px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+}
+
+.start-button:hover {
+    -fx-background-color: #303f9f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 3);
+}
+
+/* ===== Question Screen ===== */
+.quiz-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3f51b5;
+}
+
+.quiz-progress {
+    -fx-accent: #4caf50;
+    -fx-pref-height: 15px;
+}
+
+.progress-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+.question {
+    -fx-font-size: 22px;
+    -fx-text-fill: #212121;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-max-width: 700px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.answers-container {
+    -fx-background-color: #f5f7fa;
+    -fx-background-radius: 8px;
+    -fx-border-color: #eaeef2;
+    }
+    
