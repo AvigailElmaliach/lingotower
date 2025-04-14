@@ -329,3 +329,18 @@
     -fx-background-color: #e8eaf6;
     -fx-text-fill: #3f51b5;
 }
+
+.categories-tile-pane {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 10px;
+}
+
+.content-scrollpane{
+	-fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+	
+}
+
