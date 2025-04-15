@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
@@ -160,6 +161,22 @@ public class UserService extends BaseService {
 		} catch (Exception e) {
 			System.err.println("Error getting user learning progress: " + e.getMessage());
 			return 0.0;
+		}
+	}
+
+	public UserProgressDTO getUserProgress() {
+		try {
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			String url = BASE_URL + "/progress";
+			ResponseEntity<UserProgressDTO> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					UserProgressDTO.class);
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error getting user progress: " + e.getMessage());
+			return null;
 		}
 	}
 

@@ -297,11 +297,11 @@
 }
 
 .learned-indicator {
-    -fx-background-color: #3f51b5;
+    -fx-background-color: #f96705;
 }
 
 .to-learn-indicator {
-    -fx-background-color: #e0e0e0;
+    -fx-background-color: #fab81c;
 }
 
 .filter-container {

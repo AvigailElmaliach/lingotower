@@ -2,6 +2,7 @@ package com.lingotower.ui.controllers;
 
 import java.util.List;
 
+import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
@@ -70,9 +71,7 @@ public class UserProfileController {
 	@FXML
 	private Label totalWordsLabel;
 	@FXML
-	private Label quizzesCompletedLabel;
-	@FXML
-	private Label quizSuccessRateLabel;
+	private Label precentLabel;
 	@FXML
 	private Label recommendationLabel1;
 	@FXML
@@ -87,10 +86,10 @@ public class UserProfileController {
 	private Button filterButton;
 	@FXML
 	private ListView<String> wordsList;
-	@FXML
-	private Button practiceButton;
-	@FXML
-	private Button exportButton;
+//	@FXML
+//	private Button practiceButton;
+//	@FXML
+//	private Button exportButton;
 
 	private UserService userService;
 	private CategoryService categoryService;
@@ -210,8 +209,8 @@ public class UserProfileController {
 	private void loadProgressData() {
 		try {
 			// Get user learning progress
-			Double progress = userService.getUserLearningProgress(currentUser.getId());
-			double learningProgress = progress != null ? progress : 0.0;
+			UserProgressDTO progressDTO = userService.getUserProgress();
+			Double learningProgress = (progressDTO != null) ? progressDTO.getProgressPercentage() : 0.0;
 
 			// Update progress chart
 			ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
@@ -228,9 +227,8 @@ public class UserProfileController {
 			int totalWordsCount = allWords != null ? allWords.size() : 0;
 			totalWordsLabel.setText(String.valueOf(totalWordsCount));
 
-			// In a real app, these would come from a quiz service
-			quizzesCompletedLabel.setText("0");
-			quizSuccessRateLabel.setText("0%");
+			// Update percentage label
+			precentLabel.setText(String.format("%.2f%%", learningProgress));
 
 			// Update recommendations based on user progress
 			updateRecommendations(learnedWordsCount, totalWordsCount);
@@ -399,17 +397,17 @@ public class UserProfileController {
 		}
 	}
 
-	@FXML
-	private void handlePracticeButtonClick(ActionEvent event) {
-		// This would navigate to a practice view for the selected words
-		System.out.println("Practice selected words");
-	}
+//	@FXML
+//	private void handlePracticeButtonClick(ActionEvent event) {
+//		// This would navigate to a practice view for the selected words
+//		System.out.println("Practice selected words");
+//	}
 
-	@FXML
-	private void handleExportButtonClick(ActionEvent event) {
-		// This would export the selected words as flashcards
-		System.out.println("Export to flashcards");
-	}
+//	@FXML
+//	private void handleExportButtonClick(ActionEvent event) {
+//		// This would export the selected words as flashcards
+//		System.out.println("Export to flashcards");
+//	}
 
 	private void showErrorMessage(String message) {
 		statusLabel.setText(message);
