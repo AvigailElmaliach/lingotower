@@ -27,9 +27,6 @@ public class DailyWordController {
 	private Label wordLabel;
 
 	@FXML
-	private Label pronunciationLabel;
-
-	@FXML
 	private Label translationLabel;
 
 	@FXML
@@ -43,9 +40,6 @@ public class DailyWordController {
 
 	@FXML
 	private Button addToLearnedButton;
-
-	@FXML
-	private Button shareButton;
 
 	private WordService wordService;
 	private UserService userService;
@@ -174,9 +168,6 @@ public class DailyWordController {
 		String exampleText = getExampleForWord(dailyWord.getWord());
 		exampleLabel.setText(exampleText);
 
-		// Set pronunciation (mock data for now)
-		pronunciationLabel.setText(getPronunciationForWord(dailyWord.getWord()));
-
 		// Set category
 		if (dailyWord.getCategory() != null) {
 			categoryLabel.setText(dailyWord.getCategory().getName());
@@ -189,25 +180,17 @@ public class DailyWordController {
 		wordLabel.setText("No daily word available");
 		translationLabel.setText("N/A");
 		exampleLabel.setText("Check back tomorrow for a new word!");
-		pronunciationLabel.setText("");
 		categoryLabel.setText("N/A");
 
 		// Disable buttons
 		audioButton.setDisable(true);
 		addToLearnedButton.setDisable(true);
-		shareButton.setDisable(true);
 	}
 
 	private String getExampleForWord(String word) {
 		// This would typically come from the server
 		// For now, we'll return a generic example
 		return "This is an example sentence using the word \"" + word + "\".";
-	}
-
-	private String getPronunciationForWord(String word) {
-		// This would typically come from a dictionary API or server
-		// For now, we'll return a placeholder
-		return "[pronunciation]";
 	}
 
 	@FXML
@@ -226,13 +209,13 @@ public class DailyWordController {
 
 	@FXML
 	private void handleAddToLearnedClick(ActionEvent event) {
-		if (dailyWord == null || currentUserId == null) {
+		if (dailyWord == null) {
 			return;
 		}
 
 		try {
 			// Add word to user's learned words
-			boolean success = userService.removeLearnedWord(currentUserId, dailyWord.getId());
+			boolean success = userService.addWordToLearned(dailyWord.getId());
 
 			if (success) {
 				// Disable the button to indicate it's been added
@@ -248,17 +231,4 @@ public class DailyWordController {
 		}
 	}
 
-	@FXML
-	private void handleShareButtonClick(ActionEvent event) {
-		if (dailyWord == null) {
-			return;
-		}
-
-		// In a real application, this would open sharing options
-		String shareText = "Today I learned the word \"" + dailyWord.getWord() + "\" (" + dailyWord.getTranslatedText()
-				+ ") on LingoTower!";
-
-		System.out.println("Sharing: " + shareText);
-		// Sharing logic would go here
-	}
 }
