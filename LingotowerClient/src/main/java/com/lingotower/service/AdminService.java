@@ -58,6 +58,8 @@ public class AdminService extends BaseService {
 					// Map fields available in AdminResponseDTO
 					admin.setUsername(dto.getUsername());
 					admin.setRole(dto.getRole().toString()); // Convert Role to String
+					admin.setEmail(dto.getEmail());
+					admin.setId(dto.getId()); //
 					// Note: ID, email etc. might not be in the DTO from this specific endpoint
 					return admin;
 				}).collect(Collectors.toList());

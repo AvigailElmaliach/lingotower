@@ -11,7 +11,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -412,18 +415,29 @@ public class AdminManagementController {
 			return;
 		}
 
-		// Store selected admin for later use
+		// ✅ SET selectedAdmin before showing dialog
 		this.selectedAdmin = admin;
 
-		// Update confirmation message
-		confirmAdminInfoLabel.setText("Username: " + admin.getUsername() + ", Email: "
+		// Create a confirmation dialog
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle("Delete Confirmation");
+		dialog.setHeaderText("Are you sure you want to delete this admin?");
+		dialog.setContentText("Username: " + admin.getUsername() + "\nEmail: "
 				+ (admin.getEmail() != null ? admin.getEmail() : "N/A"));
 
-		// Show confirmation dialog
-		confirmationDialog.setVisible(true);
+		// Add buttons
+		ButtonType deleteButtonType = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
+		ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+		dialog.getDialogPane().getButtonTypes().addAll(deleteButtonType, cancelButtonType);
 
-		// Hide edit form if visible
-		editAdminForm.setVisible(false);
+		// Show the dialog
+		dialog.showAndWait().ifPresent(response -> {
+			if (response == deleteButtonType) {
+				handleConfirmDelete();
+			} else {
+				handleCancelDelete();
+			}
+		});
 	}
 
 	@FXML
@@ -463,11 +477,6 @@ public class AdminManagementController {
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
 					if (success) {
-						// Hide the confirmation dialog
-						if (confirmationDialog != null) {
-							confirmationDialog.setVisible(false);
-						}
-
 						// Remove the admin from the list
 						adminsList.remove(selectedAdmin);
 
