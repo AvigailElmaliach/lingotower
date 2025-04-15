@@ -53,12 +53,6 @@ public class MainApplicationController {
 	}
 
 	@FXML
-	private void handleLearnBtnClick(ActionEvent event) {
-		// This would normally show a view with all categories to choose from
-		showDashboard();
-	}
-
-	@FXML
 	private void handleQuizBtnClick(ActionEvent event) {
 		showQuiz();
 	}

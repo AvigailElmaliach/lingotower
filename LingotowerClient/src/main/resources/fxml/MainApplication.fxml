@@ -4,14 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
 
-<BorderPane fx:id="mainLayout" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.MainApplicationController">
+<BorderPane fx:id="mainLayout" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.MainApplicationController">
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="navbar">
          <children>
             <Button fx:id="homeBtn" onAction="#handleHomeBtnClick" text="Home" />
-            <Button fx:id="learnBtn" onAction="#handleLearnBtnClick" text="Learn Words" />
             <Button fx:id="quizBtn" onAction="#handleQuizBtnClick" text="Quizzes" />
             <Button fx:id="dailyWordBtn" onAction="#handleDailyWordButtonClick" text="Daily Word" />
             <Button fx:id="translatorBtn" onAction="#handleTranslatorBtnClick" text="Translator" />
