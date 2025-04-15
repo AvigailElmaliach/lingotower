@@ -56,21 +56,27 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 
-	public double getLearningProgress(Long userId) {
-		List<Word> learnedWords = userRepository.findLearnedWordsByUserId(userId);
+	public double getLearningProgress(String username) {
+		List<Word> learnedWords = userRepository.findLearnedWordsByUsername(username);
 		long totalWords = wordRepository.count();
 		return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
 	}
 
-	public void addLearnedWord(Long userId, Long wordId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-		Word word = wordRepository.findById(wordId).orElseThrow(() -> new WordNotFoundException("Word not found"));
+//	public double getLearningProgress(Long userId) {
+//		List<Word> learnedWords = userRepository.findLearnedWordsByUser(userId);
+//		long totalWords = wordRepository.count();
+//		return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
+//	}
 
-		if (!user.getLearnedWords().contains(word)) {
-			user.getLearnedWords().add(word);
-			userRepository.save(user);
-		}
-	}
+//	public void addLearnedWord(Long userId, Long wordId) {
+//		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+//		Word word = wordRepository.findById(wordId).orElseThrow(() -> new WordNotFoundException("Word not found"));
+//
+//		if (!user.getLearnedWords().contains(word)) {
+//			user.getLearnedWords().add(word);
+//			userRepository.save(user);
+//		}
+//	}
 
 	public User getUserByUsername(String username) {
 		return userRepository.findByUsername(username).orElse(null);
@@ -88,17 +94,31 @@ public class UserService {
 		return false;
 	}
 
+//	public List<WordByCategory> getLearnedWordsForUser(String username) {
+//		User user = getUserByUsername(username);
+//		if (user == null) {
+//			throw new UsernameNotFoundException("User not found");
+//		}
+//
+//		String targetLanguage = user.getTargetLanguage();
+//
+//		List<Word> learnedWords = userRepository.findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
+//
+//		return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
+//	}
+	@Transactional
 	public List<WordByCategory> getLearnedWordsForUser(String username) {
 		User user = getUserByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
 
-		String targetLanguage = user.getTargetLanguage();
+		// שליפת כל המילים שנלמדו (בלי קשר לשפת יעד)
+		List<Word> learnedWords = user.getLearnedWords().stream().toList();
 
-		List<Word> learnedWords = userRepository.findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
-
-		return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
+		// מחזירים את כולן כמו שהן – עם המילה והתרגום
+		return learnedWords.stream().map(word -> new WordByCategory(word.getId(), word.getWord(), word.getTranslation(),
+				word.getCategory(), word.getDifficulty())).collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -107,9 +127,10 @@ public class UserService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 		Word word = wordRepository.findById(wordId).orElseThrow(() -> new EntityNotFoundException("Word not found"));
+		if (!user.getLearnedWords().contains(word)) {
+			user.getLearnedWords().add(word);
+			userRepository.save(user);
+		}
 
-		user.getLearnedWords().add(word);
-		userRepository.save(user);
 	}
-
 }
