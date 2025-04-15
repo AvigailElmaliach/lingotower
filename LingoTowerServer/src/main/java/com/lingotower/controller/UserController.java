@@ -85,18 +85,24 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{userId}/progress")
-    public ResponseEntity<UserProgressDTO> getLearningProgress(@PathVariable Long userId) {
-        double progress = userService.getLearningProgress(userId);
-        return ResponseEntity.ok(new UserProgressDTO(userId, progress));
+//    @GetMapping("/{userId}/progress")
+//    public ResponseEntity<UserProgressDTO> getLearningProgress(@PathVariable Long userId) {
+//        double progress = userService.getLearningProgress(userId);
+//        return ResponseEntity.ok(new UserProgressDTO(userId, progress));
+//    }
+    @GetMapping("/progress")
+    public ResponseEntity<UserProgressDTO> getLearningProgress(Principal principal) {
+        String username = principal.getName();
+        double progress = userService.getLearningProgress(username);
+        return ResponseEntity.ok(new UserProgressDTO(username, progress));
     }
 
-    @PostMapping("/{userId}/learn-word/{wordId}")
-    public ResponseEntity<Void> addLearnedWord(@PathVariable Long userId, @PathVariable Long wordId) {
-        userService.addLearnedWord(userId, wordId);
-        return ResponseEntity.ok().build();
-    }
-    
+//    @PostMapping("/{userId}/learn-word/{wordId}")
+//    public ResponseEntity<Void> addLearnedWord(@PathVariable Long userId, @PathVariable Long wordId) {
+//        userService.addLearnedWord(userId, wordId);
+//        return ResponseEntity.ok().build();
+//    }
+//    
     @PutMapping("/update-languages")
     public ResponseEntity<?> updateLanguages(@RequestBody LanguageUpdateRequest request, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());

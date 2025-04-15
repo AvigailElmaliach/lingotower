@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    @Query("SELECT u.learnedWords FROM User u WHERE u.id = :userId")
-    List<Word> findLearnedWordsByUserId(@Param("userId") Long userId);
+//    @Query("SELECT u.learnedWords FROM User u WHERE u.id = :userId")
+//    List<Word> findLearnedWordsByUserId(@Param("userId") Long userId);
 
     Optional<User> findByUsername(String username); 
 

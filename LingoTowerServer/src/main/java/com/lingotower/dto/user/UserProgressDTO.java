@@ -2,16 +2,16 @@ package com.lingotower.dto.user;
 //משמש להחזרת מידע על ההתקדמות של המשתמש
 
 public class UserProgressDTO {
-    private Long userId;
+    private String username;
     private double progressPercentage;
 
-    public UserProgressDTO(Long userId, double progressPercentage) {
-        this.userId = userId;
+    public UserProgressDTO(String username, double progressPercentage) {
+        this.username = username;
         this.progressPercentage = progressPercentage;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
     public double getProgressPercentage() {
