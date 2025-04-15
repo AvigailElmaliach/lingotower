@@ -22,16 +22,6 @@ public class CategoryService extends BaseService {
 		super(); // זה יאתחל את ה-RestTemplate עם מטפל השגיאות
 	}
 
-//	public List<Category> getAllCategories() {
-//		// יצירת ישות HTTP עם כותרות אימות
-//		HttpHeaders headers = createAuthHeaders();
-//		HttpEntity<?> entity = new HttpEntity<>(headers);
-//
-//		ResponseEntity<List<Category>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
-//				new ParameterizedTypeReference<List<Category>>() {
-//				});
-//		return response.getBody();
-//	}
 	public List<Category> getAllCategories() {
 		try {
 			// Create headers with authentication

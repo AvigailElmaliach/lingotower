@@ -149,21 +149,6 @@ public class UserService extends BaseService {
 		}
 	}
 
-	public Double getUserLearningProgress(Long userId) {
-		try {
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			String url = BASE_URL + "/" + userId + "/progress";
-			ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, entity, Double.class);
-
-			return response.getBody();
-		} catch (Exception e) {
-			System.err.println("Error getting user learning progress: " + e.getMessage());
-			return 0.0;
-		}
-	}
-
 	public UserProgressDTO getUserProgress() {
 		try {
 			HttpHeaders headers = createAuthHeaders();
@@ -286,21 +271,6 @@ public class UserService extends BaseService {
 		}
 
 		return false;
-	}
-
-	public boolean removeLearnedWord(Long userId, Long wordId) {
-		try {
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			String url = BASE_URL + "/" + userId + "/learned-word/" + wordId;
-			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
-
-			return response.getStatusCode() == HttpStatus.OK;
-		} catch (Exception e) {
-			System.err.println("Error removing learned word: " + e.getMessage());
-			return false;
-		}
 	}
 
 	/**

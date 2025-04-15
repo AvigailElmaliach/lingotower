@@ -60,8 +60,6 @@ public class MainApplicationController {
 	@FXML
 	private void handleProfileBtnClick(ActionEvent event) {
 		showUserProfile();
-		// User profile functionality would be implemented later
-		System.out.println("User profile functionality not yet implemented");
 	}
 
 	@FXML
