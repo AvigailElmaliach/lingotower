@@ -48,7 +48,6 @@ public class LingotowerApp extends Application {
 		}
 	}
 
-	// In LingotowerApp.java
 	private void showLoginScreen() {
 		// Initialize login view with callbacks
 		loginView = new LoginView(
@@ -179,15 +178,15 @@ public class LingotowerApp extends Application {
 			controller.setUser(currentUser);
 			controller.setDashboardView(dashboardView);
 
-			// IMPORTANT: Get the dashboard controller and set the main controller reference
-			FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("/fxml/DashboardView.fxml"));
-			Parent dashboardRoot = dashboardLoader.load();
-			DashboardViewController dashboardController = dashboardLoader.getController();
-			dashboardController.setMainController(controller);
+			// Create the dashboard view first
+			Parent dashboardRoot = dashboardView.createView();
 
-			// Store the dashboardRoot in the dashboardView
-			dashboardView.setRoot(dashboardRoot);
-			dashboardView.setController(dashboardController);
+			// Get the dashboard controller and set the main controller reference
+			// using the type-safe getter on the dashboard view
+			DashboardViewController dashboardController = dashboardView.getController();
+			if (dashboardController != null) {
+				dashboardController.setMainController(controller);
+			}
 
 			controller.setOnLogout(() -> {
 				currentUser = null;

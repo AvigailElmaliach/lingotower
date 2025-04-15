@@ -105,8 +105,9 @@ public class DashboardViewController {
 			updateCategories(categories);
 		} catch (Exception e) {
 			// Handle error, show error message
-			showErrorMessage("Error loading categories: " + e.getMessage());
+			System.err.println("Error loading categories: " + e.getMessage());
 			e.printStackTrace();
+			showErrorMessage("Error loading categories: " + e.getMessage());
 		}
 	}
 
@@ -139,13 +140,18 @@ public class DashboardViewController {
 
 				// Set callback for when category is selected
 				tileController.setOnCategorySelected(() -> {
-					System.out.println("Category selected callback triggered for: " + category.getName());
-					// Navigate to word learning view
-					if (mainController != null) {
-						System.out.println("Calling mainController.showWordLearningForCategory()");
-						mainController.showWordLearningForCategory(category);
-					} else {
-						System.out.println("ERROR: mainController is null!");
+					try {
+						System.out.println("Category selected callback triggered for: " + category.getName());
+						if (mainController != null) {
+							System.out.println("Calling mainController.showWordLearningForCategory()");
+							mainController.showWordLearningForCategory(category);
+						} else {
+							throw new IllegalStateException("Main controller is null");
+						}
+					} catch (Exception e) {
+						System.err.println("Error handling category selection: " + e.getMessage());
+						e.printStackTrace();
+						showErrorMessage("Error navigating to the selected category: " + e.getMessage());
 					}
 				});
 
@@ -154,6 +160,7 @@ public class DashboardViewController {
 			} catch (IOException e) {
 				System.err.println("Error loading category tile: " + e.getMessage());
 				e.printStackTrace();
+				showErrorMessage("Error loading category tile: " + e.getMessage());
 			}
 		}
 	}

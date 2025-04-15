@@ -12,6 +12,8 @@ import com.lingotower.ui.views.WordLearningView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 
 public class MainApplicationController {
@@ -77,29 +79,21 @@ public class MainApplicationController {
 
 	public void showDailyWord() {
 		try {
-			// Create daily word view with current user
 			DailyWordView dailyWordView = new DailyWordView(currentUser, this::showDashboard);
 			Parent dailyWordRoot = dailyWordView.createView();
-
-			// Set mainLayout center to daily word view
 			mainLayout.setCenter(dailyWordRoot);
 		} catch (Exception e) {
-			System.err.println("Error showing daily word view: " + e.getMessage());
-			e.printStackTrace();
+			handleError("Error showing daily word view", e);
 		}
 	}
 
 	public void showQuiz() {
 		try {
-			// Create quiz view
 			QuizView quizView = new QuizView();
 			Parent quizRoot = quizView.createView();
-
-			// Set mainLayout center to quiz view
 			mainLayout.setCenter(quizRoot);
 		} catch (Exception e) {
-			System.err.println("Error showing quiz view: " + e.getMessage());
-			e.printStackTrace();
+			handleError("Error showing quiz view", e);
 		}
 	}
 
@@ -110,50 +104,40 @@ public class MainApplicationController {
 			Parent view = profileView.createView();
 			mainLayout.setCenter(view);
 		} catch (Exception e) {
-			System.err.println("Error showing user profile: " + e.getMessage());
-			e.printStackTrace();
+			handleError("Error showing user profile", e);
 		}
 	}
 
 	public void showDashboard() {
 		try {
-			// Create dashboard view with category selection callback
 			if (dashboardView == null) {
 				dashboardView = new DashboardView();
 			}
-
 			Parent dashboardRoot = dashboardView.createView();
-
-			// Get the controller to set up category selection
-			DashboardViewController controller = null;
-			// You'd need to get the controller from the dashboardView
-
-			// Set mainLayout center to dashboard
 			mainLayout.setCenter(dashboardRoot);
 		} catch (Exception e) {
-			System.err.println("Error showing dashboard: " + e.getMessage());
-			e.printStackTrace();
+			handleError("Error showing dashboard", e);
 		}
 	}
 
 	public void showWordLearningForCategory(Category category) {
-		System.out.println("MainApplicationController.showWordLearningForCategory() called for: " + category.getName());
 		try {
-			// Create word learning view with the current user
-			System.out.println("Creating WordLearningView");
-			WordLearningView wordLearningView = new WordLearningView(category, this::showDashboard, // Go back to
-																									// dashboard when
-																									// finished
-					this.currentUser // Pass the current user
-			);
-
-			System.out.println("Setting main layout center to word learning view");
-			// Set mainLayout center to word learning view
+			WordLearningView wordLearningView = new WordLearningView(category, this::showDashboard, currentUser);
 			mainLayout.setCenter(wordLearningView.createView());
-			System.out.println("Word learning view should now be displayed");
 		} catch (Exception e) {
-			System.err.println("Error showing word learning view: " + e.getMessage());
-			e.printStackTrace();
+			handleError("Error showing word learning view for category: " + category.getName(), e);
 		}
+	}
+
+	private void handleError(String message, Exception e) {
+		System.err.println(message + ": " + e.getMessage());
+		e.printStackTrace();
+
+		// Show an alert dialog to the user
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(message);
+		alert.setContentText(e.getMessage());
+		alert.showAndWait();
 	}
 }
