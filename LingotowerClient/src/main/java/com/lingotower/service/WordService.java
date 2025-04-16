@@ -232,4 +232,23 @@ public class WordService extends BaseService {
 			return false;
 		}
 	}
+
+	public Word getDailyWord() {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the request to the daily word endpoint
+			String url = BASE_URL + "/daily";
+			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.GET, entity, Word.class);
+
+			return response.getBody();
+		} catch (Exception e) {
+			System.err.println("Error fetching daily word: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }
