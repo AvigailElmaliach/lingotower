@@ -86,45 +86,6 @@ public class WordService extends BaseService {
 		}
 	}
 
-//	public List<Word> getWordsByCategory(long categoryId) {
-//		try {
-//			String sourceLang = "en"; // Default source language
-//			String targetLang = "he"; // Default target language
-//			// Create headers with authentication
-//			HttpHeaders headers = createAuthHeaders();
-//			HttpEntity<?> entity = new HttpEntity<>(headers);
-//
-//			// Make the request to the endpoint with translation parameters
-//			String url = BASE_URL + "/category/" + categoryId + "/translate?sourceLang=" + sourceLang + "&targetLang="
-//					+ targetLang;
-//
-//			System.out.println("Fetching words from category " + categoryId + " with translation from " + sourceLang
-//					+ " to " + targetLang + "...");
-//
-//			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-//					new ParameterizedTypeReference<List<Word>>() {
-//					});
-//
-//			List<Word> words = response.getBody();
-//			System.out.println("Received " + (words != null ? words.size() : 0) + " translated words from server");
-//
-//			// Check the first word's translation (for debugging)
-//			if (words != null && !words.isEmpty()) {
-//				Word firstWord = words.get(0);
-//				System.out.println("First word: " + firstWord.getWord());
-//				System.out.println("Translation: " + firstWord.getTranslation());
-//				// Log all fields to see where translation might be stored
-//				System.out.println("First word full details: " + firstWord);
-//			}
-//
-//			return words != null ? words : new ArrayList<>();
-//		} catch (Exception e) {
-//			System.err.println("Error fetching translated words by category: " + e.getMessage());
-//			e.printStackTrace();
-//			return new ArrayList<>();
-//		}
-//	}
-
 	// Get a word by ID
 	public Word getWordById(Long id) {
 		try {
