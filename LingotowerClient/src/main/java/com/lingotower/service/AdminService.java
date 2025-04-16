@@ -257,4 +257,23 @@ public class AdminService extends BaseService {
 		// Call the update method with the DTO
 		return updateAdmin(id, dto);
 	}
+
+	public boolean deleteWordAdmin(Long id) {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the request
+			String url = ADMIN_API_BASE_URL + "/" + id;
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+			return response.getStatusCode().is2xxSuccessful();
+		} catch (Exception e) {
+			System.err.println("Error deleting word: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

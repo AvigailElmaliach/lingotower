@@ -87,9 +87,18 @@ public class CategoryService extends BaseService {
 	}
 
 	public Category addCategory(Category category) {
-		category.setId(nextId++);
-		categories.add(category);
-		return category;
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<Category> entity = new HttpEntity<>(category, headers);
+
+			// Make the POST request to the API
+			return restTemplate.postForObject(BASE_URL, entity, Category.class);
+		} catch (Exception e) {
+			System.err.println("Error adding category: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
