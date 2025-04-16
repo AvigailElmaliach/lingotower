@@ -1,22 +1,28 @@
 package com.lingotower.ui.controllers.admin;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.lingotower.model.Admin;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Word;
+import com.lingotower.service.AdminService;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.WordService;
 import com.lingotower.ui.components.ActionButtonCell;
 import com.lingotower.ui.views.admin.ContentManagementView;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -27,6 +33,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class ContentManagementController {
 
@@ -107,12 +115,27 @@ public class ContentManagementController {
 	@FXML
 	private Label statusLabel;
 
+	@FXML
+	private VBox jsonUploadForm;
+
+	@FXML
+	private TextField selectedFileTextField;
+
+	@FXML
+	private ComboBox<Category> uploadCategoryComboBox;
+
+	@FXML
+	private Button uploadJsonButton;
+
+	private File selectedJsonFile;
+
 	private Admin currentAdmin;
 	private Runnable returnToDashboard;
 	private ContentManagementView parentView; // Reference to parent view
 
 	private CategoryService categoryService;
 	private WordService wordService;
+	private AdminService adminService;
 
 	private ObservableList<Category> categoryList = FXCollections.observableArrayList();
 	private ObservableList<Word> wordsList = FXCollections.observableArrayList();
@@ -125,6 +148,7 @@ public class ContentManagementController {
 		// Initialize services
 		categoryService = new CategoryService();
 		wordService = new WordService();
+		adminService = new AdminService();
 	}
 
 	/**
@@ -184,6 +208,11 @@ public class ContentManagementController {
 
 		// Initialize difficulty combo box
 		wordDifficultyComboBox.getItems().addAll(Difficulty.values());
+
+		// Initialize JSON upload form (make sure it's hidden initially)
+		if (jsonUploadForm != null) {
+			jsonUploadForm.setVisible(false);
+		}
 
 		// Set tables to use our observable lists
 		categoryTableView.setItems(categoryList);
@@ -370,6 +399,13 @@ public class ContentManagementController {
 	private void deleteCategory(Category category) {
 		if (showDeleteConfirmation("category", category.getName())) {
 			try {
+				// Delete all words associated with the category
+				List<Word> words = wordService.getWordsByCategory(category.getId());
+				for (Word word : words) {
+					wordService.deleteWord(word.getId());
+				}
+
+				// Delete the category
 				boolean success = categoryService.deleteCategory(category.getId());
 				if (success) {
 					showStatusMessage("Category deleted successfully", false);
@@ -553,10 +589,31 @@ public class ContentManagementController {
 		}
 	}
 
+//	private void deleteWord(Word word) {
+//		if (showDeleteConfirmation("word", word.getWord())) {
+//			try {
+//				boolean success = adminService.deleteWordAdmin(word.getId()); // Use the instance
+//				if (success) {
+//					showStatusMessage("Word deleted successfully", false);
+//					loadWords();
+//					if (parentView != null) {
+//						parentView.refresh();
+//					}
+//				} else {
+//					showStatusMessage("Failed to delete word", true);
+//				}
+//			} catch (Exception e) {
+//				System.err.println("Error deleting word: " + e.getMessage());
+//				e.printStackTrace();
+//				showStatusMessage("Error deleting word: " + e.getMessage(), true);
+//			}
+//		}
+//	}
+
 	private void deleteWord(Word word) {
 		if (showDeleteConfirmation("word", word.getWord())) {
 			try {
-				boolean success = wordService.deleteWord(word.getId());
+				boolean success = wordService.deleteWord(word.getId()); // Use the instance
 				if (success) {
 					showStatusMessage("Word deleted successfully", false);
 					loadWords();
@@ -566,6 +623,9 @@ public class ContentManagementController {
 				} else {
 					showStatusMessage("Failed to delete word", true);
 				}
+			} catch (DataIntegrityViolationException e) {
+				System.err.println("Cannot delete word due to foreign key constraint: " + e.getMessage());
+				showStatusMessage("Cannot delete word: it is referenced by other data.", true);
 			} catch (Exception e) {
 				System.err.println("Error deleting word: " + e.getMessage());
 				e.printStackTrace();
@@ -600,4 +660,106 @@ public class ContentManagementController {
 		return result.isPresent() && result.get() == confirmButton;
 	}
 
+	/**
+	 * Shows the JSON upload form
+	 */
+	@FXML
+	private void handleUploadWordsJson() {
+		// Hide other forms
+		wordEditForm.setVisible(false);
+		categoryEditForm.setVisible(false);
+
+		// Make sure the uploadCategoryComboBox has the same categories as the word
+		// category combobox
+		uploadCategoryComboBox.setItems(FXCollections.observableArrayList(categoryList));
+		if (!categoryList.isEmpty()) {
+			uploadCategoryComboBox.setValue(categoryList.get(0));
+		}
+
+		// Reset file selection
+		selectedJsonFile = null;
+		selectedFileTextField.setText("No file selected");
+		uploadJsonButton.setDisable(true);
+
+		// Show the upload form
+		jsonUploadForm.setVisible(true);
+	}
+
+	/**
+	 * Opens a file chooser to select a JSON file
+	 */
+	@FXML
+	private void handleSelectJsonFile() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select Words JSON File");
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("JSON Files", "*.json"));
+
+		// Show the file chooser dialog
+		File file = fileChooser.showOpenDialog(view.getScene().getWindow());
+
+		if (file != null) {
+			selectedJsonFile = file;
+			selectedFileTextField.setText(file.getName());
+			uploadJsonButton.setDisable(false);
+		}
+	}
+
+	/**
+	 * Cancels the JSON upload and hides the form
+	 */
+	@FXML
+	private void handleCancelJsonUpload() {
+		jsonUploadForm.setVisible(false);
+	}
+
+	/**
+	 * Uploads the selected JSON file to the server using WordService
+	 */
+	@FXML
+	public void handleUploadJson() {
+		if (selectedJsonFile == null || !selectedJsonFile.exists()) {
+			showStatusMessage("No file selected or file does not exist", true);
+			return;
+		}
+
+		Category selectedCategory = uploadCategoryComboBox.getValue();
+		if (selectedCategory == null) {
+			showStatusMessage("Please select a category", true);
+			return;
+		}
+
+		// Show loading status
+		showStatusMessage("Uploading words...", false);
+
+		// Upload in background thread to keep UI responsive
+		Thread uploadThread = new Thread(() -> {
+			try {
+				// Use the updated WordService method to upload the JSON file
+				String result = wordService.uploadWordsJson(selectedJsonFile, selectedCategory.getId());
+
+				// Update UI on JavaFX thread
+				Platform.runLater(() -> {
+					if (result != null) {
+						showStatusMessage("Words uploaded successfully: " + result, false);
+						jsonUploadForm.setVisible(false);
+
+						// Refresh the words list
+						loadWords();
+					} else {
+						showStatusMessage("Upload failed. Please check the server logs for details.", true);
+					}
+				});
+			} catch (Exception e) {
+				Platform.runLater(() -> {
+					System.err.println("Error uploading words: " + e.getMessage());
+					e.printStackTrace();
+					showStatusMessage("Error uploading words: " + e.getMessage(), true);
+				});
+			}
+		});
+
+		// Start the background thread
+		uploadThread.setDaemon(true);
+		uploadThread.start();
+	}
 }

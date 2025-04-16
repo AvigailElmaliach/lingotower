@@ -1,22 +1,34 @@
 package com.lingotower.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import com.lingotower.model.Category;
 import com.lingotower.model.Word;
 
 public class WordService extends BaseService {
 
 	private static final String BASE_URL = "http://localhost:8080/words";
+	private final CategoryService categoryService;
 
 	public WordService() {
 		super(); // Initialize the base service
+		this.categoryService = new CategoryService(); // Instantiate
+	}
+
+	public List<Category> getAllCategories() {
+		return categoryService.getAllCategories(); // Delegate the call
 	}
 
 	public List<Word> getAllWords() {
@@ -222,7 +234,7 @@ public class WordService extends BaseService {
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
 			// Make the request
-			String url = BASE_URL + "/" + id;
+			String url = "http://localhost:8080/admins/word/" + id;
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
 
 			return response.getStatusCode().is2xxSuccessful();
@@ -251,4 +263,63 @@ public class WordService extends BaseService {
 		}
 	}
 
+	/**
+	 * Uploads a JSON file containing words to the server using multipart form data
+	 * 
+	 * @param jsonFile   The JSON file to upload
+	 * @param categoryId The category ID to associate with the words
+	 * @return A message from the server or null if failed
+	 */
+	public String uploadWordsJson(File jsonFile, Long categoryId) {
+		try {
+			// Get category name from ID
+			Category category = null;
+			for (Category c : getAllCategories()) {
+				if (c.getId().equals(categoryId)) {
+					category = c;
+					break;
+				}
+			}
+
+			if (category == null) {
+				System.err.println("Category not found for ID: " + categoryId);
+				return null;
+			}
+
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			// Don't set content type, RestTemplate will set it correctly for
+			// multipart/form-data
+
+			// Create a MultiValueMap for the form data
+			MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+
+			// Add the category as a form field
+			form.add("category", category.getName());
+
+			// Add the file as a form field
+			// Create a resource from the file
+			Resource fileResource = new FileSystemResource(jsonFile);
+			form.add("file", fileResource);
+
+			// Create HTTP entity with form data and headers
+			HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(form, headers);
+
+			// Make the POST request
+			ResponseEntity<String> response = restTemplate.exchange(BASE_URL + "/upload", HttpMethod.POST, entity,
+					String.class);
+
+			// Return the response body if successful
+			if (response.getStatusCode().is2xxSuccessful()) {
+				return response.getBody();
+			} else {
+				System.err.println("Upload failed with status: " + response.getStatusCode());
+				return null;
+			}
+		} catch (Exception e) {
+			System.err.println("Error uploading words JSON: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
