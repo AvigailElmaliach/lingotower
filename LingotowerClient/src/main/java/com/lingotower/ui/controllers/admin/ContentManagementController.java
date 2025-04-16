@@ -1,6 +1,7 @@
 package com.lingotower.ui.controllers.admin;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.lingotower.model.Admin;
 import com.lingotower.model.Category;
@@ -9,11 +10,15 @@ import com.lingotower.model.Word;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.WordService;
 import com.lingotower.ui.components.ActionButtonCell;
+import com.lingotower.ui.views.admin.ContentManagementView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -104,6 +109,7 @@ public class ContentManagementController {
 
 	private Admin currentAdmin;
 	private Runnable returnToDashboard;
+	private ContentManagementView parentView; // Reference to parent view
 
 	private CategoryService categoryService;
 	private WordService wordService;
@@ -121,6 +127,15 @@ public class ContentManagementController {
 		wordService = new WordService();
 	}
 
+	/**
+	 * Sets the parent view reference
+	 * 
+	 * @param view The parent view
+	 */
+	public void setParentView(ContentManagementView view) {
+		this.parentView = view;
+	}
+
 	@FXML
 	public void initialize() {
 		// Initialize category table columns
@@ -129,14 +144,11 @@ public class ContentManagementController {
 		categoryTranslationColumn.setCellValueFactory(new PropertyValueFactory<>("translation"));
 
 		// Setup category actions column using ActionButtonCell
-		// ****************************************************
-		// החלפת הקוד הקודם בשימוש ב-ActionButtonCell
-		// ****************************************************
 		categoryActionsColumn.setCellFactory(col -> new ActionButtonCell<>(event -> { // Edit handler
-			Category category = (Category) event.getSource(); // קבלת האובייקט מהאירוע
+			Category category = (Category) event.getSource(); // Get the object from the event
 			showCategoryEditForm(category);
 		}, event -> { // Delete handler
-			Category category = (Category) event.getSource(); // קבלת האובייקט מהאירוע
+			Category category = (Category) event.getSource(); // Get the object from the event
 			deleteCategory(category);
 		}));
 
@@ -162,14 +174,11 @@ public class ContentManagementController {
 		});
 
 		// Setup word actions column using ActionButtonCell
-		// ****************************************************
-		// החלפת הקוד הקודם בשימוש ב-ActionButtonCell
-		// ****************************************************
 		wordActionsColumn.setCellFactory(col -> new ActionButtonCell<>(event -> { // Edit handler
-			Word word = (Word) event.getSource(); // קבלת האובייקט מהאירוע
+			Word word = (Word) event.getSource(); // Get the object from the event
 			showWordEditForm(word);
 		}, event -> { // Delete handler
-			Word word = (Word) event.getSource(); // קבלת האובייקט מהאירוע
+			Word word = (Word) event.getSource(); // Get the object from the event
 			deleteWord(word);
 		}));
 
@@ -201,7 +210,7 @@ public class ContentManagementController {
 		}
 	}
 
-	private void loadCategories() {
+	public void loadCategories() {
 		try {
 			// Show loading indicator or status message
 			showStatusMessage("Loading categories...", false);
@@ -234,7 +243,7 @@ public class ContentManagementController {
 		}
 	}
 
-	private void loadWords() {
+	public void loadWords() {
 		try {
 			// Show loading indicator or status message
 			showStatusMessage("Loading words...", false);
@@ -346,6 +355,11 @@ public class ContentManagementController {
 			loadCategories();
 			categoryEditForm.setVisible(false);
 
+			// Notify parent view if available
+			if (parentView != null) {
+				parentView.refresh();
+			}
+
 		} catch (Exception e) {
 			System.err.println("Error saving category: " + e.getMessage());
 			e.printStackTrace();
@@ -354,19 +368,23 @@ public class ContentManagementController {
 	}
 
 	private void deleteCategory(Category category) {
-		try {
-			boolean success = categoryService.deleteCategory(category.getId());
-
-			if (success) {
-				showStatusMessage("Category deleted successfully", false);
-				loadCategories();
-			} else {
-				showStatusMessage("Failed to delete category", true);
+		if (showDeleteConfirmation("category", category.getName())) {
+			try {
+				boolean success = categoryService.deleteCategory(category.getId());
+				if (success) {
+					showStatusMessage("Category deleted successfully", false);
+					loadCategories();
+					if (parentView != null) {
+						parentView.refresh();
+					}
+				} else {
+					showStatusMessage("Failed to delete category", true);
+				}
+			} catch (Exception e) {
+				System.err.println("Error deleting category: " + e.getMessage());
+				e.printStackTrace();
+				showStatusMessage("Error deleting category: " + e.getMessage(), true);
 			}
-		} catch (Exception e) {
-			System.err.println("Error deleting category: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error deleting category: " + e.getMessage(), true);
 		}
 	}
 
@@ -523,6 +541,11 @@ public class ContentManagementController {
 			loadWords();
 			wordEditForm.setVisible(false);
 
+			// Notify parent view if available
+			if (parentView != null) {
+				parentView.refresh();
+			}
+
 		} catch (Exception e) {
 			System.err.println("Error saving word: " + e.getMessage());
 			e.printStackTrace();
@@ -531,19 +554,23 @@ public class ContentManagementController {
 	}
 
 	private void deleteWord(Word word) {
-		try {
-			boolean success = wordService.deleteWord(word.getId());
-
-			if (success) {
-				showStatusMessage("Word deleted successfully", false);
-				loadWords();
-			} else {
-				showStatusMessage("Failed to delete word", true);
+		if (showDeleteConfirmation("word", word.getWord())) {
+			try {
+				boolean success = wordService.deleteWord(word.getId());
+				if (success) {
+					showStatusMessage("Word deleted successfully", false);
+					loadWords();
+					if (parentView != null) {
+						parentView.refresh();
+					}
+				} else {
+					showStatusMessage("Failed to delete word", true);
+				}
+			} catch (Exception e) {
+				System.err.println("Error deleting word: " + e.getMessage());
+				e.printStackTrace();
+				showStatusMessage("Error deleting word: " + e.getMessage(), true);
 			}
-		} catch (Exception e) {
-			System.err.println("Error deleting word: " + e.getMessage());
-			e.printStackTrace();
-			showStatusMessage("Error deleting word: " + e.getMessage(), true);
 		}
 	}
 
@@ -558,4 +585,19 @@ public class ContentManagementController {
 		statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
 		statusLabel.setVisible(true);
 	}
+
+	private boolean showDeleteConfirmation(String itemType, String itemName) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Delete Confirmation");
+		alert.setHeaderText("Are you sure you want to delete this " + itemType + "?");
+		alert.setContentText("Item: " + itemName);
+
+		ButtonType confirmButton = new ButtonType("Delete");
+		ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		return result.isPresent() && result.get() == confirmButton;
+	}
+
 }

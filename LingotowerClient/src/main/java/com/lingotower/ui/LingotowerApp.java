@@ -7,10 +7,10 @@ import com.lingotower.model.User;
 import com.lingotower.service.AdminAuthService;
 import com.lingotower.ui.controllers.DashboardViewController;
 import com.lingotower.ui.controllers.MainApplicationController;
-import com.lingotower.ui.controllers.admin.AdminViewController;
 import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.LoginView;
 import com.lingotower.ui.views.RegisterView;
+import com.lingotower.ui.views.admin.AdminView;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +35,9 @@ public class LingotowerApp extends Application {
 		try {
 			this.primaryStage = primaryStage;
 
+			// Debug primary stage
+			System.out.println("Primary Stage set in LingotowerApp: " + (primaryStage != null ? "Not null" : "NULL"));
+
 			// Configure stage
 			primaryStage.setTitle("LingoTower - Language Learning");
 
@@ -48,7 +51,6 @@ public class LingotowerApp extends Application {
 		}
 	}
 
-	// In LingotowerApp.java
 	private void showLoginScreen() {
 		// Initialize login view with callbacks
 		loginView = new LoginView(
@@ -93,23 +95,29 @@ public class LingotowerApp extends Application {
 
 	private void showAdminDashboard() {
 		try {
-			// Load admin dashboard layout
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/AdminView.fxml"));
-			Parent root = loader.load();
+			// Debug primary stage before creating admin view
+			System.out.println("Primary Stage in showAdminDashboard: " + (primaryStage != null ? "Not null" : "NULL"));
 
-			// Get controller and configure it
-			AdminViewController controller = loader.getController();
-			controller.setAdmin(currentAdmin);
-			controller.setPrimaryStage(primaryStage);
+			// Create AdminView using the new View class
+			AdminView adminView = new AdminView().setAdmin(currentAdmin).setPrimaryStage(primaryStage) // Make sure this
+																										// passes the
+																										// primary stage
+					.setOnLogout(() -> {
+						currentAdmin = null;
+						currentUser = null;
+						// Make sure to use the admin auth service for logout
+						adminAuthService.logout();
+						showLoginScreen();
+					});
 
-			// Set logout callback
-			controller.setOnLogout(() -> {
-				currentAdmin = null;
-				currentUser = null;
-				// Make sure to use the admin auth service for logout
-				adminAuthService.logout();
-				showLoginScreen();
-			});
+			// Get root from view
+			Parent root = adminView.createView();
+
+			// Debug - verify controller has primaryStage
+			if (adminView.getController() != null) {
+				Stage controllerStage = adminView.getController().getPrimaryStage();
+				System.out.println("Controller's primaryStage: " + (controllerStage != null ? "Not null" : "NULL"));
+			}
 
 			// Create scene
 			Scene scene = new Scene(root, 1250, 680);
@@ -119,7 +127,6 @@ public class LingotowerApp extends Application {
 				scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/styles/quiz-styles.css").toExternalForm());
-
 			} catch (Exception e) {
 				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
 			}
@@ -128,7 +135,7 @@ public class LingotowerApp extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("LingoTower Admin - " + currentAdmin.getUsername());
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			showError("Error loading admin dashboard: " + e.getMessage());
 		}
@@ -179,15 +186,15 @@ public class LingotowerApp extends Application {
 			controller.setUser(currentUser);
 			controller.setDashboardView(dashboardView);
 
-			// IMPORTANT: Get the dashboard controller and set the main controller reference
-			FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("/fxml/DashboardView.fxml"));
-			Parent dashboardRoot = dashboardLoader.load();
-			DashboardViewController dashboardController = dashboardLoader.getController();
-			dashboardController.setMainController(controller);
+			// Create the dashboard view first
+			Parent dashboardRoot = dashboardView.createView();
 
-			// Store the dashboardRoot in the dashboardView
-			dashboardView.setRoot(dashboardRoot);
-			dashboardView.setController(dashboardController);
+			// Get the dashboard controller and set the main controller reference
+			// using the type-safe getter on the dashboard view
+			DashboardViewController dashboardController = dashboardView.getController();
+			if (dashboardController != null) {
+				dashboardController.setMainController(controller);
+			}
 
 			controller.setOnLogout(() -> {
 				currentUser = null;

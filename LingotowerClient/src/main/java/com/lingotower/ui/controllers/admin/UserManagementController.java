@@ -8,14 +8,15 @@ import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 import com.lingotower.ui.components.ActionButtonCell;
+import com.lingotower.ui.views.admin.UserManagementView;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -71,16 +72,26 @@ public class UserManagementController {
 	@FXML
 	private TextField searchField;
 
-	private Admin currentAdmin;
-	private User selectedUser;
+	private Admin currentAdmin; // The logged-in admin
+	private User selectedUser; // The user being edited/deleted
 	private Runnable returnToDashboard;
 	private AdminService adminService;
 	private UserService userService;
 	private ObservableList<User> usersList = FXCollections.observableArrayList();
+	private UserManagementView parentView; // Reference to the parent view
 
 	public UserManagementController() {
 		// Initialize the UserService in the constructor
 		this.userService = new UserService();
+	}
+
+	/**
+	 * Sets the parent view reference
+	 * 
+	 * @param view The parent view
+	 */
+	public void setParentView(UserManagementView view) {
+		this.parentView = view;
 	}
 
 	public void setAdminService(AdminService adminService) {
@@ -120,12 +131,12 @@ public class UserManagementController {
 		actionsColumn.setCellFactory(column -> new ActionButtonCell<>(
 				// Edit button handler
 				event -> {
-					User user = (User) event.getSource(); // קבלת האובייקט מהאירוע
+					User user = (User) event.getSource();
 					showEditForm(user);
 				},
 				// Delete button handler
 				event -> {
-					User user = (User) event.getSource(); // קבלת האובייקט מהאירוע
+					User user = (User) event.getSource();
 					handleDeleteButtonClick(user);
 				}));
 		// Set table items
@@ -388,7 +399,7 @@ public class UserManagementController {
 		this.selectedUser = user;
 
 		// Create a custom confirmation dialog
-		javafx.scene.control.Dialog<ButtonType> dialog = new javafx.scene.control.Dialog<>();
+		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle("Confirm Delete");
 		dialog.setHeaderText("Delete User");
 		dialog.setContentText("Are you sure you want to delete user '" + user.getUsername() + "'?");
@@ -397,10 +408,6 @@ public class UserManagementController {
 		ButtonType deleteButtonType = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
 		ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 		dialog.getDialogPane().getButtonTypes().addAll(deleteButtonType, cancelButtonType);
-
-		// Style the delete button
-		Button deleteButton = (Button) dialog.getDialogPane().lookupButton(deleteButtonType);
-		deleteButton.getStyleClass().add("delete-button");
 
 		// Show dialog and handle the result
 		dialog.showAndWait().ifPresent(buttonType -> {
@@ -534,6 +541,11 @@ public class UserManagementController {
 
 						// Optionally refresh the list
 						loadUsers();
+
+						// Notify the parent view of the change
+						if (parentView != null) {
+							parentView.refresh();
+						}
 					} else {
 						showStatusMessage("Failed to delete user. Please check permissions and try again.", true);
 					}
@@ -575,5 +587,4 @@ public class UserManagementController {
 			}).start();
 		}
 	}
-
 }
