@@ -1,5 +1,6 @@
 package com.lingotower.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -258,6 +259,44 @@ public class WordService {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found"));
 		word.setCategory(category);
 		wordRepository.save(word);
+	}
+	public WordByCategory getDailyWord(String username) {
+	    // 1. קבלת שפת היעד של המשתמש
+	    String userLanguage = getUserLanguage(username);
+
+	    // 2. שליפת כל המילים הקיימות
+	    List<Word> allWords = wordRepository.findAll();
+
+	    if (allWords.isEmpty()) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No words available in the system.");
+	    }
+
+	    // 3. יצירת ערך ייחודי על בסיס תאריך ושם משתמש
+	    String uniqueSeed = username + LocalDate.now().toString();
+	    int hash = Math.abs(uniqueSeed.hashCode());
+
+	    // 4. קביעת אינדקס לפי גודל הרשימה
+	    int index = hash % allWords.size();
+	    Word selectedWord = allWords.get(index);
+
+	    // 5. התאמה לשפת המשתמש
+	    if ("he".equals(userLanguage)) {
+	        return new WordByCategory(
+	                selectedWord.getId(),
+	                selectedWord.getTranslation(),
+	                selectedWord.getWord(),
+	                selectedWord.getCategory(),
+	                selectedWord.getDifficulty()
+	        );
+	    } else {
+	        return new WordByCategory(
+	                selectedWord.getId(),
+	                selectedWord.getWord(),
+	                selectedWord.getTranslation(),
+	                selectedWord.getCategory(),
+	                selectedWord.getDifficulty()
+	        );
+	    }
 	}
 
 //למחוק אם לא צריך

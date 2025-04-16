@@ -298,5 +298,12 @@ public class WordController {
         }
         return words;
     }
+    @GetMapping("/daily")
+    public ResponseEntity<WordByCategory> getDailyWord(Principal principal) {
+        String username = principal.getName(); 
+        WordByCategory word = wordService.getDailyWord(username);
+        return ResponseEntity.ok(word);
+    }
+
  
 }
