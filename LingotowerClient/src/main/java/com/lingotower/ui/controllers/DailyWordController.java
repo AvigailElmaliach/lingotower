@@ -2,7 +2,6 @@ package com.lingotower.ui.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
@@ -85,66 +84,13 @@ public class DailyWordController {
 		}
 	}
 
-//	private void loadDailyWords() {
-//		try {
-//			// Get today's date in format YYYY-MM-DD
-//			LocalDate today = LocalDate.now();
-//			String dateStr = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
-//
-//			// In a real implementation, you would call a specific API endpoint for the
-//			// daily word
-//			// The endpoint should return the same word for all users on the same day
-//			// For example: http://localhost:8080/dailywords/today
-//
-//			// If such an endpoint doesn't exist yet, we can deterministically select a word
-//			// based on the date to ensure all users see the same word on the same day
-//
-//			// Use the day of year to determine which category to use (1-6)
-//			int dayOfYear = today.getDayOfYear();
-//			long categoryId = (dayOfYear % 6) + 1;
-//
-//			// Try to get the daily word - if a dedicated endpoint exists:
-//			// dailyWord = wordService.getDailyWord();
-//
-//			// As a fallback, we'll get a deterministic word based on the date
-//			// The server should use the seed parameter to ensure the same "random" word
-//			// is returned for all users on the same day
-//			List<Word> words = wordService.getWordsByCategory(categoryId);
-//
-//			if (words != null && !words.isEmpty()) {
-//				// Use a deterministic selection based on the date
-//				// This ensures all users see the same word on the same day
-//				int index = dayOfYear % words.size();
-//				dailyWord = words.get(index);
-//			} else {
-//				System.err.println("No words found for daily word");
-//				displayNoWordAvailable();
-//			}
-//		} catch (Exception e) {
-//			System.err.println("Error loading daily word: " + e.getMessage());
-//			e.printStackTrace();
-//			displayNoWordAvailable();
-//		}
-//	}
 	private void loadDailyWords() {
 		try {
-			// Get today's date
-			LocalDate today = LocalDate.now();
-			// need to call to a specific API endpoint for the
-			// daily word
-			// For now, we'll get a random word from a category
-			// Get a random category ID between 1 and 6
-			int categoryId = (today.getDayOfMonth() % 6) + 1;
-			// Get a random word from the category with difficulty EASY
-			// Using the API endpoint:
-			// http://localhost:8080/words/category/{categoryId}/difficulty/EASY/translate/random
-			String url = "/category/" + categoryId + "/difficulty/EASY/translate/random?sourceLang=en&targetLang=he";
-			List<Word> randomWords = wordService.getRandomWordsByCategory(categoryId, "EASY", "en", "he");
-			if (randomWords != null && !randomWords.isEmpty()) {
-				// Take the first word from the random selection
-				dailyWord = randomWords.get(0);
-			} else {
-				System.err.println("No words found for daily word");
+			// Fetch the daily word using the WordService
+			dailyWord = wordService.getDailyWord();
+
+			if (dailyWord == null) {
+				System.err.println("No daily word available from the service");
 				displayNoWordAvailable();
 			}
 		} catch (Exception e) {
