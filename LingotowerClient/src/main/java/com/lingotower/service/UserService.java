@@ -177,7 +177,6 @@ public class UserService extends BaseService {
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
 			// Make the request to the endpoint using the correct URL
-			// The endpoint is /users/learned according to the provided info
 			String url = BASE_URL + "/learned";
 
 			// Trace the HTTP request for debugging

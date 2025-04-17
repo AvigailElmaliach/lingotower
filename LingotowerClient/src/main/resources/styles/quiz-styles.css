@@ -89,6 +89,9 @@
 .content-scrollpane {
     -fx-background-color: transparent;
     -fx-background: transparent;
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: true
+    
 }
 
 .content-scrollpane > .viewport {
