@@ -1,0 +1,555 @@
+[
+  {
+    "word": "hello",
+    "exampleSentences": [
+      "Hello, how are you today?",
+      "I said hello but they didn't hear me."
+    ]
+  },
+  {
+    "word": "goodbye",
+    "exampleSentences": [
+      "Goodbye, it was nice seeing you.",
+      "We waved goodbye as the train departed."
+    ]
+  },
+  {
+    "word": "please",
+    "exampleSentences": [
+      "Please pass the salt.",
+      "Can you please help me with this?"
+    ]
+  },
+  {
+    "word": "thank you",
+    "exampleSentences": [
+      "Thank you for your help.",
+      "I wanted to say thank you for the gift."
+    ]
+  },
+  {
+    "word": "sorry",
+    "exampleSentences": [
+      "I'm sorry for being late.",
+      "Sorry, I didn't mean to interrupt."
+    ]
+  },
+  {
+    "word": "yes",
+    "exampleSentences": [
+      "Yes, I will be there.",
+      "Did you enjoy the movie? Yes, I did."
+    ]
+  },
+  {
+    "word": "no",
+    "exampleSentences": [
+      "No, thank you.",
+      "Is it raining? No, it's sunny."
+    ]
+  },
+  {
+    "word": "water",
+    "exampleSentences": [
+      "I need a glass of water.",
+      "The water in the lake is very clear."
+    ]
+  },
+  {
+    "word": "food",
+    "exampleSentences": [
+      "What kind of food do you like?",
+      "We ordered some delicious food at the restaurant."
+    ]
+  },
+  {
+    "word": "coffee",
+    "exampleSentences": [
+      "I drink a cup of coffee every morning.",
+      "Would you like some coffee?"
+    ]
+  },
+  {
+    "word": "tea",
+    "exampleSentences": [
+      "She prefers tea over coffee.",
+      "Let's have a cup of tea and relax."
+    ]
+  },
+  {
+    "word": "milk",
+    "exampleSentences": [
+      "He added milk to his cereal.",
+      "Do you want milk in your tea?"
+    ]
+  },
+  {
+    "word": "bread",
+    "exampleSentences": [
+      "We need to buy some bread from the bakery.",
+      "She spread butter on the bread."
+    ]
+  },
+  {
+    "word": "fruit",
+    "exampleSentences": [
+      "Eating fruit is good for your health.",
+      "My favorite fruit is mango."
+    ]
+  },
+  {
+    "word": "vegetable",
+    "exampleSentences": [
+      "Carrots are a healthy vegetable.",
+      "We should eat more vegetables."
+    ]
+  },
+  {
+    "word": "book",
+    "exampleSentences": [
+      "I'm reading a very interesting book.",
+      "She borrowed a book from the library."
+    ]
+  },
+  {
+    "word": "pen",
+    "exampleSentences": [
+      "Can I borrow your pen?",
+      "He wrote his name with a blue pen."
+    ]
+  },
+  {
+    "word": "pencil",
+    "exampleSentences": [
+      "I need a sharp pencil to draw.",
+      "She sketched the outline with a pencil."
+    ]
+  },
+  {
+    "word": "notebook",
+    "exampleSentences": [
+      "I take notes in my notebook during class.",
+      "He jotted down his ideas in a small notebook."
+    ]
+  },
+  {
+    "word": "computer",
+    "exampleSentences": [
+      "I use my computer for work and entertainment.",
+      "She learned how to code on her new computer."
+    ]
+  },
+  {
+    "word": "phone",
+    "exampleSentences": [
+      "I need to make a phone call.",
+      "Where did I put my phone?"
+    ]
+  },
+  {
+    "word": "internet",
+    "exampleSentences": [
+      "I use the internet to find information.",
+      "The internet connection here is very fast."
+    ]
+  },
+  {
+    "word": "television",
+    "exampleSentences": [
+      "What's on television tonight?",
+      "They watched a movie on the television."
+    ]
+  },
+  {
+    "word": "radio",
+    "exampleSentences": [
+      "We listened to music on the radio.",
+      "The news is on the radio now."
+    ]
+  },
+  {
+    "word": "music",
+    "exampleSentences": [
+      "I enjoy listening to different genres of music.",
+      "The concert had great live music."
+    ]
+  },
+  {
+    "word": "movie",
+    "exampleSentences": [
+      "Let's go see a movie this weekend.",
+      "That was a very exciting movie."
+    ]
+  },
+  {
+    "word": "friend",
+    "exampleSentences": [
+      "She is my best friend.",
+      "I'm meeting a friend for lunch."
+    ]
+  },
+  {
+    "word": "family",
+    "exampleSentences": [
+      "I love spending time with my family.",
+      "We are planning a family vacation."
+    ]
+  },
+  {
+    "word": "mother",
+    "exampleSentences": [
+      "My mother is a wonderful cook.",
+      "I called my mother to tell her the news."
+    ]
+  },
+  {
+    "word": "father",
+    "exampleSentences": [
+      "My father taught me how to ride a bike.",
+      "I went fishing with my father last weekend."
+    ]
+  },
+  {
+    "word": "brother",
+    "exampleSentences": [
+      "I have an older brother.",
+      "My brother is coming to visit."
+    ]
+  },
+  {
+    "word": "sister",
+    "exampleSentences": [
+      "She has a younger sister.",
+      "My sister and I are very close."
+    ]
+  },
+  {
+    "word": "child",
+    "exampleSentences": [
+      "The child was playing in the park.",
+      "Parents are responsible for their child's well-being."
+    ]
+  },
+  {
+    "word": "baby",
+    "exampleSentences": [
+      "The baby is sleeping peacefully.",
+      "She held the baby in her arms."
+    ]
+  },
+  {
+    "word": "school",
+    "exampleSentences": [
+      "I go to school five days a week.",
+      "The school has a large playground."
+    ]
+  },
+  {
+    "word": "teacher",
+    "exampleSentences": [
+      "Our teacher is very knowledgeable.",
+      "I asked the teacher a question."
+    ]
+  },
+  {
+    "word": "student",
+    "exampleSentences": [
+      "He is a diligent student.",
+      "The students are preparing for their exams."
+    ]
+  },
+  {
+    "word": "classroom",
+    "exampleSentences": [
+      "The classroom was filled with desks and chairs.",
+      "The teacher wrote on the board in the classroom."
+    ]
+  },
+  {
+    "word": "homework",
+    "exampleSentences": [
+      "I have a lot of homework to do tonight.",
+      "Did you finish your homework?"
+    ]
+  },
+  {
+    "word": "exam",
+    "exampleSentences": [
+      "I'm nervous about the upcoming exam.",
+      "She studied hard for the final exam."
+    ]
+  },
+  {
+    "word": "holiday",
+    "exampleSentences": [
+      "We are going on holiday next month.",
+      "Christmas is my favorite holiday."
+    ]
+  },
+  {
+    "word": "vacation",
+    "exampleSentences": [
+      "They went on a summer vacation to the beach.",
+      "I need a relaxing vacation."
+    ]
+  },
+  {
+    "word": "work",
+    "exampleSentences": [
+      "I have a lot of work to do today.",
+      "He enjoys his work as a software engineer."
+    ]
+  },
+  {
+    "word": "job",
+    "exampleSentences": [
+      "She is looking for a new job.",
+      "He got a promotion at his job."
+    ]
+  },
+  {
+    "word": "money",
+    "exampleSentences": [
+      "Money can't buy happiness.",
+      "I need to save money for a new car."
+    ]
+  },
+  {
+    "word": "bank",
+    "exampleSentences": [
+      "I need to go to the bank to deposit a check.",
+      "The bank is located downtown."
+    ]
+  },
+  {
+    "word": "store",
+    "exampleSentences": [
+      "We went to the store to buy groceries.",
+      "The store is having a big sale."
+    ]
+  },
+  {
+    "word": "shop",
+    "exampleSentences": [
+      "She likes to shop for clothes.",
+      "There's a new coffee shop on the corner."
+    ]
+  },
+  {
+    "word": "market",
+    "exampleSentences": [
+      "We bought fresh vegetables at the farmers market.",
+      "The market was very crowded."
+    ]
+  },
+  {
+    "word": "restaurant",
+    "exampleSentences": [
+      "Let's eat at that new Italian restaurant.",
+      "We had a delicious meal at the restaurant."
+    ]
+  },
+  {
+    "word": "food",
+    "exampleSentences": [
+      "What kind of food do you like?",
+      "We ordered some delicious food at the restaurant."
+    ]
+  },
+  {
+    "word": "drink",
+    "exampleSentences": [
+      "Can I get you a drink?",
+      "Water is a healthy drink."
+    ]
+  },
+  {
+    "word": "snack",
+    "exampleSentences": [
+      "I'm feeling hungry, I need a snack.",
+      "He packed a snack for his hike."
+    ]
+  },
+  {
+    "word": "clothes",
+    "exampleSentences": [
+      "I need to wash my clothes.",
+      "She bought some new clothes at the mall."
+    ]
+  },
+  {
+    "word": "shirt",
+    "exampleSentences": [
+      "He wore a blue shirt.",
+      "This shirt is very comfortable."
+    ]
+  },
+  {
+    "word": "pants",
+    "exampleSentences": [
+      "I need a new pair of pants.",
+      "These pants are too tight."
+    ]
+  },
+  {
+    "word": "dress",
+    "exampleSentences": [
+      "She wore a beautiful dress to the party.",
+      "That dress looks lovely on you."
+    ]
+  },
+  {
+    "word": "shoes",
+    "exampleSentences": [
+      "I need to buy new shoes.",
+      "These shoes are very comfortable for walking."
+    ]
+  },
+  {
+    "word": "jacket",
+    "exampleSentences": [
+      "It's cold outside, you should wear a jacket.",
+      "He has a leather jacket."
+    ]
+  },
+  {
+    "word": "hat",
+    "exampleSentences": [
+      "She wore a straw hat to protect herself from the sun.",
+      "He took off his hat when he entered the room."
+    ]
+  },
+  {
+    "word": "gloves",
+    "exampleSentences": [
+      "Don't forget your gloves, it's freezing outside.",
+      "She wore warm wool gloves."
+    ]
+  },
+  {
+    "word": "socks",
+    "exampleSentences": [
+      "I need to do laundry, I'm out of clean socks.",
+      "He wore thick winter socks."
+    ]
+  },
+  {
+    "word": "coat",
+    "exampleSentences": [
+      "It's raining, you should wear a coat.",
+      "She has a long winter coat."
+    ]
+  },
+  {
+    "word": "umbrella",
+    "exampleSentences": [
+      "Don't forget your umbrella, it might rain.",
+      "He opened his umbrella to shield himself from the sun."
+    ]
+  },
+  {
+    "word": "sun",
+    "exampleSentences": [
+      "The sun is shining brightly today.",
+      "We basked in the warm sun."
+    ]
+  },
+  {
+    "word": "moon",
+    "exampleSentences": [
+      "The moon looks beautiful tonight.",
+      "We sat outside under the light of the moon."
+    ]
+  },
+  {
+    "word": "star",
+    "exampleSentences": [
+      "We could see many stars in the clear night sky.",
+      "He wished upon a shooting star."
+    ]
+  },
+  {
+    "word": "sky",
+    "exampleSentences": [
+      "The sky is blue and clear.",
+      "Dark clouds filled the sky before the storm."
+    ]
+  },
+  {
+    "word": "cloud",
+    "exampleSentences": [
+      "There are some fluffy white clouds in the sky.",
+      "The sun disappeared behind a dark cloud."
+    ]
+  },
+  {
+    "word": "rain",
+    "exampleSentences": [
+      "The rain started to fall heavily.",
+      "We stayed inside because of the rain."
+    ]
+  },
+  {
+    "word": "snow",
+    "exampleSentences": [
+      "It started to snow last night.",
+      "The ground was covered in a blanket of snow."
+    ]
+  },
+  {
+    "word": "wind",
+    "exampleSentences": [
+      "The wind was blowing strongly.",
+      "The leaves rustled in the wind."
+    ]
+  },
+  {
+    "word": "storm",
+    "exampleSentences": [
+      "A big storm is approaching.",
+      "We lost power during the storm."
+    ]
+  },
+  {
+    "word": "thunder",
+    "exampleSentences": [
+      "We heard a loud clap of thunder.",
+      "The storm brought heavy rain and thunder."
+    ]
+  },
+  {
+    "word": "lightning",
+    "exampleSentences": [
+      "A flash of lightning lit up the sky.",
+      "Be careful during the storm, there might be lightning."
+    ]
+  },
+  {
+    "word": "hot",
+    "exampleSentences": [
+      "It's very hot today.",
+      "The soup is still hot."
+    ]
+  },
+  {
+    "word": "cold",
+    "exampleSentences": [
+      "It's cold outside, wear a jacket.",
+      "The water in the lake was very cold."
+    ]
+  },
+  {
+    "word": "warm",
+    "exampleSentences": [
+      "The sun felt warm on my skin.",
+      "This blanket is nice and warm."
+    ]
+  },
+  {
+    "word": "cool",
+    "exampleSentences": [
+      "The evening air was cool and refreshing.",
+      "Keep the drinks in a cool place."
+    ]
+  }
+]

@@ -1,0 +1,534 @@
+[
+  {
+    "word": "health",
+    "exampleSentences": [
+      "Good health is very important.",
+      "He is concerned about his health."
+    ]
+  },
+  {
+    "word": "fitness",
+    "exampleSentences": [
+      "Regular exercise is important for fitness.",
+      "She goes to the gym to improve her fitness."
+    ]
+  },
+  {
+    "word": "exercise",
+    "exampleSentences": [
+      "I try to get some exercise every day.",
+      "Running is a good form of exercise."
+    ]
+  },
+  {
+    "word": "diet",
+    "exampleSentences": [
+      "A balanced diet is crucial for good health.",
+      "He is on a special diet."
+    ]
+  },
+  {
+    "word": "nutrition",
+    "exampleSentences": [
+      "Proper nutrition is essential for growth and development.",
+      "She is studying nutrition."
+    ]
+  },
+  {
+    "word": "well-being",
+    "exampleSentences": [
+      "Meditation can improve your overall well-being.",
+      "Her well-being is her top priority."
+    ]
+  },
+  {
+    "word": "sleep",
+    "exampleSentences": [
+      "Getting enough sleep is important for health.",
+      "I didn't get much sleep last night."
+    ]
+  },
+  {
+    "word": "mental health",
+    "exampleSentences": [
+      "It's important to take care of your mental health.",
+      "She is seeking support for her mental health."
+    ]
+  },
+  {
+    "word": "stress",
+    "exampleSentences": [
+      "Work can be a major source of stress.",
+      "Learning to manage stress is important."
+    ]
+  },
+  {
+    "word": "meditation",
+    "exampleSentences": [
+      "She practices meditation every morning.",
+      "Meditation can help reduce stress."
+    ]
+  },
+  {
+    "word": "yoga",
+    "exampleSentences": [
+      "Yoga is a great way to improve flexibility.",
+      "He goes to a yoga class twice a week."
+    ]
+  },
+  {
+    "word": "relaxation",
+    "exampleSentences": [
+      "Listening to music can aid relaxation.",
+      "She enjoys reading for relaxation."
+    ]
+  },
+  {
+    "word": "exercise routine",
+    "exampleSentences": [
+      "He follows a strict exercise routine.",
+      "It's important to have a consistent exercise routine."
+    ]
+  },
+  {
+    "word": "physical health",
+    "exampleSentences": [
+      "Regular exercise contributes to good physical health.",
+      "His physical health has improved significantly."
+    ]
+  },
+  {
+    "word": "hygiene",
+    "exampleSentences": [
+      "Good personal hygiene helps prevent illness.",
+      "They emphasized the importance of hygiene."
+    ]
+  },
+  {
+    "word": "doctor",
+    "exampleSentences": [
+      "You should see a doctor if you feel unwell.",
+      "The doctor examined the patient."
+    ]
+  },
+  {
+    "word": "nurse",
+    "exampleSentences": [
+      "The nurse took my temperature.",
+      "Nurses provide essential care for patients."
+    ]
+  },
+  {
+    "word": "hospital",
+    "exampleSentences": [
+      "He was admitted to the hospital.",
+      "The hospital provides emergency care."
+    ]
+  },
+  {
+    "word": "clinic",
+    "exampleSentences": [
+      "She went to the clinic for a check-up.",
+      "The clinic offers various medical services."
+    ]
+  },
+  {
+    "word": "check-up",
+    "exampleSentences": [
+      "It's important to have a regular medical check-up.",
+      "I have a doctor's check-up next week."
+    ]
+  },
+  {
+    "word": "treatment",
+    "exampleSentences": [
+      "He is undergoing treatment for his injury.",
+      "The doctor recommended a new treatment plan."
+    ]
+  },
+  {
+    "word": "medicine",
+    "exampleSentences": [
+      "Take this medicine three times a day.",
+      "The pharmacy sells various over-the-counter medicines."
+    ]
+  },
+  {
+    "word": "prescription",
+    "exampleSentences": [
+      "You need a doctor's prescription for this medication.",
+      "She picked up her prescription from the pharmacy."
+    ]
+  },
+  {
+    "word": "symptom",
+    "exampleSentences": [
+      "A fever is a common symptom of the flu.",
+      "He described his symptoms to the doctor."
+    ]
+  },
+  {
+    "word": "disease",
+    "exampleSentences": [
+      "Early detection can help in treating the disease.",
+      "Researchers are working to find a cure for the disease."
+    ]
+  },
+  {
+    "word": "illness",
+    "exampleSentences": [
+      "He stayed home from work due to illness.",
+      "The illness spread quickly through the school."
+    ]
+  },
+  {
+    "word": "treatment plan",
+    "exampleSentences": [
+      "The doctor developed a personalized treatment plan for him.",
+      "They discussed the details of the treatment plan."
+    ]
+  },
+  {
+    "word": "recovery",
+    "exampleSentences": [
+      "His recovery from surgery is going well.",
+      "Rest is important for a full recovery."
+    ]
+  },
+  {
+    "word": "surgery",
+    "exampleSentences": [
+      "She had to undergo surgery for her injury.",
+      "The surgery was successful."
+    ]
+  },
+  {
+    "word": "vaccine",
+    "exampleSentences": [
+      "Getting a vaccine can protect you from the disease.",
+      "They are developing a new vaccine."
+    ]
+  },
+  {
+    "word": "immunity",
+    "exampleSentences": [
+      "A healthy lifestyle can boost your immunity.",
+      "Some people have natural immunity to certain diseases."
+    ]
+  },
+  {
+    "word": "flu",
+    "exampleSentences": [
+      "Many people get the flu in the winter.",
+      "She stayed home because she had the flu."
+    ]
+  },
+  {
+    "word": "cold",
+    "exampleSentences": [
+      "I think I'm catching a cold.",
+      "Drink plenty of fluids if you have a cold."
+    ]
+  },
+  {
+    "word": "allergy",
+    "exampleSentences": [
+      "She has an allergy to pollen.",
+      "Allergy symptoms can be unpleasant."
+    ]
+  },
+  {
+    "word": "headache",
+    "exampleSentences": [
+      "I have a terrible headache.",
+      "Stress can cause headaches."
+    ]
+  },
+  {
+    "word": "fever",
+    "exampleSentences": [
+      "He has a high fever.",
+      "A fever can be a sign of infection."
+    ]
+  },
+  {
+    "word": "chronic",
+    "exampleSentences": [
+      "He suffers from a chronic illness.",
+      "Chronic pain can be debilitating."
+    ]
+  },
+  {
+    "word": "acute",
+    "exampleSentences": [
+      "She had an acute attack of pain.",
+      "Acute illnesses usually have a sudden onset."
+    ]
+  },
+  {
+    "word": "emergency",
+    "exampleSentences": [
+      "Call the emergency number if you need immediate help.",
+      "This is a medical emergency."
+    ]
+  },
+  {
+    "word": "first aid",
+    "exampleSentences": [
+      "Knowing basic first aid can save lives.",
+      "She administered first aid until the paramedics arrived."
+    ]
+  },
+  {
+    "word": "dentist",
+    "exampleSentences": [
+      "I have an appointment with the dentist.",
+      "Regular visits to the dentist are important for oral health."
+    ]
+  },
+  {
+    "word": "eye doctor",
+    "exampleSentences": [
+      "I need to see an eye doctor for a vision check.",
+      "The eye doctor prescribed new glasses."
+    ]
+  },
+  {
+    "word": "mental illness",
+    "exampleSentences": [
+      "It's important to raise awareness about mental illness.",
+      "Support is available for people living with mental illness."
+    ]
+  },
+  {
+    "word": "psychologist",
+    "exampleSentences": [
+      "She is seeing a psychologist for therapy.",
+      "The psychologist helped him understand his feelings."
+    ]
+  },
+  {
+    "word": "therapist",
+    "exampleSentences": [
+      "He found a good therapist to talk to.",
+      "The therapist provided valuable guidance."
+    ]
+  },
+  {
+    "word": "counselor",
+    "exampleSentences": [
+      "The school counselor offers support to students.",
+      "She spoke with a counselor about her problems."
+    ]
+  },
+  {
+    "word": "addiction",
+    "exampleSentences": [
+      "Addiction can have serious consequences.",
+      "He is seeking help to overcome his addiction."
+    ]
+  },
+  {
+    "word": "mental health support",
+    "exampleSentences": [
+      "Access to mental health support is crucial.",
+      "There are many organizations that offer mental health support."
+    ]
+  },
+  {
+    "word": "self-care",
+    "exampleSentences": [
+      "Making time for self-care is important for well-being.",
+      "She practices various self-care activities."
+    ]
+  },
+  {
+    "word": "nutritionist",
+    "exampleSentences": [
+      "The nutritionist provided advice on healthy eating.",
+      "She consulted a nutritionist to create a meal plan."
+    ]
+  },
+  {
+    "word": "dietitian",
+    "exampleSentences": [
+      "The dietitian helped her manage her dietary restrictions.",
+      "He works as a registered dietitian."
+    ]
+  },
+  {
+    "word": "weight loss",
+    "exampleSentences": [
+      "He is trying to achieve weight loss through diet and exercise.",
+      "There are many approaches to weight loss."
+    ]
+  },
+  {
+    "word": "weight gain",
+    "exampleSentences": [
+      "Some medical conditions can lead to unintentional weight gain.",
+      "He is trying to achieve healthy weight gain."
+    ]
+  },
+  {
+    "word": "wellness",
+    "exampleSentences": [
+      "The retreat focused on holistic wellness.",
+      "She is interested in improving her overall wellness."
+    ]
+  },
+  {
+    "word": "balance",
+    "exampleSentences": [
+      "Maintaining a good work-life balance is important.",
+      "Balance is key to a healthy lifestyle."
+    ]
+  },
+  {
+    "word": "healthy habits",
+    "exampleSentences": [
+      "Developing healthy habits takes time and effort.",
+      "She is working on incorporating more healthy habits into her routine."
+    ]
+  },
+  {
+    "word": "mental clarity",
+    "exampleSentences": [
+      "Meditation can help improve mental clarity.",
+      "Getting enough sleep contributes to mental clarity."
+    ]
+  },
+  {
+    "word": "immune system",
+    "exampleSentences": [
+      "A strong immune system helps fight off infections.",
+      "Diet and sleep play a role in the immune system."
+    ]
+  },
+  {
+    "word": "dehydration",
+    "exampleSentences": [
+      "It's important to avoid dehydration, especially in hot weather.",
+      "Symptoms of dehydration include headache and dizziness."
+    ]
+  },
+  {
+    "word": "hydration",
+    "exampleSentences": [
+      "Proper hydration is essential for good health.",
+      "Drinking enough water ensures good hydration."
+    ]
+  },
+  {
+    "word": "sanitation",
+    "exampleSentences": [
+      "Improving sanitation is crucial for public health.",
+      "Poor sanitation can lead to the spread of diseases."
+    ]
+  },
+  {
+    "word": "cleanliness",
+    "exampleSentences": [
+      "Cleanliness helps prevent the spread of germs.",
+      "Maintaining cleanliness in the kitchen is important."
+    ]
+  },
+  {
+    "word": "wellness check",
+    "exampleSentences": [
+      "She scheduled a wellness check with her doctor.",
+      "Regular wellness checks can help detect health issues early."
+    ]
+  },
+  {
+    "word": "body mass index",
+    "exampleSentences": [
+      "Body mass index is a measure of body fat based on height and weight.",
+      "The doctor calculated his body mass index."
+    ]
+  },
+  {
+    "word": "cholesterol",
+    "exampleSentences": [
+      "High cholesterol can increase the risk of heart disease.",
+      "He is monitoring his cholesterol levels."
+    ]
+  },
+  {
+    "word": "blood pressure",
+    "exampleSentences": [
+      "Regularly checking your blood pressure is important.",
+      "His blood pressure was within the normal range."
+    ]
+  },
+  {
+    "word": "heart rate",
+    "exampleSentences": [
+      "Exercise can increase your heart rate.",
+      "The doctor checked his heart rate."
+    ]
+  },
+  {
+    "word": "stress management",
+    "exampleSentences": [
+      "Learning effective stress management techniques is important.",
+      "Yoga and meditation are forms of stress management."
+    ]
+  },
+  {
+    "word": "anxiety",
+    "exampleSentences": [
+      "She experiences anxiety in social situations.",
+      "Therapy can help manage anxiety."
+    ]
+  },
+  {
+    "word": "depression",
+    "exampleSentences": [
+      "Depression is a serious mental health condition.",
+      "Support groups can help people struggling with depression."
+    ]
+  },
+  {
+    "word": "self-esteem",
+    "exampleSentences": [
+      "Building healthy self-esteem is important for mental well-being.",
+      "Positive affirmations can help improve self-esteem."
+    ]
+  },
+  {
+    "word": "happiness",
+    "exampleSentences": [
+      "Spending time with loved ones brings happiness.",
+      "She found happiness in simple things."
+    ]
+  },
+  {
+    "word": "positive thinking",
+    "exampleSentences": [
+      "Practicing positive thinking can improve your outlook.",
+      "She tries to maintain a positive thinking attitude."
+    ]
+  },
+  {
+    "word": "mental strength",
+    "exampleSentences": [
+      "Overcoming challenges can build mental strength.",
+      "He showed great mental strength during the difficult time."
+    ]
+  },
+  {
+    "word": "motivation",
+    "exampleSentences": [
+      "Finding motivation to exercise can be difficult.",
+      "His speech provided great motivation to the team."
+    ]
+  },
+  {
+    "word": "wellness routine",
+    "exampleSentences": [
+      "She has a daily wellness routine that includes meditation and exercise.",
+      "Establishing a consistent wellness routine can improve overall health."
+    ]
+  }
+]

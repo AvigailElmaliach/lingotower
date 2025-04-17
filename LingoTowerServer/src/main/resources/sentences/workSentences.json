@@ -1,0 +1,499 @@
+[
+  {
+    "word": "job",
+    "exampleSentences": [
+      "I'm looking for a new job.",
+      "What is your job?"
+    ]
+  },
+  {
+    "word": "work",
+    "exampleSentences": [
+      "I have a lot of work to do today.",
+      "He enjoys his work."
+    ]
+  },
+  {
+    "word": "career",
+    "exampleSentences": [
+      "She has a successful career in marketing.",
+      "He is building a career in technology."
+    ]
+  },
+  {
+    "word": "profession",
+    "exampleSentences": [
+      "Teaching is a rewarding profession.",
+      "He chose law as his profession."
+    ]
+  },
+  {
+    "word": "employee",
+    "exampleSentences": [
+      "She is a valued employee of the company.",
+      "The company has over 100 employees."
+    ]
+  },
+  {
+    "word": "employer",
+    "exampleSentences": [
+      "My employer is a large corporation.",
+      "The employer provides health insurance."
+    ]
+  },
+  {
+    "word": "office",
+    "exampleSentences": [
+      "I work in a busy office.",
+      "His office is on the third floor."
+    ]
+  },
+  {
+    "word": "business",
+    "exampleSentences": [
+      "She started her own business.",
+      "Business is booming this year."
+    ]
+  },
+  {
+    "word": "meeting",
+    "exampleSentences": [
+      "We have a meeting at 10 AM.",
+      "The meeting was very productive."
+    ]
+  },
+  {
+    "word": "salary",
+    "exampleSentences": [
+      "He earns a good salary.",
+      "What is the starting salary for this position?"
+    ]
+  },
+  {
+    "word": "promotion",
+    "exampleSentences": [
+      "She received a promotion to senior manager.",
+      "He is hoping for a promotion soon."
+    ]
+  },
+  {
+    "word": "vacation",
+    "exampleSentences": [
+      "I'm going on vacation next week.",
+      "We had a relaxing vacation."
+    ]
+  },
+  {
+    "word": "training",
+    "exampleSentences": [
+      "New employees receive training.",
+      "The company offers ongoing training opportunities."
+    ]
+  },
+  {
+    "word": "internship",
+    "exampleSentences": [
+      "She did an internship at a law firm.",
+      "An internship can provide valuable experience."
+    ]
+  },
+  {
+    "word": "interview",
+    "exampleSentences": [
+      "I have a job interview tomorrow.",
+      "The interview process was quite thorough."
+    ]
+  },
+  {
+    "word": "resume",
+    "exampleSentences": [
+      "Please send me your resume.",
+      "I need to update my resume."
+    ]
+  },
+  {
+    "word": "curriculum",
+    "exampleSentences": [
+      "The university has a challenging curriculum.",
+      "She reviewed the curriculum for the new course."
+    ]
+  },
+  {
+    "word": "degree",
+    "exampleSentences": [
+      "He has a degree in computer science.",
+      "She is pursuing a master's degree."
+    ]
+  },
+  {
+    "word": "university",
+    "exampleSentences": [
+      "She studies at the local university.",
+      "The university has a large campus."
+    ]
+  },
+  {
+    "word": "college",
+    "exampleSentences": [
+      "He went to college in Boston.",
+      "The college offers various programs."
+    ]
+  },
+  {
+    "word": "school",
+    "exampleSentences": [
+      "My children go to the local school.",
+      "School starts at 8 AM."
+    ]
+  },
+  {
+    "word": "class",
+    "exampleSentences": [
+      "I have a math class this morning.",
+      "The class was very interesting."
+    ]
+  },
+  {
+    "word": "student",
+    "exampleSentences": [
+      "She is a hardworking student.",
+      "The students are preparing for their exams."
+    ]
+  },
+  {
+    "word": "teacher",
+    "exampleSentences": [
+      "Our teacher is very knowledgeable.",
+      "I asked the teacher a question."
+    ]
+  },
+  {
+    "word": "principal",
+    "exampleSentences": [
+      "The principal addressed the students.",
+      "She had a meeting with the school principal."
+    ]
+  },
+  {
+    "word": "lecture",
+    "exampleSentences": [
+      "The professor gave an interesting lecture.",
+      "I took notes during the lecture."
+    ]
+  },
+  {
+    "word": "exam",
+    "exampleSentences": [
+      "I have an exam next week.",
+      "She studied hard for the final exam."
+    ]
+  },
+  {
+    "word": "grade",
+    "exampleSentences": [
+      "He got a good grade on the test.",
+      "What was your grade in math?"
+    ]
+  },
+  {
+    "word": "study",
+    "exampleSentences": [
+      "I need to study for my exam.",
+      "He enjoys studying history."
+    ]
+  },
+  {
+    "word": "research",
+    "exampleSentences": [
+      "She is conducting research on climate change.",
+      "The research findings were published."
+    ]
+  },
+  {
+    "word": "homework",
+    "exampleSentences": [
+      "I have a lot of homework tonight.",
+      "Did you finish your homework?"
+    ]
+  },
+  {
+    "word": "assignment",
+    "exampleSentences": [
+      "We have a group assignment due next week.",
+      "The assignment was quite challenging."
+    ]
+  },
+  {
+    "word": "deadline",
+    "exampleSentences": [
+      "The project deadline is Friday.",
+      "I'm working hard to meet the deadline."
+    ]
+  },
+  {
+    "word": "course",
+    "exampleSentences": [
+      "I'm taking a course in graphic design.",
+      "The college offers many different courses."
+    ]
+  },
+  {
+    "word": "subject",
+    "exampleSentences": [
+      "Math is my favorite subject.",
+      "What subjects are you studying?"
+    ]
+  },
+  {
+    "word": "seminar",
+    "exampleSentences": [
+      "I attended a seminar on marketing.",
+      "The seminar was very informative."
+    ]
+  },
+  {
+    "word": "study group",
+    "exampleSentences": [
+      "We formed a study group for the final exam.",
+      "The study group meets twice a week."
+    ]
+  },
+  {
+    "word": "scholarship",
+    "exampleSentences": [
+      "She received a scholarship to attend university.",
+      "There are many scholarships available for students."
+    ]
+  },
+  {
+    "word": "diploma",
+    "exampleSentences": [
+      "He received his high school diploma.",
+      "The college offers a diploma in business administration."
+    ]
+  },
+  {
+    "word": "graduation",
+    "exampleSentences": [
+      "We celebrated her graduation.",
+      "Graduation day is a special occasion."
+    ]
+  },
+  {
+    "word": "degree",
+    "exampleSentences": [
+      "She earned a bachelor's degree.",
+      "A law degree requires many years of study."
+    ]
+  },
+  {
+    "word": "certificate",
+    "exampleSentences": [
+      "He received a certificate in web development.",
+      "The training program offers a certificate upon completion."
+    ]
+  },
+  {
+    "word": "field of study",
+    "exampleSentences": [
+      "What is your field of study?",
+      "She chose medicine as her field of study."
+    ]
+  },
+  {
+    "word": "tuition",
+    "exampleSentences": [
+      "Tuition fees have increased this year.",
+      "Paying for university tuition can be expensive."
+    ]
+  },
+  {
+    "word": "tuition fee",
+    "exampleSentences": [
+      "The tuition fee is due at the start of the semester.",
+      "Many students struggle to pay the high tuition fee."
+    ]
+  },
+  {
+    "word": "faculty",
+    "exampleSentences": [
+      "The university has a distinguished faculty.",
+      "He is a member of the science faculty."
+    ]
+  },
+  {
+    "word": "lecture hall",
+    "exampleSentences": [
+      "The lecture hall was packed with students.",
+      "The professor spoke in a large lecture hall."
+    ]
+  },
+  {
+    "word": "campus",
+    "exampleSentences": [
+      "The university campus is very beautiful.",
+      "There are many facilities on campus."
+    ]
+  },
+  {
+    "word": "classroom",
+    "exampleSentences": [
+      "The classroom was bright and spacious.",
+      "Students sat at desks in the classroom."
+    ]
+  },
+  {
+    "word": "student loan",
+    "exampleSentences": [
+      "Many students rely on student loans to pay for their education.",
+      "He is still paying off his student loan."
+    ]
+  },
+  {
+    "word": "study material",
+    "exampleSentences": [
+      "Make sure you have all the necessary study material.",
+      "The professor provided useful study material."
+    ]
+  },
+  {
+    "word": "workshop",
+    "exampleSentences": [
+      "I attended a writing workshop.",
+      "The company organized a team-building workshop."
+    ]
+  },
+  {
+    "word": "intern",
+    "exampleSentences": [
+      "She is working as an intern this summer.",
+      "The company has several interns."
+    ]
+  },
+  {
+    "word": "supervisor",
+    "exampleSentences": [
+      "My supervisor is very supportive.",
+      "He had a meeting with his supervisor."
+    ]
+  },
+  {
+    "word": "colleague",
+    "exampleSentences": [
+      "I enjoy working with my colleagues.",
+      "She is a helpful colleague."
+    ]
+  },
+  {
+    "word": "team",
+    "exampleSentences": [
+      "We work well as a team.",
+      "The team achieved its goals."
+    ]
+  },
+  {
+    "word": "conference",
+    "exampleSentences": [
+      "I'm attending a conference next month.",
+      "The conference brought together experts in the field."
+    ]
+  },
+  {
+    "word": "presentation",
+    "exampleSentences": [
+      "He gave a clear and informative presentation.",
+      "We need to prepare a presentation for the meeting."
+    ]
+  },
+  {
+    "word": "teamwork",
+    "exampleSentences": [
+      "Teamwork is essential for this project.",
+      "They demonstrated excellent teamwork."
+    ]
+  },
+  {
+    "word": "achievement",
+    "exampleSentences": [
+      "Graduating with honors was a great achievement.",
+      "The project was a significant achievement."
+    ]
+  },
+  {
+    "word": "job interview",
+    "exampleSentences": [
+      "I have a job interview this afternoon.",
+      "Prepare thoroughly for your job interview."
+    ]
+  },
+  {
+    "word": "performance review",
+    "exampleSentences": [
+      "I have my annual performance review next week.",
+      "The performance review provided constructive feedback."
+    ]
+  },
+  {
+    "word": "workplace",
+    "exampleSentences": [
+      "The workplace environment is very positive.",
+      "Safety is important in the workplace."
+    ]
+  },
+  {
+    "word": "project",
+    "exampleSentences": [
+      "We are working on a new project.",
+      "The project is due next month."
+    ]
+  },
+  {
+    "word": "employee benefits",
+    "exampleSentences": [
+      "The company offers excellent employee benefits.",
+      "Health insurance is a common employee benefit."
+    ]
+  },
+  {
+    "word": "contract",
+    "exampleSentences": [
+      "He signed the employment contract.",
+      "The contract outlines the terms of employment."
+    ]
+  },
+  {
+    "word": "work hours",
+    "exampleSentences": [
+      "My work hours are 9 to 5.",
+      "What are your standard work hours?"
+    ]
+  },
+  {
+    "word": "overtime",
+    "exampleSentences": [
+      "I had to work overtime last week.",
+      "Overtime pay is usually higher."
+    ]
+  },
+  {
+    "word": "raise",
+    "exampleSentences": [
+      "He received a raise in his salary.",
+      "She asked for a raise during her performance review."
+    ]
+  },
+  {
+    "word": "employment",
+    "exampleSentences": [
+      "She is seeking full-time employment.",
+      "Employment rates have improved this year."
+    ]
+  },
+  {
+    "word": "position",
+    "exampleSentences": [
+      "There is a job opening for a marketing position.",
+      "He applied for several different positions."
+    ]
+  }
+]

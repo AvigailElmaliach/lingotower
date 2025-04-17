@@ -1,0 +1,506 @@
+[
+  {
+    "word": "vacation",
+    "exampleSentences": [
+      "We are planning a summer vacation.",
+      "I need a relaxing vacation."
+    ]
+  },
+  {
+    "word": "tourism",
+    "exampleSentences": [
+      "Tourism is a major industry in many countries.",
+      "Sustainable tourism is becoming increasingly important."
+    ]
+  },
+  {
+    "word": "destination",
+    "exampleSentences": [
+      "Paris is a popular tourist destination.",
+      "We chose our vacation destination carefully."
+    ]
+  },
+  {
+    "word": "trip",
+    "exampleSentences": [
+      "We took a short trip to the coast.",
+      "How was your trip to Italy?"
+    ]
+  },
+  {
+    "word": "adventure",
+    "exampleSentences": [
+      "They went on an exciting adventure in the jungle.",
+      "He is always looking for a new adventure."
+    ]
+  },
+  {
+    "word": "journey",
+    "exampleSentences": [
+      "The journey was long but rewarding.",
+      "Life is a journey of discovery."
+    ]
+  },
+  {
+    "word": "explore",
+    "exampleSentences": [
+      "We want to explore new cultures.",
+      "They decided to explore the old city."
+    ]
+  },
+  {
+    "word": "holiday",
+    "exampleSentences": [
+      "We are going on holiday next week.",
+      "Christmas is a popular holiday."
+    ]
+  },
+  {
+    "word": "resort",
+    "exampleSentences": [
+      "We stayed at a beautiful beach resort.",
+      "The resort offered many amenities."
+    ]
+  },
+  {
+    "word": "beach",
+    "exampleSentences": [
+      "We spent the day relaxing on the beach.",
+      "The beach was crowded with tourists."
+    ]
+  },
+  {
+    "word": "mountain",
+    "exampleSentences": [
+      "They went hiking in the mountains.",
+      "The view from the top of the mountain was breathtaking."
+    ]
+  },
+  {
+    "word": "camping",
+    "exampleSentences": [
+      "We went camping in the forest.",
+      "Camping can be a great way to connect with nature."
+    ]
+  },
+  {
+    "word": "sightseeing",
+    "exampleSentences": [
+      "We did some sightseeing in the city.",
+      "Sightseeing tours are a good way to see the main attractions."
+    ]
+  },
+  {
+    "word": "city tour",
+    "exampleSentences": [
+      "We took a city tour to see the historical sites.",
+      "The city tour guide was very informative."
+    ]
+  },
+  {
+    "word": "cruise",
+    "exampleSentences": [
+      "They went on a Caribbean cruise.",
+      "A cruise can be a relaxing way to travel."
+    ]
+  },
+  {
+    "word": "hotel",
+    "exampleSentences": [
+      "We booked a room at a nice hotel.",
+      "The hotel offered excellent service."
+    ]
+  },
+  {
+    "word": "airport",
+    "exampleSentences": [
+      "We need to go to the airport to catch our flight.",
+      "The airport was very busy."
+    ]
+  },
+  {
+    "word": "flight",
+    "exampleSentences": [
+      "Our flight was delayed due to weather.",
+      "We had a smooth flight."
+    ]
+  },
+  {
+    "word": "boarding",
+    "exampleSentences": [
+      "Boarding will begin in fifteen minutes.",
+      "We waited for our boarding call."
+    ]
+  },
+  {
+    "word": "reservation",
+    "exampleSentences": [
+      "We made a hotel reservation online.",
+      "Do you have a reservation?"
+    ]
+  },
+  {
+    "word": "passport",
+    "exampleSentences": [
+      "Don't forget to bring your passport.",
+      "You need a valid passport for international travel."
+    ]
+  },
+  {
+    "word": "visa",
+    "exampleSentences": [
+      "Do I need a visa for this country?",
+      "She applied for a tourist visa."
+    ]
+  },
+  {
+    "word": "tour guide",
+    "exampleSentences": [
+      "The tour guide explained the history of the monument.",
+      "We hired a local tour guide."
+    ]
+  },
+  {
+    "word": "backpacking",
+    "exampleSentences": [
+      "They went backpacking through Europe.",
+      "Backpacking can be a budget-friendly way to travel."
+    ]
+  },
+  {
+    "word": "excursion",
+    "exampleSentences": [
+      "We took a day excursion to a nearby island.",
+      "The tour included several interesting excursions."
+    ]
+  },
+  {
+    "word": "attraction",
+    "exampleSentences": [
+      "The Eiffel Tower is a famous tourist attraction.",
+      "We visited several popular attractions in the city."
+    ]
+  },
+  {
+    "word": "landmark",
+    "exampleSentences": [
+      "The Statue of Liberty is a well-known landmark.",
+      "We visited many historical landmarks."
+    ]
+  },
+  {
+    "word": "souvenir",
+    "exampleSentences": [
+      "I bought a souvenir to remember the trip.",
+      "She collected souvenirs from every place she visited."
+    ]
+  },
+  {
+    "word": "hiking",
+    "exampleSentences": [
+      "We went hiking in the mountains.",
+      "Hiking is a great way to enjoy nature."
+    ]
+  },
+  {
+    "word": "explorer",
+    "exampleSentences": [
+      "He is a famous explorer.",
+      "Early explorers mapped the world."
+    ]
+  },
+  {
+    "word": "paradise",
+    "exampleSentences": [
+      "The tropical island felt like paradise.",
+      "They found their own little paradise."
+    ]
+  },
+  {
+    "word": "itinerary",
+    "exampleSentences": [
+      "We planned a detailed travel itinerary.",
+      "The itinerary included visits to several museums."
+    ]
+  },
+  {
+    "word": "luggage",
+    "exampleSentences": [
+      "We need to check our luggage.",
+      "The luggage carousel was crowded."
+    ]
+  },
+  {
+    "word": "baggage",
+    "exampleSentences": [
+      "Where is the baggage claim?",
+      "He carried his baggage onto the plane."
+    ]
+  },
+  {
+    "word": "tourist",
+    "exampleSentences": [
+      "The city was full of tourists.",
+      "He asked a tourist for directions."
+    ]
+  },
+  {
+    "word": "vacation rental",
+    "exampleSentences": [
+      "We stayed in a vacation rental by the sea.",
+      "Vacation rentals can be a good option for families."
+    ]
+  },
+  {
+    "word": "cruise ship",
+    "exampleSentences": [
+      "The cruise ship was enormous.",
+      "We enjoyed the amenities on the cruise ship."
+    ]
+  },
+  {
+    "word": "guidebook",
+    "exampleSentences": [
+      "I bought a guidebook for the city.",
+      "The guidebook provided useful information."
+    ]
+  },
+  {
+    "word": "travel agent",
+    "exampleSentences": [
+      "We booked our trip through a travel agent.",
+      "The travel agent helped us find the best deals."
+    ]
+  },
+  {
+    "word": "road trip",
+    "exampleSentences": [
+      "We are planning a road trip across the country.",
+      "A road trip can be a fun way to see the sights."
+    ]
+  },
+  {
+    "word": "holidaymaker",
+    "exampleSentences": [
+      "The beach was filled with holidaymakers.",
+      "Holidaymakers enjoy the sunny weather."
+    ]
+  },
+  {
+    "word": "vacation spot",
+    "exampleSentences": [
+      "This island is a popular vacation spot.",
+      "They are looking for a quiet vacation spot."
+    ]
+  },
+  {
+    "word": "destination guide",
+    "exampleSentences": [
+      "The destination guide provided detailed information.",
+      "We used a destination guide to plan our activities."
+    ]
+  },
+  {
+    "word": "travel blog",
+    "exampleSentences": [
+      "She writes a popular travel blog.",
+      "I found some great tips on a travel blog."
+    ]
+  },
+  {
+    "word": "tourist attraction",
+    "exampleSentences": [
+      "This museum is a major tourist attraction.",
+      "We visited several historical tourist attractions."
+    ]
+  },
+  {
+    "word": "beach resort",
+    "exampleSentences": [
+      "We stayed at a luxurious beach resort.",
+      "The beach resort offered stunning ocean views."
+    ]
+  },
+  {
+    "word": "campfire",
+    "exampleSentences": [
+      "We sat around the campfire at night.",
+      "They roasted marshmallows over the campfire."
+    ]
+  },
+  {
+    "word": "sailing",
+    "exampleSentences": [
+      "They went sailing on the lake.",
+      "Sailing can be a peaceful and relaxing activity."
+    ]
+  },
+  {
+    "word": "expedition",
+    "exampleSentences": [
+      "They embarked on a scientific expedition.",
+      "The expedition team faced many challenges."
+    ]
+  },
+  {
+    "word": "tourist trap",
+    "exampleSentences": [
+      "This place is a bit of a tourist trap.",
+      "Be careful of tourist traps when buying souvenirs."
+    ]
+  },
+  {
+    "word": "glamping",
+    "exampleSentences": [
+      "We tried glamping for a luxurious camping experience.",
+      "Glamping combines nature with comfort."
+    ]
+  },
+  {
+    "word": "zip-lining",
+    "exampleSentences": [
+      "Zip-lining was an exhilarating experience.",
+      "They went zip-lining through the forest canopy."
+    ]
+  },
+  {
+    "word": "snorkeling",
+    "exampleSentences": [
+      "We went snorkeling in the coral reefs.",
+      "Snorkeling is a great way to see underwater life."
+    ]
+  },
+  {
+    "word": "diving",
+    "exampleSentences": [
+      "He enjoys scuba diving.",
+      "Diving allows you to explore the deep sea."
+    ]
+  },
+  {
+    "word": "mountain climbing",
+    "exampleSentences": [
+      "Mountain climbing requires skill and endurance.",
+      "They went mountain climbing in the Himalayas."
+    ]
+  },
+  {
+    "word": "fishing",
+    "exampleSentences": [
+      "We went fishing in the lake.",
+      "Fishing can be a relaxing hobby."
+    ]
+  },
+  {
+    "word": "kayaking",
+    "exampleSentences": [
+      "They went kayaking down the river.",
+      "Kayaking is a fun water activity."
+    ]
+  },
+  {
+    "word": "surfing",
+    "exampleSentences": [
+      "He loves to go surfing.",
+      "The waves were perfect for surfing."
+    ]
+  },
+  {
+    "word": "sightseer",
+    "exampleSentences": [
+      "The sightseer took many photos.",
+      "Sightseers often visit famous landmarks."
+    ]
+  },
+  {
+    "word": "traveler",
+    "exampleSentences": [
+      "She is an experienced traveler.",
+      "Travelers often share their stories."
+    ]
+  },
+  {
+    "word": "adventure sports",
+    "exampleSentences": [
+      "They tried various adventure sports.",
+      "Adventure sports can be very exciting."
+    ]
+  },
+  {
+    "word": "airline",
+    "exampleSentences": [
+      "Which airline are you flying with?",
+      "The airline offered good service."
+    ]
+  },
+  {
+    "word": "passport control",
+    "exampleSentences": [
+      "We had to go through passport control at the airport.",
+      "The lines at passport control were long."
+    ]
+  },
+  {
+    "word": "tourist visa",
+    "exampleSentences": [
+      "You might need a tourist visa for your trip.",
+      "She applied for a tourist visa several weeks in advance."
+    ]
+  },
+  {
+    "word": "jet lag",
+    "exampleSentences": [
+      "I'm suffering from jet lag after the long flight.",
+      "It takes a few days to recover from jet lag."
+    ]
+  },
+  {
+    "word": "staycation",
+    "exampleSentences": [
+      "We decided to have a staycation this year.",
+      "A staycation can be a relaxing and affordable option."
+    ]
+  },
+  {
+    "word": "travel insurance",
+    "exampleSentences": [
+      "It's important to have travel insurance.",
+      "We bought travel insurance before our trip."
+    ]
+  },
+  {
+    "word": "budget travel",
+    "exampleSentences": [
+      "He is an expert at budget travel.",
+      "Budget travel allows you to see the world without spending a lot."
+    ]
+  },
+  {
+    "word": "luxury travel",
+    "exampleSentences": [
+      "They prefer luxury travel.",
+      "Luxury travel offers high-end accommodations and services."
+    ]
+  },
+  {
+    "word": "travel guide",
+    "exampleSentences": [
+      "He works as a travel guide.",
+      "The travel guide shared interesting facts about the area."
+    ]
+  },
+  {
+    "word": "overnight stay",
+    "exampleSentences": [
+      "We had an overnight stay in a small town.",
+      "The hotel offered a comfortable overnight stay."
+    ]
+  },
+  {
+    "word": "sleeping bag",
+    "exampleSentences": [
+      "We packed our sleeping bags for the camping trip.",
+      "It was warm and cozy in my sleeping bag."
+    ]
+  }
+]

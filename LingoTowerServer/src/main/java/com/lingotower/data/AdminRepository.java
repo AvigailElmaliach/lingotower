@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 //import com.lingotower.model.BaseUser;
 
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, Long> {
+public interface AdminRepository extends BaseUserRepository<Admin> {
     Optional<Admin> findByEmail(String email);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
