@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * מחלקה לשמירת הטוקן JWT בצד הלקוח
+ * A class for storing the JWT token on the client side
  */
 public class TokenStorage {
 	private static final Logger logger = LoggerFactory.getLogger(TokenStorage.class);

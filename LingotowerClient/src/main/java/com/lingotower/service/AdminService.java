@@ -25,9 +25,6 @@ public class AdminService extends BaseService {
 
 	// Base URL for admin-related endpoints on the server
 	private static final String ADMIN_API_BASE_URL = "http://localhost:8080/admins";
-	// Base URL for admin authentication endpoints on the server
-	// private static final String AUTH_ADMIN_API_BASE_URL =
-	// "http://localhost:8080/api/auth/admin"; // Not used directly here
 
 	public AdminService() {
 		super(); // Initializes RestTemplate from BaseService
@@ -60,7 +57,6 @@ public class AdminService extends BaseService {
 					admin.setRole(dto.getRole().toString()); // Convert Role to String
 					admin.setEmail(dto.getEmail());
 					admin.setId(dto.getId()); //
-					// Note: ID, email etc. might not be in the DTO from this specific endpoint
 					return admin;
 				}).collect(Collectors.toList());
 			} else {

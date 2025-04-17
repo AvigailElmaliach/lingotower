@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="view" stylesheets="@quiz-styles.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.QuizController">
+<BorderPane fx:id="view" stylesheets="@../styles/quiz-styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.QuizController">
     
     <!-- Global padding around everything -->
     <padding>
@@ -73,7 +73,7 @@
                         <Font size="18" />
                     </font>
                 </Label>
-                <ListView fx:id="quizListView" prefHeight="300" prefWidth="250" styleClass="quiz-list" />
+                <ListView fx:id="quizListView" styleClass="quiz-list" VBox.vgrow="ALWAYS" />
                 
             </children>
         </VBox>
@@ -95,7 +95,7 @@
                                 <Font size="28" />
                             </font>
                         </Label>
-                        <Label styleClass="welcome-text" text="Select a quiz from the list to begin" wrapText="true">
+                        <Label contentDisplay="CENTER" styleClass="welcome-text" text="Select a quiz from the list to begin" wrapText="true">
                             <font>
                                 <Font size="18" />
                             </font>
