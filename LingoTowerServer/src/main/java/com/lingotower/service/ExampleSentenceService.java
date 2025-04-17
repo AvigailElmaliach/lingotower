@@ -35,6 +35,6 @@ public class ExampleSentenceService {
                     .collect(Collectors.toList());
             return new ExampleSentenceCreateDTO(foundWord.getWord(), sentenceTexts);
         }
-        return null; // או לזרוק חריגה מתאימה
+        return null; 
     }
 }
