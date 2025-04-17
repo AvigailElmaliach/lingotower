@@ -1,5 +1,7 @@
 package com.lingotower.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,17 +14,20 @@ import com.lingotower.dto.LoginRequest;
 import com.lingotower.dto.RegisterRequest;
 import com.lingotower.model.User;
 import com.lingotower.security.TokenStorage;
+import com.lingotower.utils.LoggingUtility;
 
 /**
  * שירות אימות מעודכן שעובד עם JWT
  */
 public class UserAuthService {
 	private static final String USER_BASE_URL = "http://localhost:8080/api/auth/user";
+	private static final Logger logger = LoggerFactory.getLogger(UserAuthService.class);
 
 	private RestTemplate restTemplate;
 
 	public UserAuthService() {
 		this.restTemplate = new RestTemplate();
+		logger.debug("UserAuthService initialized");
 	}
 
 	/**
@@ -30,14 +35,15 @@ public class UserAuthService {
 	 */
 	public User login(String username, String password) {
 		try {
+			long startTime = System.currentTimeMillis();
+			logger.info("Login attempt for user: {}", username);
+
 			// יצירת בקשת התחברות
 			LoginRequest loginRequest = new LoginRequest();
 			loginRequest.setIdentifier(username);
 			loginRequest.setPassword(password);
 
-			System.out.println("שולח בקשת התחברות ל-" + USER_BASE_URL + "/login");
-			System.out.println("שם משתמש: " + username);
-			System.out.println("סיסמה: " + password);
+			logger.debug("Sending login request to: {}", USER_BASE_URL + "/login");
 
 			// שליחת בקשת ההתחברות לשרת
 			ResponseEntity<String> response = restTemplate.postForEntity(USER_BASE_URL + "/login", loginRequest,
@@ -47,17 +53,23 @@ public class UserAuthService {
 				String token = response.getBody();
 				TokenStorage.setToken(token);
 
+				logger.debug("JWT token received and stored, length: {}", token.length());
+
 				// יצירת אובייקט משתמש והחזרתו
 				User user = new User();
 				user.setUsername(username);
 
-				return user;
-			}
+				long duration = System.currentTimeMillis() - startTime;
+				LoggingUtility.logPerformance(logger, "login", duration, "success");
+				logger.info("Login successful for user: {}", username);
 
-			return null;
+				return user;
+			} else {
+				logger.warn("Login failed for user: {}. Status code: {}", username, response.getStatusCode());
+				return null;
+			}
 		} catch (Exception e) {
-			System.err.println("שגיאה בהתחברות: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error during login for user: {}: {}", username, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -67,7 +79,8 @@ public class UserAuthService {
 	 */
 	public User register(String username, String password, String email, String language) {
 		try {
-			System.out.println("מנסה לרשום משתמש חדש: " + username);
+			long startTime = System.currentTimeMillis();
+			logger.info("Registration attempt for username: {}, email: {}", username, email);
 
 			// יצירת בקשת ההרשמה
 			RegisterRequest registerRequest = new RegisterRequest();
@@ -82,6 +95,8 @@ public class UserAuthService {
 
 			HttpEntity<RegisterRequest> entity = new HttpEntity<>(registerRequest, headers);
 
+			logger.debug("Sending registration request to: {}", USER_BASE_URL + "/register");
+
 			// שליחת בקשת ההרשמה לשרת
 			ResponseEntity<String> response = restTemplate.exchange(USER_BASE_URL + "/register", HttpMethod.POST,
 					entity, String.class);
@@ -90,19 +105,25 @@ public class UserAuthService {
 				String token = response.getBody();
 				TokenStorage.setToken(token);
 
+				logger.debug("JWT token received and stored, length: {}", token.length());
+
 				// יצירת אובייקט משתמש והחזרתו
 				User user = new User();
 				user.setUsername(username);
 				user.setEmail(email);
 				user.setLanguage(language);
 
-				return user;
-			}
+				long duration = System.currentTimeMillis() - startTime;
+				LoggingUtility.logPerformance(logger, "register", duration, "success");
+				logger.info("Registration successful for user: {}", username);
 
-			return null;
+				return user;
+			} else {
+				logger.warn("Registration failed for user: {}. Status code: {}", username, response.getStatusCode());
+				return null;
+			}
 		} catch (Exception e) {
-			System.err.println("שגיאה בהרשמה: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error during registration for user: {}: {}", username, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -111,6 +132,7 @@ public class UserAuthService {
 	 * יציאה מהמערכת - מחיקת הטוקן
 	 */
 	public void logout() {
+		logger.info("User logout - clearing token");
 		TokenStorage.clearToken();
 	}
 }
