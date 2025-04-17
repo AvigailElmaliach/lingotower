@@ -8,9 +8,11 @@ import com.lingotower.model.Admin;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.dto.baseUser.PasswordUpdateRequestDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -114,5 +116,17 @@ public class AdminController {
                 .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getSourceLanguage()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userDTOs);
+    }
+    @PutMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequestDTO passwordUpdateRequest, Principal principal) {
+        String username = principal.getName();
+        try {
+            adminService.updatePassword(username, passwordUpdateRequest.getNewPassword());
+            return ResponseEntity.ok("Admin password updated successfully");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

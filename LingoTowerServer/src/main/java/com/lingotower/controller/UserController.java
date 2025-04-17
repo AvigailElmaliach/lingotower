@@ -2,6 +2,7 @@ package com.lingotower.controller;
 
 import com.lingotower.dto.language.LanguageUpdateRequest;
 import com.lingotower.dto.translation.TranslationResponseDTO;
+import com.lingotower.dto.baseUser.PasswordUpdateRequestDTO;
 import com.lingotower.dto.user.UserCreateDTO;
 import com.lingotower.dto.user.UserDTO;
 import com.lingotower.dto.user.UserProgressDTO;
@@ -129,6 +130,17 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-
+    @PutMapping("/password")
+	public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequestDTO passwordUpdateRequest, Principal principal) {
+		String username = principal.getName();
+		try {
+			userService.updatePassword(username, passwordUpdateRequest.getNewPassword());
+			return ResponseEntity.ok("Password updated successfully");
+		} catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 
 }

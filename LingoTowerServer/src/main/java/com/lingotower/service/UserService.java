@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,12 +31,15 @@ public class UserService {
 	private final WordRepository wordRepository;
 	@Autowired
 	private WordService wordService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserService(UserRepository userRepository, WordRepository wordRepository, WordService wordService) {
+	public UserService(UserRepository userRepository, WordRepository wordRepository, WordService wordService,PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.wordRepository = wordRepository;
 		this.wordService = wordService;
+		this.passwordEncoder=passwordEncoder;
 	}
 
 	public List<User> getAllUsers() {
@@ -132,5 +136,11 @@ public class UserService {
 			userRepository.save(user);
 		}
 
+	}
+	public void updatePassword(String username, String newPassword) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
 	}
 }

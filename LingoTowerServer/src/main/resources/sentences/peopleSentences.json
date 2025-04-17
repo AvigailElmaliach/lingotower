@@ -1,0 +1,534 @@
+[
+  {
+    "word": "family",
+    "exampleSentences": [
+      "I love spending time with my family.",
+      "Family is very important to me."
+    ]
+  },
+  {
+    "word": "friend",
+    "exampleSentences": [
+      "She is my best friend.",
+      "I'm meeting a friend for coffee."
+    ]
+  },
+  {
+    "word": "mother",
+    "exampleSentences": [
+      "My mother is a wonderful person.",
+      "I called my mother to tell her the news."
+    ]
+  },
+  {
+    "word": "father",
+    "exampleSentences": [
+      "My father taught me many things.",
+      "I went fishing with my father last weekend."
+    ]
+  },
+  {
+    "word": "brother",
+    "exampleSentences": [
+      "I have an older brother.",
+      "My brother is coming to visit."
+    ]
+  },
+  {
+    "word": "sister",
+    "exampleSentences": [
+      "She has a younger sister.",
+      "My sister and I are very close."
+    ]
+  },
+  {
+    "word": "husband",
+    "exampleSentences": [
+      "She loves her husband very much.",
+      "My husband is a great cook."
+    ]
+  },
+  {
+    "word": "wife",
+    "exampleSentences": [
+      "He is very proud of his wife.",
+      "My wife and I enjoy traveling together."
+    ]
+  },
+  {
+    "word": "son",
+    "exampleSentences": [
+      "They have a beautiful son.",
+      "He is a proud father of his son."
+    ]
+  },
+  {
+    "word": "daughter",
+    "exampleSentences": [
+      "She has a lovely daughter.",
+      "They are very proud of their daughter."
+    ]
+  },
+  {
+    "word": "friendship",
+    "exampleSentences": [
+      "Friendship is a valuable thing.",
+      "Their friendship has lasted for many years."
+    ]
+  },
+  {
+    "word": "love",
+    "exampleSentences": [
+      "Love makes the world go round.",
+      "They share a deep love for each other."
+    ]
+  },
+  {
+    "word": "partner",
+    "exampleSentences": [
+      "She is my life partner.",
+      "They work together as business partners."
+    ]
+  },
+  {
+    "word": "relationship",
+    "exampleSentences": [
+      "Communication is key to a healthy relationship.",
+      "They have a strong and loving relationship."
+    ]
+  },
+  {
+    "word": "child",
+    "exampleSentences": [
+      "The child was playing happily.",
+      "Parents are responsible for their child's upbringing."
+    ]
+  },
+  {
+    "word": "parents",
+    "exampleSentences": [
+      "My parents are very supportive.",
+      "They are loving parents to their children."
+    ]
+  },
+  {
+    "word": "grandfather",
+    "exampleSentences": [
+      "My grandfather tells great stories.",
+      "I enjoy visiting my grandfather."
+    ]
+  },
+  {
+    "word": "grandmother",
+    "exampleSentences": [
+      "My grandmother is a wonderful cook.",
+      "We spent the holiday with our grandmother."
+    ]
+  },
+  {
+    "word": "uncle",
+    "exampleSentences": [
+      "My uncle lives in another city.",
+      "We went to visit my uncle and aunt."
+    ]
+  },
+  {
+    "word": "aunt",
+    "exampleSentences": [
+      "My aunt always gives good advice.",
+      "I have several aunts on my mother's side."
+    ]
+  },
+  {
+    "word": "nephew",
+    "exampleSentences": [
+      "My sister has a new baby nephew.",
+      "I enjoy playing with my nephew."
+    ]
+  },
+  {
+    "word": "niece",
+    "exampleSentences": [
+      "My brother has a lovely niece.",
+      "I bought a gift for my niece."
+    ]
+  },
+  {
+    "word": "cousin",
+    "exampleSentences": [
+      "I have many cousins.",
+      "We had a family reunion with all our cousins."
+    ]
+  },
+  {
+    "word": "friendliness",
+    "exampleSentences": [
+      "Her friendliness makes everyone feel welcome.",
+      "Friendliness is a positive trait."
+    ]
+  },
+  {
+    "word": "support",
+    "exampleSentences": [
+      "They offer each other great support.",
+      "I appreciate your support during this time."
+    ]
+  },
+  {
+    "word": "trust",
+    "exampleSentences": [
+      "Trust is essential in any relationship.",
+      "It takes time to build trust."
+    ]
+  },
+  {
+    "word": "honesty",
+    "exampleSentences": [
+      "Honesty is the best policy.",
+      "I value honesty in my friends."
+    ]
+  },
+  {
+    "word": "respect",
+    "exampleSentences": [
+      "We should always treat each other with respect.",
+      "He earned the respect of his colleagues."
+    ]
+  },
+  {
+    "word": "conflict",
+    "exampleSentences": [
+      "They tried to avoid conflict.",
+      "Communication can help resolve conflict."
+    ]
+  },
+  {
+    "word": "communication",
+    "exampleSentences": [
+      "Good communication is vital in a relationship.",
+      "They had open and honest communication."
+    ]
+  },
+  {
+    "word": "compromise",
+    "exampleSentences": [
+      "Compromise is often necessary in a partnership.",
+      "They reached a compromise on the issue."
+    ]
+  },
+  {
+    "word": "reconciliation",
+    "exampleSentences": [
+      "The process of reconciliation took time.",
+      "They hoped for reconciliation after the argument."
+    ]
+  },
+  {
+    "word": "anger",
+    "exampleSentences": [
+      "He tried to control his anger.",
+      "Anger can lead to negative outcomes."
+    ]
+  },
+  {
+    "word": "empathy",
+    "exampleSentences": [
+      "Empathy helps us understand others' feelings.",
+      "She showed great empathy towards her friend."
+    ]
+  },
+  {
+    "word": "forgiveness",
+    "exampleSentences": [
+      "Forgiveness can be difficult but healing.",
+      "He asked for forgiveness for his mistake."
+    ]
+  },
+  {
+    "word": "understanding",
+    "exampleSentences": [
+      "Understanding each other is important.",
+      "She showed a lot of understanding."
+    ]
+  },
+  {
+    "word": "laughter",
+    "exampleSentences": [
+      "Laughter is the best medicine.",
+      "Their conversation was filled with laughter."
+    ]
+  },
+  {
+    "word": "compassion",
+    "exampleSentences": [
+      "She showed great compassion for those in need.",
+      "Compassion is a valuable human quality."
+    ]
+  },
+  {
+    "word": "sacrifice",
+    "exampleSentences": [
+      "Parents often make sacrifices for their children.",
+      "He made a personal sacrifice for the team."
+    ]
+  },
+  {
+    "word": "patience",
+    "exampleSentences": [
+      "Patience is a virtue.",
+      "It requires patience to learn a new skill."
+    ]
+  },
+  {
+    "word": "argument",
+    "exampleSentences": [
+      "They had a minor argument.",
+      "It's important to resolve arguments peacefully."
+    ]
+  },
+  {
+    "word": "harmony",
+    "exampleSentences": [
+      "They strive for harmony in their home.",
+      "The community lived in harmony."
+    ]
+  },
+  {
+    "word": "bond",
+    "exampleSentences": [
+      "They share a strong bond.",
+      "The bond between siblings is often very close."
+    ]
+  },
+  {
+    "word": "connection",
+    "exampleSentences": [
+      "They felt a strong connection.",
+      "Building a connection with others is important."
+    ]
+  },
+  {
+    "word": "attachment",
+    "exampleSentences": [
+      "Attachment theory describes the importance of early bonds.",
+      "The child showed a strong attachment to their caregiver."
+    ]
+  },
+  {
+    "word": "affection",
+    "exampleSentences": [
+      "They showed their affection openly.",
+      "Affection is important in close relationships."
+    ]
+  },
+  {
+    "word": "bonding",
+    "exampleSentences": [
+      "The trip was a great opportunity for family bonding.",
+      "They enjoyed the bonding experience."
+    ]
+  },
+  {
+    "word": "intimacy",
+    "exampleSentences": [
+      "Intimacy involves emotional and physical closeness.",
+      "Building intimacy takes time and trust."
+    ]
+  },
+  {
+    "word": "reliable",
+    "exampleSentences": [
+      "He is a very reliable friend.",
+      "We need a reliable car for the trip."
+    ]
+  },
+  {
+    "word": "dependable",
+    "exampleSentences": [
+      "She is a dependable colleague.",
+      "You can always count on him, he's very dependable."
+    ]
+  },
+  {
+    "word": "loyalty",
+    "exampleSentences": [
+      "Loyalty is a key aspect of true friendship.",
+      "They showed great loyalty to their team."
+    ]
+  },
+  {
+    "word": "affectionate",
+    "exampleSentences": [
+      "He is a very affectionate person.",
+      "They shared an affectionate hug."
+    ]
+  },
+  {
+    "word": "fond",
+    "exampleSentences": [
+      "I have fond memories of our time together.",
+      "She is very fond of her grandchildren."
+    ]
+  },
+  {
+    "word": "sympathy",
+    "exampleSentences": [
+      "I felt sympathy for her situation.",
+      "They expressed their sympathy for his loss."
+    ]
+  },
+  {
+    "word": "consolation",
+    "exampleSentences": [
+      "He offered words of consolation.",
+      "She found consolation in her friends' support."
+    ]
+  },
+  {
+    "word": "help",
+    "exampleSentences": [
+      "Can I help you with something?",
+      "They offered their help willingly."
+    ]
+  },
+  {
+    "word": "assistance",
+    "exampleSentences": [
+      "We appreciate your assistance with this project.",
+      "He provided valuable assistance."
+    ]
+  },
+  {
+    "word": "team",
+    "exampleSentences": [
+      "We work together as a team.",
+      "The team celebrated their victory."
+    ]
+  },
+  {
+    "word": "cooperation",
+    "exampleSentences": [
+      "Cooperation is essential for success.",
+      "They showed great cooperation on the task."
+    ]
+  },
+  {
+    "word": "compassionate",
+    "exampleSentences": [
+      "She is a very compassionate person.",
+      "They offered compassionate support."
+    ]
+  },
+  {
+    "word": "romance",
+    "exampleSentences": [
+      "Their story is full of romance.",
+      "They enjoyed a romantic evening."
+    ]
+  },
+  {
+    "word": "dating",
+    "exampleSentences": [
+      "They started dating a few months ago.",
+      "Dating can be an interesting experience."
+    ]
+  },
+  {
+    "word": "boyfriend",
+    "exampleSentences": [
+      "She introduced me to her boyfriend.",
+      "My boyfriend is very supportive."
+    ]
+  },
+  {
+    "word": "girlfriend",
+    "exampleSentences": [
+      "He is taking his girlfriend to the movies.",
+      "My girlfriend is a talented artist."
+    ]
+  },
+  {
+    "word": "marriage",
+    "exampleSentences": [
+      "They celebrated their tenth wedding anniversary.",
+      "Marriage is a big commitment."
+    ]
+  },
+  {
+    "word": "wedding",
+    "exampleSentences": [
+      "We are going to a wedding this weekend.",
+      "Their wedding was a beautiful celebration."
+    ]
+  },
+  {
+    "word": "commitment",
+    "exampleSentences": [
+      "Marriage requires a strong commitment.",
+      "He showed great commitment to his work."
+    ]
+  },
+  {
+    "word": "divorce",
+    "exampleSentences": [
+      "They went through a difficult divorce.",
+      "Divorce can be a painful process."
+    ]
+  },
+  {
+    "word": "single",
+    "exampleSentences": [
+      "She is currently single.",
+      "He enjoys being single."
+    ]
+  },
+  {
+    "word": "together",
+    "exampleSentences": [
+      "They enjoy spending time together.",
+      "We will face this challenge together."
+    ]
+  },
+  {
+    "word": "separation",
+    "exampleSentences": [
+      "They decided to have a trial separation.",
+      "The separation was difficult for both of them."
+    ]
+  },
+  {
+    "word": "jealousy",
+    "exampleSentences": [
+      "Jealousy can damage relationships.",
+      "He felt a pang of jealousy."
+    ]
+  },
+  {
+    "word": "trustworthy",
+    "exampleSentences": [
+      "He is a very trustworthy person.",
+      "We need someone trustworthy for this task."
+    ]
+  },
+  {
+    "word": "hurt",
+    "exampleSentences": [
+      "His words really hurt me.",
+      "She tried to hide her hurt feelings."
+    ]
+  },
+  {
+    "word": "betrayal",
+    "exampleSentences": [
+      "Betrayal can be very painful.",
+      "He felt a deep sense of betrayal."
+    ]
+  },
+  {
+    "word": "dependency",
+    "exampleSentences": [
+      "Healthy relationships avoid excessive dependency.",
+      "He struggled with emotional dependency."
+    ]
+  }
+]
