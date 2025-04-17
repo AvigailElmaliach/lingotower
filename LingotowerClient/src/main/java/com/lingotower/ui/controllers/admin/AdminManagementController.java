@@ -6,6 +6,7 @@ import com.lingotower.model.Admin;
 import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
 import com.lingotower.ui.components.ActionButtonCell;
+import com.lingotower.ui.views.admin.AdminManagementView;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -82,10 +83,20 @@ public class AdminManagementController {
 	private AdminService adminService;
 	private ObservableList<Admin> adminsList = FXCollections.observableArrayList();
 	private boolean isAddMode = false;
+	private AdminManagementView parentView; // Reference to parent view
 
 	public AdminManagementController() {
 		// Initialize the service in the constructor
 		this.adminService = new AdminService();
+	}
+
+	/**
+	 * Sets the parent view reference
+	 * 
+	 * @param view The parent view
+	 */
+	public void setParentView(AdminManagementView view) {
+		this.parentView = view;
 	}
 
 	@FXML
@@ -123,12 +134,12 @@ public class AdminManagementController {
 					showDeleteConfirmation(admin);
 				}));
 
-		// Set table items
-		adminTableView.setItems(adminsList);
-
 		// Initialize role ComboBox
 		roleComboBox.setItems(FXCollections.observableArrayList("ADMIN"));
 		roleComboBox.setValue("ADMIN");
+
+		// Set table items
+		adminTableView.setItems(adminsList);
 
 		// Add search field listener for real-time filtering
 		if (searchField != null) {
@@ -341,6 +352,11 @@ public class AdminManagementController {
 
 							// Show success message
 							showStatusMessage("Admin created successfully", false);
+
+							// Notify parent view
+							if (parentView != null) {
+								parentView.refresh();
+							}
 						} else {
 							showStatusMessage("Failed to create admin", true);
 						}
@@ -382,6 +398,11 @@ public class AdminManagementController {
 
 							// Show success message
 							showStatusMessage("Admin updated successfully", false);
+
+							// Notify parent view
+							if (parentView != null) {
+								parentView.refresh();
+							}
 						} else {
 							showStatusMessage("Failed to update admin", true);
 						}
@@ -415,7 +436,7 @@ public class AdminManagementController {
 			return;
 		}
 
-		// ✅ SET selectedAdmin before showing dialog
+		// SET selectedAdmin before showing dialog
 		this.selectedAdmin = admin;
 
 		// Create a confirmation dialog
@@ -485,6 +506,11 @@ public class AdminManagementController {
 
 						// Show success message
 						showStatusMessage("Admin deleted successfully", false);
+
+						// Notify parent view
+						if (parentView != null) {
+							parentView.refresh();
+						}
 					} else {
 						showStatusMessage("Failed to delete admin. Please check permissions and try again.", true);
 					}
