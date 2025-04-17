@@ -81,6 +81,9 @@ public class QuizController {
 	@FXML
 	private RadioButton answer4;
 	@FXML
+	private RadioButton answer5;
+
+	@FXML
 	private VBox feedbackBox;
 	@FXML
 	private Label feedbackLabel;
@@ -125,6 +128,7 @@ public class QuizController {
 		answer2.setToggleGroup(answerGroup);
 		answer3.setToggleGroup(answerGroup);
 		answer4.setToggleGroup(answerGroup);
+		answer5.setToggleGroup(answerGroup);
 
 		// Set up the ListView cell factory to display only the quiz name
 		quizListView.setCellFactory(lv -> new ListCell<Quiz>() {
@@ -440,6 +444,7 @@ public class QuizController {
 		answer2.setText(options.get(1));
 		answer3.setText(options.get(2));
 		answer4.setText(options.get(3));
+		answer5.setText(options.get(4));
 
 		// Clear previous selection
 		answerGroup.selectToggle(null);

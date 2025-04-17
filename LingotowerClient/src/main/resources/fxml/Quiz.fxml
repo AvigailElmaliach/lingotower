@@ -203,6 +203,11 @@
                                     <Font size="18" />
                                 </font>
                             </RadioButton>
+                     <RadioButton fx:id="answer5" layoutX="26.0" layoutY="201.0" styleClass="answer-option">
+                        <font>
+                           <Font size="18" />
+                        </font>
+                     </RadioButton>
                         </VBox>
                         
                         <!-- Feedback box (hidden initially) -->
