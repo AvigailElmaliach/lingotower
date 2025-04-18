@@ -6,7 +6,6 @@
     -fx-background-radius: 8px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 3);
     -fx-min-width: 260px;
-    -fx-pref-width: 280px;
 }
 
 .title-label {
@@ -62,13 +61,13 @@
     -fx-background-radius: 8px;
     -fx-border-color: #eaeef2;
     -fx-border-radius: 8px;
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
 }
 
 .quiz-list .list-cell {
     -fx-background-color: transparent;
     -fx-padding: 12px;
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
     -fx-border-color: transparent transparent #f5f5f5 transparent;
 }
 
@@ -117,9 +116,7 @@
 .welcome-text {
     -fx-font-size: 18px;
     -fx-text-fill: #616161;
-    -fx-text-alignment: center;
     -fx-wrap-text: true;
-    -fx-max-width: 600px;
 }
 
 /* ===== Preview Screen ===== */

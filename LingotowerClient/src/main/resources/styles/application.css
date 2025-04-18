@@ -337,10 +337,13 @@
     -fx-padding: 10px;
 }
 
+/* ===== in quiz ===== */
 .content-scrollpane{
 	-fx-border-color: transparent;
     -fx-background-color: transparent;
     -fx-border-width: 0;
+	-fx-fit-to-width: true;
+    -fx-fit-to-height: true
 	
 }
 

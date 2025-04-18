@@ -127,11 +127,6 @@
                                     <Font size="16" />
                                 </font>
                             </Label>
-                            <Label fx:id="questionsLabel" styleClass="info-label" text="Questions: 10">
-                                <font>
-                                    <Font size="16" />
-                                </font>
-                            </Label>
                         </VBox>
                         
                         <VBox fx:id="sampleQuestionBox" spacing="15" styleClass="sample-box">
