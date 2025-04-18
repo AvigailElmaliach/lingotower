@@ -411,9 +411,12 @@ public class UserProfileController {
 
 			// Show appropriate message based on results
 			if (profileUpdated && passwordUpdated) {
-				showSuccessMessage("Profile updated successfully");
+				showSuccessMessage("Profile updated successfully ! log out and log in again to see changes");
 				passwordField.clear();
 				confirmPasswordField.clear();
+				// Refresh the dashboard view to reflect the new language
+				refresh();
+
 			} else if (!profileUpdated && !passwordUpdated) {
 				showErrorMessage("Failed to update profile and password");
 			} else if (!profileUpdated) {
