@@ -57,8 +57,6 @@ public class QuizController {
 	@FXML
 	private Label difficultyLabel;
 	@FXML
-	private Label questionsLabel;
-	@FXML
 	private Label sampleQuestionText;
 	@FXML
 	private Button startButton;
@@ -206,7 +204,7 @@ public class QuizController {
 			for (String difficultyName : difficulties) {
 				Quiz quiz = new Quiz();
 				quiz.setId(quizId++);
-				quiz.setName("10 Words Quiz - " + categoryName + " (" + difficultyName + ")");
+				quiz.setName("Words Quiz - " + categoryName + " (" + difficultyName + ")");
 
 				// Set category
 				Category category = new Category();
@@ -300,7 +298,7 @@ public class QuizController {
 			// If no matches, create a new quiz with the selected criteria
 			Quiz filteredQuiz = new Quiz();
 			filteredQuiz.setId(System.currentTimeMillis());
-			filteredQuiz.setName("10 Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
+			filteredQuiz.setName("Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
 
 			Category category = new Category();
 			category.setId(getCategoryIdByName(selectedCategory));
@@ -331,10 +329,9 @@ public class QuizController {
 		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
 		difficultyLabel
 				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
-		questionsLabel.setText("Questions: 10"); // Always 10 questions from the API
 
 		sampleQuestionText
-				.setText("This quiz will generate 10 random questions based on the selected category and difficulty.");
+				.setText("This quiz will generate random questions based on the selected category and difficulty.");
 	}
 
 	/**
@@ -360,7 +357,7 @@ public class QuizController {
 		String difficulty = quiz.getDifficulty().toString();
 
 		// Set a specific name for the quiz
-		String quizName = "10 Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
+		String quizName = " Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
 		quiz.setName(quizName);
 
 		// Show loading indication
