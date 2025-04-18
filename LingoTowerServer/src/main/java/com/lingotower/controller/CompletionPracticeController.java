@@ -1,29 +1,43 @@
 package com.lingotower.controller;
 
+import com.lingotower.dto.quiz.QuestionDTO;
 import com.lingotower.model.Difficulty;
-import com.lingotower.model.Question;
 import com.lingotower.service.CompletionPracticeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/practice/completion") 
+@RequestMapping("/completion-practice")
 public class CompletionPracticeController {
 
-    @Autowired
-    private CompletionPracticeService completionPracticeService;
+    private final CompletionPracticeService completionPracticeService;
 
-    @GetMapping("/generate") 
-    public ResponseEntity<Question> generateCompletionPractice(
-            @RequestParam String category,
-            @RequestParam Difficulty difficulty) { 
-        Optional<Question> practiceQuestion = completionPracticeService.generateCompletionPractice(category, difficulty);
-        return practiceQuestion.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public CompletionPracticeController(CompletionPracticeService completionPracticeService) {
+        this.completionPracticeService = completionPracticeService;
+    }
+
+    @GetMapping("/generate")
+    public ResponseEntity<Optional<QuestionDTO>> generateCompletionPractice(
+            @RequestParam String categoryName,
+            @RequestParam Difficulty difficulty,
+            Principal principal) {
+        String username = principal.getName();
+        Optional<QuestionDTO> question = completionPracticeService.generateCompletionPractice(categoryName, difficulty, username);
+        return ResponseEntity.ok(question);
+    }
+
+    @GetMapping("/generate-multiple")
+    public ResponseEntity<List<QuestionDTO>> generateMultipleCompletionPractices(
+            @RequestParam String categoryName,
+            @RequestParam Difficulty difficulty,
+            @RequestParam(required = false) Integer count,
+            Principal principal) {
+        String username = principal.getName();
+        List<QuestionDTO> questions = completionPracticeService.generateMultipleCompletionPractices(categoryName, difficulty, count, username);
+        return ResponseEntity.ok(questions);
     }
 }
