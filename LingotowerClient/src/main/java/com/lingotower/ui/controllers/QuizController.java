@@ -7,9 +7,11 @@ import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
+import com.lingotower.model.Sentence;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -198,24 +200,39 @@ public class QuizController {
 		List<String> categories = new ArrayList<>(categoryComboBox.getItems());
 		List<String> difficulties = new ArrayList<>(difficultyComboBox.getItems());
 
-		// For each category, create a quiz for each difficulty
+		// For each category, create both regular quizzes and sentence completion
+		// quizzes
 		long quizId = 1;
 		for (String categoryName : categories) {
 			for (String difficultyName : difficulties) {
-				Quiz quiz = new Quiz();
-				quiz.setId(quizId++);
-				quiz.setName("Words Quiz - " + categoryName + " (" + difficultyName + ")");
+				// Create regular vocabulary quiz
+				Quiz vocabQuiz = new Quiz();
+				vocabQuiz.setId(quizId++);
+				vocabQuiz.setName("Words Quiz - " + categoryName + " (" + difficultyName + ")");
 
 				// Set category
 				Category category = new Category();
 				category.setId(getCategoryIdByName(categoryName));
 				category.setName(categoryName);
-				quiz.setCategory(category);
+				vocabQuiz.setCategory(category);
 
 				// Set difficulty
-				quiz.setDifficulty(Difficulty.valueOf(difficultyName));
+				vocabQuiz.setDifficulty(Difficulty.valueOf(difficultyName));
 
-				sampleQuizzes.add(quiz);
+				sampleQuizzes.add(vocabQuiz);
+
+				// Create sentence completion quiz
+				Quiz sentenceQuiz = new Quiz();
+				sentenceQuiz.setId(quizId++);
+				sentenceQuiz.setName("Sentence Completion - " + categoryName + " (" + difficultyName + ")");
+
+				// Use the same category
+				sentenceQuiz.setCategory(category);
+
+				// Set difficulty
+				sentenceQuiz.setDifficulty(Difficulty.valueOf(difficultyName));
+
+				sampleQuizzes.add(sentenceQuiz);
 			}
 		}
 
@@ -308,6 +325,15 @@ public class QuizController {
 			filteredQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
 
 			filteredQuizzes.add(filteredQuiz);
+
+			// Add sentence completion quiz
+			Quiz sentenceQuiz = new Quiz();
+			sentenceQuiz.setId(System.currentTimeMillis() + 1);
+			sentenceQuiz.setName("Sentence Completion - " + selectedCategory + " (" + selectedDifficulty + ")");
+			sentenceQuiz.setCategory(category);
+			sentenceQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
+			filteredQuizzes.add(sentenceQuiz);
+
 		}
 
 		// Update the ListView
@@ -324,14 +350,25 @@ public class QuizController {
 		summaryContent.setVisible(false);
 		previewContent.setVisible(true);
 
+		// Check if this is a sentence completion quiz
+		boolean isSentenceCompletionQuiz = quiz.getName().startsWith("Sentence Completion");
+
 		// Populate preview
 		quizNameLabel.setText(quiz.getName());
 		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
 		difficultyLabel
 				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
 
-		sampleQuestionText
-				.setText("This quiz will generate random questions based on the selected category and difficulty.");
+		// Set appropriate description based on quiz type
+		if (isSentenceCompletionQuiz) {
+			sampleQuestionText.setText("This quiz will test your language skills with sentence completion exercises. "
+					+ "You'll be shown sentences with missing words and asked to select the correct word "
+					+ "to fill in the blank.");
+		} else {
+			sampleQuestionText
+					.setText("This quiz will generate random vocabulary questions based on the selected category "
+							+ "and difficulty level. Test your language knowledge!");
+		}
 	}
 
 	/**
@@ -354,11 +391,9 @@ public class QuizController {
 
 		// Get category and difficulty from the quiz
 		Long categoryId = quiz.getCategory().getId();
+		String categoryName = quiz.getCategory().getName();
 		String difficulty = quiz.getDifficulty().toString();
-
-		// Set a specific name for the quiz
-		String quizName = " Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
-		quiz.setName(quizName);
+		String quizName = quiz.getName();
 
 		// Show loading indication
 		activeQuizNameLabel.setText("Loading quiz questions...");
@@ -373,10 +408,50 @@ public class QuizController {
 		nextBtn.setDisable(true);
 		prevBtn.setDisable(true);
 
-		// Generate quiz questions from the API
 		try {
-			List<Question> generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
+			List<Question> generatedQuestions = null;
 
+			// Check if this is a sentence completion quiz or a regular quiz
+			boolean isSentenceCompletionQuiz = quizName.startsWith("Sentence Completion");
+
+			if (isSentenceCompletionQuiz) {
+				// Generate sentence completion questions
+				System.out.println("Starting sentence completion quiz with category: " + categoryName + ", difficulty: "
+						+ difficulty);
+
+				List<Sentence> sentences = quizService.generateSentenceCompletions(categoryName, difficulty);
+
+				if (sentences != null && !sentences.isEmpty()) {
+					generatedQuestions = quizService.convertSentencesToQuestions(sentences);
+					System.out.println("Successfully converted " + sentences.size() + " sentences to questions");
+				} else {
+					System.out
+							.println("WARNING: Failed to get sentence completion questions. Using fallback method...");
+
+					// FALLBACK: Create sample sentence completion questions
+					generatedQuestions = createFallbackSentenceQuestions(categoryName, difficulty);
+
+					// Show a warning to the user that these are fallback questions
+					Platform.runLater(() -> {
+						showError(
+								"Could not get real sentence completion questions from the server. Using sample questions instead.");
+					});
+				}
+
+				// Set the quiz name
+				quizName = "Sentence Completion - " + categoryName + " (" + difficulty + ")";
+			} else {
+				// Generate regular quiz questions
+				System.out.println(
+						"Starting regular quiz with categoryId: " + categoryId + ", difficulty: " + difficulty);
+
+				generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
+
+				// Set the quiz name
+				quizName = "Words Quiz - " + categoryName + " (" + difficulty + ")";
+			}
+
+			// Process generated questions
 			if (generatedQuestions != null && !generatedQuestions.isEmpty()) {
 				// Replace the quiz's questions with the generated ones
 				quiz.getQuestions().clear();
@@ -385,6 +460,7 @@ public class QuizController {
 				}
 
 				currentQuiz = quiz;
+				quiz.setName(quizName);
 
 				// Update quiz name display
 				activeQuizNameLabel.setText(quizName);
@@ -396,7 +472,8 @@ public class QuizController {
 				showCurrentQuestion();
 			} else {
 				// Handle error - no questions generated
-				showError("Could not generate quiz questions. Please try again.");
+				String errorMessage = "No questions available for the selected category and difficulty. Please try a different selection";
+				showError(errorMessage);
 
 				// Go back to welcome screen
 				questionContent.setVisible(false);
@@ -404,10 +481,95 @@ public class QuizController {
 			}
 		} catch (Exception e) {
 			showError("Error starting quiz: " + e.getMessage());
+			e.printStackTrace();
 			// Go back to welcome screen
 			questionContent.setVisible(false);
 			welcomeContent.setVisible(true);
 		}
+	}
+
+	/**
+	 * Creates fallback sentence completion questions when the API fails. This is
+	 * just a temporary solution for testing.
+	 */
+	private List<Question> createFallbackSentenceQuestions(String categoryName, String difficulty) {
+		List<Question> questions = new ArrayList<>();
+
+		// Create a category object
+		Category category = new Category();
+		category.setId(getCategoryIdByName(categoryName));
+		category.setName(categoryName);
+
+		// Create sample questions based on category
+		if (categoryName.contains("Everyday Life")) {
+			// Question 1
+			Question q1 = new Question();
+			q1.setQuestionText("I _____ to make a phone call.");
+			q1.setCorrectAnswer("need");
+			q1.setOptions(List.of("need", "thank you", "hello", "goodbye", "please"));
+			q1.setCategory(category);
+			questions.add(q1);
+
+			// Question 2
+			Question q2 = new Question();
+			q2.setQuestionText("Please _____ me the directions to the store.");
+			q2.setCorrectAnswer("give");
+			q2.setOptions(List.of("give", "happy", "blue", "seven", "today"));
+			q2.setCategory(category);
+			questions.add(q2);
+
+			// Question 3
+			Question q3 = new Question();
+			q3.setQuestionText("What time _____ it?");
+			q3.setCorrectAnswer("is");
+			q3.setOptions(List.of("is", "are", "car", "house", "day"));
+			q3.setCategory(category);
+			questions.add(q3);
+		} else if (categoryName.contains("Work")) {
+			// Question 1
+			Question q1 = new Question();
+			q1.setQuestionText("I have a meeting with my _____ today.");
+			q1.setCorrectAnswer("boss");
+			q1.setOptions(List.of("boss", "apple", "car", "dog", "tree"));
+			q1.setCategory(category);
+			questions.add(q1);
+
+			// Question 2
+			Question q2 = new Question();
+			q2.setQuestionText("Please _____ this document by tomorrow.");
+			q2.setCorrectAnswer("complete");
+			q2.setOptions(List.of("complete", "orange", "table", "chair", "computer"));
+			q2.setCategory(category);
+			questions.add(q2);
+		} else {
+			// Default questions for any category
+			Question q1 = new Question();
+			q1.setQuestionText("I _____ to learn this language.");
+			q1.setCorrectAnswer("want");
+			q1.setOptions(List.of("want", "blue", "car", "apple", "house"));
+			q1.setCategory(category);
+			questions.add(q1);
+
+			Question q2 = new Question();
+			q2.setQuestionText("What is your _____?");
+			q2.setCorrectAnswer("name");
+			q2.setOptions(List.of("name", "blue", "water", "chair", "tree"));
+			q2.setCategory(category);
+			questions.add(q2);
+		}
+
+		// Add difficulty-based questions
+		if (difficulty.equals("HARD")) {
+			Question q = new Question();
+			q.setQuestionText("The company _____ its annual report yesterday.");
+			q.setCorrectAnswer("published");
+			q.setOptions(List.of("published", "happy", "blue", "run", "eat"));
+			q.setCategory(category);
+			questions.add(q);
+		}
+
+		System.out.println("Created " + questions.size() + " fallback sentence completion questions");
+		return questions;
 	}
 
 	private void showCurrentQuestion() {
@@ -425,8 +587,19 @@ public class QuizController {
 		// Get current question
 		Question question = currentQuiz.getQuestions().get(currentQuestionIndex);
 
-		// Update question text
+		// Check if this is a sentence completion question
+		boolean isSentenceCompletion = question.getQuestionText().contains("_____");
+
+		// Update question text and style it appropriately
 		questionText.setText(question.getQuestionText());
+
+		if (isSentenceCompletion) {
+			// Add special styling for sentence completion questions
+			questionText.getStyleClass().add("sentence-completion");
+		} else {
+			// Remove the special styling if not a sentence completion
+			questionText.getStyleClass().removeAll("sentence-completion");
+		}
 
 		// Get all options for this question
 		List<String> options = question.getOptions();
@@ -486,24 +659,75 @@ public class QuizController {
 		// Disable submit button, enable next button
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(false);
+
+		// If this is a sentence completion question, highlight the blank with the
+		// selected answer
+		boolean isSentenceCompletion = question.getQuestionText().contains("_____");
+		if (isSentenceCompletion) {
+			// Replace the blank with the selected answer and show it in the question text
+			String completedSentence = getCompleteSentence(question.getQuestionText(), selectedAnswer);
+			// Set a different style based on correctness
+			if (isCorrect) {
+				questionText.setStyle("-fx-text-fill: #2e7d32;"); // Green for correct
+			} else {
+				questionText.setStyle("-fx-text-fill: #c62828;"); // Red for incorrect
+			}
+			questionText.setText(completedSentence);
+		}
 	}
 
 	private void showAnswerFeedback(boolean correct, String correctAnswer) {
 		feedbackBox.setVisible(true);
 		feedbackBox.getStyleClass().removeAll("correct", "incorrect");
 
+		// Get current question to check if it's a sentence completion
+		Question currentQuestion = currentQuiz.getQuestions().get(currentQuestionIndex);
+		boolean isSentenceCompletion = currentQuestion.getQuestionText().contains("_____");
+
 		if (correct) {
 			feedbackBox.getStyleClass().add("correct");
 			feedbackLabel.setText("Correct!");
 			feedbackLabel.setStyle("-fx-text-fill: #2e7d32;");
-			correctAnswerLabel.setVisible(false);
+
+			if (isSentenceCompletion) {
+				// Show the complete sentence for sentence completion questions
+				String completeSentence = getCompleteSentence(currentQuestion.getQuestionText(), correctAnswer);
+				correctAnswerLabel.setText("Complete sentence: " + completeSentence);
+				correctAnswerLabel.setVisible(true);
+			} else {
+				correctAnswerLabel.setVisible(false);
+			}
 		} else {
 			feedbackBox.getStyleClass().add("incorrect");
 			feedbackLabel.setText("Incorrect!");
 			feedbackLabel.setStyle("-fx-text-fill: #c62828;");
-			correctAnswerLabel.setText("The correct answer is: " + correctAnswer);
+
+			if (isSentenceCompletion) {
+				// Show the complete sentence for sentence completion questions
+				String completeSentence = getCompleteSentence(currentQuestion.getQuestionText(), correctAnswer);
+				correctAnswerLabel.setText(
+						"The correct answer is: " + correctAnswer + "\nComplete sentence: " + completeSentence);
+			} else {
+				correctAnswerLabel.setText("The correct answer is: " + correctAnswer);
+			}
 			correctAnswerLabel.setVisible(true);
 		}
+	}
+
+	/**
+	 * Replaces the blank in a sentence completion question with the correct answer.
+	 * 
+	 * @param question The question text containing blanks (_____)
+	 * @param answer   The correct answer to insert
+	 * @return The complete sentence with the answer inserted
+	 */
+	private String getCompleteSentence(String question, String answer) {
+		if (question == null || answer == null) {
+			return question;
+		}
+
+		// Replace the blank with the correct answer
+		return question.replace("_____", answer);
 	}
 
 	/**
@@ -546,7 +770,43 @@ public class QuizController {
 		summaryContent.setVisible(true);
 
 		int totalQuestions = currentQuiz.getQuestions().size();
-		summaryLabel.setText(String.format("You scored %d out of %d!", correctAnswersCount, totalQuestions));
+
+		// Check if this was a sentence completion quiz
+		boolean isSentenceCompletionQuiz = currentQuiz.getName().startsWith("Sentence Completion");
+
+		// Calculate score percentage
+		int scorePercentage = (correctAnswersCount * 100) / totalQuestions;
+
+		// Create appropriate summary message
+		StringBuilder summaryBuilder = new StringBuilder();
+		summaryBuilder.append(
+				String.format("You scored %d out of %d! (%d%%)", correctAnswersCount, totalQuestions, scorePercentage));
+
+		// Add specific feedback based on quiz type
+		if (isSentenceCompletionQuiz) {
+			summaryBuilder.append("\n\nYou're doing great with sentence completion!");
+
+			// Add level-based feedback
+			if (scorePercentage >= 90) {
+				summaryBuilder.append("\nExcellent job! You have a strong grasp of sentence structure.");
+			} else if (scorePercentage >= 70) {
+				summaryBuilder.append("\nGood work! Keep practicing to improve your language skills.");
+			} else {
+				summaryBuilder.append(
+						"\nKeep practicing! Sentence completion exercises will help you understand language context better.");
+			}
+		} else {
+			// Regular quiz feedback
+			if (scorePercentage >= 90) {
+				summaryBuilder.append("\n\nExcellent vocabulary knowledge!");
+			} else if (scorePercentage >= 70) {
+				summaryBuilder.append("\n\nGood vocabulary skills! Keep learning new words.");
+			} else {
+				summaryBuilder.append("\n\nKeep building your vocabulary with more practice.");
+			}
+		}
+
+		summaryLabel.setText(summaryBuilder.toString());
 	}
 
 	/**
