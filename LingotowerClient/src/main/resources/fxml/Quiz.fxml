@@ -81,7 +81,7 @@
     
     <!-- CENTER: Main quiz content area (StackPane to switch views) -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="content-scrollpane">
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scrollpane">
             <content>
                 <StackPane styleClass="content-area">
                     
@@ -148,7 +148,7 @@
                     </VBox>
                     
                     <!-- Question content -->
-                    <VBox fx:id="questionContent" alignment="CENTER" spacing="25" visible="false">
+                    <VBox fx:id="questionContent" alignment="TOP_CENTER" spacing="25" visible="false">
                         <padding>
                             <Insets bottom="30" left="40" right="40" top="30" />
                         </padding>
@@ -159,7 +159,7 @@
                             </font>
                         </Label>
                         
-                        <ProgressBar fx:id="progressBar" prefHeight="15" prefWidth="500" progress="0.5" styleClass="quiz-progress" />
+                        <ProgressBar fx:id="progressBar" prefHeight="15" minHeight="15" maxWidth="Infinity" progress="0.5" styleClass="quiz-progress" />
                         
                         <Label fx:id="progressLabel" styleClass="progress-label" text="Question 1 of 10">
                             <font>
@@ -174,7 +174,7 @@
                         </Label>
                         
                         <!-- Possible answers -->
-                        <VBox fx:id="answersBox" spacing="15" styleClass="answers-container">
+                        <VBox fx:id="answersBox" spacing="15" styleClass="answers-container" >
                             <padding>
                                 <Insets bottom="15" left="15" right="15" top="15" />
                             </padding>
