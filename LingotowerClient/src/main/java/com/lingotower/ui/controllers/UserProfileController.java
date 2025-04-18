@@ -497,6 +497,7 @@ public class UserProfileController {
 		}
 	}
 
+//need to check if this is needed
 	/**
 	 * Handles table display for very small windows
 	 */
