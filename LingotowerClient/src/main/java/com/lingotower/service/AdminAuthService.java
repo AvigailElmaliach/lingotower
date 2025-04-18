@@ -1,5 +1,7 @@
 package com.lingotower.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,16 +14,19 @@ import com.lingotower.dto.LoginRequest;
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
 import com.lingotower.security.TokenStorage;
+import com.lingotower.utils.LoggingUtility;
 
 /**
  * Service for handling admin authentication
  */
 public class AdminAuthService {
 
+	private static final Logger logger = LoggerFactory.getLogger(AdminAuthService.class);
 	private RestTemplate restTemplate;
 
 	public AdminAuthService() {
 		this.restTemplate = new RestTemplate();
+		logger.debug("AdminAuthService initialized");
 	}
 
 	/**
@@ -33,7 +38,8 @@ public class AdminAuthService {
 	 */
 	public Admin login(String username, String password) {
 		try {
-			System.out.println("Admin login attempt for: " + username);
+			long startTime = System.currentTimeMillis();
+			logger.info("Admin login attempt for: {}", username);
 
 			// Create login request
 			LoginRequest loginRequest = new LoginRequest(username, password);
@@ -45,6 +51,8 @@ public class AdminAuthService {
 			// Create HTTP entity with request body and headers
 			HttpEntity<LoginRequest> entity = new HttpEntity<>(loginRequest, headers);
 
+			logger.debug("Sending admin login request to: http://localhost:8080/api/auth/admin/login");
+
 			// Send login request to the admin login endpoint
 			ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/api/auth/admin/login",
 					HttpMethod.POST, entity, String.class);
@@ -53,7 +61,7 @@ public class AdminAuthService {
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
 				// Store the JWT token
 				String token = response.getBody();
-				System.out.println("Admin login successful! Token received (length: " + token.length() + ")");
+				logger.debug("Admin login successful! Token received (length: {})", token.length());
 
 				// CRITICAL: Store the token
 				TokenStorage.setToken(token);
@@ -64,14 +72,19 @@ public class AdminAuthService {
 				admin.setUsername(username);
 				admin.setRole(Role.ADMIN.toString());
 
+				long duration = System.currentTimeMillis() - startTime;
+				LoggingUtility.logPerformance(logger, "admin_login", duration, "success");
+				LoggingUtility.logAction(logger, "login", username, "admin", "success");
+
 				return admin;
 			} else {
-				System.out.println("Admin login failed: " + response.getStatusCode());
+				logger.warn("Admin login failed for: {}. Status code: {}", username, response.getStatusCode());
+				LoggingUtility.logAction(logger, "login", username, "admin", "failed");
 				return null;
 			}
 		} catch (Exception e) {
-			System.err.println("Error during admin login: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error during admin login for {}: {}", username, e.getMessage(), e);
+			LoggingUtility.logAction(logger, "login", username, "admin", "error: " + e.getMessage());
 			return null;
 		}
 	}
@@ -80,6 +93,8 @@ public class AdminAuthService {
 	 * Logout the current admin
 	 */
 	public void logout() {
+		logger.info("Admin logout - clearing token");
 		TokenStorage.clearToken();
+		LoggingUtility.logAction(logger, "logout", "admin", "system", "success");
 	}
 }

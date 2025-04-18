@@ -2,7 +2,10 @@ package com.lingotower.service;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -10,51 +13,62 @@ import org.springframework.web.client.RestTemplate;
 import com.lingotower.security.TokenStorage;
 
 /**
- * מחלקת בסיס לכל השירותים בצד הלקוח
+ * Base class for all client-side services that handles REST API communication.
  */
 public abstract class BaseService {
+
+	protected static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 	protected RestTemplate restTemplate;
 
+	/**
+	 * Constructor that initializes the RestTemplate with an error handler.
+	 */
 	public BaseService() {
 		this.restTemplate = new RestTemplate();
-		this.restTemplate.setErrorHandler(new AuthenticationErrorHandler());
+		this.restTemplate.setErrorHandler(new ApiResponseErrorHandler());
+		logger.debug("BaseService initialized");
 	}
 
-	// Method to create headers with authentication token
+	/**
+	 * Creates HTTP headers with authorization token if available.
+	 * 
+	 * @return HttpHeaders with authorization if token exists
+	 */
 	protected HttpHeaders createAuthHeaders() {
 		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-		// Important debugging
-		TokenStorage.logTokenStatus("Creating auth headers");
-
-		// Add the authentication token if available
 		if (TokenStorage.hasToken()) {
-			String tokenValue = TokenStorage.getToken();
-			String authHeader = "Bearer " + tokenValue;
-			headers.set("Authorization", authHeader);
-			System.out.println("Added Authorization header: Bearer "
-					+ tokenValue.substring(0, Math.min(10, tokenValue.length())) + "...");
+			String token = TokenStorage.getToken();
+			headers.set("Authorization", "Bearer " + token);
+			logger.debug("Added authorization token to request");
 		} else {
-			System.out.println("WARNING: No token available when creating auth headers!");
+			logger.warn("No token available for request");
 		}
+
 		return headers;
 	}
 
 	/**
-	 * מחלקה פנימית לטיפול בשגיאות אימות
+	 * Handles API response errors, with special handling for authentication
+	 * failures.
 	 */
-	private class AuthenticationErrorHandler extends DefaultResponseErrorHandler {
+	private class ApiResponseErrorHandler extends DefaultResponseErrorHandler {
+
 		@Override
 		public void handleError(ClientHttpResponse response) throws IOException {
-			// אם קיבלנו תגובת 401 (Unauthorized), כנראה הטוקן פג תוקף
-			if (response.getStatusCode().value() == 401) {
-				System.out.println("טוקן JWT לא תקף או פג תוקף. יש להתחבר מחדש.");
+			int statusCode = response.getStatusCode().value();
+
+			// Handle authentication failures
+			if (statusCode == 401) {
+				logger.warn("Authentication failure - token expired or invalid");
 				TokenStorage.clearToken();
-				// כאן יש להוסיף קריאה למסך התחברות
 			} else {
-				// טיפול בשגיאות אחרות
-				super.handleError(response);
+				logger.error("API error: Status code {}", statusCode);
 			}
+
+			// Let the default handler process the error
+			super.handleError(response);
 		}
 	}
 }

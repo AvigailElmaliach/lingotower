@@ -57,8 +57,6 @@ public class QuizController {
 	@FXML
 	private Label difficultyLabel;
 	@FXML
-	private Label questionsLabel;
-	@FXML
 	private Label sampleQuestionText;
 	@FXML
 	private Button startButton;
@@ -80,6 +78,9 @@ public class QuizController {
 	private RadioButton answer3;
 	@FXML
 	private RadioButton answer4;
+	@FXML
+	private RadioButton answer5;
+
 	@FXML
 	private VBox feedbackBox;
 	@FXML
@@ -125,6 +126,7 @@ public class QuizController {
 		answer2.setToggleGroup(answerGroup);
 		answer3.setToggleGroup(answerGroup);
 		answer4.setToggleGroup(answerGroup);
+		answer5.setToggleGroup(answerGroup);
 
 		// Set up the ListView cell factory to display only the quiz name
 		quizListView.setCellFactory(lv -> new ListCell<Quiz>() {
@@ -202,7 +204,7 @@ public class QuizController {
 			for (String difficultyName : difficulties) {
 				Quiz quiz = new Quiz();
 				quiz.setId(quizId++);
-				quiz.setName("10 Words Quiz - " + categoryName + " (" + difficultyName + ")");
+				quiz.setName("Words Quiz - " + categoryName + " (" + difficultyName + ")");
 
 				// Set category
 				Category category = new Category();
@@ -296,7 +298,7 @@ public class QuizController {
 			// If no matches, create a new quiz with the selected criteria
 			Quiz filteredQuiz = new Quiz();
 			filteredQuiz.setId(System.currentTimeMillis());
-			filteredQuiz.setName("10 Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
+			filteredQuiz.setName("Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
 
 			Category category = new Category();
 			category.setId(getCategoryIdByName(selectedCategory));
@@ -327,10 +329,9 @@ public class QuizController {
 		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
 		difficultyLabel
 				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
-		questionsLabel.setText("Questions: 10"); // Always 10 questions from the API
 
 		sampleQuestionText
-				.setText("This quiz will generate 10 random questions based on the selected category and difficulty.");
+				.setText("This quiz will generate random questions based on the selected category and difficulty.");
 	}
 
 	/**
@@ -356,7 +357,7 @@ public class QuizController {
 		String difficulty = quiz.getDifficulty().toString();
 
 		// Set a specific name for the quiz
-		String quizName = "10 Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
+		String quizName = " Words Quiz - " + quiz.getCategory().getName() + " (" + difficulty + ")";
 		quiz.setName(quizName);
 
 		// Show loading indication
@@ -440,6 +441,7 @@ public class QuizController {
 		answer2.setText(options.get(1));
 		answer3.setText(options.get(2));
 		answer4.setText(options.get(3));
+		answer5.setText(options.get(4));
 
 		// Clear previous selection
 		answerGroup.selectToggle(null);

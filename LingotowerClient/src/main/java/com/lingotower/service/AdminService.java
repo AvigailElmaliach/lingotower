@@ -25,9 +25,6 @@ public class AdminService extends BaseService {
 
 	// Base URL for admin-related endpoints on the server
 	private static final String ADMIN_API_BASE_URL = "http://localhost:8080/admins";
-	// Base URL for admin authentication endpoints on the server
-	// private static final String AUTH_ADMIN_API_BASE_URL =
-	// "http://localhost:8080/api/auth/admin"; // Not used directly here
 
 	public AdminService() {
 		super(); // Initializes RestTemplate from BaseService
@@ -60,7 +57,6 @@ public class AdminService extends BaseService {
 					admin.setRole(dto.getRole().toString()); // Convert Role to String
 					admin.setEmail(dto.getEmail());
 					admin.setId(dto.getId()); //
-					// Note: ID, email etc. might not be in the DTO from this specific endpoint
 					return admin;
 				}).collect(Collectors.toList());
 			} else {
@@ -257,4 +253,23 @@ public class AdminService extends BaseService {
 		// Call the update method with the DTO
 		return updateAdmin(id, dto);
 	}
+
+	public boolean deleteWordAdmin(Long id) {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make the request
+			String url = ADMIN_API_BASE_URL + "/" + id;
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+			return response.getStatusCode().is2xxSuccessful();
+		} catch (Exception e) {
+			System.err.println("Error deleting word: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

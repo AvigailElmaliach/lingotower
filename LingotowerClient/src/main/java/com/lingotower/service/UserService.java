@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lingotower.dto.user.PasswordUpdateDTO;
 import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.model.User;
@@ -79,15 +81,49 @@ public class UserService extends BaseService {
 
 	public boolean updateUser(User user) {
 		try {
+			// Validate user object
+			if (user == null) {
+				System.err.println("Cannot update user: user object is null");
+				return false;
+			}
+
+			if (user.getId() == null) {
+				System.err.println("Cannot update user: user ID is null");
+				return false;
+			}
+
+			// Validate required fields
+			if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getEmail() == null
+					|| user.getEmail().trim().isEmpty() || user.getLanguage() == null
+					|| user.getLanguage().trim().isEmpty()) {
+				System.err.println("Cannot update user: required fields missing");
+				return false;
+			}
+
 			// Create a DTO with the required fields
 			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
 			userUpdateDTO.setUsername(user.getUsername());
 			userUpdateDTO.setEmail(user.getEmail());
 			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
 
+			// Convert the DTO to JSON for inspection
+			ObjectMapper mapper = new ObjectMapper();
+			String requestBody = "";
+			try {
+				requestBody = mapper.writeValueAsString(userUpdateDTO);
+				System.out.println("Request JSON body: " + requestBody);
+			} catch (Exception e) {
+				System.err.println("Error converting DTO to JSON: " + e.getMessage());
+				// Continue anyway since RestTemplate will handle serialization
+			}
+
 			// Set up headers with authentication and content type
 			HttpHeaders headers = createAuthHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			// Print headers for debugging
+			System.out.println("Request headers:");
+			headers.forEach((key, value) -> System.out.println("  " + key + ": " + value));
 
 			// Create HTTP entity with the DTO and headers
 			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
@@ -95,11 +131,33 @@ public class UserService extends BaseService {
 			// Construct the URL with the user ID
 			String url = BASE_URL + "/" + user.getId();
 
-			// Make the PUT request to update the user
-			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+			// Log the full request for debugging
+			System.out.println("Updating user profile:");
+			System.out.println("  URL: " + url);
+			System.out.println("  Method: PUT");
+			System.out.println("  User ID: " + user.getId());
+			System.out.println("  Username: " + userUpdateDTO.getUsername());
+			System.out.println("  Email: " + userUpdateDTO.getEmail());
+			System.out.println("  SourceLanguage: " + userUpdateDTO.getSourceLanguage());
 
-			// Return true if successful (HTTP 200 OK)
-			return response.getStatusCode() == HttpStatus.OK;
+			// Make the PUT request to update the user
+			try {
+				ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+
+				// Log the response for debugging
+				System.out.println("User update response: " + response.getStatusCode());
+
+				// Return true if successful (HTTP 200 OK)
+				return response.getStatusCode().is2xxSuccessful();
+			} catch (Exception e) {
+				System.err.println("HTTP request error: " + e.getMessage());
+				if (e instanceof org.springframework.web.client.HttpStatusCodeException) {
+					org.springframework.web.client.HttpStatusCodeException httpEx = (org.springframework.web.client.HttpStatusCodeException) e;
+					System.err.println("HTTP Status: " + httpEx.getStatusCode());
+					System.err.println("Response body: " + httpEx.getResponseBodyAsString());
+				}
+				throw e; // Re-throw to be caught by outer catch
+			}
 		} catch (Exception e) {
 			System.err.println("Error updating user: " + e.getMessage());
 			e.printStackTrace();
@@ -177,7 +235,6 @@ public class UserService extends BaseService {
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
 			// Make the request to the endpoint using the correct URL
-			// The endpoint is /users/learned according to the provided info
 			String url = BASE_URL + "/learned";
 
 			// Trace the HTTP request for debugging
@@ -271,6 +328,82 @@ public class UserService extends BaseService {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Updates a user's password using a dedicated DTO
+	 * 
+	 * @param newPassword The new password
+	 * @return true if successful, false otherwise
+	 */
+	public boolean updateUserPassword(String newPassword) {
+		try {
+			// Create the password update DTO
+			PasswordUpdateDTO passwordDTO = new PasswordUpdateDTO(newPassword);
+
+			// Set up headers with authentication and content type
+			HttpHeaders headers = createAuthHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			// Create HTTP entity with the password DTO and headers
+			HttpEntity<PasswordUpdateDTO> entity = new HttpEntity<>(passwordDTO, headers);
+
+			// URL for password update (no user ID in path - uses token only)
+			String url = BASE_URL + "/password";
+
+			// Log the request for debugging (don't log the actual password)
+			System.out.println("Updating password at URL: " + url);
+
+			// Make the PUT request to update the password
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+
+			// Log the response for debugging
+			System.out.println("Password update response: " + response.getStatusCode());
+
+			// Return true if successful (HTTP 200 OK)
+			return response.getStatusCode().is2xxSuccessful();
+		} catch (Exception e) {
+			System.err.println("Error updating password: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the currently authenticated user's full details
+	 * 
+	 * @return User object with complete details or null if not authenticated
+	 */
+	public User getCurrentUser() {
+		try {
+			// Create headers with authentication
+			HttpHeaders headers = createAuthHeaders();
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			// Make a request to fetch current user details
+			String url = BASE_URL + "/me";
+
+			System.out.println("Fetching current user details from: " + url);
+			ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				User user = response.getBody();
+				if (user != null) {
+					System.out
+							.println("Retrieved current user: ID=" + user.getId() + ", Username=" + user.getUsername());
+				} else {
+					System.out.println("Received empty user object from server");
+				}
+				return user;
+			} else {
+				System.err.println("Failed to get current user. Status: " + response.getStatusCode());
+				return null;
+			}
+		} catch (Exception e) {
+			System.err.println("Error fetching current user: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
