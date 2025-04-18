@@ -12,6 +12,7 @@ import com.lingotower.model.Role;
 import com.lingotower.model.User;
 import com.lingotower.service.AdminAuthService;
 import com.lingotower.service.UserAuthService;
+import com.lingotower.service.UserService;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -120,6 +121,17 @@ public class LoginViewController implements Initializable {
 				User user = userAuthService.login(username, password);
 				if (user != null) {
 					logger.info("User login successful for: {}", username);
+
+					// After successful login, try to get full user details including ID
+					UserService userService = new UserService();
+					User fullUser = userService.getCurrentUser();
+
+					if (fullUser != null) {
+						logger.info("Successfully retrieved full user details with ID: {}", fullUser.getId());
+						return fullUser;
+					} else {
+						logger.warn("Could not retrieve full user details, using basic user");
+					}
 				} else {
 					logger.warn("User login failed for: {}", username);
 				}
@@ -136,6 +148,11 @@ public class LoginViewController implements Initializable {
 				logger.info("Login succeeded. User type: {}",
 						loggedInUser.getRole() != null ? loggedInUser.getRole() : "Regular User");
 				resetError(); // Ensure error is clear
+
+				// Log the user's details
+				logger.info("User ID: {}, Username: {}, Email: {}, Language: {}", loggedInUser.getId(),
+						loggedInUser.getUsername(), loggedInUser.getEmail(), loggedInUser.getLanguage());
+
 				if (onLoginSuccess != null) {
 					onLoginSuccess.accept(loggedInUser);
 				}

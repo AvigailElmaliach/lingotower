@@ -183,6 +183,14 @@ public class UserProfileController {
 		if (user != null) {
 			// Update welcome message
 			welcomeLabel.setText("Welcome, " + user.getUsername() + "!");
+			// Debug printout when user is set
+			if (user != null) {
+				System.out.println("User set in UserProfileController:");
+				System.out.println("  ID: " + (user.getId() != null ? user.getId() : "null"));
+				System.out.println("  Username: " + user.getUsername());
+				System.out.println("  Email: " + user.getEmail());
+				System.out.println("  Language: " + user.getLanguage());
+			}
 
 			// Load user data
 			loadUserData();
@@ -190,10 +198,45 @@ public class UserProfileController {
 	}
 
 	private void loadUserData() {
-		// Profile tab
-		usernameField.setText(currentUser.getUsername());
-		emailField.setText(currentUser.getEmail());
-		languageComboBox.setValue(currentUser.getLanguage());
+		// First ensure we have a user
+		if (currentUser == null) {
+			showErrorMessage("User data unavailable. Please log in again.");
+			return;
+		}
+
+		// If we don't have a user ID, try to fetch complete user details
+		if (currentUser.getId() == null) {
+			System.out.println("User ID is missing, attempting to get current user details");
+			User fullUser = userService.getCurrentUser();
+			if (fullUser != null && fullUser.getId() != null) {
+				// Update the current user reference with the full user data
+				currentUser = fullUser;
+				System.out.println("Successfully retrieved user with ID: " + currentUser.getId());
+			} else {
+				showErrorMessage("Could not retrieve your user ID. Some features may be limited.");
+				System.err.println("Failed to retrieve user ID");
+			}
+		}
+
+		// Profile tab - populate fields from user object
+		usernameField.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "");
+		emailField.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
+
+		// Handle language field which might be null
+		String userLanguage = currentUser.getLanguage();
+		if (userLanguage != null && !userLanguage.isEmpty()) {
+			// Convert language code to display value if needed
+			if (userLanguage.equals("en")) {
+				languageComboBox.setValue("English");
+			} else if (userLanguage.equals("he")) {
+				languageComboBox.setValue("Hebrew");
+			} else {
+				languageComboBox.setValue(userLanguage);
+			}
+		} else {
+			// Default to English if no language is set
+			languageComboBox.setValue("English");
+		}
 
 		// Clear password fields
 		passwordField.clear();
@@ -309,30 +352,79 @@ public class UserProfileController {
 
 	@FXML
 	private void handleSaveButtonClick(ActionEvent event) {
-		// Validate and save user profile changes
+		// Validate passwords match if provided
 		if (!passwordField.getText().isEmpty() && !passwordField.getText().equals(confirmPasswordField.getText())) {
 			showErrorMessage("Passwords do not match");
 			return;
 		}
 
-		currentUser.setUsername(usernameField.getText());
-		currentUser.setEmail(emailField.getText());
-		currentUser.setLanguage(languageComboBox.getValue());
-
-		// If password was provided, update it
-		if (!passwordField.getText().isEmpty()) {
-			currentUser.setPassword(passwordField.getText());
+		// Check if we have a valid user
+		if (currentUser == null) {
+			showErrorMessage("User data is missing. Please log in again.");
+			return;
 		}
 
-		// Call service to update user
+		// Get values from form
+		String username = usernameField.getText().trim();
+		String email = emailField.getText().trim();
+		String language = languageComboBox.getValue();
+		String password = passwordField.getText();
+
+		// Validate inputs
+		if (username.isEmpty() || email.isEmpty() || language == null || language.isEmpty()) {
+			showErrorMessage("Username, email, and language are required fields");
+			return;
+		}
+
+		// Convert UI language value to language code if needed
+		String languageCode = language;
+		if ("English".equals(language)) {
+			languageCode = "en";
+		} else if ("Hebrew".equals(language)) {
+			languageCode = "he";
+		}
+
+		// Update user model with new values
+		currentUser.setUsername(username);
+		currentUser.setEmail(email);
+		currentUser.setLanguage(languageCode);
+
 		try {
-			boolean updated = userService.updateUser(currentUser);
-			if (updated) {
+			boolean profileUpdated = false;
+			boolean passwordUpdated = true; // Default to true if no password update needed
+
+			// Ensure user ID is present for profile update
+			if (currentUser.getId() == null) {
+				showErrorMessage("Cannot update profile: User ID is missing. Please log out and log in again.");
+				return;
+			}
+
+			// Update profile
+			System.out.println("Updating user profile for ID: " + currentUser.getId());
+			profileUpdated = userService.updateUser(currentUser);
+
+			// Handle password update separately - works with just the JWT token
+			if (!password.isEmpty()) {
+				System.out.println("Updating password using JWT token");
+				passwordUpdated = userService.updateUserPassword(password);
+			}
+
+			// Show appropriate message based on results
+			if (profileUpdated && passwordUpdated) {
 				showSuccessMessage("Profile updated successfully");
+				passwordField.clear();
+				confirmPasswordField.clear();
+			} else if (!profileUpdated && !passwordUpdated) {
+				showErrorMessage("Failed to update profile and password");
+			} else if (!profileUpdated) {
+				showErrorMessage("Failed to update profile information"
+						+ (password.isEmpty() ? "" : ", but password was updated successfully"));
 			} else {
-				showErrorMessage("Failed to update profile");
+				showErrorMessage("Profile information updated successfully, but password update failed");
 			}
 		} catch (Exception ex) {
+			System.err.println("Error updating profile: " + ex.getMessage());
+			ex.printStackTrace();
 			showErrorMessage("Error updating profile: " + ex.getMessage());
 		}
 	}
