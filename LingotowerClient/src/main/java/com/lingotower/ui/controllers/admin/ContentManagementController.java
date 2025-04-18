@@ -465,26 +465,31 @@ public class ContentManagementController {
 		}
 	}
 
-	@FXML
-	private void handleAddWord() {
-		// Reset form for new word
-		wordFormTitle.setText("Add New Word");
-		wordTextField.setText("");
-		wordTranslationField.setText("");
-
-		if (!wordCategoryComboBox.getItems().isEmpty()) {
-			wordCategoryComboBox.setValue(wordCategoryComboBox.getItems().get(0));
-		}
-
-		wordDifficultyComboBox.setValue(Difficulty.EASY);
-		selectedWord = null;
-		isEditMode = false;
-
-		// Show the form
-		wordEditForm.setVisible(true);
-	}
+//	@FXML
+//	private void handleAddWord() {
+//		// Reset form for new word
+//		wordFormTitle.setText("Add New Word");
+//		wordTextField.setText("");
+//		wordTranslationField.setText("");
+//
+//		if (!wordCategoryComboBox.getItems().isEmpty()) {
+//			wordCategoryComboBox.setValue(wordCategoryComboBox.getItems().get(0));
+//		}
+//
+//		wordDifficultyComboBox.setValue(Difficulty.EASY);
+//		selectedWord = null;
+//		isEditMode = false;
+//
+//		// Show the form
+//		wordEditForm.setVisible(true);
+//	}
 
 	private void showWordEditForm(Word word) {
+		wordEditForm.setVisible(true);
+		wordEditForm.setManaged(true);
+		jsonUploadForm.setVisible(false);
+		jsonUploadForm.setManaged(false);
+
 		// Prepare form for editing
 		wordFormTitle.setText("Edit Word");
 		wordTextField.setText(word.getWord());
@@ -666,7 +671,10 @@ public class ContentManagementController {
 	@FXML
 	private void handleUploadWordsJson() {
 		// Hide other forms
+		jsonUploadForm.setVisible(true);
+		jsonUploadForm.setManaged(true);
 		wordEditForm.setVisible(false);
+		wordEditForm.setManaged(false);
 		categoryEditForm.setVisible(false);
 
 		// Make sure the uploadCategoryComboBox has the same categories as the word
