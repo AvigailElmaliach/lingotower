@@ -5,11 +5,11 @@ import java.util.List;
 public class ExampleSentenceCreateDTO {
 
     private String word;
-    private List<String> exampleSentences;
+    private List<String> sentences;
  
-    public ExampleSentenceCreateDTO(String word, List<String> exampleSentences) {
+    public ExampleSentenceCreateDTO(String word, List<String> sentences) {
         this.word = word;
-        this.exampleSentences = exampleSentences;
+        this.sentences = sentences;
     }
 
     public String getWord() {
@@ -20,11 +20,11 @@ public class ExampleSentenceCreateDTO {
         this.word = word;
     }
 
-    public List<String> getExampleSentences() {
-        return exampleSentences;
+    public List<String> getSentences() {
+        return sentences;
     }
 
-    public void setExampleSentences(List<String> exampleSentences) {
-        this.exampleSentences = exampleSentences;
+    public void setSentences(List<String> sentences) {
+        this.sentences = sentences;
     }
 }

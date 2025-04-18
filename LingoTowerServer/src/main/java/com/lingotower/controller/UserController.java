@@ -38,6 +38,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+   
+
 
 //    @GetMapping
 //    public List<UserDTO> getAllUsers() {
@@ -142,5 +144,16 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getLoggedInUser(Principal principal) {
+        String username = principal.getName();
+        User user = userService.getUserByUsername(username);
+        if (user != null) {
+            UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getSourceLanguage());
+            return ResponseEntity.ok(userDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 }

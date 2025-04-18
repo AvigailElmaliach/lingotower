@@ -3,6 +3,8 @@ package com.lingotower.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -48,6 +50,7 @@ public class Word {
 
 //	@OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
 //	private List<ExampleSentence> sentences;
+	@JsonIgnore
 	@OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExampleSentence> sentences;
 	public Word() {

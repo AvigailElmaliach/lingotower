@@ -56,7 +56,7 @@ public class UserService {
 	}
 
 	public void deleteUser(Long id) {
-		// כאן אפשר להוסיף בדיקה אם המשתמש קיים לפני המחיקה
+		// כאן  להוסיף בדיקה אם המשתמש קיים לפני המחיקה
 		userRepository.deleteById(id);
 	}
 

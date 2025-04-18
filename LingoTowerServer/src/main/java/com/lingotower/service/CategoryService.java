@@ -113,6 +113,7 @@ public class CategoryService {
 		});
 	}
 
+
 	public Category getCategoryById(Long id) throws CategoryNotFoundException {
 		return categoryRepository.findById(id)
 				.orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));

@@ -34,6 +34,7 @@ public class WordController {
     private final CategoryService categoryService;
     private TranslationService translationService;
     private final UserService userService;
+    private static final int DEFAULT_RANDOM_WORD_COUNT = 10;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -81,10 +82,8 @@ public class WordController {
                 @RequestBody WordByCategory updateDTO,
                 Principal principal) {
 
-            // שליפת שם המשתמש מתוך ה־JWT
             String username = principal.getName();
 
-            // בדיקה אם יש חוסר התאמה בין ה-ID ב־DTO ל־PathVariable (לא חובה, אבל מומלץ)
             if (updateDTO.getId() != null && !updateDTO.getId().equals(wordId)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and body ID");
             }
@@ -221,7 +220,7 @@ public class WordController {
         
         return ResponseEntity.ok(translatedWords);
     }
-
+   
 
     @GetMapping("/{id}/translate")
     public ResponseEntity<WordByCategory> getTranslatedWordById(
@@ -258,8 +257,8 @@ public class WordController {
     public ResponseEntity<String> uploadWords(@RequestParam("category") String categoryName,
                                               @RequestParam("file") MultipartFile file) {
         try {
-        	System.out.println("Category: " + categoryName);  // הדפסה של הקטגוריה
-            System.out.println("File name: " + file.getOriginalFilename());  // הדפסה של שם הקובץ
+        	System.out.println("Category: " + categoryName);  
+            System.out.println("File name: " + file.getOriginalFilename());  
 
             Category category = categoryService.getOrCreateCategory(categoryName);
             List<Word> words = file.getOriginalFilename().endsWith(".csv") ?
