@@ -9,9 +9,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.lingotower.dto.sentence.SentenceCompletionDTO;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
-import com.lingotower.model.Sentence;
 
 /**
  * Service for managing quizzes and quiz-related functionality.
@@ -166,7 +166,7 @@ public class QuizService extends BaseService {
 	 * @param difficulty   The difficulty level (EASY, MEDIUM, HARD)
 	 * @return A list of Sentence objects, or null if an error occurs
 	 */
-	public List<Sentence> generateSentenceCompletions(String categoryName, String difficulty) {
+	public List<SentenceCompletionDTO> generateSentenceCompletions(String categoryName, String difficulty) {
 		try {
 			logger.info("Generating sentence completions for category: {}, difficulty: {}", categoryName, difficulty);
 
@@ -182,19 +182,19 @@ public class QuizService extends BaseService {
 			logger.debug("Calling Sentence Completion API: {}", url);
 
 			try {
-				ResponseEntity<List<Sentence>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-						new ParameterizedTypeReference<List<Sentence>>() {
+				ResponseEntity<List<SentenceCompletionDTO>> response = restTemplate.exchange(url, HttpMethod.GET,
+						entity, new ParameterizedTypeReference<List<SentenceCompletionDTO>>() {
 						});
 
 				logger.debug("Response status: {}", response.getStatusCode());
 
-				List<Sentence> sentences = response.getBody();
+				List<SentenceCompletionDTO> sentences = response.getBody();
 
 				if (sentences != null && !sentences.isEmpty()) {
 					logger.info("Successfully generated {} sentence completion questions", sentences.size());
 
 					// Log sample sentence for debugging
-					Sentence firstSentence = sentences.get(0);
+					SentenceCompletionDTO firstSentence = sentences.get(0);
 					logger.debug("Sample sentence: {}, Correct answer: {}, Options size: {}",
 							firstSentence.getQuestionText(), firstSentence.getCorrectAnswer(),
 							firstSentence.getOptions() != null ? firstSentence.getOptions().size() : 0);
@@ -227,7 +227,7 @@ public class QuizService extends BaseService {
 	 * @param sentences The list of sentence completion questions
 	 * @return A list of Question objects
 	 */
-	public List<Question> convertSentencesToQuestions(List<Sentence> sentences) {
+	public List<Question> convertSentencesToQuestions(List<SentenceCompletionDTO> sentences) {
 		if (sentences == null) {
 			logger.error("Cannot convert sentences to questions: sentence list is null");
 			return null;
@@ -243,7 +243,7 @@ public class QuizService extends BaseService {
 		List<Question> questions = new ArrayList<>();
 
 		// Convert each Sentence to a Question
-		for (Sentence sentence : sentences) {
+		for (SentenceCompletionDTO sentence : sentences) {
 			try {
 				Question question = new Question();
 

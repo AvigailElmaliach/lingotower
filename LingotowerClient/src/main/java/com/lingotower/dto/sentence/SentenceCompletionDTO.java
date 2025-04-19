@@ -1,11 +1,16 @@
-package com.lingotower.model;
+package com.lingotower.dto.sentence;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lingotower.model.Category;
 
+/**
+ * Data Transfer Object (DTO) representing a sentence completion question. This
+ * class is used to transfer data between the server and client.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Sentence {
+public class SentenceCompletionDTO {
 	private Long id;
 	private String questionText;
 	private List<String> options;
@@ -13,7 +18,7 @@ public class Sentence {
 	private Category category;
 
 	// Default constructor
-	public Sentence() {
+	public SentenceCompletionDTO() {
 	}
 
 	// Getters and setters

@@ -2,7 +2,7 @@ package com.lingotower.dto;
 
 public class LoginRequest {
 
-	private String identifier; // יכול להיות username או email
+	private String identifier; // username or email
 	private String password;
 
 	public LoginRequest() {

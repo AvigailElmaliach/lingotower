@@ -5,7 +5,7 @@ import com.lingotower.model.Role;
 public class AdminUpdateDTO {
 	private String username;
 	private Role role;
-	private String password; // אופציונלי: לשינוי סיסמה
+	private String password;
 	private String email;
 
 	public String getUsername() {

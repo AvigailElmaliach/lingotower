@@ -3,11 +3,11 @@ package com.lingotower.ui.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lingotower.dto.sentence.SentenceCompletionDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
-import com.lingotower.model.Sentence;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
 
@@ -419,7 +419,8 @@ public class QuizController {
 				System.out.println("Starting sentence completion quiz with category: " + categoryName + ", difficulty: "
 						+ difficulty);
 
-				List<Sentence> sentences = quizService.generateSentenceCompletions(categoryName, difficulty);
+				List<SentenceCompletionDTO> sentences = quizService.generateSentenceCompletions(categoryName,
+						difficulty);
 
 				if (sentences != null && !sentences.isEmpty()) {
 					generatedQuestions = quizService.convertSentencesToQuestions(sentences);
