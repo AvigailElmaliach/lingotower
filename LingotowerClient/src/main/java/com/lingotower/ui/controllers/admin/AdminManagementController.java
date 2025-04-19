@@ -1,6 +1,8 @@
 package com.lingotower.ui.controllers.admin;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.lingotower.model.Admin;
 import com.lingotower.security.TokenStorage;
@@ -25,6 +27,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class AdminManagementController {
+	// Add a logger for this class
+	private static final Logger logger = Logger.getLogger(AdminManagementController.class.getName());
 
 	@FXML
 	private BorderPane view;
@@ -88,6 +92,7 @@ public class AdminManagementController {
 	public AdminManagementController() {
 		// Initialize the service in the constructor
 		this.adminService = new AdminService();
+		logger.log(Level.CONFIG, "AdminManagementController initialized");
 	}
 
 	/**
@@ -97,6 +102,7 @@ public class AdminManagementController {
 	 */
 	public void setParentView(AdminManagementView view) {
 		this.parentView = view;
+		logger.log(Level.FINE, "Parent view set in AdminManagementController");
 	}
 
 	@FXML
@@ -147,14 +153,18 @@ public class AdminManagementController {
 				handleSearchButton();
 			});
 		}
+
+		logger.log(Level.INFO, "AdminManagementController UI initialized");
 	}
 
 	public void setAdmin(Admin admin) {
 		this.currentAdmin = admin;
+		logger.log(Level.INFO, "Current admin set: {0}", (admin != null ? admin.getUsername() : "null"));
 	}
 
 	public void setReturnToDashboard(Runnable callback) {
 		this.returnToDashboard = callback;
+		logger.log(Level.FINE, "Return to dashboard callback set");
 	}
 
 	public void loadAdmins() {
@@ -163,13 +173,13 @@ public class AdminManagementController {
 		// Create a background thread to load admins
 		Thread loadThread = new Thread(() -> {
 			try {
-				System.out.println("Loading admins in background thread...");
+				logger.log(Level.INFO, "Loading admins in background thread...");
 				TokenStorage.logTokenStatus("Before loading admins");
 
 				// Get all admins through the service
 				List<Admin> admins = adminService.getAllAdmins();
 
-				System.out.println("Admins loaded: " + (admins != null ? admins.size() : "null"));
+				logger.log(Level.INFO, "Admins loaded: {0}", (admins != null ? admins.size() : "null"));
 
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
@@ -184,8 +194,8 @@ public class AdminManagementController {
 					}
 				});
 			} catch (Exception e) {
-				System.err.println("Error loading admins: " + e.getMessage());
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error loading admins: {0}", e.getMessage());
+				logger.log(Level.SEVERE, "Exception details:", e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
@@ -196,6 +206,7 @@ public class AdminManagementController {
 
 		// Start the background thread
 		loadThread.setDaemon(true);
+		loadThread.setName("AdminLoader");
 		loadThread.start();
 	}
 
@@ -203,18 +214,20 @@ public class AdminManagementController {
 	private void handleBackButton() {
 		if (returnToDashboard != null) {
 			try {
+				logger.log(Level.INFO, "Returning to dashboard");
 				returnToDashboard.run();
 			} catch (Exception e) {
-				System.err.println("Error executing dashboard callback: " + e.getMessage());
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error executing dashboard callback: {0}", e.getMessage());
+				logger.log(Level.SEVERE, "Exception details:", e);
 			}
 		} else {
-			System.err.println("Dashboard callback is not set.");
+			logger.log(Level.WARNING, "Dashboard callback is not set");
 		}
 	}
 
 	@FXML
 	private void handleRefreshButton() {
+		logger.log(Level.INFO, "Refreshing admin list");
 		loadAdmins();
 	}
 
@@ -224,6 +237,7 @@ public class AdminManagementController {
 			return;
 
 		String searchText = searchField.getText().trim().toLowerCase();
+		logger.log(Level.INFO, "Searching for admin with text: {0}", searchText);
 
 		// If search is empty, show all admins
 		if (searchText.isEmpty()) {
@@ -242,11 +256,14 @@ public class AdminManagementController {
 
 		// Update the table view with filtered results
 		adminTableView.setItems(filteredList);
+		logger.log(Level.INFO, "Found {0} matching admins", filteredList.size());
 		showStatusMessage("Found " + filteredList.size() + " matching admins", false);
 	}
 
 	@FXML
 	private void handleAddButton() {
+		logger.log(Level.INFO, "Add admin button clicked");
+
 		// Reset form for new admin
 		isAddMode = true;
 		formTitleLabel.setText("Add New Admin");
@@ -261,6 +278,13 @@ public class AdminManagementController {
 	}
 
 	private void showEditForm(Admin admin) {
+		if (admin == null) {
+			logger.log(Level.WARNING, "Attempted to edit null admin");
+			return;
+		}
+
+		logger.log(Level.INFO, "Showing edit form for admin: {0}", admin.getUsername());
+
 		// Hide confirmation dialog if visible
 		if (confirmationDialog != null) {
 			confirmationDialog.setVisible(false);
@@ -293,6 +317,8 @@ public class AdminManagementController {
 
 	@FXML
 	private void handleCancelEdit() {
+		logger.log(Level.INFO, "Edit admin cancelled");
+
 		if (editAdminForm != null) {
 			editAdminForm.setVisible(false);
 		}
@@ -302,6 +328,8 @@ public class AdminManagementController {
 
 	@FXML
 	private void handleSaveAdmin() {
+		logger.log(Level.INFO, "Save admin button clicked (mode: {0})", isAddMode ? "add" : "edit");
+
 		// Get values from form
 		String username = usernameField.getText().trim();
 		String email = emailField.getText().trim();
@@ -310,12 +338,14 @@ public class AdminManagementController {
 
 		// Validate inputs
 		if (username.isEmpty() || email.isEmpty()) {
+			logger.log(Level.WARNING, "Validation failed: username or email empty");
 			showStatusMessage("Username and email are required", true);
 			return;
 		}
 
 		// In add mode, password is required
 		if (isAddMode && password.isEmpty()) {
+			logger.log(Level.WARNING, "Validation failed: password required for new admin");
 			showStatusMessage("Password is required for new admins", true);
 			return;
 		}
@@ -334,12 +364,16 @@ public class AdminManagementController {
 					newAdmin.setPassword(password);
 					newAdmin.setRole(role);
 
+					logger.log(Level.INFO, "Creating new admin with username: {0}", username);
+
 					// Save using service
 					Admin createdAdmin = adminService.createAdmin(newAdmin);
 
 					// Update UI on JavaFX thread
 					Platform.runLater(() -> {
 						if (createdAdmin != null) {
+							logger.log(Level.INFO, "Admin created successfully with ID: {0}", createdAdmin.getId());
+
 							// Add to list
 							adminsList.add(createdAdmin);
 
@@ -358,17 +392,22 @@ public class AdminManagementController {
 								parentView.refresh();
 							}
 						} else {
+							logger.log(Level.WARNING, "Failed to create admin: service returned null");
 							showStatusMessage("Failed to create admin", true);
 						}
 					});
 				} else {
 					// Update existing admin
 					if (selectedAdmin == null) {
+						logger.log(Level.WARNING, "Update failed: No admin selected");
 						Platform.runLater(() -> {
 							showStatusMessage("No admin selected for update", true);
 						});
 						return;
 					}
+
+					logger.log(Level.INFO, "Updating admin with ID: {0}, username: {1}",
+							new Object[] { selectedAdmin.getId(), username });
 
 					// Update fields
 					selectedAdmin.setUsername(username);
@@ -384,6 +423,8 @@ public class AdminManagementController {
 					// Update UI on JavaFX thread
 					Platform.runLater(() -> {
 						if (success) {
+							logger.log(Level.INFO, "Admin updated successfully");
+
 							// Hide form
 							editAdminForm.setVisible(false);
 
@@ -404,13 +445,14 @@ public class AdminManagementController {
 								parentView.refresh();
 							}
 						} else {
+							logger.log(Level.WARNING, "Failed to update admin: service returned false");
 							showStatusMessage("Failed to update admin", true);
 						}
 					});
 				}
 			} catch (Exception e) {
-				System.err.println("Error saving admin: " + e.getMessage());
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error saving admin: {0}", e.getMessage());
+				logger.log(Level.SEVERE, "Exception details:", e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
@@ -421,17 +463,22 @@ public class AdminManagementController {
 
 		// Start the background thread
 		saveThread.setDaemon(true);
+		saveThread.setName("AdminSaver");
 		saveThread.start();
 	}
 
 	private void showDeleteConfirmation(Admin admin) {
 		if (admin == null) {
-			System.err.println("Cannot show confirmation for null admin");
+			logger.log(Level.WARNING, "Cannot show confirmation for null admin");
 			return;
 		}
 
+		logger.log(Level.INFO, "Showing delete confirmation for admin: {0} (ID: {1})",
+				new Object[] { admin.getUsername(), admin.getId() });
+
 		// Don't allow deleting yourself
 		if (currentAdmin != null && admin.getId().equals(currentAdmin.getId())) {
+			logger.log(Level.WARNING, "Attempted to delete own admin account");
 			showStatusMessage("You cannot delete your own admin account", true);
 			return;
 		}
@@ -454,8 +501,10 @@ public class AdminManagementController {
 		// Show the dialog
 		dialog.showAndWait().ifPresent(response -> {
 			if (response == deleteButtonType) {
+				logger.log(Level.INFO, "Delete confirmed for admin: {0}", admin.getUsername());
 				handleConfirmDelete();
 			} else {
+				logger.log(Level.INFO, "Delete cancelled for admin: {0}", admin.getUsername());
 				handleCancelDelete();
 			}
 		});
@@ -463,6 +512,8 @@ public class AdminManagementController {
 
 	@FXML
 	public void handleCancelDelete() {
+		logger.log(Level.INFO, "Admin deletion cancelled");
+
 		// Hide the confirmation dialog
 		if (confirmationDialog != null) {
 			confirmationDialog.setVisible(false);
@@ -476,15 +527,20 @@ public class AdminManagementController {
 	public void handleConfirmDelete() {
 		// Check if we have a selected admin
 		if (selectedAdmin == null) {
+			logger.log(Level.WARNING, "No admin selected for deletion");
 			showStatusMessage("No admin selected for deletion", true);
 			return;
 		}
 
 		// Ensure we have a valid ID
 		if (selectedAdmin.getId() == null) {
+			logger.log(Level.WARNING, "Invalid admin ID for deletion");
 			showStatusMessage("Invalid admin ID", true);
 			return;
 		}
+
+		logger.log(Level.INFO, "Deleting admin with ID: {0}, username: {1}",
+				new Object[] { selectedAdmin.getId(), selectedAdmin.getUsername() });
 
 		// Show loading status
 		showStatusMessage("Deleting admin...", false);
@@ -498,6 +554,8 @@ public class AdminManagementController {
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
 					if (success) {
+						logger.log(Level.INFO, "Admin deleted successfully");
+
 						// Remove the admin from the list
 						adminsList.remove(selectedAdmin);
 
@@ -512,12 +570,13 @@ public class AdminManagementController {
 							parentView.refresh();
 						}
 					} else {
+						logger.log(Level.WARNING, "Failed to delete admin: service returned false");
 						showStatusMessage("Failed to delete admin. Please check permissions and try again.", true);
 					}
 				});
 			} catch (Exception e) {
-				System.err.println("Error deleting admin: " + e.getMessage());
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error deleting admin: {0}", e.getMessage());
+				logger.log(Level.SEVERE, "Exception details:", e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
@@ -528,12 +587,15 @@ public class AdminManagementController {
 
 		// Start the background thread
 		deleteThread.setDaemon(true);
+		deleteThread.setName("AdminDeleter");
 		deleteThread.start();
 	}
 
 	private void showStatusMessage(String message, boolean isError) {
 		if (statusLabel == null)
 			return;
+
+		logger.log(isError ? Level.WARNING : Level.INFO, "Status message: {0}", message);
 
 		statusLabel.setText(message);
 		statusLabel.getStyleClass().removeAll("error-message", "success-message");
@@ -542,14 +604,17 @@ public class AdminManagementController {
 
 		// Automatically hide success messages after 5 seconds
 		if (!isError) {
-			new Thread(() -> {
+			Thread timerThread = new Thread(() -> {
 				try {
 					Thread.sleep(5000);
 					Platform.runLater(() -> statusLabel.setVisible(false));
 				} catch (InterruptedException e) {
-					// Ignore
+					logger.log(Level.FINE, "Status message timer interrupted", e);
 				}
-			}).start();
+			});
+			timerThread.setDaemon(true);
+			timerThread.setName("StatusMessageTimer");
+			timerThread.start();
 		}
 	}
 }
