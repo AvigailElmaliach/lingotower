@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,254 +17,294 @@ import org.springframework.util.MultiValueMap;
 import com.lingotower.model.Category;
 import com.lingotower.model.Word;
 
+/**
+ * Service for managing words.
+ */
 public class WordService extends BaseService {
 
-	private static final String BASE_URL = "http://localhost:8080/words";
 	private final CategoryService categoryService;
 
+	/**
+	 * Constructor for WordService.
+	 */
 	public WordService() {
 		super(); // Initialize the base service
-		this.categoryService = new CategoryService(); // Instantiate
+		this.categoryService = new CategoryService();
+		logger.debug("WordService initialized");
 	}
 
+	/**
+	 * Constructor for WordService with dependency injection.
+	 * 
+	 * @param categoryService The CategoryService to use
+	 */
+	public WordService(CategoryService categoryService) {
+		super(); // Initialize the base service
+		this.categoryService = categoryService;
+		logger.debug("WordService initialized with injected CategoryService");
+	}
+
+	/**
+	 * Fetches all categories using the CategoryService.
+	 * 
+	 * @return A list of all categories
+	 */
 	public List<Category> getAllCategories() {
-		return categoryService.getAllCategories(); // Delegate the call
+		return categoryService.getAllCategories();
 	}
 
+	/**
+	 * Fetches all words from the server.
+	 * 
+	 * @return A list of all words or an empty list if none are found or an error
+	 *         occurs
+	 */
 	public List<Word> getAllWords() {
 		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
+			logger.info("Fetching all words");
 
-			// Make the request to http://localhost:8080/words
-			ResponseEntity<List<Word>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity,
+			String url = buildUrl(WORDS_PATH);
+			HttpEntity<?> entity = createAuthEntity(null);
+
+			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
 			if (response.getStatusCode().is2xxSuccessful()) {
-				return response.getBody() != null ? response.getBody() : new ArrayList<>();
+				List<Word> words = response.getBody();
+				logger.info("Successfully retrieved {} words", words != null ? words.size() : 0);
+				return words != null ? words : new ArrayList<>();
 			} else {
-				System.err.println("Error response from server: " + response.getStatusCode());
+				logger.error("Failed to retrieve words. Status code: {}", response.getStatusCode());
 				return new ArrayList<>();
 			}
 		} catch (Exception e) {
-			System.err.println("Error fetching words: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error fetching words: {}", e.getMessage(), e);
 			return new ArrayList<>();
 		}
 	}
 
 	/**
-	 * Gets all words from a specific category
+	 * Fetches words by category ID.
 	 * 
-	 * @param categoryId The category ID
-	 * @return A list of words in the category or empty list if none found
+	 * @param categoryId The category ID to fetch words for
+	 * @return A list of words for the given category or an empty list
 	 */
 	public List<Word> getWordsByCategory(long categoryId) {
 		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
+			logger.info("Fetching words for category ID: {}", categoryId);
 
-			// Make the request to the endpoint with translation parameters
-			String url = BASE_URL + "/category/" + categoryId + "/translate";
+			// Use the correct endpoint for words with translations
+			String url = buildUrl(WORDS_PATH, "category", String.valueOf(categoryId), "translate");
 
-			System.out.println("Fetching words from category " + categoryId);
+			HttpEntity<?> entity = createAuthEntity(null);
 
-			// Use the correct response type for the endpoint
 			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
 			List<Word> words = response.getBody();
-			System.out.println("Received " + (words != null ? words.size() : 0) + " words from server");
 
-			// Debug the first word if available
 			if (words != null && !words.isEmpty()) {
+				logger.info("Successfully retrieved {} words for category ID: {}", words.size(), categoryId);
+
+				// Log sample of first word for debugging
 				Word firstWord = words.get(0);
-				System.out.println("First word: " + firstWord.getWord());
-				System.out.println("Translation: " + firstWord.getTranslatedText());
-				System.out.println(
-						"Category: " + (firstWord.getCategory() != null ? firstWord.getCategory().getName() : "null"));
-				System.out.println("Difficulty: " + firstWord.getDifficulty());
+				logger.debug("Sample word: {}, Translation: {}, Category: {}, Difficulty: {}", firstWord.getWord(),
+						firstWord.getTranslatedText(),
+						firstWord.getCategory() != null ? firstWord.getCategory().getName() : "null",
+						firstWord.getDifficulty());
+			} else {
+				logger.warn("No words found for category ID: {}", categoryId);
 			}
 
 			return words != null ? words : new ArrayList<>();
 		} catch (Exception e) {
-			System.err.println("Error fetching words by category: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error fetching words for category ID {}: {}", categoryId, e.getMessage(), e);
 			return new ArrayList<>();
 		}
 	}
 
-	// Get a word by ID
+	/**
+	 * Fetches a word by its ID.
+	 * 
+	 * @param id The ID of the word to fetch
+	 * @return The word if found, null otherwise
+	 */
 	public Word getWordById(Long id) {
 		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
+			logger.info("Fetching word with ID: {}", id);
 
-			// Make the request
-			String url = BASE_URL + "/" + id;
+			String url = buildUrl(WORDS_PATH, id.toString());
+			HttpEntity<?> entity = createAuthEntity(null);
+
 			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.GET, entity, Word.class);
 
-			return response.getBody();
+			if (response.getStatusCode() == HttpStatus.OK) {
+				Word word = response.getBody();
+				logger.info("Successfully retrieved word with ID: {}", id);
+				return word;
+			} else {
+				logger.error("Failed to retrieve word with ID: {}. Status code: {}", id, response.getStatusCode());
+				return null;
+			}
 		} catch (Exception e) {
-			System.err.println("Error getting word by ID: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	// Create a new word
-	public Word createWord(Word word) {
-		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<Word> entity = new HttpEntity<>(word, headers);
-
-			// Make the request
-			ResponseEntity<Word> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, entity, Word.class);
-
-			return response.getBody();
-		} catch (Exception e) {
-			System.err.println("Error creating word: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error fetching word with ID {}: {}", id, e.getMessage(), e);
 			return null;
 		}
 	}
 
 	/**
-	 * Gets random words from a specific category and difficulty level
+	 * Creates a new word.
+	 * 
+	 * @param word The word to create
+	 * @return The created word with its assigned ID, or null if creation failed
+	 */
+	public Word createWord(Word word) {
+		try {
+			logger.info("Creating new word: {}", word.getWord());
+
+			String url = buildUrl(WORDS_PATH);
+			HttpEntity<Word> entity = createAuthEntity(word);
+
+			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.POST, entity, Word.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				Word createdWord = response.getBody();
+				logger.info("Successfully created word with ID: {}",
+						createdWord != null ? createdWord.getId() : "unknown");
+				return createdWord;
+			} else {
+				logger.error("Failed to create word. Status code: {}", response.getStatusCode());
+				return null;
+			}
+		} catch (Exception e) {
+			logger.error("Error creating word: {}", e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Gets random words from a specific category and difficulty level.
+	 * 
+	 * @param categoryId The category ID
+	 * @param difficulty The difficulty level
+	 * @param sourceLang The source language
+	 * @param targetLang The target language
+	 * @return A list of random words
 	 */
 	public List<Word> getRandomWordsByCategory(long categoryId, String difficulty, String sourceLang,
 			String targetLang) {
 		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
+			logger.info("Fetching random words for category ID: {}, difficulty: {}", categoryId, difficulty);
 
-			// Make the request to the endpoint
-			String url = BASE_URL + "/category/" + categoryId + "/difficulty/" + difficulty
-					+ "/random/translate?sourceLang=" + sourceLang + "&targetLang=" + targetLang;
+			String url = buildUrl(WORDS_PATH, "category", String.valueOf(categoryId), "difficulty", difficulty,
+					"random/translate") + "?sourceLang=" + sourceLang + "&targetLang=" + targetLang;
 
-			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-					new ParameterizedTypeReference<List<Word>>() {
-					});
+			HttpEntity<?> entity = createAuthEntity(null);
 
-			return response.getBody();
-		} catch (Exception e) {
-			System.err.println("Error fetching random words: " + e.getMessage());
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-
-	/**
-	 * Gets words with translations from a specific category Updated to handle the
-	 * correct response format
-	 * 
-	 * @param categoryId The category ID
-	 * @return A list of words with translations
-	 */
-	public List<Word> getWordsByCategoryWithTranslation(long categoryId) {
-		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			// Construct the full URL
-			String url = BASE_URL + "/category/" + categoryId + "/translate";
-
-			System.out.println("Fetching words from: " + url);
-
-			// Use the correct ParameterizedTypeReference for the expected response format
 			ResponseEntity<List<Word>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<List<Word>>() {
 					});
 
 			List<Word> words = response.getBody();
-
-			if (words != null) {
-				System.out.println("Successfully received " + words.size() + " words");
-				// Print the first word if available for debugging
-				if (!words.isEmpty()) {
-					Word firstWord = words.get(0);
-					System.out.println("Sample word: " + firstWord.getWord());
-					System.out.println("Translation: " + firstWord.getTranslatedText());
-					System.out.println("Category ID: "
-							+ (firstWord.getCategory() != null ? firstWord.getCategory().getId() : "null"));
-					System.out.println("Difficulty: " + firstWord.getDifficulty());
-				}
-			} else {
-				System.out.println("No words received from server");
-			}
-
+			logger.info("Successfully retrieved {} random words", words != null ? words.size() : 0);
 			return words != null ? words : new ArrayList<>();
 		} catch (Exception e) {
-			System.err.println("Error fetching words with translations: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error fetching random words: {}", e.getMessage(), e);
 			return new ArrayList<>();
 		}
 	}
 
+	/**
+	 * Updates an existing word.
+	 * 
+	 * @param id          The ID of the word to update
+	 * @param wordDetails The updated word information
+	 * @return The updated word or null if update failed
+	 */
 	public Word updateWord(Long id, Word wordDetails) {
 		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<Word> entity = new HttpEntity<>(wordDetails, headers);
+			logger.info("Updating word with ID: {}", id);
 
-			// Make the request
-			String url = BASE_URL + "/" + id;
+			String url = buildUrl(WORDS_PATH, id.toString());
+			HttpEntity<Word> entity = createAuthEntity(wordDetails);
+
 			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Word.class);
 
-			return response.getBody();
+			if (response.getStatusCode().is2xxSuccessful()) {
+				Word updatedWord = response.getBody();
+				logger.info("Successfully updated word with ID: {}", id);
+				return updatedWord;
+			} else {
+				logger.error("Failed to update word with ID: {}. Status code: {}", id, response.getStatusCode());
+				return null;
+			}
 		} catch (Exception e) {
-			System.err.println("Error updating word: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public boolean deleteWord(Long id) {
-		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			// Make the request
-			String url = "http://localhost:8080/admins/word/" + id;
-			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
-
-			return response.getStatusCode().is2xxSuccessful();
-		} catch (Exception e) {
-			System.err.println("Error deleting word: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public Word getDailyWord() {
-		try {
-			// Create headers with authentication
-			HttpHeaders headers = createAuthHeaders();
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-
-			// Make the request to the daily word endpoint
-			String url = BASE_URL + "/daily";
-			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.GET, entity, Word.class);
-
-			return response.getBody();
-		} catch (Exception e) {
-			System.err.println("Error fetching daily word: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error updating word with ID {}: {}", id, e.getMessage(), e);
 			return null;
 		}
 	}
 
 	/**
-	 * Uploads a JSON file containing words to the server using multipart form data
+	 * Deletes a word by its ID.
+	 * 
+	 * @param id The ID of the word to delete
+	 * @return true if deletion was successful, false otherwise
+	 */
+	public boolean deleteWord(Long id) {
+		try {
+			logger.info("Deleting word with ID: {}", id);
+
+			// Note: Using the admin endpoint for word deletion
+			String url = buildUrl(ADMINS_PATH, "word", id.toString());
+			HttpEntity<?> entity = createAuthEntity(null);
+
+			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+			boolean success = response.getStatusCode().is2xxSuccessful();
+			if (success) {
+				logger.info("Successfully deleted word with ID: {}", id);
+			} else {
+				logger.error("Failed to delete word with ID: {}. Status code: {}", id, response.getStatusCode());
+			}
+			return success;
+		} catch (Exception e) {
+			logger.error("Error deleting word with ID {}: {}", id, e.getMessage(), e);
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the daily word.
+	 * 
+	 * @return The daily word or null if not available
+	 */
+	public Word getDailyWord() {
+		try {
+			logger.info("Fetching daily word");
+
+			String url = buildUrl(WORDS_PATH, "daily");
+			HttpEntity<?> entity = createAuthEntity(null);
+
+			ResponseEntity<Word> response = restTemplate.exchange(url, HttpMethod.GET, entity, Word.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				Word dailyWord = response.getBody();
+				logger.info("Successfully retrieved daily word: {}", dailyWord != null ? dailyWord.getWord() : "null");
+				return dailyWord;
+			} else {
+				logger.error("Failed to retrieve daily word. Status code: {}", response.getStatusCode());
+				return null;
+			}
+		} catch (Exception e) {
+			logger.error("Error fetching daily word: {}", e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Uploads a JSON file containing words to the server.
 	 * 
 	 * @param jsonFile   The JSON file to upload
 	 * @param categoryId The category ID to associate with the words
@@ -272,6 +312,8 @@ public class WordService extends BaseService {
 	 */
 	public String uploadWordsJson(File jsonFile, Long categoryId) {
 		try {
+			logger.info("Uploading words from JSON file for category ID: {}", categoryId);
+
 			// Get category name from ID
 			Category category = null;
 			for (Category c : getAllCategories()) {
@@ -282,43 +324,37 @@ public class WordService extends BaseService {
 			}
 
 			if (category == null) {
-				System.err.println("Category not found for ID: " + categoryId);
+				logger.error("Category not found for ID: {}", categoryId);
 				return null;
 			}
 
-			// Create headers with authentication
+			// Create headers with authentication but without content type
+			// (will be set automatically for multipart)
 			HttpHeaders headers = createAuthHeaders();
-			// Don't set content type, RestTemplate will set it correctly for
-			// multipart/form-data
+			headers.remove(HttpHeaders.CONTENT_TYPE);
 
 			// Create a MultiValueMap for the form data
 			MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-
-			// Add the category as a form field
 			form.add("category", category.getName());
-
-			// Add the file as a form field
-			// Create a resource from the file
-			Resource fileResource = new FileSystemResource(jsonFile);
-			form.add("file", fileResource);
+			form.add("file", new FileSystemResource(jsonFile));
 
 			// Create HTTP entity with form data and headers
 			HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(form, headers);
 
 			// Make the POST request
-			ResponseEntity<String> response = restTemplate.exchange(BASE_URL + "/upload", HttpMethod.POST, entity,
-					String.class);
+			String url = buildUrl(WORDS_PATH, "upload");
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
-			// Return the response body if successful
 			if (response.getStatusCode().is2xxSuccessful()) {
-				return response.getBody();
+				String result = response.getBody();
+				logger.info("Successfully uploaded words JSON: {}", result);
+				return result;
 			} else {
-				System.err.println("Upload failed with status: " + response.getStatusCode());
+				logger.error("Failed to upload words JSON. Status code: {}", response.getStatusCode());
 				return null;
 			}
 		} catch (Exception e) {
-			System.err.println("Error uploading words JSON: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error uploading words JSON: {}", e.getMessage(), e);
 			return null;
 		}
 	}

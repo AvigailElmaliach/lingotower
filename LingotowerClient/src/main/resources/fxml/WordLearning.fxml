@@ -7,7 +7,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane fx:id="view" prefHeight="600.0" prefWidth="800.0" styleClass="word-learning-view" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.WordLearningController">
+
+<BorderPane fx:id="view" prefHeight="600.0" prefWidth="800.0" styleClass="word-learning-view" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lingotower.ui.controllers.WordLearningController">
    <top>
       <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 20px;">
          <children>
@@ -15,7 +16,7 @@
             <HBox alignment="CENTER" spacing="10.0">
                <children>
                   <Label styleClass="progress-text" text="Progress:" />
-                  <ProgressBar fx:id="progressBar" prefWidth="300.0" progress="0.0" styleClass="learning-progress-bar"/>
+                  <ProgressBar fx:id="progressBar" prefWidth="300.0" progress="0.0" styleClass="learning-progress-bar" />
                    <Label fx:id="progressLabel" styleClass="progress-text" text="0/0" />
                </children>
             </HBox>
@@ -27,8 +28,9 @@
          <children>
             <VBox fx:id="wordCard" alignment="CENTER" minHeight="200.0" spacing="15.0" styleClass="word-card">
                <children>
-                  <Label fx:id="wordLabel" styleClass="word-text" text="Word" wrapText="true"/>
-                  <Label fx:id="translationLabel" styleClass="translation-text" text="Translation" visible="false" wrapText="true"/>
+                  <Label fx:id="wordLabel" styleClass="word-text" text="Word" wrapText="true" />
+                  <Label fx:id="translationLabel" styleClass="translation-text" text="Translation" visible="false" wrapText="true" />
+                  <Label fx:id="ExamplesUsageLabel" layoutX="361.0" layoutY="117.0" styleClass="translation-text" text="Examples Usage" visible="false" wrapText="true" />
                </children>
                <padding>
                   <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" /> </padding>
@@ -36,10 +38,11 @@
             <HBox alignment="CENTER" spacing="20.0">
                <children>
                   <Button fx:id="showTranslationButton" mnemonicParsing="false" onAction="#handleShowTranslation" styleClass="button, primary-button" text="Show Translation" />
+                  <Button fx:id="showExamplesButton" layoutX="290.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleShowExamples" styleClass="button, primary-button" text="show Examples" />
                    <Button fx:id="nextWordButton" mnemonicParsing="false" onAction="#handleNextWord" styleClass="button, success-button" text="Next Word" />
                </children>
             </HBox>
-            <Label fx:id="messageLabel" styleClass="info-label" text="Click 'Show Translation' to reveal the meaning" wrapText="true"/>
+            <Label fx:id="messageLabel" styleClass="info-label" text="Click 'Show Translation' to reveal the meaning" wrapText="true" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />

@@ -131,8 +131,7 @@
     -fx-background-radius: 8px;
     -fx-border-color: #eaeef2;
     -fx-border-radius: 8px;
-    -fx-min-width: 500px;
-    -fx-max-width: 700px;
+    -fx-max-width: 800px;
 }
 
 .answer-option {
@@ -311,7 +310,6 @@
     -fx-text-fill: #212121;
     -fx-font-weight: bold;
     -fx-wrap-text: true;
-    -fx-max-width: 700px;
     -fx-text-alignment: center;
     -fx-alignment: center;
 }

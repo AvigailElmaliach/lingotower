@@ -71,13 +71,16 @@ public class AdminManagementView extends AbstractContentView {
 	/**
 	 * Loads the admins from the server.
 	 */
-	public void loadAdmins() {
-		AdminManagementController controller = getController();
-		if (controller != null) {
-			controller.loadAdmins();
-		}
-	}
+//	public void loadAdmins() {
+//		AdminManagementController controller = getController();
+//		if (controller != null) {
+//			controller.loadAdmins();
+//		}
+//	}
 
+	/**
+	 * Loads the admins from the server.
+	 */
 	@Override
 	public void refresh() {
 		AdminManagementController controller = getController();
