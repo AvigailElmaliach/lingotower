@@ -203,7 +203,7 @@ public class DailyWordController {
 	 * @return Up to two example sentences joined by a newline, or a default/error
 	 *         message.
 	 */
-	private String getExampleForWord(String word) {
+	public String getExampleForWord(String word) {
 		// Ensure service is available
 		if (exampleSentencesService == null) {
 			System.err.println("getExampleForWord: ExampleSentencesService is null.");
