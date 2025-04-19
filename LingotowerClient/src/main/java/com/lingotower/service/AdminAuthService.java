@@ -1,14 +1,13 @@
 package com.lingotower.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import com.lingotower.dto.LoginRequest;
 import com.lingotower.model.Admin;
@@ -17,20 +16,22 @@ import com.lingotower.security.TokenStorage;
 import com.lingotower.utils.LoggingUtility;
 
 /**
- * Service for handling admin authentication
+ * Service for handling admin authentication.
  */
-public class AdminAuthService {
+public class AdminAuthService extends BaseService {
 
-	private static final Logger logger = LoggerFactory.getLogger(AdminAuthService.class);
-	private RestTemplate restTemplate;
+	private static final String ADMIN_AUTH_PATH = "/api/auth/admin";
 
+	/**
+	 * Constructor for AdminAuthService.
+	 */
 	public AdminAuthService() {
-		this.restTemplate = new RestTemplate();
+		super(); // Initialize the base service
 		logger.debug("AdminAuthService initialized");
 	}
 
 	/**
-	 * Login as admin
+	 * Login as admin.
 	 * 
 	 * @param username Admin username
 	 * @param password Admin password
@@ -51,11 +52,12 @@ public class AdminAuthService {
 			// Create HTTP entity with request body and headers
 			HttpEntity<LoginRequest> entity = new HttpEntity<>(loginRequest, headers);
 
-			logger.debug("Sending admin login request to: http://localhost:8080/api/auth/admin/login");
+			// Prepare URL
+			String url = buildUrl(ADMIN_AUTH_PATH, "login");
+			logger.debug("Sending admin login request to: {}", url);
 
 			// Send login request to the admin login endpoint
-			ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/api/auth/admin/login",
-					HttpMethod.POST, entity, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
 			// Check if login was successful
 			if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
@@ -82,15 +84,24 @@ public class AdminAuthService {
 				LoggingUtility.logAction(logger, "login", username, "admin", "failed");
 				return null;
 			}
+		} catch (HttpClientErrorException e) {
+			logger.error("HTTP Error during admin login for {}: {} - {}", username, e.getStatusCode(),
+					e.getResponseBodyAsString());
+			LoggingUtility.logAction(logger, "login", username, "admin", "error: HTTP " + e.getStatusCode());
+			return null;
+		} catch (RestClientException e) {
+			logger.error("REST client error during admin login for {}: {}", username, e.getMessage());
+			LoggingUtility.logAction(logger, "login", username, "admin", "error: " + e.getMessage());
+			return null;
 		} catch (Exception e) {
-			logger.error("Error during admin login for {}: {}", username, e.getMessage(), e);
+			logger.error("Unexpected error during admin login for {}: {}", username, e.getMessage(), e);
 			LoggingUtility.logAction(logger, "login", username, "admin", "error: " + e.getMessage());
 			return null;
 		}
 	}
 
 	/**
-	 * Logout the current admin
+	 * Logout the current admin.
 	 */
 	public void logout() {
 		logger.info("Admin logout - clearing token");

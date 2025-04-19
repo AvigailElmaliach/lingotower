@@ -54,7 +54,7 @@ public class DailyWordController {
 		try {
 			wordService = new WordService();
 			userService = new UserService();
-			exampleSentencesService = new ExampleSentencesService(null, null);
+			exampleSentencesService = new ExampleSentencesService();
 		} catch (Exception e) {
 			// Handle cases where services might not be initialized correctly
 			System.err.println("FATAL: Could not initialize services in DailyWordController: " + e.getMessage());

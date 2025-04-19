@@ -19,9 +19,20 @@ import com.lingotower.security.TokenStorage;
 public abstract class BaseService {
 
 	protected static final Logger logger = LoggerFactory.getLogger(BaseService.class);
-	protected RestTemplate restTemplate;
-	protected final TokenStorage tokenStorage;
-	protected static final String BASE_URL = "http://localhost:8080"; // Base URL for the API
+	protected final RestTemplate restTemplate;
+
+	// Common base URL for all API endpoints
+	protected static final String BASE_URL = "http://localhost:8080";
+
+	// Common API endpoint paths
+	protected static final String API_AUTH_PATH = "/api/auth";
+	protected static final String CATEGORIES_PATH = "/categories";
+	protected static final String WORDS_PATH = "/words";
+	protected static final String QUIZZES_PATH = "/quizzes";
+	protected static final String USERS_PATH = "/users";
+	protected static final String ADMINS_PATH = "/admins";
+	protected static final String TRANSLATE_PATH = "/api/translate";
+	protected static final String COMPLETION_PATH = "/completion-practice";
 
 	/**
 	 * Constructor that initializes the RestTemplate with an error handler.
@@ -29,8 +40,7 @@ public abstract class BaseService {
 	public BaseService() {
 		this.restTemplate = new RestTemplate();
 		this.restTemplate.setErrorHandler(new ApiResponseErrorHandler());
-		this.tokenStorage = new TokenStorage();
-		logger.debug("BaseService initialized");
+		logger.debug("{} initialized", this.getClass().getSimpleName());
 	}
 
 	/**
@@ -45,12 +55,67 @@ public abstract class BaseService {
 		if (TokenStorage.hasToken()) {
 			String token = TokenStorage.getToken();
 			headers.set("Authorization", "Bearer " + token);
-			logger.debug("Added authorization token to request");
+			logger.trace("Added authorization token to request headers");
 		} else {
-			logger.warn("No token available for request");
+			logger.warn("No token available for request in {}", this.getClass().getSimpleName());
 		}
 
 		return headers;
+	}
+
+	/**
+	 * Creates an HttpEntity with the Authorization header.
+	 *
+	 * @param body The object to be sent as the request body (can be null for
+	 *             GET/DELETE)
+	 * @param <T>  The type of the body
+	 * @return An HttpEntity containing the headers and the body
+	 */
+	protected <T> HttpEntity<T> createAuthEntity(T body) {
+		HttpHeaders headers = createAuthHeaders();
+		return new HttpEntity<>(body, headers);
+	}
+
+	/**
+	 * Creates an HttpEntity with the Authorization header. This is the same as
+	 * createAuthEntity but with a more standard method name for compatibility with
+	 * existing code that might use this name.
+	 *
+	 * @param body The object to be sent as the request body (can be null for
+	 *             GET/DELETE)
+	 * @param <T>  The type of the body
+	 * @return An HttpEntity containing the headers and the body
+	 */
+	protected <T> HttpEntity<T> createAuthHttpEntity(T body) {
+		return createAuthEntity(body);
+	}
+
+	/**
+	 * Builds a complete URL with the base URL and the provided path.
+	 * 
+	 * @param path The API endpoint path
+	 * @return The complete URL
+	 */
+	protected String buildUrl(String path) {
+		return BASE_URL + path;
+	}
+
+	/**
+	 * Builds a complete URL with the base URL, path, and additional path segments.
+	 * 
+	 * @param path         The API endpoint path
+	 * @param pathSegments Additional path segments to append
+	 * @return The complete URL
+	 */
+	protected String buildUrl(String path, String... pathSegments) {
+		StringBuilder url = new StringBuilder(BASE_URL).append(path);
+		for (String segment : pathSegments) {
+			if (!segment.startsWith("/")) {
+				url.append("/");
+			}
+			url.append(segment);
+		}
+		return url.toString();
 	}
 
 	/**
@@ -67,6 +132,10 @@ public abstract class BaseService {
 			if (statusCode == 401) {
 				logger.warn("Authentication failure - token expired or invalid");
 				TokenStorage.clearToken();
+			} else if (statusCode == 403) {
+				logger.warn("Authorization failure - insufficient permissions");
+			} else if (statusCode == 404) {
+				logger.warn("Resource not found");
 			} else {
 				logger.error("API error: Status code {}", statusCode);
 			}
@@ -75,33 +144,4 @@ public abstract class BaseService {
 			super.handleError(response);
 		}
 	}
-
-	/**
-	 * Creates an HttpEntity with the Authorization header set using the stored
-	 * token. Sets Content-Type to application/json by default if a body is present.
-	 *
-	 * @param body The object to be sent as the request body (can be null for
-	 *             GET/DELETE).
-	 * @param <T>  The type of the body.
-	 * @return An HttpEntity containing the headers and the body.
-	 */
-	protected <T> HttpEntity<T> createAuthHttpEntity(T body) {
-		HttpHeaders headers = new HttpHeaders();
-		String token = tokenStorage.getToken(); // Assumes tokenStorage is accessible here
-
-		if (token != null && !token.isEmpty()) {
-			headers.setBearerAuth(token);
-		}
-
-		// Set Content-Type if a body is provided. Adjust if needed (e.g., for file
-		// uploads).
-		if (body != null) {
-			headers.setContentType(MediaType.APPLICATION_JSON);
-		}
-		// Optional: Set Accept header if needed
-		// headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-		return new HttpEntity<>(body, headers);
-	}
-
 }
