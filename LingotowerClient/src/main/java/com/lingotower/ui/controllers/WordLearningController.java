@@ -57,9 +57,6 @@ public class WordLearningController {
 	private Label messageLabel;
 
 	@FXML
-	private Label messageLabel1; // Consider removing if unused
-
-	@FXML
 	private Button backButton;
 
 	@FXML
@@ -213,7 +210,8 @@ public class WordLearningController {
 		}
 
 		// Update message
-		messageLabel.setText("Click 'Show Translation' or 'Show Examples'");
+		messageLabel
+				.setText("Click 'Show Translation ' to reveal the meaning or 'Show Examples' to see usage in context.");
 	}
 
 	@FXML
@@ -396,7 +394,8 @@ public class WordLearningController {
 			messageLabel.setText("Click 'Next Word', 'Mark as Learned', or 'Show Translation'");
 		} else {
 			// Should not happen if called correctly, but as a fallback:
-			messageLabel.setText("Click 'Next Word', 'Mark as Learned', 'Show Translation', or 'Show Examples'");
+			messageLabel.setText(
+					"Click 'Show Translation' to reveal the meaning or 'Show Examples' to see usage in context.'");
 		}
 	}
 
