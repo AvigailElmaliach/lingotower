@@ -11,6 +11,8 @@ import com.lingotower.model.Quiz;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +29,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class QuizController {
 
@@ -652,6 +655,9 @@ public class QuizController {
 
 		if (isCorrect) {
 			correctAnswersCount++;
+			selectedButton.setStyle("-fx-text-fill: #2e7d32;"); // Green for selected answer
+		} else {
+			selectedButton.setStyle("-fx-text-fill: #c62828;"); // Red for selected answer
 		}
 
 		// Show feedback
@@ -667,14 +673,24 @@ public class QuizController {
 		if (isSentenceCompletion) {
 			// Replace the blank with the selected answer and show it in the question text
 			String completedSentence = getCompleteSentence(question.getQuestionText(), selectedAnswer);
-			// Set a different style based on correctness
+			// Set a different color based on correctness
 			if (isCorrect) {
+				correctAnswersCount++;
 				questionText.setStyle("-fx-text-fill: #2e7d32;"); // Green for correct
 			} else {
 				questionText.setStyle("-fx-text-fill: #c62828;"); // Red for incorrect
 			}
 			questionText.setText(completedSentence);
 		}
+
+		// Create a Timeline to reset the color after a delay
+		Timeline resetColorTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+			questionText.setStyle("-fx-text-fill: black;"); // Reset to black
+			selectedButton.setStyle("-fx-text-fill: black;"); // Reset to black
+		}));
+
+		resetColorTimeline.setCycleCount(1); // Run only once
+		resetColorTimeline.play();
 	}
 
 	private void showAnswerFeedback(boolean correct, String correctAnswer) {
