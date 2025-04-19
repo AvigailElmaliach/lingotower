@@ -16,6 +16,13 @@ public class ValidationUtility {
 	private static final Logger logger = LoggerFactory.getLogger(ValidationUtility.class);
 
 	/**
+	 * Private constructor to prevent instantiation of the utility class.
+	 */
+	private ValidationUtility() {
+		throw new UnsupportedOperationException("Utility class cannot be instantiated");
+	}
+
+	/**
 	 * Validates username format and length
 	 * 
 	 * @param username The username to validate

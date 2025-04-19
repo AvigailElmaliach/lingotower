@@ -256,7 +256,7 @@ public class AdminViewController {
 			primaryStage.setTitle("LingoTower Admin - Admin Management");
 
 			// Load admins
-			adminManagementView.loadAdmins();
+			adminManagementView.refresh();
 
 		} catch (Exception e) {
 			System.err.println("Error loading admin management view: " + e.getMessage());

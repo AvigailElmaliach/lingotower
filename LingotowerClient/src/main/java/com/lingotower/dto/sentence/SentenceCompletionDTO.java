@@ -19,6 +19,9 @@ public class SentenceCompletionDTO {
 
 	// Default constructor
 	public SentenceCompletionDTO() {
+		// This constructor is intentionally empty.
+		// It is required for frameworks like Jackson to deserialize JSON into this DTO.
+
 	}
 
 	// Getters and setters

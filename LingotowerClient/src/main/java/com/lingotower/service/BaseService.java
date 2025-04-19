@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -37,7 +39,7 @@ public abstract class BaseService {
 	/**
 	 * Constructor that initializes the RestTemplate with an error handler.
 	 */
-	public BaseService() {
+	protected BaseService() {
 		this.restTemplate = new RestTemplate();
 		this.restTemplate.setErrorHandler(new ApiResponseErrorHandler());
 		logger.debug("{} initialized", this.getClass().getSimpleName());
@@ -45,7 +47,7 @@ public abstract class BaseService {
 
 	/**
 	 * Creates HTTP headers with authorization token if available.
-	 * 
+	 *
 	 * @return HttpHeaders with authorization if token exists
 	 */
 	protected HttpHeaders createAuthHeaders() {
@@ -76,23 +78,11 @@ public abstract class BaseService {
 		return new HttpEntity<>(body, headers);
 	}
 
-	/**
-	 * Creates an HttpEntity with the Authorization header. This is the same as
-	 * createAuthEntity but with a more standard method name for compatibility with
-	 * existing code that might use this name.
-	 *
-	 * @param body The object to be sent as the request body (can be null for
-	 *             GET/DELETE)
-	 * @param <T>  The type of the body
-	 * @return An HttpEntity containing the headers and the body
-	 */
-	protected <T> HttpEntity<T> createAuthHttpEntity(T body) {
-		return createAuthEntity(body);
-	}
+	// Removed the duplicated createAuthHttpEntity method
 
 	/**
 	 * Builds a complete URL with the base URL and the provided path.
-	 * 
+	 *
 	 * @param path The API endpoint path
 	 * @return The complete URL
 	 */
@@ -102,7 +92,7 @@ public abstract class BaseService {
 
 	/**
 	 * Builds a complete URL with the base URL, path, and additional path segments.
-	 * 
+	 *
 	 * @param path         The API endpoint path
 	 * @param pathSegments Additional path segments to append
 	 * @return The complete URL
@@ -126,22 +116,35 @@ public abstract class BaseService {
 
 		@Override
 		public void handleError(ClientHttpResponse response) throws IOException {
-			int statusCode = response.getStatusCode().value();
-
-			// Handle authentication failures
-			if (statusCode == 401) {
-				logger.warn("Authentication failure - token expired or invalid");
-				TokenStorage.clearToken();
-			} else if (statusCode == 403) {
-				logger.warn("Authorization failure - insufficient permissions");
-			} else if (statusCode == 404) {
-				logger.warn("Resource not found");
-			} else {
-				logger.error("API error: Status code {}", statusCode);
+			if (response == null) {
+				logger.error("Cannot handle error from a null ClientHttpResponse.");
+				throw new IOException("Received null response, cannot determine error details.");
 			}
 
-			// Let the default handler process the error
-			super.handleError(response);
+			HttpStatusCode statusCode = response.getStatusCode();
+			int statusCodeValue = statusCode.value();
+
+			try {
+				if (statusCodeValue == HttpStatus.UNAUTHORIZED.value()) { // 401
+					logger.warn("Authentication failure - token expired or invalid. Status code: {}", statusCodeValue);
+					TokenStorage.clearToken();
+				} else if (statusCodeValue == HttpStatus.FORBIDDEN.value()) { // 403
+					logger.warn("Authorization failure - insufficient permissions. Status code: {}", statusCodeValue);
+				} else if (statusCodeValue == HttpStatus.NOT_FOUND.value()) { // 404
+					logger.warn("Resource not found. Status code: {}", statusCodeValue);
+				} else if (statusCode.isError()) {
+					logger.error("API error: Status code {}", statusCodeValue);
+				}
+
+				super.handleError(response);
+
+			} catch (IllegalArgumentException e) {
+				// Log the exception with contextual information
+				logger.error("Received an unknown HTTP status code from response. Status code: {}",
+						response.getStatusCode().value(), e);
+
+			}
 		}
+
 	}
 }

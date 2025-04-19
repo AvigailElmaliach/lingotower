@@ -1,6 +1,7 @@
 package com.lingotower.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -155,7 +156,7 @@ public class QuizService extends BaseService {
 			}
 		} catch (Exception e) {
 			logger.error("Error generating quiz: {}", e.getMessage(), e);
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
@@ -208,15 +209,15 @@ public class QuizService extends BaseService {
 			} catch (org.springframework.web.client.HttpClientErrorException e) {
 				logger.error("HTTP Client Error generating sentence completions: {} - {}", e.getStatusCode(),
 						e.getResponseBodyAsString());
-				return null;
+				return Collections.emptyList();
 			} catch (org.springframework.web.client.HttpServerErrorException e) {
 				logger.error("HTTP Server Error generating sentence completions: {} - {}", e.getStatusCode(),
 						e.getResponseBodyAsString());
-				return null;
+				return Collections.emptyList();
 			}
 		} catch (Exception e) {
 			logger.error("Error generating sentence completions: {}", e.getMessage(), e);
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
@@ -230,7 +231,7 @@ public class QuizService extends BaseService {
 	public List<Question> convertSentencesToQuestions(List<SentenceCompletionDTO> sentences) {
 		if (sentences == null) {
 			logger.error("Cannot convert sentences to questions: sentence list is null");
-			return null;
+			return Collections.emptyList();
 		}
 
 		if (sentences.isEmpty()) {

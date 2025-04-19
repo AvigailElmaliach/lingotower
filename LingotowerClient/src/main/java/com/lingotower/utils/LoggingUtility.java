@@ -13,6 +13,13 @@ import org.slf4j.MDC;
 public class LoggingUtility {
 
 	/**
+	 * Private constructor to prevent instantiation of the utility class.
+	 */
+	private LoggingUtility() {
+		throw new UnsupportedOperationException("Utility class cannot be instantiated");
+	}
+
+	/**
 	 * Sets the current user in the Mapped Diagnostic Context (MDC) for logging.
 	 * This allows user information to be included in all log messages within this
 	 * thread.
