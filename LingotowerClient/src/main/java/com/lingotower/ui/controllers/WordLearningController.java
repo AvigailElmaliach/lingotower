@@ -3,12 +3,15 @@ package com.lingotower.ui.controllers;
 import java.util.List;
 import java.util.stream.Collectors; // Import for stream operations
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.ExampleSentencesService; // Import the service
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,7 +46,7 @@ public class WordLearningController {
 	private Label translationLabel;
 
 	@FXML
-	private Label ExamplesUsageLabel; // Label to show example sentences
+	private Label examplesUsageLabel; // Label to show example sentences
 
 	@FXML
 	private Button showTranslationButton;
@@ -73,6 +76,7 @@ public class WordLearningController {
 	private int currentWordIndex = 0;
 	private Runnable onBackToDashboard;
 	private User currentUser;
+	private static final Logger logger = LoggingUtility.getLogger(WordLearningController.class);
 
 	@FXML
 	private void initialize() {
@@ -89,19 +93,19 @@ public class WordLearningController {
 
 		// Hide translation and examples initially
 		translationLabel.setVisible(false);
-		ExamplesUsageLabel.setVisible(false); // Ensure examples are hidden too
+		examplesUsageLabel.setVisible(false); // Ensure examples are hidden too
 	}
 
 	public void setUser(User user) {
 		this.currentUser = user;
-		System.out.println("User set in WordLearningController: " + (user != null ? user.getUsername() : "null"));
+		logger.debug("User set in WordLearningController: {}", user != null ? user.getUsername() : "null");
+
 	}
 
 	public void setCategory(Category category) {
 		this.currentCategory = category;
-		System.out.println("Category set in WordLearningController: "
-				+ (category != null ? category.getName() + " (ID: " + category.getId() + ")" : "null"));
-
+		logger.debug("Category set in WordLearningController: {}",
+				category != null ? category.getName() + " (ID: " + category.getId() + ")" : "null");
 		// Update category name label
 		if (category != null) {
 			categoryNameLabel.setText(category.getName());
@@ -121,28 +125,28 @@ public class WordLearningController {
 
 	private void loadWords() {
 		if (currentCategory == null || currentCategory.getId() == null) {
-			System.err.println("Cannot load words: Current category or its ID is null.");
+			logger.warn("Cannot load words: Current category or its ID is null.");
 			wordLabel.setText("Error loading words: Invalid category.");
 			disableAllActionButtons();
 			return;
 		}
 		try {
-			System.out.println("Fetching words for category ID: " + currentCategory.getId());
+			logger.info("Fetching words for category ID: {}", currentCategory.getId());
 			List<Word> fetchedWords = wordService.getWordsByCategory(currentCategory.getId());
 			this.words = fetchedWords;
 
 			if (words != null && !words.isEmpty()) {
-				System.out.println("Loaded " + words.size() + " words successfully");
+				logger.info("Loaded {} words successfully", words.size());
 				currentWordIndex = 0; // Reset index when loading new words
 				updateProgress();
 				showCurrentWord();
 			} else {
-				System.out.println("No words found for this category");
+				logger.info("No words found for this category");
 				wordLabel.setText("No words found for this category");
 				disableAllActionButtons();
 			}
 		} catch (Exception e) {
-			System.err.println("Error loading words: " + e.getMessage());
+			logger.error("Error loading words: {}", e.getMessage(), e);
 			e.printStackTrace();
 			wordLabel.setText("Error loading words");
 			messageLabel.setText("Could not load words: " + e.getMessage());
@@ -159,8 +163,7 @@ public class WordLearningController {
 
 	private void showCurrentWord() {
 		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
-			System.out.println("Cannot show current word: words list is empty or index out of bounds");
-			// Optionally display a message like "Category complete" or handle appropriately
+			logger.warn("Cannot show current word: words list is empty or index out of bounds");
 			wordLabel.setText("End of category reached.");
 			disableAllActionButtons();
 			return;
@@ -168,15 +171,13 @@ public class WordLearningController {
 
 		Word currentWord = words.get(currentWordIndex);
 		if (currentWord == null) {
-			System.err.println("Error: Current word at index " + currentWordIndex + " is null.");
+			logger.error("Error: Current word at index {} is null.", currentWordIndex);
 			wordLabel.setText("Error displaying word.");
 			disableAllActionButtons();
 			return;
 		}
 
-		System.out.println(
-				"Showing word: " + currentWord.getWord() + " (Translation: " + currentWord.getTranslatedText() + ")");
-
+		logger.debug("Showing word: {} (Translation: {})", currentWord.getWord(), currentWord.getTranslatedText());
 		// Set word text
 		wordLabel.setText(currentWord.getWord());
 
@@ -185,8 +186,8 @@ public class WordLearningController {
 		translationLabel.setVisible(false);
 
 		// --- Reset Examples Usage Label ---
-		ExamplesUsageLabel.setText(""); // Clear previous examples
-		ExamplesUsageLabel.setVisible(false);
+		examplesUsageLabel.setText(""); // Clear previous examples
+		examplesUsageLabel.setVisible(false);
 		// --- End Reset ---
 
 		// Reset buttons for the new word
@@ -233,28 +234,28 @@ public class WordLearningController {
 	@FXML
 	public void handleShowExamples(ActionEvent event) {
 		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
-			ExamplesUsageLabel.setText("No current word selected.");
-			ExamplesUsageLabel.setVisible(true);
+			examplesUsageLabel.setText("No current word selected.");
+			examplesUsageLabel.setVisible(true);
 			return;
 		}
 		Word currentWord = words.get(currentWordIndex);
 		// --- Check if word object or word text is null/blank ---
 		if (currentWord == null || currentWord.getWord() == null || currentWord.getWord().isBlank()) {
-			System.err.println("Cannot fetch examples: Current word text is missing.");
-			ExamplesUsageLabel.setText("Cannot fetch examples: Word data missing.");
-			ExamplesUsageLabel.setVisible(true);
+			logger.warn("Cannot fetch examples: Current word text is missing.");
+			examplesUsageLabel.setText("Cannot fetch examples: Word data missing.");
+			examplesUsageLabel.setVisible(true);
 			return;
 		}
 		String wordText = currentWord.getWord(); // --- Use word text ---
 
-		ExamplesUsageLabel.setText("Loading examples..."); // Provide feedback while loading
-		ExamplesUsageLabel.setVisible(true);
+		examplesUsageLabel.setText("Loading examples..."); // Provide feedback while loading
+		examplesUsageLabel.setVisible(true);
 		showExamplesButton.setDisable(true); // Disable button immediately
 
 		try {
 			// --- Fetch Examples using the Service with WORD TEXT ---
-			System.out.println("Fetching examples for word: " + wordText);
-			// --- Call the actual service method with String ---
+			logger.debug("Fetching examples for word: {}", wordText); // --- Call the actual service method with String
+																		// ---
 			List<String> examples = exampleSentencesService.getExampleSentences(wordText);
 
 			if (examples != null && !examples.isEmpty()) {
@@ -274,8 +275,8 @@ public class WordLearningController {
 																				// service
 
 				if (isInfoMessage) {
-					ExamplesUsageLabel.setText(firstLine); // Display the message directly from the service
-					System.out.println("Service returned info/error message: " + firstLine);
+					examplesUsageLabel.setText(firstLine); // Display the message directly from the service
+					logger.debug("Service returned info/error message: {}", firstLine);
 				} else {
 					// Format the actual examples (assuming the list contains real sentences)
 					String examplesText = examples.stream().filter(s -> s != null && !s.isBlank()) // Filter out null or
@@ -287,36 +288,36 @@ public class WordLearningController {
 					if (examplesText.isEmpty()) {
 						// This case might happen if the list contained only blank strings after
 						// filtering
-						ExamplesUsageLabel.setText("No valid examples found for this word.");
+						examplesUsageLabel.setText("No valid examples found for this word.");
 					} else {
-						ExamplesUsageLabel.setText(examplesText);
-						System.out.println("Displayed " + examples.size() + " example sentences.");
-						// --- Set RTL if examples contain Hebrew ---
-						if (containsHebrew(ExamplesUsageLabel.getText())) {
-							ExamplesUsageLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+						examplesUsageLabel.setText(examplesText);
+						logger.debug("Displayed {} example sentences.", examples.size()); // --- Set RTL if examples
+																							// contain Hebrew ---
+						if (containsHebrew(examplesUsageLabel.getText())) {
+							examplesUsageLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 						} else {
-							ExamplesUsageLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+							examplesUsageLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 						}
 					}
 				}
 			} else {
 				// This case means the service returned null or an empty list, which shouldn't
 				// happen based on its code, but good to handle defensively.
-				ExamplesUsageLabel.setText("No examples returned for this word.");
-				System.out.println("Service returned null or empty list for word: " + wordText);
+				examplesUsageLabel.setText("No examples returned for this word.");
+				logger.warn("Service returned null or empty list for word: {}", wordText);
 			}
 			// --- End Fetch Examples ---
 
 		} catch (Exception e) {
 			// Catch any truly unexpected exceptions from the service call itself
-			System.err.println(
-					"Unexpected error calling ExampleSentencesService for word '" + wordText + "': " + e.getMessage());
+			logger.error("Unexpected error calling ExampleSentencesService for word '{}': {}", wordText, e.getMessage(),
+					e);
 			e.printStackTrace(); // Log the full stack trace for debugging
-			ExamplesUsageLabel.setText("System error loading examples."); // Show a generic error
+			examplesUsageLabel.setText("System error loading examples."); // Show a generic error
 		}
 
 		// Make sure the label is visible after attempting to load/display
-		ExamplesUsageLabel.setVisible(true);
+		examplesUsageLabel.setVisible(true);
 
 		// Enable next word and mark learned buttons now that the action is complete
 		nextWordButton.setDisable(false);
@@ -348,7 +349,7 @@ public class WordLearningController {
 
 	private void handleMarkLearned(ActionEvent event) {
 		if (words == null || words.isEmpty() || currentWordIndex >= words.size()) {
-			System.err.println("Cannot mark word as learned: words list is empty or index out of bounds");
+			logger.warn("Cannot mark word as learned: words list is empty or index out of bounds");
 			messageLabel.setText("Error: No word to mark as learned");
 			return;
 
@@ -356,14 +357,12 @@ public class WordLearningController {
 
 		Word currentWord = words.get(currentWordIndex);
 		if (currentWord == null || currentWord.getId() == null) {
-			System.err.println("Error: Word or Word ID is null. Current word: " + currentWord);
+			logger.warn("Error: Word or Word ID is null. Current word: {}", currentWord);
 			messageLabel.setText("Error: Invalid word data");
 			return;
 		}
 
-		System.out.println(
-				"Attempting to mark word as learned: " + currentWord.getWord() + " (ID: " + currentWord.getId() + ")");
-
+		logger.info("Attempting to mark word as learned: {} (ID: {})", currentWord.getWord(), currentWord.getId());
 		try {
 			boolean success = userService.addWordToLearned(currentWord.getId());
 			if (success) {
@@ -372,7 +371,7 @@ public class WordLearningController {
 				messageLabel.setText("Error marking word as learned.");
 			}
 		} catch (Exception e) {
-			System.err.println("Error marking word as learned: " + e.getMessage());
+			logger.error("Error marking word as learned: {}", e.getMessage(), e);
 			e.printStackTrace();
 			messageLabel.setText("Error marking word as learned: " + e.getMessage());
 		}
@@ -404,7 +403,7 @@ public class WordLearningController {
 		if (onBackToDashboard != null) {
 			onBackToDashboard.run();
 		} else {
-			System.err.println("Error: Back to dashboard action not set.");
+			logger.warn("Error: Back to dashboard action not set.");
 			messageLabel.setText("Error: Cannot go back.");
 		}
 	}
