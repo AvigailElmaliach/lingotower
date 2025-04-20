@@ -3,6 +3,8 @@ package com.lingotower.ui.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.lingotower.dto.sentence.SentenceCompletionDTO;
 import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
@@ -10,6 +12,7 @@ import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -109,6 +112,18 @@ public class QuizController {
 	private Quiz currentQuiz;
 	private int currentQuestionIndex = 0;
 	private int correctAnswersCount = 0;
+	private static final Logger logger = LoggingUtility.getLogger(QuizController.class);
+
+	private static final ObservableList<String> FALLBACK_CATEGORIES = FXCollections.unmodifiableObservableList(
+			FXCollections.observableArrayList("Everyday Life and Essential Vocabulary", "People and Relationships",
+					"Work and Education", "Health and Well-being", "Travel and Leisure", "Environment and Nature"));
+
+	private static final String STYLE_TEXT_FILL_RED = "-fx-text-fill: #c62828;";
+	private static final String STYLE_TEXT_FILL_GREEN = "-fx-text-fill: #2e7d32;";
+
+	private static final String BLANK_PLACEHOLDER = "_____";
+	private static final String QUIZ_PREFIX = "Words Quiz - ";
+	private static final String COMPLETION_PREFIX = "Sentence Completion - ";
 
 	@FXML
 	private void initialize() {
@@ -171,22 +186,14 @@ public class QuizController {
 				categoryComboBox.setItems(categoryNames);
 				categoryComboBox.setValue(categoryNames.get(0));
 			} else {
-				// Fallback categories if service returns none
-				ObservableList<String> fallbackCategories = FXCollections.observableArrayList(
-						"Everyday Life and Essential Vocabulary", "People and Relationships", "Work and Education",
-						"Health and Well-being", "Travel and Leisure", "Environment and Nature");
-				categoryComboBox.setItems(fallbackCategories);
-				categoryComboBox.setValue(fallbackCategories.get(0));
+				categoryComboBox.setItems(FALLBACK_CATEGORIES);
+				categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
 			}
 		} catch (Exception e) {
-			System.err.println("Error loading categories: " + e.getMessage());
-
+			logger.error("Error starting quiz: {}", e.getMessage(), e);
 			// Fallback categories
-			ObservableList<String> fallbackCategories = FXCollections.observableArrayList(
-					"Everyday Life and Essential Vocabulary", "People and Relationships", "Work and Education",
-					"Health and Well-being", "Travel and Leisure", "Environment and Nature");
-			categoryComboBox.setItems(fallbackCategories);
-			categoryComboBox.setValue(fallbackCategories.get(0));
+			categoryComboBox.setItems(FALLBACK_CATEGORIES);
+			categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
 		}
 	}
 
@@ -209,7 +216,7 @@ public class QuizController {
 				// Create regular vocabulary quiz
 				Quiz vocabQuiz = new Quiz();
 				vocabQuiz.setId(quizId++);
-				vocabQuiz.setName("Words Quiz - " + categoryName + " (" + difficultyName + ")");
+				vocabQuiz.setName(QUIZ_PREFIX + categoryName + " (" + difficultyName + ")");
 
 				// Set category
 				Category category = new Category();
@@ -225,7 +232,7 @@ public class QuizController {
 				// Create sentence completion quiz
 				Quiz sentenceQuiz = new Quiz();
 				sentenceQuiz.setId(quizId++);
-				sentenceQuiz.setName("Sentence Completion - " + categoryName + " (" + difficultyName + ")");
+				sentenceQuiz.setName(COMPLETION_PREFIX + categoryName + " (" + difficultyName + ")");
 
 				// Use the same category
 				sentenceQuiz.setCategory(category);
@@ -292,10 +299,9 @@ public class QuizController {
 		String selectedDifficulty = difficultyComboBox.getValue();
 		String selectedCategory = categoryComboBox.getValue();
 
-		System.out.println("Filter button clicked!");
-		System.out.println("Selected difficulty = " + selectedDifficulty);
-		System.out.println("Selected category = " + selectedCategory);
-
+		logger.debug("Filter button clicked!");
+		logger.debug("Selected difficulty = {}", selectedDifficulty);
+		logger.debug("Selected category = {}", selectedCategory);
 		// Re-generate sample quizzes with filter
 		ObservableList<Quiz> filteredQuizzes = FXCollections.observableArrayList();
 
@@ -316,7 +322,7 @@ public class QuizController {
 			// If no matches, create a new quiz with the selected criteria
 			Quiz filteredQuiz = new Quiz();
 			filteredQuiz.setId(System.currentTimeMillis());
-			filteredQuiz.setName("Words Quiz - " + selectedCategory + " (" + selectedDifficulty + ")");
+			filteredQuiz.setName(QUIZ_PREFIX + selectedCategory + " (" + selectedDifficulty + ")");
 
 			Category category = new Category();
 			category.setId(getCategoryIdByName(selectedCategory));
@@ -330,7 +336,7 @@ public class QuizController {
 			// Add sentence completion quiz
 			Quiz sentenceQuiz = new Quiz();
 			sentenceQuiz.setId(System.currentTimeMillis() + 1);
-			sentenceQuiz.setName("Sentence Completion - " + selectedCategory + " (" + selectedDifficulty + ")");
+			sentenceQuiz.setName(COMPLETION_PREFIX + selectedCategory + " (" + selectedDifficulty + ")");
 			sentenceQuiz.setCategory(category);
 			sentenceQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
 			filteredQuizzes.add(sentenceQuiz);
@@ -378,7 +384,7 @@ public class QuizController {
 	@FXML
 	private void handleStartQuizClick(ActionEvent event) {
 		if (currentQuiz != null) {
-			System.out.println("Starting quiz: " + currentQuiz.getName());
+			logger.info("Starting quiz: {}", currentQuiz.getName());
 			startQuiz(currentQuiz);
 		} else {
 			showError("Please select a quiz first");
@@ -416,19 +422,16 @@ public class QuizController {
 
 			if (isSentenceCompletionQuiz) {
 				// Generate sentence completion questions
-				System.out.println("Starting sentence completion quiz with category: " + categoryName + ", difficulty: "
-						+ difficulty);
-
+				logger.info("Starting sentence completion quiz with category: {}, difficulty: {}", categoryName,
+						difficulty);
 				List<SentenceCompletionDTO> sentences = quizService.generateSentenceCompletions(categoryName,
 						difficulty);
 
 				if (sentences != null && !sentences.isEmpty()) {
 					generatedQuestions = quizService.convertSentencesToQuestions(sentences);
-					System.out.println("Successfully converted " + sentences.size() + " sentences to questions");
+					logger.info("Successfully converted {} sentences to questions", sentences.size());
 				} else {
-					System.out
-							.println("WARNING: Failed to get sentence completion questions. Using fallback method...");
-
+					logger.warn("Failed to get sentence completion questions. Using fallback method...");
 					// FALLBACK: Create sample sentence completion questions
 					generatedQuestions = createFallbackSentenceQuestions(categoryName, difficulty);
 
@@ -440,16 +443,14 @@ public class QuizController {
 				}
 
 				// Set the quiz name
-				quizName = "Sentence Completion - " + categoryName + " (" + difficulty + ")";
+				quizName = COMPLETION_PREFIX + categoryName + " (" + difficulty + ")";
 			} else {
 				// Generate regular quiz questions
-				System.out.println(
-						"Starting regular quiz with categoryId: " + categoryId + ", difficulty: " + difficulty);
-
+				logger.info("Starting regular quiz with categoryId: {}, difficulty: {}", categoryId, difficulty);
 				generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
 
 				// Set the quiz name
-				quizName = "Words Quiz - " + categoryName + " (" + difficulty + ")";
+				quizName = QUIZ_PREFIX + categoryName + " (" + difficulty + ")";
 			}
 
 			// Process generated questions
@@ -569,7 +570,7 @@ public class QuizController {
 			questions.add(q);
 		}
 
-		System.out.println("Created " + questions.size() + " fallback sentence completion questions");
+		logger.info("Created {} fallback sentence completion questions", questions.size());
 		return questions;
 	}
 
@@ -589,7 +590,7 @@ public class QuizController {
 		Question question = currentQuiz.getQuestions().get(currentQuestionIndex);
 
 		// Check if this is a sentence completion question
-		boolean isSentenceCompletion = question.getQuestionText().contains("_____");
+		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
 
 		// Update question text and style it appropriately
 		questionText.setText(question.getQuestionText());
@@ -652,9 +653,9 @@ public class QuizController {
 
 		if (isCorrect) {
 			correctAnswersCount++;
-			selectedButton.setStyle("-fx-text-fill: #2e7d32;"); // Green for selected answer
+			selectedButton.setStyle(STYLE_TEXT_FILL_GREEN); // Green for selected answer
 		} else {
-			selectedButton.setStyle("-fx-text-fill: #c62828;"); // Red for selected answer
+			selectedButton.setStyle(STYLE_TEXT_FILL_RED); // Red for selected answer
 		}
 
 		// Show feedback
@@ -666,16 +667,16 @@ public class QuizController {
 
 		// If this is a sentence completion question, highlight the blank with the
 		// selected answer
-		boolean isSentenceCompletion = question.getQuestionText().contains("_____");
+		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
 		if (isSentenceCompletion) {
 			// Replace the blank with the selected answer and show it in the question text
 			String completedSentence = getCompleteSentence(question.getQuestionText(), selectedAnswer);
 			// Set a different color based on correctness
 			if (isCorrect) {
 				correctAnswersCount++;
-				questionText.setStyle("-fx-text-fill: #2e7d32;"); // Green for correct
+				questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
 			} else {
-				questionText.setStyle("-fx-text-fill: #c62828;"); // Red for incorrect
+				questionText.setStyle(STYLE_TEXT_FILL_RED); // Red for incorrect
 			}
 			questionText.setText(completedSentence);
 		}
@@ -696,12 +697,12 @@ public class QuizController {
 
 		// Get current question to check if it's a sentence completion
 		Question currentQuestion = currentQuiz.getQuestions().get(currentQuestionIndex);
-		boolean isSentenceCompletion = currentQuestion.getQuestionText().contains("_____");
+		boolean isSentenceCompletion = currentQuestion.getQuestionText().contains(BLANK_PLACEHOLDER);
 
 		if (correct) {
 			feedbackBox.getStyleClass().add("correct");
 			feedbackLabel.setText("Correct!");
-			feedbackLabel.setStyle("-fx-text-fill: #2e7d32;");
+			feedbackLabel.setStyle(STYLE_TEXT_FILL_GREEN);
 
 			if (isSentenceCompletion) {
 				// Show the complete sentence for sentence completion questions
@@ -714,7 +715,7 @@ public class QuizController {
 		} else {
 			feedbackBox.getStyleClass().add("incorrect");
 			feedbackLabel.setText("Incorrect!");
-			feedbackLabel.setStyle("-fx-text-fill: #c62828;");
+			feedbackLabel.setStyle(STYLE_TEXT_FILL_RED);
 
 			if (isSentenceCompletion) {
 				// Show the complete sentence for sentence completion questions
@@ -741,7 +742,7 @@ public class QuizController {
 		}
 
 		// Replace the blank with the correct answer
-		return question.replace("_____", answer);
+		return question.replace(BLANK_PLACEHOLDER, answer);
 	}
 
 	/**
