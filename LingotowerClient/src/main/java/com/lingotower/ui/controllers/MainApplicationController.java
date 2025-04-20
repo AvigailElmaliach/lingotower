@@ -79,6 +79,7 @@ public class MainApplicationController {
 
 	public void showDailyWord() {
 		try {
+
 			DailyWordView dailyWordView = new DailyWordView(currentUser, this::showDashboard);
 			Parent dailyWordRoot = dailyWordView.createView();
 			mainLayout.setCenter(dailyWordRoot);

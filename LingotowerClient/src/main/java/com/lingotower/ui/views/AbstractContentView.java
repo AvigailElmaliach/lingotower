@@ -35,7 +35,7 @@ public abstract class AbstractContentView implements View {
 	}
 
 	/**
-	 * Initialize the controller with any necessary data.
+	 * Abstract method to initialize the controller with any necessary data.
 	 */
 	protected abstract void initializeController();
 

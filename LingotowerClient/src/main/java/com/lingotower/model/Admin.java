@@ -10,8 +10,8 @@ import java.util.List;
 public class Admin extends User {
 
 	private Long id; // The unique identifier for the admin
-	private String username; // The username of the admin
-	private String password; // The password of the admin
+	private String username;
+	private String password;
 	private String role; // The role of the admin
 	private List<User> users = new ArrayList<>(); // List of users managed by the admin
 	private List<Quiz> quizzes = new ArrayList<>(); // List of quizzes created by the admin

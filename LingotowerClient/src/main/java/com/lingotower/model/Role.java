@@ -1,6 +1,9 @@
 package com.lingotower.model;
 
+/**
+ * Enum representing the roles in the system.
+ */
 public enum Role {
-	USER, // Player in the system
-	ADMIN, // Content manager
+	USER, // Represents a player in the system
+	ADMIN, // Represents a content manager
 }
