@@ -64,6 +64,12 @@ public class AdminViewController {
 	private final WordService wordService;
 	private final AdminService adminService;
 
+	private static final String LOADING_TEXT = "Loading...";
+	private static final String ERROR_TEXT = "Error";
+	private static final String UNKNOWN_TEXT = "unknown";
+	private static final String EXCEPTION_DETAILS_TEXT = "Exception details:";
+	private static final String ACTION_NAVIGATE_TEXT = "navigate";
+
 	public AdminViewController() {
 		userService = new UserService();
 		categoryService = new CategoryService();
@@ -108,8 +114,8 @@ public class AdminViewController {
 		logger.info("Logout requested by admin: {}", (currentAdmin != null ? currentAdmin.getUsername() : "N/A"));
 
 		if (onLogout != null) {
-			LoggingUtility.logAction(logger, "logout", (currentAdmin != null ? currentAdmin.getUsername() : "unknown"),
-					"system", "initiated");
+			LoggingUtility.logAction(logger, "logout",
+					(currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT), "system", "initiated");
 			onLogout.run();
 		} else {
 			logger.warn("onLogout handler is null.");
@@ -149,14 +155,15 @@ public class AdminViewController {
 
 			long duration = System.currentTimeMillis() - startTime;
 			LoggingUtility.logPerformance(logger, "load_user_management", duration, "success");
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"user_management", "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "user_management", "success");
 
 		} catch (Exception e) {
 			logger.error("Error loading user management view: {}", e.getMessage());
-			logger.error("Exception details:", e);
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"user_management", "error: " + e.getMessage());
+			logger.error(EXCEPTION_DETAILS_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "user_management",
+					ERROR_TEXT + ":" + e.getMessage());
 			showError(String.format("Error loading user management: %s", e.getMessage()));
 		}
 	}
@@ -191,14 +198,15 @@ public class AdminViewController {
 
 			long duration = System.currentTimeMillis() - startTime;
 			LoggingUtility.logPerformance(logger, "load_content_management", duration, "success");
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"content_management", "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "content_management", "success");
 
 		} catch (Exception e) {
 			logger.error("Error loading content management view: {}", e.getMessage());
-			logger.error("Exception details:", e);
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"content_management", "error: " + e.getMessage());
+			logger.error(UNKNOWN_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "content_management",
+					"error: " + e.getMessage());
 			showError(String.format("Error loading content management: %s", e.getMessage()));
 		}
 	}
@@ -236,14 +244,15 @@ public class AdminViewController {
 
 			long duration = System.currentTimeMillis() - startTime;
 			LoggingUtility.logPerformance(logger, "load_admin_management", duration, "success");
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"admin_management", "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "admin_management", "success");
 
 		} catch (Exception e) {
 			logger.error("Error loading admin management view: {}", e.getMessage());
-			logger.error("Exception details:", e);
-			LoggingUtility.logAction(logger, "navigate", currentAdmin != null ? currentAdmin.getUsername() : "unknown",
-					"admin_management", "error: " + e.getMessage());
+			logger.error(UNKNOWN_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "admin_management",
+					"error: " + e.getMessage());
 			showError(String.format("Error loading admin management: %s", e.getMessage()));
 		}
 	}
@@ -268,7 +277,7 @@ public class AdminViewController {
 			}
 		} catch (Exception e) {
 			logger.warn("Error loading CSS files: {}", e.getMessage());
-			logger.debug("Exception details:", e);
+			logger.debug(UNKNOWN_TEXT, e);
 		}
 	}
 
@@ -289,9 +298,9 @@ public class AdminViewController {
 				long startTime = System.currentTimeMillis();
 
 				Platform.runLater(() -> {
-					totalUsersLabel.setText("Loading...");
-					totalCategoriesLabel.setText("Loading...");
-					totalWordsLabel.setText("Loading...");
+					totalUsersLabel.setText(LOADING_TEXT);
+					totalCategoriesLabel.setText(LOADING_TEXT);
+					totalWordsLabel.setText(LOADING_TEXT);
 				});
 
 				// Use the existing service instances for thread safety
@@ -337,7 +346,7 @@ public class AdminViewController {
 					categoryCount = (categories != null) ? categories.size() : 0;
 				} catch (Exception e) {
 					logger.error("Background thread: Error loading categories: {}", e.getMessage());
-					logger.debug("Exception details:", e);
+					logger.debug(UNKNOWN_TEXT, e);
 					categoryCount = 0;
 				}
 				// Only log once at INFO level, subsequent or detail logs at FINE
@@ -351,7 +360,7 @@ public class AdminViewController {
 					wordCount = (words != null) ? words.size() : 0;
 				} catch (Exception e) {
 					logger.error("Background thread: Error loading words: {}", e.getMessage());
-					logger.debug("Exception details:", e);
+					logger.debug(UNKNOWN_TEXT, e);
 					wordCount = 0;
 				}
 				// Only log once at INFO level, subsequent or detail logs at FINE
@@ -380,14 +389,14 @@ public class AdminViewController {
 
 			} catch (Exception e) {
 				logger.error("Error during background system stats loading: {}", e.getMessage());
-				logger.error("Exception details:", e);
+				logger.error(UNKNOWN_TEXT, e);
 				LoggingUtility.logEvent(logger, "stats_loading", "FAILURE", e.getMessage());
 
 				Platform.runLater(() -> {
 					showError(String.format("Error loading system statistics: %s", e.getMessage()));
-					totalUsersLabel.setText("Error");
-					totalCategoriesLabel.setText("Error");
-					totalWordsLabel.setText("Error");
+					totalUsersLabel.setText(ERROR_TEXT);
+					totalCategoriesLabel.setText(ERROR_TEXT);
+					totalWordsLabel.setText(ERROR_TEXT);
 				});
 			}
 		});
