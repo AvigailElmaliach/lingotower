@@ -97,8 +97,6 @@ public class QuizController {
 
 	@FXML
 	private Button nextBtn;
-	@FXML
-	private Button prevBtn;
 
 	// Summary elements
 	@FXML
@@ -409,7 +407,6 @@ public class QuizController {
 		answersBox.setDisable(true);
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(true);
-		prevBtn.setDisable(true);
 
 		try {
 			List<Question> generatedQuestions = null;
@@ -663,7 +660,7 @@ public class QuizController {
 		// Show feedback
 		showAnswerFeedback(isCorrect, question.getCorrectAnswer());
 
-		// Disable submit button, enable next button
+		// Disable submit button, enable next
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(false);
 
@@ -684,7 +681,7 @@ public class QuizController {
 		}
 
 		// Create a Timeline to reset the color after a delay
-		Timeline resetColorTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+		Timeline resetColorTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
 			questionText.setStyle("-fx-text-fill: black;"); // Reset to black
 			selectedButton.setStyle("-fx-text-fill: black;"); // Reset to black
 		}));
@@ -745,21 +742,6 @@ public class QuizController {
 
 		// Replace the blank with the correct answer
 		return question.replace("_____", answer);
-	}
-
-	/**
-	 * Move to previous question if possible.
-	 */
-	@FXML
-	private void handlePrevButtonClick(ActionEvent event) {
-		if (currentQuiz == null) {
-			return;
-		}
-		currentQuestionIndex--;
-		if (currentQuestionIndex < 0) {
-			currentQuestionIndex = 0;
-		}
-		showCurrentQuestion();
 	}
 
 	/**
