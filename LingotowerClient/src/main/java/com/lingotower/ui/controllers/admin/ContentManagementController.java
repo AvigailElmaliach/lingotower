@@ -3,9 +3,8 @@ package com.lingotower.ui.controllers.admin;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.lingotower.model.Admin;
@@ -17,6 +16,7 @@ import com.lingotower.service.CategoryService;
 import com.lingotower.service.WordService;
 import com.lingotower.ui.components.ActionButtonCell;
 import com.lingotower.ui.views.admin.ContentManagementView;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -39,8 +39,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class ContentManagementController {
-	// Add a logger for this class
-	private static final Logger logger = Logger.getLogger(ContentManagementController.class.getName());
+	// Add a logger using LoggingUtility
+	private static final Logger logger = LoggingUtility.getLogger(ContentManagementController.class);
 
 	@FXML
 	private BorderPane view;
@@ -153,7 +153,7 @@ public class ContentManagementController {
 		categoryService = new CategoryService();
 		wordService = new WordService();
 		adminService = new AdminService();
-		logger.log(Level.CONFIG, "ContentManagementController services initialized");
+		logger.debug("ContentManagementController services initialized");
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class ContentManagementController {
 	 */
 	public void setParentView(ContentManagementView view) {
 		this.parentView = view;
-		logger.log(Level.FINE, "Parent view set in ContentManagementController");
+		logger.debug("Parent view set in ContentManagementController");
 	}
 
 	@FXML
@@ -188,7 +188,7 @@ public class ContentManagementController {
 		wordTranslationColumn.setCellValueFactory(cellData -> {
 			Word word = cellData.getValue();
 			if (word == null) {
-				logger.log(Level.WARNING, "Table Cell - Word object is null");
+				logger.warn("Table Cell - Word object is null");
 				return new SimpleStringProperty("Error: Null Word");
 			}
 			String translation = word.getTranslatedText();
@@ -229,34 +229,38 @@ public class ContentManagementController {
 		setupCategoryFilter();
 		loadWords();
 
-		logger.log(Level.INFO, "ContentManagementController UI initialized");
+		logger.info("ContentManagementController UI initialized");
 	}
 
 	public void setAdmin(Admin admin) {
 		this.currentAdmin = admin;
-		logger.log(Level.INFO, "Admin set: {0}", (admin != null ? admin.getUsername() : "null"));
+		logger.info("Admin set: {}", admin != null ? admin.getUsername() : "null");
 	}
 
 	public void setReturnToDashboard(Runnable callback) {
 		this.returnToDashboard = callback;
-		logger.log(Level.FINE, "Return to dashboard callback set");
+		logger.debug("Return to dashboard callback set");
 	}
 
 	@FXML
 	private void handleBackButton() {
-		logger.log(Level.INFO, "Back button clicked");
+		logger.info("Back button clicked");
 		if (returnToDashboard != null) {
 			returnToDashboard.run();
+			// Log only critical user actions
+			LoggingUtility.logAction(logger, "navigation", currentAdmin != null ? currentAdmin.getUsername() : "system",
+					"dashboard", "success");
 		} else {
-			logger.log(Level.WARNING, "Return to dashboard callback is null");
+			logger.warn("Return to dashboard callback is null");
 		}
 	}
 
 	public void loadCategories() {
+		long startTime = System.currentTimeMillis();
 		try {
 			// Show loading indicator or status message
 			showStatusMessage("Loading categories...", false);
-			logger.log(Level.INFO, "Loading categories...");
+			logger.info("Loading categories...");
 
 			// Clear existing list
 			categoryList.clear();
@@ -266,7 +270,7 @@ public class ContentManagementController {
 
 			// Check if we got valid data
 			if (categories == null || categories.isEmpty()) {
-				logger.log(Level.WARNING, "No categories found or unable to connect to server");
+				logger.warn("No categories found or unable to connect to server");
 				showStatusMessage("No categories found or unable to connect to server", true);
 				return;
 			}
@@ -278,37 +282,56 @@ public class ContentManagementController {
 			updateCategoryComboBoxes();
 
 			// Show success message
-			logger.log(Level.INFO, "Loaded {0} categories successfully", categories.size());
+			logger.info("Loaded {} categories successfully", categories.size());
 			showStatusMessage("Loaded " + categories.size() + " categories successfully", false);
 
+			// Only log performance for long operations
+			long duration = System.currentTimeMillis() - startTime;
+			if (duration > 1000) { // Only log if it took more than 1 second
+				LoggingUtility.logPerformance(logger, "load_categories", duration, "success");
+			}
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error loading categories: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error loading categories: {}", e.getMessage(), e);
 			showStatusMessage("Error loading categories: " + e.getMessage(), true);
+
+			// Always log errors
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "load_categories", duration, "error");
 		}
 	}
 
 	public void loadWords() {
+		long startTime = System.currentTimeMillis();
 		try {
-			logger.log(Level.INFO, "Loading words...");
-			showStatusMessage("Loading words...", false); // Don't log this in showStatusMessage
+			logger.info("Loading words...");
+			showStatusMessage("Loading words...", false);
 
 			wordsList.clear();
 			List<Word> words = wordService.getAllWords();
 
 			if (words == null || words.isEmpty()) {
-				logger.log(Level.WARNING, "No words found");
+				logger.warn("No words found");
 				showStatusMessage("No words found", true);
 				return;
 			}
 
 			wordsList.addAll(words);
-			logger.log(Level.INFO, "Loaded {0} words successfully", words.size());
+			logger.info("Loaded {} words successfully", words.size());
 			showStatusMessage("Loaded " + words.size() + " words successfully", false);
+
+			// Only log performance for long operations
+			long duration = System.currentTimeMillis() - startTime;
+			if (duration > 1000) { // Only log if it took more than 1 second
+				LoggingUtility.logPerformance(logger, "load_words", duration, "success");
+			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error loading words: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error loading words: {}", e.getMessage(), e);
 			showStatusMessage("Error loading words: " + e.getMessage(), true);
+
+			// Always log errors
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "load_words", duration, "error");
 		}
 	}
 
@@ -322,12 +345,12 @@ public class ContentManagementController {
 		// Update word edit form category combo box
 		wordCategoryComboBox.setItems(FXCollections.observableArrayList(categoryList));
 
-		logger.log(Level.FINE, "Category combo boxes updated with {0} categories", categoryList.size());
+		logger.debug("Category combo boxes updated with {} categories", categoryList.size());
 	}
 
 	@FXML
 	private void handleAddCategory() {
-		logger.log(Level.INFO, "Add category button clicked");
+		logger.info("Add category button clicked");
 
 		// Reset form for new category
 		categoryFormTitle.setText("Add New Category");
@@ -342,12 +365,11 @@ public class ContentManagementController {
 
 	private void showCategoryEditForm(Category category) {
 		if (category == null) {
-			logger.log(Level.WARNING, "Cannot edit null category");
+			logger.warn("Cannot edit null category");
 			return;
 		}
 
-		logger.log(Level.INFO, "Showing edit form for category: {0} (ID: {1})",
-				new Object[] { category.getName(), category.getId() });
+		logger.info("Showing edit form for category: {} (ID: {})", category.getName(), category.getId());
 
 		// Prepare form for editing
 		categoryFormTitle.setText("Edit Category");
@@ -362,7 +384,7 @@ public class ContentManagementController {
 
 	@FXML
 	private void handleCancelCategoryEdit() {
-		logger.log(Level.INFO, "Category edit cancelled");
+		logger.debug("Category edit cancelled");
 		categoryEditForm.setVisible(false);
 	}
 
@@ -370,11 +392,12 @@ public class ContentManagementController {
 	private void handleSaveCategory() {
 		String name = categoryNameField.getText().trim();
 		String translation = categoryTranslationField.getText().trim();
+		long startTime = System.currentTimeMillis();
 
-		logger.log(Level.INFO, "Saving category: {0} (mode: {1})", new Object[] { name, isEditMode ? "edit" : "add" });
+		logger.info("Saving category: {} (mode: {})", name, isEditMode ? "edit" : "add");
 
 		if (name.isEmpty()) {
-			logger.log(Level.WARNING, "Category validation failed: name is empty");
+			logger.warn("Category validation failed: name is empty");
 			showStatusMessage("Category name cannot be empty", true);
 			return;
 		}
@@ -385,14 +408,19 @@ public class ContentManagementController {
 				selectedCategory.setName(name);
 				selectedCategory.setTranslation(translation);
 
-				logger.log(Level.INFO, "Updating category with ID: {0}", selectedCategory.getId());
+				logger.info("Updating category with ID: {}", selectedCategory.getId());
 				Category updatedCategory = categoryService.updateCategory(selectedCategory.getId(), selectedCategory);
 
 				if (updatedCategory != null) {
-					logger.log(Level.INFO, "Category updated successfully");
+					logger.info("Category updated successfully");
 					showStatusMessage("Category updated successfully", false);
+
+					// Log significant data modifications
+					LoggingUtility.logAction(logger, "update",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "category:" + name,
+							"success");
 				} else {
-					logger.log(Level.WARNING, "Failed to update category: service returned null");
+					logger.warn("Failed to update category: service returned null");
 					showStatusMessage("Failed to update category", true);
 				}
 			} else {
@@ -401,14 +429,19 @@ public class ContentManagementController {
 				newCategory.setName(name);
 				newCategory.setTranslation(translation);
 
-				logger.log(Level.INFO, "Creating new category: {0}", name);
+				logger.info("Creating new category: {}", name);
 				Category createdCategory = categoryService.addCategory(newCategory);
 
 				if (createdCategory != null) {
-					logger.log(Level.INFO, "Category created successfully with ID: {0}", createdCategory.getId());
+					logger.info("Category created successfully with ID: {}", createdCategory.getId());
 					showStatusMessage("Category created successfully", false);
+
+					// Log significant data additions
+					LoggingUtility.logAction(logger, "create",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "category:" + name,
+							"success");
 				} else {
-					logger.log(Level.WARNING, "Failed to create category: service returned null");
+					logger.warn("Failed to create category: service returned null");
 					showStatusMessage("Failed to create category", true);
 				}
 			}
@@ -423,59 +456,71 @@ public class ContentManagementController {
 			}
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error saving category: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error saving category: {}", e.getMessage(), e);
 			showStatusMessage("Error saving category: " + e.getMessage(), true);
+
+			// Log errors
+			LoggingUtility.logAction(logger, isEditMode ? "update" : "create",
+					currentAdmin != null ? currentAdmin.getUsername() : "system", "category:" + name,
+					"error: " + e.getMessage());
 		}
 	}
 
 	private void deleteCategory(Category category) {
 		if (category == null) {
-			logger.log(Level.WARNING, "Cannot delete null category");
+			logger.warn("Cannot delete null category");
 			return;
 		}
 
-		logger.log(Level.INFO, "Delete requested for category: {0} (ID: {1})",
-				new Object[] { category.getName(), category.getId() });
+		logger.info("Delete requested for category: {} (ID: {})", category.getName(), category.getId());
 
 		if (showDeleteConfirmation("category", category.getName())) {
+			long startTime = System.currentTimeMillis();
 			try {
 				// Delete all words associated with the category
 				List<Word> words = wordService.getWordsByCategory(category.getId());
-				logger.log(Level.INFO, "Deleting {0} words associated with category", words.size());
+				logger.info("Deleting {} words associated with category", words.size());
 
 				for (Word word : words) {
 					wordService.deleteWord(word.getId());
 				}
 
 				// Delete the category
-				logger.log(Level.INFO, "Deleting category with ID: {0}", category.getId());
+				logger.info("Deleting category with ID: {}", category.getId());
 				boolean success = categoryService.deleteCategory(category.getId());
 
 				if (success) {
-					logger.log(Level.INFO, "Category deleted successfully");
+					logger.info("Category deleted successfully");
 					showStatusMessage("Category deleted successfully", false);
 					loadCategories();
 					if (parentView != null) {
 						parentView.refresh();
 					}
+
+					// Log critical data deletions
+					LoggingUtility.logAction(logger, "delete",
+							currentAdmin != null ? currentAdmin.getUsername() : "system",
+							"category:" + category.getName(), "success");
 				} else {
-					logger.log(Level.WARNING, "Failed to delete category: service returned false");
+					logger.warn("Failed to delete category: service returned false");
 					showStatusMessage("Failed to delete category", true);
 				}
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, "Error deleting category: {0}", e.getMessage());
-				logger.log(Level.SEVERE, "Exception details:", e);
+				logger.error("Error deleting category: {}", e.getMessage(), e);
 				showStatusMessage("Error deleting category: " + e.getMessage(), true);
+
+				// Log errors
+				LoggingUtility.logAction(logger, "delete", currentAdmin != null ? currentAdmin.getUsername() : "system",
+						"category:" + category.getName(), "error: " + e.getMessage());
 			}
 		} else {
-			logger.log(Level.INFO, "Category deletion cancelled by user");
+			logger.info("Category deletion cancelled by user");
 		}
 	}
 
 	@FXML
 	private void handleRefreshCategories() {
-		logger.log(Level.INFO, "Refresh categories button clicked");
+		logger.info("Refresh categories button clicked");
 		loadCategories();
 	}
 
@@ -486,13 +531,13 @@ public class ContentManagementController {
 		wordCategoryFilter.setItems(categories);
 		wordCategoryFilter.setValue("All Categories");
 
-		logger.log(Level.FINE, "Category filter setup with {0} categories", categoryList.size());
+		logger.debug("Category filter setup with {} categories", categoryList.size());
 	}
 
 	@FXML
 	private void handleFilterWords() {
 		String selectedCategory = wordCategoryFilter.getValue();
-		logger.log(Level.INFO, "Filtering words by category: {0}", selectedCategory);
+		logger.info("Filtering words by category: {}", selectedCategory);
 
 		try {
 			if ("All Categories".equals(selectedCategory)) {
@@ -503,7 +548,7 @@ public class ContentManagementController {
 						.orElse(null);
 
 				if (category != null) {
-					logger.log(Level.INFO, "Getting words for category ID: {0}", category.getId());
+					logger.info("Getting words for category ID: {}", category.getId());
 					// Get words for this category
 					List<Word> words = wordService.getWordsByCategory(category.getId());
 
@@ -511,27 +556,26 @@ public class ContentManagementController {
 					wordsList.clear();
 					wordsList.addAll(words);
 
-					logger.log(Level.INFO, "Found {0} words for category: {1}",
-							new Object[] { words.size(), selectedCategory });
+					logger.info("Found {} words for category: {}", words.size(), selectedCategory);
+					showStatusMessage("Found " + words.size() + " words for category: " + selectedCategory, false);
 				} else {
-					logger.log(Level.WARNING, "Selected category not found in category list: {0}", selectedCategory);
+					logger.warn("Selected category not found in category list: {}", selectedCategory);
+					showStatusMessage("Category not found: " + selectedCategory, true);
 				}
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error filtering words: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error filtering words: {}", e.getMessage(), e);
 			showStatusMessage("Error filtering words: " + e.getMessage(), true);
 		}
 	}
 
 	private void showWordEditForm(Word word) {
 		if (word == null) {
-			logger.log(Level.WARNING, "Cannot edit null word");
+			logger.warn("Cannot edit null word");
 			return;
 		}
 
-		logger.log(Level.INFO, "Showing edit form for word: {0} (ID: {1})",
-				new Object[] { word.getWord(), word.getId() });
+		logger.info("Showing edit form for word: {} (ID: {})", word.getWord(), word.getId());
 
 		wordEditForm.setVisible(true);
 		wordEditForm.setManaged(true);
@@ -563,7 +607,7 @@ public class ContentManagementController {
 
 	@FXML
 	private void handleCancelWordEdit() {
-		logger.log(Level.INFO, "Word edit cancelled");
+		logger.debug("Word edit cancelled");
 		wordEditForm.setVisible(false);
 	}
 
@@ -574,22 +618,22 @@ public class ContentManagementController {
 		Category category = wordCategoryComboBox.getValue();
 		Difficulty difficulty = wordDifficultyComboBox.getValue();
 
-		logger.log(Level.INFO, "Saving word: {0} (mode: {1})", new Object[] { wordText, isEditMode ? "edit" : "add" });
+		logger.info("Saving word: {} (mode: {})", wordText, isEditMode ? "edit" : "add");
 
 		if (wordText.isEmpty()) {
-			logger.log(Level.WARNING, "Word validation failed: text is empty");
+			logger.warn("Word validation failed: text is empty");
 			showStatusMessage("Word text cannot be empty", true);
 			return;
 		}
 
 		if (category == null) {
-			logger.log(Level.WARNING, "Word validation failed: no category selected");
+			logger.warn("Word validation failed: no category selected");
 			showStatusMessage("Please select a category", true);
 			return;
 		}
 
 		if (difficulty == null) {
-			logger.log(Level.WARNING, "Word validation failed: no difficulty selected");
+			logger.warn("Word validation failed: no difficulty selected");
 			showStatusMessage("Please select a difficulty level", true);
 			return;
 		}
@@ -602,15 +646,20 @@ public class ContentManagementController {
 				selectedWord.setCategory(category);
 				selectedWord.setDifficulty(difficulty);
 
-				logger.log(Level.INFO, "Updating word with ID: {0}", selectedWord.getId());
+				logger.info("Updating word with ID: {}", selectedWord.getId());
 				// Save using service
 				Word updatedWord = wordService.updateWord(selectedWord.getId(), selectedWord);
 
 				if (updatedWord != null) {
-					logger.log(Level.INFO, "Word updated successfully");
+					logger.info("Word updated successfully");
 					showStatusMessage("Word updated successfully", false);
+
+					// Log significant updates
+					LoggingUtility.logAction(logger, "update",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "word:" + wordText,
+							"success");
 				} else {
-					logger.log(Level.WARNING, "Failed to update word: service returned null");
+					logger.warn("Failed to update word: service returned null");
 					showStatusMessage("Failed to update word", true);
 				}
 			} else {
@@ -625,15 +674,20 @@ public class ContentManagementController {
 				newWord.setSourceLanguage("en");
 				newWord.setTargetLanguage("he");
 
-				logger.log(Level.INFO, "Creating new word: {0}", wordText);
+				logger.info("Creating new word: {}", wordText);
 				// Save using service
 				Word createdWord = wordService.createWord(newWord);
 
 				if (createdWord != null) {
-					logger.log(Level.INFO, "Word created successfully with ID: {0}", createdWord.getId());
+					logger.info("Word created successfully with ID: {}", createdWord.getId());
 					showStatusMessage("Word created successfully", false);
+
+					// Log new content additions
+					LoggingUtility.logAction(logger, "create",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "word:" + wordText,
+							"success");
 				} else {
-					logger.log(Level.WARNING, "Failed to create word: service returned null");
+					logger.warn("Failed to create word: service returned null");
 					showStatusMessage("Failed to create word", true);
 				}
 			}
@@ -648,60 +702,72 @@ public class ContentManagementController {
 			}
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error saving word: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error saving word: {}", e.getMessage(), e);
 			showStatusMessage("Error saving word: " + e.getMessage(), true);
+
+			// Log errors
+			LoggingUtility.logAction(logger, isEditMode ? "update" : "create",
+					currentAdmin != null ? currentAdmin.getUsername() : "system", "word:" + wordText,
+					"error: " + e.getMessage());
 		}
 	}
 
 	private void deleteWord(Word word) {
 		if (word == null) {
-			logger.log(Level.WARNING, "Cannot delete null word");
+			logger.warn("Cannot delete null word");
 			return;
 		}
 
-		logger.log(Level.INFO, "Delete requested for word: {0} (ID: {1})",
-				new Object[] { word.getWord(), word.getId() });
+		logger.info("Delete requested for word: {} (ID: {})", word.getWord(), word.getId());
 
 		if (showDeleteConfirmation("word", word.getWord())) {
 			try {
-				logger.log(Level.INFO, "Deleting word with ID: {0}", word.getId());
+				logger.info("Deleting word with ID: {}", word.getId());
 				boolean success = wordService.deleteWord(word.getId());
 
 				if (success) {
-					logger.log(Level.INFO, "Word deleted successfully");
+					logger.info("Word deleted successfully");
 					showStatusMessage("Word deleted successfully", false);
 					loadWords();
 					if (parentView != null) {
 						parentView.refresh();
 					}
+
+					// Log content deletion
+					LoggingUtility.logAction(logger, "delete",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "word:" + word.getWord(),
+							"success");
 				} else {
-					logger.log(Level.WARNING, "Failed to delete word: service returned false");
+					logger.warn("Failed to delete word: service returned false");
 					showStatusMessage("Failed to delete word", true);
 				}
 			} catch (DataIntegrityViolationException e) {
-				logger.log(Level.WARNING, "Cannot delete word due to foreign key constraint: {0}", e.getMessage());
-				logger.log(Level.FINE, "Constraint violation details:", e);
+				logger.warn("Cannot delete word due to foreign key constraint: {}", e.getMessage(), e);
 				showStatusMessage("Cannot delete word: it is referenced by other data.", true);
+
+				// Log constraint violations
+				LoggingUtility.logAction(logger, "delete", currentAdmin != null ? currentAdmin.getUsername() : "system",
+						"word:" + word.getWord(), "error: constraint violation");
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, "Error deleting word: {0}", e.getMessage());
-				logger.log(Level.SEVERE, "Exception details:", e);
+				logger.error("Error deleting word: {}", e.getMessage(), e);
 				showStatusMessage("Error deleting word: " + e.getMessage(), true);
+
+				// Log errors
+				LoggingUtility.logAction(logger, "delete", currentAdmin != null ? currentAdmin.getUsername() : "system",
+						"word:" + word.getWord(), "error: " + e.getMessage());
 			}
 		} else {
-			logger.log(Level.INFO, "Word deletion cancelled by user");
+			logger.info("Word deletion cancelled by user");
 		}
 	}
 
 	@FXML
 	private void handleRefreshWords() {
-		logger.log(Level.INFO, "Refresh words button clicked");
+		logger.info("Refresh words button clicked");
 		loadWords();
 	}
 
 	private void showStatusMessage(String message, boolean isError) {
-//		logger.log(isError ? Level.WARNING : Level.INFO, "Status message: {0}", message);
-
 		statusLabel.setText(message);
 		statusLabel.getStyleClass().removeAll("error-message", "success-message");
 		statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
@@ -709,7 +775,7 @@ public class ContentManagementController {
 	}
 
 	private boolean showDeleteConfirmation(String itemType, String itemName) {
-		logger.log(Level.INFO, "Showing delete confirmation for {0}: {1}", new Object[] { itemType, itemName });
+		logger.info("Showing delete confirmation for {}: {}", itemType, itemName);
 
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Delete Confirmation");
@@ -723,7 +789,7 @@ public class ContentManagementController {
 		Optional<ButtonType> result = alert.showAndWait();
 		boolean confirmed = result.isPresent() && result.get() == confirmButton;
 
-		logger.log(Level.INFO, "Delete confirmation result: {0}", confirmed ? "confirmed" : "cancelled");
+		logger.info("Delete confirmation result: {}", confirmed ? "confirmed" : "cancelled");
 		return confirmed;
 	}
 
@@ -732,7 +798,7 @@ public class ContentManagementController {
 	 */
 	@FXML
 	private void handleUploadWordsJson() {
-		logger.log(Level.INFO, "Upload JSON button clicked");
+		logger.info("Upload JSON button clicked");
 
 		// Hide other forms
 		jsonUploadForm.setVisible(true);
@@ -762,7 +828,7 @@ public class ContentManagementController {
 	 */
 	@FXML
 	private void handleSelectJsonFile() {
-		logger.log(Level.INFO, "Select JSON file button clicked");
+		logger.info("Select JSON file button clicked");
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Select Words JSON File");
@@ -775,9 +841,9 @@ public class ContentManagementController {
 			selectedJsonFile = file;
 			selectedFileTextField.setText(file.getName());
 			uploadJsonButton.setDisable(false);
-			logger.log(Level.INFO, "JSON file selected: {0}", file.getAbsolutePath());
+			logger.info("JSON file selected: {}", file.getAbsolutePath());
 		} else {
-			logger.log(Level.INFO, "No file selected (file chooser cancelled)");
+			logger.info("No file selected (file chooser cancelled)");
 		}
 	}
 
@@ -786,7 +852,7 @@ public class ContentManagementController {
 	 */
 	@FXML
 	private void handleCancelJsonUpload() {
-		logger.log(Level.INFO, "JSON upload cancelled");
+		logger.debug("JSON upload cancelled");
 		jsonUploadForm.setVisible(false);
 	}
 
@@ -796,20 +862,19 @@ public class ContentManagementController {
 	@FXML
 	public void handleUploadJson() {
 		if (selectedJsonFile == null || !selectedJsonFile.exists()) {
-			logger.log(Level.WARNING, "Upload failed: No file selected or file does not exist");
+			logger.warn("Upload failed: No file selected or file does not exist");
 			showStatusMessage("No file selected or file does not exist", true);
 			return;
 		}
 
 		Category selectedCategory = uploadCategoryComboBox.getValue();
 		if (selectedCategory == null) {
-			logger.log(Level.WARNING, "Upload failed: No category selected");
+			logger.warn("Upload failed: No category selected");
 			showStatusMessage("Please select a category", true);
 			return;
 		}
 
-		logger.log(Level.INFO, "Uploading JSON file: {0} to category ID: {1}",
-				new Object[] { selectedJsonFile.getName(), selectedCategory.getId() });
+		logger.info("Uploading JSON file: {} to category ID: {}", selectedJsonFile.getName(), selectedCategory.getId());
 
 		// Show loading status
 		showStatusMessage("Uploading words...", false);
@@ -823,22 +888,31 @@ public class ContentManagementController {
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
 					if (result != null) {
-						logger.log(Level.INFO, "Words uploaded successfully: {0}", result);
+						logger.info("Words uploaded successfully: {}", result);
 						showStatusMessage("Words uploaded successfully: " + result, false);
 						jsonUploadForm.setVisible(false);
 
 						// Refresh the words list
 						loadWords();
+
+						// Log successful batch operation
+						LoggingUtility.logAction(logger, "upload",
+								currentAdmin != null ? currentAdmin.getUsername() : "system",
+								"json_file:" + selectedJsonFile.getName(), "success: " + result);
 					} else {
-						logger.log(Level.WARNING, "Upload failed: Service returned null result");
+						logger.warn("Upload failed: Service returned null result");
 						showStatusMessage("Upload failed. Please check the server logs for details.", true);
 					}
 				});
 			} catch (Exception e) {
 				Platform.runLater(() -> {
-					logger.log(Level.SEVERE, "Error uploading words: {0}", e.getMessage());
-					logger.log(Level.SEVERE, "Exception details:", e);
+					logger.error("Error uploading words: {}", e.getMessage(), e);
 					showStatusMessage("Error uploading words: " + e.getMessage(), true);
+
+					// Log error for important batch operation
+					LoggingUtility.logAction(logger, "upload",
+							currentAdmin != null ? currentAdmin.getUsername() : "system",
+							"json_file:" + selectedJsonFile.getName(), "error: " + e.getMessage());
 				});
 			}
 		});
