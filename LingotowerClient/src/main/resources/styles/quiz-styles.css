@@ -1,4 +1,19 @@
-/* Quiz-specific styles  */
+/* Quiz-specific styles */
+
+/* Common Values - Reference
+ * Primary: #3f51b5
+ * Primary Light: #7986cb
+ * Primary Dark: #303f9f
+ * Success: #4caf50
+ * Success Light: #e8f5e9
+ * Success Border: #c8e6c9
+ * Danger: #f44336
+ * Danger Light: #ffebee
+ * Danger Border: #ffcdd2
+ * Text Dark: #212121
+ * Text Medium: #424242
+ * Text Light: #757575
+ */
 
 /* ===== Sidebar Styling ===== */
 .sidebar {
@@ -89,8 +104,7 @@
     -fx-background-color: transparent;
     -fx-background: transparent;
     -fx-fit-to-width: true;
-    -fx-fit-to-height: true
-    
+    -fx-fit-to-height: true;
 }
 
 .content-scrollpane > .viewport {
@@ -246,9 +260,6 @@
 .back-button:hover {
     -fx-background-color: #303f9f;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
-	-fx-border-radius: 8px;
-    -fx-min-width: 500px;
-    -fx-max-width: 600px;
 }
 
 .info-label {
@@ -318,5 +329,4 @@
     -fx-background-color: #f5f7fa;
     -fx-background-radius: 8px;
     -fx-border-color: #eaeef2;
-    }
-    
+}
