@@ -3,9 +3,12 @@ package com.lingotower.ui.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.Category;
 import com.lingotower.model.User;
 import com.lingotower.service.CategoryService;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +23,8 @@ import javafx.scene.layout.VBox;
  * activities
  */
 public class DashboardViewController {
+
+	private static final Logger logger = LoggingUtility.getLogger(DashboardViewController.class);
 
 	@FXML
 	private BorderPane view;
@@ -44,9 +49,7 @@ public class DashboardViewController {
 	 */
 	@FXML
 	private void initialize() {
-		categoryService = new CategoryService();
-
-		// Initialize the category service
+		logger.debug("Initializing DashboardViewController");
 		categoryService = new CategoryService();
 
 		// Load categories when the view initializes
@@ -61,9 +64,11 @@ public class DashboardViewController {
 		if (logoutButton != null) {
 			logoutButton.setOnAction(e -> handleLogout());
 		}
+		logger.debug("DashboardViewController initialization complete");
 	}
 
 	public void setMainController(MainApplicationController mainController) {
+		logger.debug("Setting main controller reference");
 		this.mainController = mainController;
 	}
 
@@ -73,6 +78,7 @@ public class DashboardViewController {
 	 * @param user The current user
 	 */
 	public void setUser(User user) {
+		logger.debug("Setting user: {}", user != null ? user.getUsername() : "null");
 		this.currentUser = user;
 		// You can update UI elements based on the user if needed
 	}
@@ -83,6 +89,7 @@ public class DashboardViewController {
 	 * @param callback The callback to run when logout is requested
 	 */
 	public void setOnLogoutCallback(Runnable callback) {
+		logger.debug("Setting logout callback");
 		this.onLogoutCallback = callback;
 	}
 
@@ -90,23 +97,24 @@ public class DashboardViewController {
 	 * Handle logout request
 	 */
 	private void handleLogout() {
+		logger.info("Logout requested");
 		if (onLogoutCallback != null) {
 			onLogoutCallback.run();
+		} else {
+			logger.warn("Logout callback is null");
 		}
 	}
 
 	public void loadCategories() {
 		try {
-
+			logger.info("Loading categories");
 			// Fetch categories from server
 			List<Category> categories = categoryService.getAllCategories();
 
 			// Update UI with categories
 			updateCategories(categories);
 		} catch (Exception e) {
-			// Handle error, show error message
-			System.err.println("Error loading categories: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Error loading categories: {}", e.getMessage(), e);
 			showErrorMessage("Error loading categories: " + e.getMessage());
 		}
 	}
@@ -122,11 +130,14 @@ public class DashboardViewController {
 
 		// Display message if no categories
 		if (categories == null || categories.isEmpty()) {
+			logger.info("No categories available");
 			Label noCategories = new Label("No categories available");
 			noCategories.getStyleClass().add("info-label");
 			categoriesContainer.getChildren().add(noCategories);
 			return;
 		}
+
+		logger.info("Displaying {} categories", categories.size());
 
 		// Add a tile for each category by loading the FXML for each
 		for (Category category : categories) {
@@ -141,16 +152,15 @@ public class DashboardViewController {
 				// Set callback for when category is selected
 				tileController.setOnCategorySelected(() -> {
 					try {
-						System.out.println("Category selected callback triggered for: " + category.getName());
+						logger.debug("Category selected: {}", category.getName());
 						if (mainController != null) {
-							System.out.println("Calling mainController.showWordLearningForCategory()");
+							logger.debug("Calling mainController.showWordLearningForCategory()");
 							mainController.showWordLearningForCategory(category);
 						} else {
 							throw new IllegalStateException("Main controller is null");
 						}
 					} catch (Exception e) {
-						System.err.println("Error handling category selection: " + e.getMessage());
-						e.printStackTrace();
+						logger.error("Error handling category selection: {}", e.getMessage(), e);
 						showErrorMessage("Error navigating to the selected category: " + e.getMessage());
 					}
 				});
@@ -158,8 +168,7 @@ public class DashboardViewController {
 				// Add to container
 				categoriesContainer.getChildren().add(categoryTile);
 			} catch (IOException e) {
-				System.err.println("Error loading category tile: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error loading category tile: {}", e.getMessage(), e);
 				showErrorMessage("Error loading category tile: " + e.getMessage());
 			}
 		}
@@ -171,6 +180,7 @@ public class DashboardViewController {
 	 * @param message The error message to display
 	 */
 	public void showErrorMessage(String message) {
+		logger.debug("Showing error message: {}", message);
 		if (errorMessageLabel != null) {
 			errorMessageLabel.setText(message);
 			errorMessageLabel.setVisible(true);

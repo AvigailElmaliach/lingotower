@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
@@ -13,6 +12,7 @@ import com.lingotower.model.User;
 import com.lingotower.service.AdminAuthService;
 import com.lingotower.service.UserAuthService;
 import com.lingotower.service.UserService;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -27,8 +27,8 @@ import javafx.scene.layout.BorderPane;
 
 public class LoginViewController implements Initializable {
 
-	// Add logger as a static field
-	private static final Logger logger = LoggerFactory.getLogger(LoginViewController.class);
+	// Use LoggingUtility for getting a logger
+	private static final Logger logger = LoggingUtility.getLogger(LoginViewController.class);
 
 	@FXML
 	private BorderPane view;
@@ -182,7 +182,6 @@ public class LoginViewController implements Initializable {
 	private void handleForgotPassword(ActionEvent event) {
 		// Handle password recovery
 		logger.info("Password recovery requested");
-		System.out.println("Password recovery requested");
 	}
 
 	private void handleRegister(ActionEvent event) {
