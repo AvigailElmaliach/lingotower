@@ -2,6 +2,8 @@ package com.lingotower.ui.controllers.admin;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.Admin;
 import com.lingotower.model.User;
 import com.lingotower.security.TokenStorage;
@@ -9,6 +11,7 @@ import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 import com.lingotower.ui.components.ActionButtonCell;
 import com.lingotower.ui.views.admin.UserManagementView;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -26,6 +29,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class UserManagementController {
+	// Initialize logger using LoggingUtility
+	private static final Logger logger = LoggingUtility.getLogger(UserManagementController.class);
 
 	@FXML
 	private BorderPane view;
@@ -83,6 +88,7 @@ public class UserManagementController {
 	public UserManagementController() {
 		// Initialize the UserService in the constructor
 		this.userService = new UserService();
+		logger.debug("UserManagementController initialized");
 	}
 
 	/**
@@ -92,11 +98,12 @@ public class UserManagementController {
 	 */
 	public void setParentView(UserManagementView view) {
 		this.parentView = view;
+		logger.debug("Parent view set in UserManagementController");
 	}
 
 	public void setAdminService(AdminService adminService) {
 		this.adminService = adminService;
-		System.out.println("AdminService set in UserManagementController");
+		logger.debug("AdminService set in UserManagementController");
 		TokenStorage.logTokenStatus("After setting AdminService");
 	}
 
@@ -127,7 +134,7 @@ public class UserManagementController {
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 		languageColumn.setCellValueFactory(new PropertyValueFactory<>("language"));
 
-		// Set up the actions column column using ActionButtonCell
+		// Set up the actions column using ActionButtonCell
 		actionsColumn.setCellFactory(column -> new ActionButtonCell<>(
 				// Edit button handler
 				event -> {
@@ -148,23 +155,28 @@ public class UserManagementController {
 				handleSearchButton();
 			});
 		}
+
+		logger.debug("UserManagementController UI initialization completed");
 	}
 
 	public void setAdmin(Admin admin) {
 		this.currentAdmin = admin;
+		logger.info("Current admin set: {}", admin != null ? admin.getUsername() : "null");
 	}
 
 	public void setReturnToDashboard(Runnable callback) {
 		this.returnToDashboard = callback;
+		logger.debug("Return to dashboard callback set");
 	}
 
 	public void loadUsers() {
 		showStatusMessage("Loading users...", false);
+		long startTime = System.currentTimeMillis();
 
 		// Create a background thread to load users
 		Thread loadThread = new Thread(() -> {
 			try {
-				System.out.println("Loading users in background thread...");
+				logger.info("Loading users in background thread...");
 				TokenStorage.logTokenStatus("Before loading users");
 
 				List<User> users;
@@ -179,7 +191,7 @@ public class UserManagementController {
 					users = userService.getAllUsers();
 				}
 
-				System.out.println("Users loaded: " + (users != null ? users.size() : "null"));
+				logger.info("Users loaded: {}", users != null ? users.size() : "null");
 
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
@@ -192,20 +204,31 @@ public class UserManagementController {
 					} else {
 						showStatusMessage("No users found", true);
 					}
+
+					long duration = System.currentTimeMillis() - startTime;
+					LoggingUtility.logPerformance(logger, "load_users", duration, "success");
+					LoggingUtility.logAction(logger, "load",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "users", "success");
 				});
 			} catch (Exception e) {
-				System.err.println("Error loading users: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error loading users: {}", e.getMessage(), e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
 					showStatusMessage("Error loading users: " + e.getMessage(), true);
+
+					long duration = System.currentTimeMillis() - startTime;
+					LoggingUtility.logPerformance(logger, "load_users", duration, "failed");
+					LoggingUtility.logAction(logger, "load",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "users",
+							"error: " + e.getMessage());
 				});
 			}
 		});
 
 		// Start the background thread
 		loadThread.setDaemon(true);
+		loadThread.setName("UserLoader");
 		loadThread.start();
 	}
 
@@ -215,7 +238,7 @@ public class UserManagementController {
 			return;
 		}
 
-		System.out.println("Delete button clicked for user: " + user.getUsername() + " (ID: " + user.getId() + ")");
+		logger.info("Delete button clicked for user: {} (ID: {})", user.getUsername(), user.getId());
 
 		// Simply call the existing method to show the confirmation dialog
 		showDeleteConfirmation(user);
@@ -225,18 +248,21 @@ public class UserManagementController {
 	private void handleBackButton() {
 		if (returnToDashboard != null) {
 			try {
+				logger.info("Navigating back to dashboard");
 				returnToDashboard.run();
+				LoggingUtility.logAction(logger, "navigation",
+						currentAdmin != null ? currentAdmin.getUsername() : "system", "dashboard", "success");
 			} catch (Exception e) {
-				System.err.println("Error executing dashboard callback: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error executing dashboard callback: {}", e.getMessage(), e);
 			}
 		} else {
-			System.err.println("Dashboard callback is not set.");
+			logger.error("Dashboard callback is not set.");
 		}
 	}
 
 	@FXML
 	private void handleRefreshButton() {
+		logger.info("Refresh button clicked");
 		loadUsers();
 	}
 
@@ -246,6 +272,7 @@ public class UserManagementController {
 			return;
 
 		String searchText = searchField.getText().trim().toLowerCase();
+		logger.debug("Searching for users with text: '{}'", searchText);
 
 		// If search is empty, show all users
 		if (searchText.isEmpty()) {
@@ -265,6 +292,7 @@ public class UserManagementController {
 		// Update the table view with filtered results
 		userTableView.setItems(filteredList);
 		showStatusMessage("Found " + filteredList.size() + " matching users", false);
+		logger.info("Search completed: found {} matching users", filteredList.size());
 	}
 
 	private void showEditForm(User user) {
@@ -275,9 +303,8 @@ public class UserManagementController {
 
 		// Store the selected user
 		this.selectedUser = user;
-		// debug can delete later
-		System.out.println("Selected user set to: " + this.selectedUser.getUsername() + " (ID: "
-				+ this.selectedUser.getId() + ")");
+		// Log the action
+		logger.info("Showing edit form for user: {} (ID: {})", user.getUsername(), user.getId());
 
 		// Fill the form fields
 		if (usernameField != null)
@@ -295,6 +322,7 @@ public class UserManagementController {
 
 	@FXML
 	private void handleCancelEdit() {
+		logger.debug("Edit cancelled");
 		if (editUserForm != null) {
 			editUserForm.setVisible(false);
 		}
@@ -307,6 +335,8 @@ public class UserManagementController {
 			showStatusMessage("No user selected", true);
 			return;
 		}
+
+		long startTime = System.currentTimeMillis();
 
 		// Get updated values from form
 		String username = usernameField.getText().trim();
@@ -327,6 +357,7 @@ public class UserManagementController {
 
 		// Show loading status
 		showStatusMessage("Updating user...", false);
+		logger.info("Attempting to update user: {} (ID: {})", username, selectedUser.getId());
 
 		// Update in background thread
 		Thread updateThread = new Thread(() -> {
@@ -363,23 +394,41 @@ public class UserManagementController {
 
 						// Show success message
 						showStatusMessage("User updated successfully", false);
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "update_user", duration, "success");
+						LoggingUtility.logAction(logger, "update",
+								currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
+								"success");
 					} else {
 						showStatusMessage("Failed to update user", true);
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "update_user", duration, "failed");
+						LoggingUtility.logAction(logger, "update",
+								currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
+								"failed");
 					}
 				});
 			} catch (Exception e) {
-				System.err.println("Error updating user: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error updating user: {}", e.getMessage(), e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
 					showStatusMessage("Error updating user: " + e.getMessage(), true);
+
+					long duration = System.currentTimeMillis() - startTime;
+					LoggingUtility.logPerformance(logger, "update_user", duration, "error");
+					LoggingUtility.logAction(logger, "update",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
+							"error: " + e.getMessage());
 				});
 			}
 		});
 
 		// Start the background thread
 		updateThread.setDaemon(true);
+		updateThread.setName("UserUpdater");
 		updateThread.start();
 	}
 
@@ -389,20 +438,21 @@ public class UserManagementController {
 	 */
 	private void showDeleteConfirmation(User user) {
 		if (user == null) {
-			System.err.println("Cannot show confirmation for null user");
+			logger.error("Cannot show confirmation for null user");
 			return;
 		}
 
-		System.out.println("Creating programmatic confirmation dialog for: " + user.getUsername());
+		logger.info("Creating confirmation dialog for deleting user: {} (ID: {})", user.getUsername(), user.getId());
 
 		// Store selected user for later use
 		this.selectedUser = user;
 
 		// Create a custom confirmation dialog
 		Dialog<ButtonType> dialog = new Dialog<>();
-		dialog.setTitle("Confirm Delete");
-		dialog.setHeaderText("Delete User");
-		dialog.setContentText("Are you sure you want to delete user '" + user.getUsername() + "'?");
+		dialog.setTitle("Delete Confirmation");
+		dialog.setHeaderText("Are you sure you want to delete user '" + user.getUsername() + "'?");
+		dialog.setContentText(
+				"Username: " + user.getUsername() + "\nEmail: " + (user.getEmail() != null ? user.getEmail() : "N/A"));
 
 		// Set dialog buttons
 		ButtonType deleteButtonType = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
@@ -412,12 +462,11 @@ public class UserManagementController {
 		// Show dialog and handle the result
 		dialog.showAndWait().ifPresent(buttonType -> {
 			if (buttonType == deleteButtonType) {
-				System.out.println("Delete confirmed through dialog");
-
+				logger.info("Delete confirmed through dialog for user: {}", user.getUsername());
 				// Delete the user directly
 				deleteUserDirectly(user);
 			} else {
-				System.out.println("Delete canceled through dialog");
+				logger.info("Delete canceled through dialog for user: {}", user.getUsername());
 			}
 		});
 	}
@@ -432,8 +481,11 @@ public class UserManagementController {
 			return;
 		}
 
+		long startTime = System.currentTimeMillis();
+
 		// Show loading status
 		showStatusMessage("Deleting user...", false);
+		logger.info("Attempting to delete user: {} (ID: {})", user.getUsername(), user.getId());
 
 		// Initialize service if needed
 		if (userService == null) {
@@ -456,29 +508,47 @@ public class UserManagementController {
 
 						// Refresh the list
 						loadUsers();
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "delete_user", duration, "success");
+						LoggingUtility.logAction(logger, "delete",
+								currentAdmin != null ? currentAdmin.getUsername() : "system",
+								"user:" + user.getUsername(), "success");
 					} else {
 						showStatusMessage("Failed to delete user", true);
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "delete_user", duration, "failed");
+						LoggingUtility.logAction(logger, "delete",
+								currentAdmin != null ? currentAdmin.getUsername() : "system",
+								"user:" + user.getUsername(), "failed");
 					}
 				});
 			} catch (Exception e) {
-				System.err.println("Error deleting user: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error deleting user: {}", e.getMessage(), e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
 					showStatusMessage("Error deleting user: " + e.getMessage(), true);
+
+					long duration = System.currentTimeMillis() - startTime;
+					LoggingUtility.logPerformance(logger, "delete_user", duration, "error");
+					LoggingUtility.logAction(logger, "delete",
+							currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + user.getUsername(),
+							"error: " + e.getMessage());
 				});
 			}
 		});
 
 		// Start the background thread
 		deleteThread.setDaemon(true);
+		deleteThread.setName("UserDeleter");
 		deleteThread.start();
 	}
 
 	@FXML
 	public void handleCancelDelete() {
-		System.out.println("Delete canceled");
+		logger.info("Delete operation canceled");
 
 		// Hide the confirmation dialog
 		if (confirmationDialog != null) {
@@ -497,14 +567,15 @@ public class UserManagementController {
 			return;
 		}
 
-		System.out.println(
-				"Confirming deletion of user: " + selectedUser.getUsername() + " (ID: " + selectedUser.getId() + ")");
+		logger.info("Confirming deletion of user: {} (ID: {})", selectedUser.getUsername(), selectedUser.getId());
 
 		// Ensure we have a valid ID
 		if (selectedUser.getId() == null) {
 			showStatusMessage("Invalid user ID", true);
 			return;
 		}
+
+		long startTime = System.currentTimeMillis();
 
 		// Show loading status
 		showStatusMessage("Deleting user...", false);
@@ -520,7 +591,7 @@ public class UserManagementController {
 				// Call the UserService to perform the delete operation
 				boolean success = userService.deleteUser(selectedUser.getId());
 
-				System.out.println("Delete operation result: " + success);
+				logger.debug("Delete operation result: {}", success ? "success" : "failed");
 
 				// Update UI on JavaFX thread
 				Platform.runLater(() -> {
@@ -546,29 +617,49 @@ public class UserManagementController {
 						if (parentView != null) {
 							parentView.refresh();
 						}
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "confirm_delete_user", duration, "success");
+						LoggingUtility.logAction(logger, "delete",
+								currentAdmin != null ? currentAdmin.getUsername() : "system",
+								"user:" + selectedUser.getUsername(), "success");
 					} else {
 						showStatusMessage("Failed to delete user. Please check permissions and try again.", true);
+
+						long duration = System.currentTimeMillis() - startTime;
+						LoggingUtility.logPerformance(logger, "confirm_delete_user", duration, "failed");
+						LoggingUtility.logAction(logger, "delete",
+								currentAdmin != null ? currentAdmin.getUsername() : "system",
+								"user:" + selectedUser.getUsername(), "failed");
 					}
 				});
 			} catch (Exception e) {
-				System.err.println("Error deleting user: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Error deleting user: {}", e.getMessage(), e);
 
 				// Show error on JavaFX thread
 				Platform.runLater(() -> {
 					showStatusMessage("Error deleting user: " + e.getMessage(), true);
+
+					long duration = System.currentTimeMillis() - startTime;
+					LoggingUtility.logPerformance(logger, "confirm_delete_user", duration, "error");
+					LoggingUtility.logAction(logger, "delete",
+							currentAdmin != null ? currentAdmin.getUsername() : "system",
+							"user:" + selectedUser.getUsername(), "error: " + e.getMessage());
 				});
 			}
 		});
 
 		// Start the background thread
 		deleteThread.setDaemon(true);
+		deleteThread.setName("UserDeleter");
 		deleteThread.start();
 	}
 
 	private void showStatusMessage(String message, boolean isError) {
 		if (statusLabel == null)
 			return;
+
+		logger.debug("Status message: {} (isError: {})", message, isError);
 
 		statusLabel.setText(message);
 		statusLabel.getStyleClass().removeAll("error-message", "success-message");
@@ -577,14 +668,17 @@ public class UserManagementController {
 
 		// Automatically hide success messages after 5 seconds
 		if (!isError) {
-			new Thread(() -> {
+			Thread timerThread = new Thread(() -> {
 				try {
 					Thread.sleep(5000);
 					Platform.runLater(() -> statusLabel.setVisible(false));
 				} catch (InterruptedException e) {
-					// Ignore
+					logger.debug("Status message timer interrupted", e);
 				}
-			}).start();
+			});
+			timerThread.setDaemon(true);
+			timerThread.setName("StatusMessageTimer");
+			timerThread.start();
 		}
 	}
 }

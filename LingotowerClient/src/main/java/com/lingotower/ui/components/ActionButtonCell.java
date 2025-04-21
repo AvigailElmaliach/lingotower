@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
  * 
  * @param <S> The type of the TableView items.
  */
-public class ActionButtonCell<S> extends TableCell<S, String> { // הפכנו לגנרי עם <S>
+public class ActionButtonCell<S> extends TableCell<S, String> {
 
 	private final Button editButton = new Button("Edit");
 	private final Button deleteButton = new Button("Delete");
@@ -33,7 +33,7 @@ public class ActionButtonCell<S> extends TableCell<S, String> { // הפכנו ל
 				return; // Protect against index errors
 			}
 
-			S item = getTableView().getItems().get(getIndex()); // טיפוס הגנרי S
+			S item = getTableView().getItems().get(getIndex());
 			// Call the provided edit handler, sending the item itself as the source
 			onEdit.handle(new ActionEvent(item, event.getTarget()));
 		});
@@ -43,7 +43,7 @@ public class ActionButtonCell<S> extends TableCell<S, String> { // הפכנו ל
 				return; // Protect against index errors
 			}
 
-			S item = getTableView().getItems().get(getIndex()); // טיפוס הגנרי S
+			S item = getTableView().getItems().get(getIndex());
 			// Call the provided delete handler, sending the item itself as the source
 			onDelete.handle(new ActionEvent(item, event.getTarget()));
 		});

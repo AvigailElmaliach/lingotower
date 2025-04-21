@@ -1,8 +1,8 @@
 package com.lingotower.ui.controllers.admin;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 import com.lingotower.model.Admin;
 import com.lingotower.model.Category;
@@ -16,6 +16,7 @@ import com.lingotower.service.WordService;
 import com.lingotower.ui.views.admin.AdminManagementView;
 import com.lingotower.ui.views.admin.ContentManagementView;
 import com.lingotower.ui.views.admin.UserManagementView;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,7 +27,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class AdminViewController {
-	private static final Logger logger = Logger.getLogger(AdminViewController.class.getName());
+	private static final Logger logger = LoggingUtility.getLogger(AdminViewController.class);
 	private static final String APPLICATION_CSS = "/styles/application.css";
 	private static final String ADMIN_STYLES_CSS = "/styles/admin-styles.css";
 
@@ -63,12 +64,18 @@ public class AdminViewController {
 	private final WordService wordService;
 	private final AdminService adminService;
 
+	private static final String LOADING_TEXT = "Loading...";
+	private static final String ERROR_TEXT = "Error";
+	private static final String UNKNOWN_TEXT = "unknown";
+	private static final String EXCEPTION_DETAILS_TEXT = "Exception details:";
+	private static final String ACTION_NAVIGATE_TEXT = "navigate";
+
 	public AdminViewController() {
 		userService = new UserService();
 		categoryService = new CategoryService();
 		wordService = new WordService();
 		adminService = new AdminService();
-		logger.log(Level.CONFIG, "AdminViewController services initialized.");
+		logger.debug("AdminViewController services initialized.");
 	}
 
 	@FXML
@@ -81,17 +88,16 @@ public class AdminViewController {
 		this.currentAdmin = admin;
 		if (admin != null) {
 			adminNameLabel.setText("Admin: " + admin.getUsername());
-			logger.log(Level.INFO, "Admin set in view controller: {0}", admin.getUsername());
+			logger.info("Admin set in view controller: {}", admin.getUsername());
 		} else {
-			logger.log(Level.WARNING, "Admin set to null in view controller.");
+			logger.warn("Admin set to null in view controller.");
 			adminNameLabel.setText("Admin: N/A");
 		}
 		loadSystemStats();
 	}
 
 	public void setPrimaryStage(Stage stage) {
-		logger.log(Level.INFO, "Setting primary stage in AdminViewController: {0}",
-				(stage != null ? "Not null" : "NULL"));
+		logger.info("Setting primary stage in AdminViewController: {}", (stage != null ? "Not null" : "NULL"));
 		this.primaryStage = stage;
 	}
 
@@ -105,23 +111,27 @@ public class AdminViewController {
 
 	@FXML
 	private void handleLogout() {
-		logger.log(Level.INFO, "Logout requested by admin: {0}",
-				(currentAdmin != null ? currentAdmin.getUsername() : "N/A"));
+		logger.info("Logout requested by admin: {}", (currentAdmin != null ? currentAdmin.getUsername() : "N/A"));
+
 		if (onLogout != null) {
+			LoggingUtility.logAction(logger, "logout",
+					(currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT), "system", "initiated");
 			onLogout.run();
 		} else {
-			logger.log(Level.WARNING, "onLogout handler is null.");
+			logger.warn("onLogout handler is null.");
 		}
 	}
 
 	@FXML
 	private void handleUserManagementClick() {
 		try {
-			logger.log(Level.INFO, "Manage Users button clicked");
+			logger.info("Manage Users button clicked");
 			TokenStorage.logTokenStatus("Before loading user management");
 
+			long startTime = System.currentTimeMillis();
+
 			if (primaryStage == null) {
-				logger.log(Level.SEVERE, "ERROR: Primary stage is null in handleUserManagementClick!");
+				logger.error("ERROR: Primary stage is null in handleUserManagementClick!");
 				showError("Cannot open User Management: Primary stage is null");
 				return;
 			}
@@ -132,7 +142,7 @@ public class AdminViewController {
 							primaryStage.setScene(view.getScene());
 							loadSystemStats();
 						} else {
-							logger.log(Level.WARNING, "Primary stage is null in return callback from User Management");
+							logger.warn("Primary stage is null in return callback from User Management");
 						}
 					});
 
@@ -143,9 +153,17 @@ public class AdminViewController {
 			primaryStage.setTitle("LingoTower Admin - User Management");
 			userManagementView.loadUsers();
 
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "load_user_management", duration, "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "user_management", "success");
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error loading user management view: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error loading user management view: {}", e.getMessage());
+			logger.error(EXCEPTION_DETAILS_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "user_management",
+					ERROR_TEXT + ":" + e.getMessage());
 			showError(String.format("Error loading user management: %s", e.getMessage()));
 		}
 	}
@@ -153,9 +171,11 @@ public class AdminViewController {
 	@FXML
 	private void handleContentManagementClick() {
 		try {
-			logger.log(Level.INFO, "Manage Content button clicked");
+			logger.info("Manage Content button clicked");
+			long startTime = System.currentTimeMillis();
+
 			if (primaryStage == null) {
-				logger.log(Level.SEVERE, "ERROR: Primary stage is null in handleContentManagementClick!");
+				logger.error("ERROR: Primary stage is null in handleContentManagementClick!");
 				showError("Cannot open Content Management: Primary stage is null");
 				return;
 			}
@@ -166,8 +186,7 @@ public class AdminViewController {
 							primaryStage.setScene(view.getScene());
 							loadSystemStats();
 						} else {
-							logger.log(Level.WARNING,
-									"Primary stage is null in return callback from Content Management");
+							logger.warn("Primary stage is null in return callback from Content Management");
 						}
 					});
 
@@ -177,9 +196,17 @@ public class AdminViewController {
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("LingoTower Admin - Content Management");
 
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "load_content_management", duration, "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "content_management", "success");
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error loading content management view: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error loading content management view: {}", e.getMessage());
+			logger.error(UNKNOWN_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "content_management",
+					"error: " + e.getMessage());
 			showError(String.format("Error loading content management: %s", e.getMessage()));
 		}
 	}
@@ -187,11 +214,13 @@ public class AdminViewController {
 	@FXML
 	private void handleAdminManagementClick() {
 		try {
-			logger.log(Level.INFO, "Manage Admins button clicked");
+			logger.info("Manage Admins button clicked");
 			TokenStorage.logTokenStatus("Before loading admin management");
 
+			long startTime = System.currentTimeMillis();
+
 			if (primaryStage == null) {
-				logger.log(Level.SEVERE, "ERROR: Primary stage is null in handleAdminManagementClick!");
+				logger.error("ERROR: Primary stage is null in handleAdminManagementClick!");
 				showError("Cannot open Admin Management: Primary stage is null");
 				return;
 			}
@@ -202,7 +231,7 @@ public class AdminViewController {
 							primaryStage.setScene(view.getScene());
 							loadSystemStats();
 						} else {
-							logger.log(Level.WARNING, "Primary stage is null in return callback from Admin Management");
+							logger.warn("Primary stage is null in return callback from Admin Management");
 						}
 					});
 
@@ -213,9 +242,17 @@ public class AdminViewController {
 			primaryStage.setTitle("LingoTower Admin - Admin Management");
 			adminManagementView.refresh();
 
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "load_admin_management", duration, "success");
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "admin_management", "success");
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Error loading admin management view: {0}", e.getMessage());
-			logger.log(Level.SEVERE, "Exception details:", e);
+			logger.error("Error loading admin management view: {}", e.getMessage());
+			logger.error(UNKNOWN_TEXT, e);
+			LoggingUtility.logAction(logger, ACTION_NAVIGATE_TEXT,
+					currentAdmin != null ? currentAdmin.getUsername() : UNKNOWN_TEXT, "admin_management",
+					"error: " + e.getMessage());
 			showError(String.format("Error loading admin management: %s", e.getMessage()));
 		}
 	}
@@ -230,17 +267,17 @@ public class AdminViewController {
 			scene.getStylesheets().add(getClass().getResource(APPLICATION_CSS).toExternalForm());
 			scene.getStylesheets().add(getClass().getResource(ADMIN_STYLES_CSS).toExternalForm());
 		} catch (NullPointerException e) {
-			logger.log(Level.WARNING, CSS_NOT_FOUND_MESSAGE, e);
+			logger.warn(CSS_NOT_FOUND_MESSAGE, e);
 			try {
 				// Trying root path directly
 				scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/admin-styles.css").toExternalForm());
 			} catch (NullPointerException ex) {
-				logger.log(Level.WARNING, "CSS not found at root path either, continuing without styles.", ex);
+				logger.warn("CSS not found at root path either, continuing without styles.", ex);
 			}
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "Error loading CSS files: {0}", e.getMessage());
-			logger.log(Level.WARNING, "Exception details:", e);
+			logger.warn("Error loading CSS files: {}", e.getMessage());
+			logger.debug(UNKNOWN_TEXT, e);
 		}
 	}
 
@@ -251,18 +288,19 @@ public class AdminViewController {
 		// Check if there's already a loading thread running
 		if (Thread.getAllStackTraces().keySet().stream()
 				.anyMatch(t -> "SystemStatsLoader".equals(t.getName()) && t.isAlive())) {
-			logger.log(Level.FINE, "Stats loading already in progress, skipping duplicate request");
+			logger.debug("Stats loading already in progress, skipping duplicate request");
 			return; // Skip creating another thread if one is already running
 		}
 
 		Thread statsThread = new Thread(() -> {
 			try {
-				logger.log(Level.INFO, "Background thread: Loading system stats...");
+				logger.info("Background thread: Loading system stats...");
+				long startTime = System.currentTimeMillis();
 
 				Platform.runLater(() -> {
-					totalUsersLabel.setText("Loading...");
-					totalCategoriesLabel.setText("Loading...");
-					totalWordsLabel.setText("Loading...");
+					totalUsersLabel.setText(LOADING_TEXT);
+					totalCategoriesLabel.setText(LOADING_TEXT);
+					totalWordsLabel.setText(LOADING_TEXT);
 				});
 
 				// Use the existing service instances for thread safety
@@ -275,33 +313,30 @@ public class AdminViewController {
 				List<User> users = null;
 				int userCount = 0;
 				try {
-					logger.log(Level.FINE, "Background thread: Trying to load users with AdminService...");
+					logger.debug("Background thread: Trying to load users with AdminService...");
 					users = localAdminService.getAllUsers();
 					if (users == null) {
-						logger.log(Level.FINE,
-								"Background thread: AdminService returned null user list, trying UserService...");
+						logger.debug("Background thread: AdminService returned null user list, trying UserService...");
 						users = localUserService.getAllUsers();
 					} else if (users.isEmpty()) {
-						logger.log(Level.FINE,
-								"Background thread: AdminService returned empty user list, trying UserService...");
+						logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
 						users = localUserService.getAllUsers();
 					}
 					userCount = (users != null) ? users.size() : 0;
 				} catch (Exception e) {
-					logger.log(Level.WARNING,
-							"Background thread: Error loading users with AdminService: {0}. Falling back to UserService.",
+					logger.warn(
+							"Background thread: Error loading users with AdminService: {}. Falling back to UserService.",
 							e.getMessage());
 					try {
-						logger.log(Level.FINE, "Background thread: Falling back to UserService...");
+						logger.debug("Background thread: Falling back to UserService...");
 						users = localUserService.getAllUsers();
 						userCount = (users != null) ? users.size() : 0;
 					} catch (Exception ex) {
-						logger.log(Level.SEVERE,
-								"Background thread: Error loading users with UserService after fallback.", ex);
+						logger.error("Background thread: Error loading users with UserService after fallback.", ex);
 						userCount = 0;
 					}
 				}
-				logger.log(Level.INFO, "Background thread: User count calculated: {0}", userCount);
+				logger.info("Background thread: User count calculated: {}", userCount);
 
 				// --- Load categories ---
 				List<Category> categories = null;
@@ -310,12 +345,12 @@ public class AdminViewController {
 					categories = localCategoryService.getAllCategories();
 					categoryCount = (categories != null) ? categories.size() : 0;
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Background thread: Error loading categories: {0}", e.getMessage());
-					logger.log(Level.SEVERE, "Exception details:", e);
+					logger.error("Background thread: Error loading categories: {}", e.getMessage());
+					logger.debug(UNKNOWN_TEXT, e);
 					categoryCount = 0;
 				}
 				// Only log once at INFO level, subsequent or detail logs at FINE
-				logger.log(Level.FINE, "Background thread: Category count calculated: {0}", categoryCount);
+				logger.debug("Background thread: Category count calculated: {}", categoryCount);
 
 				// --- Load words ---
 				List<Word> words = null;
@@ -324,12 +359,12 @@ public class AdminViewController {
 					words = localWordService.getAllWords();
 					wordCount = (words != null) ? words.size() : 0;
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Background thread: Error loading words: {0}", e.getMessage());
-					logger.log(Level.SEVERE, "Exception details:", e);
+					logger.error("Background thread: Error loading words: {}", e.getMessage());
+					logger.debug(UNKNOWN_TEXT, e);
 					wordCount = 0;
 				}
 				// Only log once at INFO level, subsequent or detail logs at FINE
-				logger.log(Level.FINE, "Background thread: Word count calculated: {0}", wordCount);
+				logger.debug("Background thread: Word count calculated: {}", wordCount);
 
 				// --- Update UI labels ---
 				final int finalUserCount = userCount;
@@ -337,26 +372,31 @@ public class AdminViewController {
 				final int finalWordCount = wordCount;
 
 				// Log the summary once at INFO level
-				logger.log(Level.INFO,
-						"Background thread: Stats collection complete - {0} users, {1} categories, {2} words",
-						new Object[] { finalUserCount, finalCategoryCount, finalWordCount });
+				logger.info("Background thread: Stats collection complete - {} users, {} categories, {} words",
+						finalUserCount, finalCategoryCount, finalWordCount);
 
 				Platform.runLater(() -> {
 					totalUsersLabel.setText(String.valueOf(finalUserCount));
 					totalCategoriesLabel.setText(String.valueOf(finalCategoryCount));
 					totalWordsLabel.setText(String.valueOf(finalWordCount));
-					// Use FINE level for UI update logs to reduce noise
-					logger.log(Level.FINE, "System stats UI updated");
+					// Use debug level for UI update logs to reduce noise
+					logger.debug("System stats UI updated");
 				});
 
+				long duration = System.currentTimeMillis() - startTime;
+				LoggingUtility.logPerformance(logger, "load_system_stats", duration,
+						String.format("users:%d,categories:%d,words:%d", userCount, categoryCount, wordCount));
+
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, "Error during background system stats loading: {0}", e.getMessage());
-				logger.log(Level.SEVERE, "Exception details:", e);
+				logger.error("Error during background system stats loading: {}", e.getMessage());
+				logger.error(UNKNOWN_TEXT, e);
+				LoggingUtility.logEvent(logger, "stats_loading", "FAILURE", e.getMessage());
+
 				Platform.runLater(() -> {
 					showError(String.format("Error loading system statistics: %s", e.getMessage()));
-					totalUsersLabel.setText("Error");
-					totalCategoriesLabel.setText("Error");
-					totalWordsLabel.setText("Error");
+					totalUsersLabel.setText(ERROR_TEXT);
+					totalCategoriesLabel.setText(ERROR_TEXT);
+					totalWordsLabel.setText(ERROR_TEXT);
 				});
 			}
 		});

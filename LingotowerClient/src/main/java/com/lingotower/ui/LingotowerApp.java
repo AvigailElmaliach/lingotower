@@ -2,6 +2,8 @@ package com.lingotower.ui;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.Admin;
 import com.lingotower.model.User;
 import com.lingotower.service.AdminAuthService;
@@ -11,6 +13,7 @@ import com.lingotower.ui.views.DashboardView;
 import com.lingotower.ui.views.LoginView;
 import com.lingotower.ui.views.RegisterView;
 import com.lingotower.ui.views.admin.AdminView;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +24,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 public class LingotowerApp extends Application {
+
+	private static final Logger logger = LoggingUtility.getLogger(LingotowerApp.class);
 
 	private Stage primaryStage;
 	private LoginView loginView;
@@ -35,8 +40,7 @@ public class LingotowerApp extends Application {
 		try {
 			this.primaryStage = primaryStage;
 
-			// Debug primary stage
-			System.out.println("Primary Stage set in LingotowerApp: " + (primaryStage != null ? "Not null" : "NULL"));
+			logger.debug("Primary Stage initialized in LingotowerApp");
 
 			// Configure stage
 			primaryStage.setTitle("LingoTower - Language Learning");
@@ -47,7 +51,7 @@ public class LingotowerApp extends Application {
 			primaryStage.show();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error starting application", e);
 		}
 	}
 
@@ -57,7 +61,7 @@ public class LingotowerApp extends Application {
 				// On login success
 				user -> {
 					this.currentUser = user;
-					System.out.println("User logged in: " + user.getUsername());
+					logger.info("User logged in: {}", user.getUsername());
 
 					// Determine if the user is an admin and show the appropriate screen
 					if (user.getRole() != null && "ADMIN".equalsIgnoreCase(user.getRole())) {
@@ -85,7 +89,7 @@ public class LingotowerApp extends Application {
 		try {
 			loginScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 		} catch (Exception e) {
-			System.out.println("CSS not found, continuing without styles");
+			logger.warn("CSS not found, continuing without styles");
 		}
 
 		// Set scene to stage
@@ -95,13 +99,10 @@ public class LingotowerApp extends Application {
 
 	private void showAdminDashboard() {
 		try {
-			// Debug primary stage before creating admin view
-			System.out.println("Primary Stage in showAdminDashboard: " + (primaryStage != null ? "Not null" : "NULL"));
+			logger.debug("Setting up admin dashboard");
 
 			// Create AdminView using the new View class
-			AdminView adminView = new AdminView().setAdmin(currentAdmin).setPrimaryStage(primaryStage) // Make sure this
-																										// passes the
-																										// primary stage
+			AdminView adminView = new AdminView().setAdmin(currentAdmin).setPrimaryStage(primaryStage)
 					.setOnLogout(() -> {
 						currentAdmin = null;
 						currentUser = null;
@@ -113,12 +114,6 @@ public class LingotowerApp extends Application {
 			// Get root from view
 			Parent root = adminView.createView();
 
-			// Debug - verify controller has primaryStage
-			if (adminView.getController() != null) {
-				Stage controllerStage = adminView.getController().getPrimaryStage();
-				System.out.println("Controller's primaryStage: " + (controllerStage != null ? "Not null" : "NULL"));
-			}
-
 			// Create scene
 			Scene scene = new Scene(root, 1250, 680);
 
@@ -128,15 +123,16 @@ public class LingotowerApp extends Application {
 				scene.getStylesheets().add(getClass().getResource("/styles/admin-styles.css").toExternalForm());
 				scene.getStylesheets().add(getClass().getResource("/styles/quiz-styles.css").toExternalForm());
 			} catch (Exception e) {
-				System.out.println("CSS not found, continuing without styles: " + e.getMessage());
+				logger.warn("One or more CSS files not found, continuing with partial styling", e);
 			}
 
 			// Set scene to stage
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("LingoTower Admin - " + currentAdmin.getUsername());
+			logger.info("Admin dashboard shown for: {}", currentAdmin.getUsername());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error loading admin dashboard", e);
 			showError("Error loading admin dashboard: " + e.getMessage());
 		}
 	}
@@ -148,7 +144,7 @@ public class LingotowerApp extends Application {
 					// On register success
 					user -> {
 						this.currentUser = user;
-						System.out.println("Registration successful! Please log in.: " + user.getUsername());
+						logger.info("Registration successful for: {}", user.getUsername());
 						showLoginScreen();
 					},
 					// On switch to login
@@ -161,7 +157,7 @@ public class LingotowerApp extends Application {
 		try {
 			registerScene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 		} catch (Exception e) {
-			System.out.println("CSS not found, continuing without styles");
+			logger.warn("CSS not found, continuing without styles");
 		}
 
 		// Set scene to stage
@@ -174,6 +170,8 @@ public class LingotowerApp extends Application {
 	 */
 	private void showMainApplication() {
 		try {
+			logger.debug("Setting up main application view");
+
 			// Create dashboard view
 			dashboardView = new DashboardView();
 
@@ -211,10 +209,10 @@ public class LingotowerApp extends Application {
 			// Set scene to stage
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("LingoTower - Welcome " + currentUser.getUsername());
+			logger.info("Main application shown for: {}", currentUser.getUsername());
 
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Error loading main application: " + e.getMessage());
+			logger.error("Error loading main application", e);
 		}
 	}
 
@@ -224,6 +222,7 @@ public class LingotowerApp extends Application {
 	 * @param message The error message
 	 */
 	private void showError(String message) {
+		logger.error("Displaying error dialog: {}", message);
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An error occurred");

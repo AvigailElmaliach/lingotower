@@ -5,10 +5,10 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.lingotower.model.User;
 import com.lingotower.service.UserAuthService;
+import com.lingotower.utils.LoggingUtility;
 import com.lingotower.utils.ValidationUtility;
 
 import javafx.collections.FXCollections;
@@ -25,8 +25,8 @@ import javafx.scene.layout.BorderPane;
 
 public class RegisterViewController implements Initializable {
 
-	// Add logger as a static field
-	private static final Logger logger = LoggerFactory.getLogger(RegisterViewController.class);
+	// Use LoggingUtility for getting a logger
+	private static final Logger logger = LoggingUtility.getLogger(RegisterViewController.class);
 
 	@FXML
 	private BorderPane view;

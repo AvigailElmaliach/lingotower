@@ -1,6 +1,9 @@
 package com.lingotower.ui.controllers;
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.Category;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +16,8 @@ import javafx.scene.layout.VBox;
  * Controller for an individual category tile
  */
 public class CategoryTileController {
+
+	private static final Logger logger = LoggingUtility.getLogger(CategoryTileController.class);
 
 	@FXML
 	private VBox categoryBox;
@@ -31,6 +36,7 @@ public class CategoryTileController {
 	 */
 	@FXML
 	private void initialize() {
+		logger.trace("CategoryTileController initialized");
 		// Any initialization if needed
 	}
 
@@ -41,17 +47,17 @@ public class CategoryTileController {
 	@FXML
 	public void handleExploreClick(ActionEvent event) {
 		if (category != null) {
-			System.out.println("Explore button clicked for category: " + category.getName());
+			logger.debug("Explore button clicked for category: {}", category.getName());
 
 			// Call the callback if set
 			if (onCategorySelected != null) {
-				System.out.println("Calling onCategorySelected callback");
+				logger.debug("Calling onCategorySelected callback");
 				onCategorySelected.run();
 			} else {
-				System.out.println("ERROR: onCategorySelected callback is null!");
+				logger.error("onCategorySelected callback is null!");
 			}
 		} else {
-			System.out.println("ERROR: category is null!");
+			logger.error("Category is null!");
 		}
 	}
 
@@ -61,14 +67,17 @@ public class CategoryTileController {
 	 * @param category The category to display
 	 */
 	public void setCategory(Category category) {
+		logger.debug("Setting category: {}", category != null ? category.getName() : "null");
 		this.category = category;
 		categoryNameLabel.setText(category.getName());
 
 		// If category name is in Hebrew, set the text direction
 		if (containsHebrew(category.getName())) {
+			logger.trace("Category name contains Hebrew, setting RTL orientation");
 			categoryNameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			categoryBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		} else {
+			logger.trace("Setting LTR orientation for category name");
 			categoryNameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 			categoryBox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		}
@@ -90,6 +99,7 @@ public class CategoryTileController {
 	 * @param callback The callback to run when the category is selected
 	 */
 	public void setOnCategorySelected(Runnable callback) {
+		logger.debug("Setting onCategorySelected callback");
 		this.onCategorySelected = callback;
 	}
 

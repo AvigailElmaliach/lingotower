@@ -5,24 +5,23 @@ package com.lingotower.dto.user;
  * to encapsulate user update data for transfer between layers.
  */
 public class UserUpdateDTO {
-	private String username; // The username of the user
-	private String email; // The email address of the user
-	private String sourceLanguage; // The source language preference of the user
+
+	private String username; // The updated username of the user
+	private String email; // The updated email address of the user
+	private String sourceLanguage; // The updated source language preference of the user
 
 	/**
-	 * Default constructor. This constructor is required for frameworks like Jackson
-	 * to deserialize JSON into this DTO.
+	 * Default constructor.
 	 */
 	public UserUpdateDTO() {
 	}
 
 	/**
-	 * Constructor to initialize the UserUpdateDTO with username, email, and source
-	 * language.
+	 * Parameterized constructor to initialize the UserUpdateDTO with user details.
 	 *
-	 * @param username       the username of the user
-	 * @param email          the email address of the user
-	 * @param sourceLanguage the source language preference of the user
+	 * @param username       The updated username of the user.
+	 * @param email          The updated email address of the user.
+	 * @param sourceLanguage The updated source language preference of the user.
 	 */
 	public UserUpdateDTO(String username, String email, String sourceLanguage) {
 		this.username = username;
@@ -31,54 +30,54 @@ public class UserUpdateDTO {
 	}
 
 	/**
-	 * Gets the username of the user.
+	 * Gets the updated username of the user.
 	 *
-	 * @return the username of the user
+	 * @return The updated username.
 	 */
 	public String getUsername() {
 		return username;
 	}
 
 	/**
-	 * Sets the username of the user.
+	 * Sets the updated username of the user.
 	 *
-	 * @param username the new username of the user
+	 * @param username The new username to set.
 	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
 	/**
-	 * Gets the email address of the user.
+	 * Gets the updated email address of the user.
 	 *
-	 * @return the email address of the user
+	 * @return The updated email address.
 	 */
 	public String getEmail() {
 		return email;
 	}
 
 	/**
-	 * Sets the email address of the user.
+	 * Sets the updated email address of the user.
 	 *
-	 * @param email the new email address of the user
+	 * @param email The new email address to set.
 	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
 	/**
-	 * Gets the source language preference of the user.
+	 * Gets the updated source language preference of the user.
 	 *
-	 * @return the source language preference of the user
+	 * @return The updated source language preference.
 	 */
 	public String getSourceLanguage() {
 		return sourceLanguage;
 	}
 
 	/**
-	 * Sets the source language preference of the user.
+	 * Sets the updated source language preference of the user.
 	 *
-	 * @param sourceLanguage the new source language preference of the user
+	 * @param sourceLanguage The new source language preference to set.
 	 */
 	public void setSourceLanguage(String sourceLanguage) {
 		this.sourceLanguage = sourceLanguage;

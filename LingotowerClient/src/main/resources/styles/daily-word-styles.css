@@ -1,8 +1,12 @@
-
 /* Styles for Daily Word screen */
 
+/* Common Values - Reference
+ * Primary: #3f51b5
+ * Success: #4caf50
+ * Text Medium: #555555
+ */
 
-/* Word card styling  */
+/* Word card styling */
 .word-card {
     -fx-background-color: white;
     -fx-background-radius: 8px;

@@ -1,4 +1,15 @@
-/* Main application styles  */
+/* Common Values - Reference
+ * Primary: #3f51b5
+ * Secondary: #78909c
+ * Success: #4caf50
+ * Danger: #f44336
+ * Text Dark: #212121
+ * Text Medium: #424242
+ * Text Light: #757575
+ * Background Light: #f5f5f5
+ * Background White: #ffffff
+ * Border: #e0e0e0
+ */
 
 /* ===== Base Styles ===== */
 .root {
@@ -47,17 +58,13 @@
     -fx-background-color: derive(#3f51b5, 20%);
 }
 
-.button.success {
-    -fx-background-color: #4caf50;
-}
-
-.button.success:hover {
-    -fx-background-color: derive(#4caf50, 20%);
-}
-
-.success-button {
+.button.success, .success-button {
     -fx-background-color: #4caf50;
     -fx-text-fill: white;
+}
+
+.button.success:hover, .success-button:hover {
+    -fx-background-color: derive(#4caf50, 20%);
 }
 
 .primary-button {
@@ -65,9 +72,29 @@
     -fx-text-fill: white;
 }
 
+.primary-button:hover {
+    -fx-background-color: #303f9f;
+}
+
 .secondary-button {
     -fx-background-color: #78909c;
     -fx-text-fill: white;
+}
+
+.secondary-button:hover {
+    -fx-background-color: derive(#78909c, 10%);
+}
+
+.danger-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+}
+
+.danger-button:hover {
+    -fx-background-color: #d32f2f;
 }
 
 .filter-button {
@@ -75,11 +102,29 @@
     -fx-text-fill: white;
 }
 
+.filter-button:hover {
+    -fx-background-color: derive(#607d8b, 10%);
+}
+
 /* ===== Message Styles ===== */
-/* Error messages */
-.error-label {
-    -fx-text-fill: #d32f2f;
+.error-message, .error-label {
+    -fx-text-fill: #f44336;
     -fx-font-weight: bold;
+    -fx-background-color: #ffebee;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ffcdd2;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px 15px;
+}
+
+.success-message {
+    -fx-text-fill: #4caf50;
+    -fx-font-weight: bold;
+    -fx-background-color: #e8f5e9;
+    -fx-background-radius: 4px;
+    -fx-border-color: #c8e6c9;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px 15px;
 }
 
 .info-label {
@@ -203,7 +248,6 @@
     -fx-min-width: 160px;
     -fx-cursor: hand;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);
-    -fx-transition: all 0.3s ease;
 }
 
 .custom-tab:hover {
@@ -339,11 +383,9 @@
 
 /* ===== in quiz ===== */
 .content-scrollpane{
-	-fx-border-color: transparent;
+    -fx-border-color: transparent;
     -fx-background-color: transparent;
     -fx-border-width: 0;
-	-fx-fit-to-width: true;
-    -fx-fit-to-height: true
-	
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: true;
 }
-

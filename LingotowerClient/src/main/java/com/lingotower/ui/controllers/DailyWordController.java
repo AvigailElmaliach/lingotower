@@ -4,11 +4,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
 import com.lingotower.service.ExampleSentencesService;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.utils.LoggingUtility;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,6 +50,7 @@ public class DailyWordController {
 	private Word dailyWord;
 
 	private Long currentUserId; // Keep track of user ID if needed for specific calls
+	private static final Logger logger = LoggingUtility.getLogger(DailyWordController.class);
 
 	@FXML
 	private void initialize() {
@@ -57,9 +61,8 @@ public class DailyWordController {
 			exampleSentencesService = new ExampleSentencesService();
 		} catch (Exception e) {
 			// Handle cases where services might not be initialized correctly
-			System.err.println("FATAL: Could not initialize services in DailyWordController: " + e.getMessage());
+			logger.error("FATAL: Could not initialize services in DailyWordController: {}", e.getMessage(), e);
 			e.printStackTrace();
-			// Optionally disable UI elements or show an error message
 			displayServiceError();
 			return; // Stop initialization if services failed
 		}
@@ -81,14 +84,14 @@ public class DailyWordController {
 	public void setUser(User user) {
 		if (user != null) {
 			this.currentUserId = user.getId();
-			System.out.println("DailyWordController: User set with ID: " + this.currentUserId);
+			logger.debug("DailyWordController: User set with ID: {}", this.currentUserId);
 
 			// Now that we have the user (and thus the token is likely set in TokenStorage),
 			// load the daily word.
 			loadDailyWordsAndDisplay();
 		} else {
-			System.err.println("DailyWordController: Attempted to set a null user.");
-			// Handle scenario where user becomes null (e.g., logout) if necessary
+			logger.error("DailyWordController: Attempted to set a null user."); // Handle scenario where user becomes
+																				// null (e.g., logout) if necessary
 			displayNoWordAvailable(); // Or show a generic "please log in" message
 		}
 	}
@@ -99,25 +102,25 @@ public class DailyWordController {
 	private void loadDailyWordsAndDisplay() {
 		// Ensure services are available before proceeding
 		if (wordService == null || userService == null || exampleSentencesService == null) {
-			System.err.println("Cannot load daily word: Services not initialized.");
+			logger.error("Cannot load daily word: Services not initialized.");
 			displayServiceError();
 			return;
 		}
 
 		try {
 			// Fetch the daily word using the WordService
-			System.out.println("Fetching daily word...");
+			logger.info("Fetching daily word...");
 			dailyWord = wordService.getDailyWord();
 
 			if (dailyWord != null) {
-				System.out.println("Daily word received: " + dailyWord.getWord());
+				logger.info("Daily word received: {}", dailyWord.getWord());
 				showCurrentDailyWord(); // Update UI if word found
 			} else {
-				System.err.println("No daily word available from the service.");
+				logger.warn("No daily word available from the service.");
 				displayNoWordAvailable(); // Update UI if no word found
 			}
 		} catch (Exception e) {
-			System.err.println("Error loading daily word: " + e.getMessage());
+			logger.error("Error loading daily word: {}", e.getMessage(), e);
 			e.printStackTrace(); // Log the full error
 			displayError("Could not load the daily word. Please try again later."); // Show user-friendly error
 		}
@@ -206,17 +209,17 @@ public class DailyWordController {
 	public String getExampleForWord(String word) {
 		// Ensure service is available
 		if (exampleSentencesService == null) {
-			System.err.println("getExampleForWord: ExampleSentencesService is null.");
+			logger.warn("getExampleForWord: ExampleSentencesService is null.");
 			return "Example service not available.";
 		}
 
 		try {
-			System.out.println("Fetching example sentences for: " + word);
+			logger.debug("Fetching example sentences for: {}", word);
 			List<String> examples = exampleSentencesService.getExampleSentences(word);
 
 			// Check if the list itself is null or empty
 			if (examples == null || examples.isEmpty()) {
-				System.out.println("No examples list returned or list is empty for: " + word);
+				logger.debug("No examples list returned or list is empty for: {}", word);
 				return "No examples available."; // Return default message
 			}
 
@@ -228,18 +231,17 @@ public class DailyWordController {
 					firstExample.startsWith("Authentication error")
 					|| firstExample.startsWith("An unexpected error occurred")) {
 
-				System.out.println("Service returned specific message: " + firstExample);
+				logger.debug("Service returned specific message: {}", firstExample);
 				return firstExample; // Display the message from the service directly
 			}
 
 			// We have at least one valid sentence
-			System.out.println("Found first example: " + firstExample);
-
+			logger.debug("Found first example: {}", firstExample);
 			// Check if there is a second sentence
 			if (examples.size() >= 2) {
 				String secondExample = examples.get(1);
-				System.out.println("Found second example: " + secondExample);
-				// Return the first two sentences joined by a newline
+				logger.debug("Found second example: " + secondExample); // Return the first two sentences joined
+																		// by a newline
 				return firstExample + "\n" + secondExample;
 			} else {
 				// Only one sentence available, return just the first one
@@ -248,8 +250,8 @@ public class DailyWordController {
 
 		} catch (Exception e) {
 			// Catch any unexpected exceptions during the process
-			System.err.println(
-					"Error calling getExampleSentences or processing results for '" + word + "': " + e.getMessage());
+			logger.error("Error calling getExampleSentences or processing results for '{}': {}", word, e.getMessage(),
+					e);
 			e.printStackTrace(); // Log for detailed debugging
 			// Return a user-friendly error message
 			return "Could not load examples due to an error.";
@@ -258,43 +260,40 @@ public class DailyWordController {
 
 	@FXML
 	private void handleRefreshButtonClick(ActionEvent event) {
-		System.out.println("Refresh button clicked.");
-		// Reload the daily word, assuming user context is still valid
-		loadDailyWordsAndDisplay();
+		logger.debug("Refresh button clicked.");
+		loadDailyWordsAndDisplay();// Reload the daily word
 	}
 
 	@FXML
 	private void handleAddToLearnedClick(ActionEvent event) {
 		if (dailyWord == null || userService == null) {
-			System.err.println("Cannot add word: Daily word or User service is null.");
+			logger.warn("Cannot add word: Daily word or User service is null.");
 			return;
 		}
 		if (currentUserId == null) {
-			System.err.println("Cannot add word: Current User ID is null.");
+			logger.error("Cannot add word: Current User ID is null.");
 			// Maybe show a message?
 			return;
 		}
 
 		try {
 			// Use UserService to add the word to the current user's learned list
-			// NOTE: The current UserService.addWordToLearned takes only wordId.
-			// It implicitly uses the token to identify the user.
-			System.out.println("Adding word ID " + dailyWord.getId()
-					+ " to learned words for user associated with current token.");
+			logger.info("Adding word ID {} to learned words for user associated with current token.",
+					dailyWord.getId());
 			boolean success = userService.addWordToLearned(dailyWord.getId());
 
 			if (success) {
-				System.out.println("Word successfully added to learned words.");
-				// Disable the button and update text to indicate success
+				logger.info("Word successfully added to learned words."); // Disable the button and update text to
+																			// indicate success
 				addToLearnedButton.setDisable(true);
 				addToLearnedButton.setText("Added!");
 			} else {
 				// Show error if failed (e.g., word already added, server error)
-				System.err.println("Failed to add word to learned words (server returned false or error).");
+				logger.warn("Failed to add word to learned words (server returned false or error).");
 				displayError("Could not add word. It might already be in your learned list.");
 			}
 		} catch (Exception e) {
-			System.err.println("Exception occurred while adding word to learned: " + e.getMessage());
+			logger.error("Exception occurred while adding word to learned: {}", e.getMessage(), e);
 			e.printStackTrace();
 			displayError("An error occurred. Please try again.");
 		}
