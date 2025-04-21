@@ -1,555 +1,950 @@
 [
   {
     "word": "hello",
-    "exampleSentences": [
+    
+    "sentences": [
       "Hello, how are you today?",
       "I said hello but they didn't hear me."
+    ],
+    "translations": [
+      "שלום, מה שלומך היום?",
+      "אמרתי שלום אבל הם לא שמעו אותי."
     ]
   },
   {
     "word": "goodbye",
-    "exampleSentences": [
+   
+    "sentences": [
       "Goodbye, it was nice seeing you.",
       "We waved goodbye as the train departed."
+    ],
+    "translations": [
+      "להתראות, היה נעים לראות אותך.",
+      "נופפנו לשלום כשהרכבת יצאה."
     ]
   },
   {
     "word": "please",
-    "exampleSentences": [
+   
+    "sentences": [
       "Please pass the salt.",
       "Can you please help me with this?"
+    ],
+    "translations": [
+      "בבקשה תעביר את המלח.",
+      "התוכל בבקשה לעזור לי עם זה?"
     ]
   },
   {
     "word": "thank you",
-    "exampleSentences": [
+   
+    "sentences": [
       "Thank you for your help.",
       "I wanted to say thank you for the gift."
+    ],
+    "translations": [
+      "תודה על עזרתך.",
+      "רציתי לומר תודה על המתנה."
     ]
   },
   {
     "word": "sorry",
-    "exampleSentences": [
+  
+    "sentences": [
       "I'm sorry for being late.",
       "Sorry, I didn't mean to interrupt."
+    ],
+    "translations": [
+      "אני מצטער על האיחור.",
+      "סליחה, לא התכוונתי להפריע."
     ]
   },
   {
     "word": "yes",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Yes, I will be there.",
       "Did you enjoy the movie? Yes, I did."
+    ],
+    "translations": [
+      "כן, אני אהיה שם.",
+      "נהנית מהסרט? כן, נהניתי."
     ]
   },
   {
     "word": "no",
-    "exampleSentences": [
+
+    "sentences": [
       "No, thank you.",
       "Is it raining? No, it's sunny."
+    ],
+    "translations": [
+      "לא, תודה.",
+      "האם יורד גשם? לא, יש שמש."
     ]
   },
   {
     "word": "water",
-    "exampleSentences": [
+
+    "sentences": [
       "I need a glass of water.",
       "The water in the lake is very clear."
+    ],
+    "translations": [
+      "אני צריך כוס מים.",
+      "המים באגם מאוד צלולים."
     ]
   },
   {
     "word": "food",
-    "exampleSentences": [
+   
+    "sentences": [
       "What kind of food do you like?",
       "We ordered some delicious food at the restaurant."
+    ],
+    "translations": [
+      "איזה סוג אוכל אתה אוהב?",
+      "הזמנו אוכל טעים במסעדה."
     ]
   },
   {
     "word": "coffee",
-    "exampleSentences": [
+  
+    "sentences": [
       "I drink a cup of coffee every morning.",
       "Would you like some coffee?"
+    ],
+    "translations": [
+      "אני שותה כוס קפה כל בוקר.",
+      "היית רוצה קצת קפה?"
     ]
   },
   {
     "word": "tea",
-    "exampleSentences": [
+   
+    "sentences": [
       "She prefers tea over coffee.",
       "Let's have a cup of tea and relax."
+    ],
+    "translations": [
+      "היא מעדיפה תה על קפה.",
+      "בוא נשתה כוס תה ונתרגע."
     ]
   },
   {
     "word": "milk",
-    "exampleSentences": [
+   
+    "sentences": [
       "He added milk to his cereal.",
       "Do you want milk in your tea?"
+    ],
+    "translations": [
+      "הוא הוסיף חלב לדגני הבוקר שלו.",
+      "אתה רוצה חלב בתה שלך?"
     ]
   },
   {
     "word": "bread",
-    "exampleSentences": [
+  
+    "sentences": [
       "We need to buy some bread from the bakery.",
       "She spread butter on the bread."
+    ],
+    "translations": [
+      "אנחנו צריכים לקנות קצת לחם מהמאפייה.",
+      "היא מרחה חמאה על הלחם."
     ]
   },
   {
     "word": "fruit",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Eating fruit is good for your health.",
       "My favorite fruit is mango."
+    ],
+    "translations": [
+      "אכילת פירות טובה לבריאות שלך.",
+      "הפרי האהוב עליי הוא מנגו."
     ]
   },
   {
     "word": "vegetable",
-    "exampleSentences": [
+   
+    "sentences": [
       "Carrots are a healthy vegetable.",
       "We should eat more vegetables."
+    ],
+    "translations": [
+      "גזר הוא ירק בריא.",
+      "אנחנו צריכים לאכול יותר ירקות."
     ]
   },
   {
     "word": "book",
-    "exampleSentences": [
+  
+    "sentences": [
       "I'm reading a very interesting book.",
       "She borrowed a book from the library."
+    ],
+    "translations": [
+      "אני קורא ספר מאוד מעניין.",
+      "היא שאלה ספר מהספרייה."
     ]
   },
   {
     "word": "pen",
-    "exampleSentences": [
+  
+    "sentences": [
       "Can I borrow your pen?",
       "He wrote his name with a blue pen."
+    ],
+    "translations": [
+      "אפשר לשאול את העט שלך?",
+      "הוא כתב את שמו בעט כחול."
     ]
   },
   {
     "word": "pencil",
-    "exampleSentences": [
+
+    "sentences": [
       "I need a sharp pencil to draw.",
       "She sketched the outline with a pencil."
+    ],
+    "translations": [
+      "אני צריך עיפרון חד כדי לצייר.",
+      "היא שרטטה את המתאר בעיפרון."
     ]
   },
   {
     "word": "notebook",
-    "exampleSentences": [
+  
+    "sentences": [
       "I take notes in my notebook during class.",
       "He jotted down his ideas in a small notebook."
+    ],
+    "translations": [
+      "אני רושם הערות במחברת שלי במהלך השיעור.",
+      "הוא רשם את רעיונותיו במחברת קטנה."
     ]
   },
   {
     "word": "computer",
-    "exampleSentences": [
+
+    "sentences": [
       "I use my computer for work and entertainment.",
       "She learned how to code on her new computer."
+    ],
+    "translations": [
+      "אני משתמש במחשב שלי לעבודה ולבידור.",
+      "היא למדה איך לתכנת על המחשב החדש שלה."
     ]
   },
   {
     "word": "phone",
-    "exampleSentences": [
+
+    "sentences": [
       "I need to make a phone call.",
       "Where did I put my phone?"
+    ],
+    "translations": [
+      "אני צריך להתקשר.",
+      "איפה שמתי את הטלפון שלי?"
     ]
   },
   {
     "word": "internet",
-    "exampleSentences": [
+   
+    "sentences": [
       "I use the internet to find information.",
       "The internet connection here is very fast."
+    ],
+    "translations": [
+      "אני משתמש באינטרנט כדי למצוא מידע.",
+      "חיבור האינטרנט כאן מאוד מהיר."
     ]
   },
   {
     "word": "television",
-    "exampleSentences": [
+  
+    "sentences": [
       "What's on television tonight?",
       "They watched a movie on the television."
+    ],
+    "translations": [
+      "מה יש בטלוויזיה הערב?",
+      "הם צפו בסרט בטלוויזיה."
     ]
   },
   {
     "word": "radio",
-    "exampleSentences": [
+
+    "sentences": [
       "We listened to music on the radio.",
       "The news is on the radio now."
+    ],
+    "translations": [
+      "הקשבנו למוזיקה ברדיו.",
+      "החדשות ברדיו עכשיו."
     ]
   },
   {
     "word": "music",
-    "exampleSentences": [
+
+    "sentences": [
       "I enjoy listening to different genres of music.",
       "The concert had great live music."
+    ],
+    "translations": [
+      "אני נהנה להקשיב לסוגי מוזיקה שונים.",
+      "בהופעה היה מוזיקה חיה נהדרת."
     ]
   },
   {
     "word": "movie",
-    "exampleSentences": [
+
+    "sentences": [
       "Let's go see a movie this weekend.",
       "That was a very exciting movie."
+    ],
+    "translations": [
+      "בוא נלך לראות סרט בסוף השבוע הזה.",
+      "זה היה סרט מאוד מרגש."
     ]
   },
   {
     "word": "friend",
-    "exampleSentences": [
+ 
+    "sentences": [
       "She is my best friend.",
       "I'm meeting a friend for lunch."
+    ],
+    "translations": [
+      "היא החברה הכי טובה שלי.",
+      "אני נפגש עם חבר לארוחת צהריים."
     ]
   },
   {
     "word": "family",
-    "exampleSentences": [
+
+    "sentences": [
       "I love spending time with my family.",
       "We are planning a family vacation."
+    ],
+    "translations": [
+      "אני אוהב לבלות זמן עם המשפחה שלי.",
+      "אנחנו מתכננים חופשה משפחתית."
     ]
   },
   {
     "word": "mother",
-    "exampleSentences": [
+
+    "sentences": [
       "My mother is a wonderful cook.",
       "I called my mother to tell her the news."
+    ],
+    "translations": [
+      "אמא שלי היא טבחית נהדרת.",
+      "התקשרתי לאמא שלי לספר לה את החדשות."
     ]
   },
   {
     "word": "father",
-    "exampleSentences": [
+
+    "sentences": [
       "My father taught me how to ride a bike.",
       "I went fishing with my father last weekend."
+    ],
+    "translations": [
+      "אבא שלי לימד אותי איך לרכוב על אופניים.",
+      "הלכתי לדוג עם אבא שלי בסוף השבוע שעבר."
     ]
   },
   {
     "word": "brother",
-    "exampleSentences": [
+    
+    "sentences": [
       "I have an older brother.",
       "My brother is coming to visit."
+    ],
+    "translations": [
+      "יש לי אח גדול.",
+      "אחי בא לבקר."
     ]
   },
   {
     "word": "sister",
-    "exampleSentences": [
+   
+    "sentences": [
       "She has a younger sister.",
       "My sister and I are very close."
+    ],
+    "translations": [
+      "יש לה אחות קטנה.",
+      "אחותי ואני מאוד קרובות."
     ]
   },
   {
     "word": "child",
-    "exampleSentences": [
+  
+    "sentences": [
       "The child was playing in the park.",
       "Parents are responsible for their child's well-being."
+    ],
+    "translations": [
+      "הילד שיחק בפארק.",
+      "הורים אחראים לרווחת ילדיהם."
     ]
   },
   {
     "word": "baby",
-    "exampleSentences": [
+    
+    "sentences": [
       "The baby is sleeping peacefully.",
       "She held the baby in her arms."
+    ],
+    "translations": [
+      "התינוק ישן בשלווה.",
+      "היא החזיקה את התינוק בזרועותיה."
     ]
   },
   {
     "word": "school",
-    "exampleSentences": [
+
+    "sentences": [
       "I go to school five days a week.",
       "The school has a large playground."
+    ],
+    "translations": [
+      "אני הולך לבית ספר חמישה ימים בשבוע.",
+      "לבית הספר יש מגרש משחקים גדול."
     ]
   },
   {
     "word": "teacher",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Our teacher is very knowledgeable.",
       "I asked the teacher a question."
+    ],
+    "translations": [
+      "המורה שלנו מאוד ידען.",
+      "שאלתי את המורה שאלה."
     ]
   },
   {
     "word": "student",
-    "exampleSentences": [
+  
+    "sentences": [
       "He is a diligent student.",
       "The students are preparing for their exams."
+    ],
+    "translations": [
+      "הוא תלמיד חרוץ.",
+      "התלמידים מתכוננים למבחנים שלהם."
     ]
   },
   {
     "word": "classroom",
-    "exampleSentences": [
+
+    "sentences": [
       "The classroom was filled with desks and chairs.",
       "The teacher wrote on the board in the classroom."
+    ],
+    "translations": [
+      "הכיתה הייתה מלאה בשולחנות וכיסאות.",
+      "המורה כתב על הלוח בכיתה."
     ]
   },
   {
     "word": "homework",
-    "exampleSentences": [
+
+    "sentences": [
       "I have a lot of homework to do tonight.",
       "Did you finish your homework?"
+    ],
+    "translations": [
+      "יש לי הרבה שיעורי בית לעשות הלילה.",
+      "סיימת את שיעורי הבית שלך?"
     ]
   },
   {
     "word": "exam",
-    "exampleSentences": [
+  
+    "sentences": [
       "I'm nervous about the upcoming exam.",
       "She studied hard for the final exam."
+    ],
+    "translations": [
+      "אני עצבני לקראת המבחן הקרוב.",
+      "היא למדה קשה למבחן הסופי."
     ]
   },
   {
     "word": "holiday",
-    "exampleSentences": [
+
+    "sentences": [
       "We are going on holiday next month.",
       "Christmas is my favorite holiday."
+    ],
+    "translations": [
+      "אנחנו נוסעים לחופשה בחודש הבא.",
+      "חג המולד הוא החג האהוב עליי."
     ]
   },
-  {
-    "word": "vacation",
-    "exampleSentences": [
-      "They went on a summer vacation to the beach.",
-      "I need a relaxing vacation."
-    ]
-  },
-  {
-    "word": "work",
-    "exampleSentences": [
-      "I have a lot of work to do today.",
-      "He enjoys his work as a software engineer."
-    ]
-  },
-  {
-    "word": "job",
-    "exampleSentences": [
-      "She is looking for a new job.",
-      "He got a promotion at his job."
-    ]
-  },
-  {
-    "word": "money",
-    "exampleSentences": [
-      "Money can't buy happiness.",
-      "I need to save money for a new car."
-    ]
-  },
-  {
-    "word": "bank",
-    "exampleSentences": [
-      "I need to go to the bank to deposit a check.",
-      "The bank is located downtown."
-    ]
-  },
-  {
-    "word": "store",
-    "exampleSentences": [
-      "We went to the store to buy groceries.",
-      "The store is having a big sale."
-    ]
-  },
-  {
-    "word": "shop",
-    "exampleSentences": [
-      "She likes to shop for clothes.",
-      "There's a new coffee shop on the corner."
-    ]
-  },
-  {
-    "word": "market",
-    "exampleSentences": [
-      "We bought fresh vegetables at the farmers market.",
-      "The market was very crowded."
-    ]
-  },
-  {
-    "word": "restaurant",
-    "exampleSentences": [
-      "Let's eat at that new Italian restaurant.",
-      "We had a delicious meal at the restaurant."
-    ]
-  },
-  {
-    "word": "food",
-    "exampleSentences": [
-      "What kind of food do you like?",
-      "We ordered some delicious food at the restaurant."
-    ]
-  },
-  {
-    "word": "drink",
-    "exampleSentences": [
-      "Can I get you a drink?",
-      "Water is a healthy drink."
-    ]
-  },
-  {
-    "word": "snack",
-    "exampleSentences": [
-      "I'm feeling hungry, I need a snack.",
-      "He packed a snack for his hike."
-    ]
-  },
-  {
-    "word": "clothes",
-    "exampleSentences": [
-      "I need to wash my clothes.",
-      "She bought some new clothes at the mall."
-    ]
-  },
-  {
-    "word": "shirt",
-    "exampleSentences": [
-      "He wore a blue shirt.",
-      "This shirt is very comfortable."
-    ]
-  },
-  {
-    "word": "pants",
-    "exampleSentences": [
-      "I need a new pair of pants.",
-      "These pants are too tight."
-    ]
-  },
-  {
-    "word": "dress",
-    "exampleSentences": [
-      "She wore a beautiful dress to the party.",
-      "That dress looks lovely on you."
-    ]
-  },
-  {
-    "word": "shoes",
-    "exampleSentences": [
-      "I need to buy new shoes.",
-      "These shoes are very comfortable for walking."
-    ]
-  },
-  {
-    "word": "jacket",
-    "exampleSentences": [
-      "It's cold outside, you should wear a jacket.",
-      "He has a leather jacket."
-    ]
-  },
-  {
-    "word": "hat",
-    "exampleSentences": [
-      "She wore a straw hat to protect herself from the sun.",
-      "He took off his hat when he entered the room."
-    ]
-  },
-  {
-    "word": "gloves",
-    "exampleSentences": [
-      "Don't forget your gloves, it's freezing outside.",
-      "She wore warm wool gloves."
-    ]
-  },
-  {
-    "word": "socks",
-    "exampleSentences": [
-      "I need to do laundry, I'm out of clean socks.",
-      "He wore thick winter socks."
-    ]
-  },
-  {
-    "word": "coat",
-    "exampleSentences": [
-      "It's raining, you should wear a coat.",
-      "She has a long winter coat."
-    ]
-  },
-  {
-    "word": "umbrella",
-    "exampleSentences": [
-      "Don't forget your umbrella, it might rain.",
-      "He opened his umbrella to shield himself from the sun."
-    ]
-  },
-  {
-    "word": "sun",
-    "exampleSentences": [
-      "The sun is shining brightly today.",
-      "We basked in the warm sun."
-    ]
-  },
-  {
-    "word": "moon",
-    "exampleSentences": [
-      "The moon looks beautiful tonight.",
-      "We sat outside under the light of the moon."
-    ]
-  },
-  {
-    "word": "star",
-    "exampleSentences": [
-      "We could see many stars in the clear night sky.",
-      "He wished upon a shooting star."
-    ]
-  },
-  {
-    "word": "sky",
-    "exampleSentences": [
-      "The sky is blue and clear.",
-      "Dark clouds filled the sky before the storm."
-    ]
-  },
-  {
-    "word": "cloud",
-    "exampleSentences": [
-      "There are some fluffy white clouds in the sky.",
-      "The sun disappeared behind a dark cloud."
-    ]
-  },
-  {
-    "word": "rain",
-    "exampleSentences": [
-      "The rain started to fall heavily.",
-      "We stayed inside because of the rain."
-    ]
-  },
-  {
-    "word": "snow",
-    "exampleSentences": [
-      "It started to snow last night.",
-      "The ground was covered in a blanket of snow."
-    ]
-  },
-  {
-    "word": "wind",
-    "exampleSentences": [
-      "The wind was blowing strongly.",
-      "The leaves rustled in the wind."
-    ]
-  },
-  {
-    "word": "storm",
-    "exampleSentences": [
-      "A big storm is approaching.",
-      "We lost power during the storm."
-    ]
-  },
-  {
-    "word": "thunder",
-    "exampleSentences": [
-      "We heard a loud clap of thunder.",
-      "The storm brought heavy rain and thunder."
-    ]
-  },
-  {
-    "word": "lightning",
-    "exampleSentences": [
-      "A flash of lightning lit up the sky.",
-      "Be careful during the storm, there might be lightning."
-    ]
-  },
-  {
-    "word": "hot",
-    "exampleSentences": [
-      "It's very hot today.",
-      "The soup is still hot."
-    ]
-  },
-  {
-    "word": "cold",
-    "exampleSentences": [
-      "It's cold outside, wear a jacket.",
-      "The water in the lake was very cold."
-    ]
-  },
-  {
-    "word": "warm",
-    "exampleSentences": [
-      "The sun felt warm on my skin.",
-      "This blanket is nice and warm."
-    ]
-  },
-  {
-    "word": "cool",
-    "exampleSentences": [
-      "The evening air was cool and refreshing.",
-      "Keep the drinks in a cool place."
-    ]
-  }
+    {
+      "word": "vacation",
+    
+      "sentences": [
+        "They went on a summer vacation to the beach.",
+        "I need a relaxing vacation."
+      ],
+      "translations": [
+        "הם יצאו לחופשת קיץ לחוף הים.",
+        "אני צריך חופשה מרגיעה."
+      ]
+    },
+    {
+      "word": "work",
+   
+      "sentences": [
+        "I have a lot of work to do today.",
+        "He enjoys his work as a software engineer."
+      ],
+      "translations": [
+        "יש לי הרבה עבודה לעשות היום.",
+        "הוא נהנה מעבודתו כמהנדס תוכנה."
+      ]
+    },
+    {
+      "word": "job",
+     
+      "sentences": [
+        "She is looking for a new job.",
+        "He got a promotion at his job."
+      ],
+      "translations": [
+        "היא מחפשת עבודה חדשה.",
+        "הוא קיבל קידום בעבודה שלו."
+      ]
+    },
+    {
+      "word": "money",
+    
+      "sentences": [
+        "Money can't buy happiness.",
+        "I need to save money for a new car."
+      ],
+      "translations": [
+        "כסף לא יכול לקנות אושר.",
+        "אני צריך לחסוך כסף למכונית חדשה."
+      ]
+    },
+    {
+      "word": "bank",
+    
+      "sentences": [
+        "I need to go to the bank to deposit a check.",
+        "The bank is located downtown."
+      ],
+      "translations": [
+        "אני צריך ללכת לבנק כדי להפקיד צ'ק.",
+        "הבנק ממוקם במרכז העיר."
+      ]
+    },
+    {
+      "word": "store",
+    
+      "sentences": [
+        "We went to the store to buy groceries.",
+        "The store is having a big sale."
+      ],
+      "translations": [
+        "הלכנו לחנות לקנות מצרכים.",
+        "בחנות יש מבצע גדול."
+      ]
+    },
+    {
+      "word": "shop",
+ 
+      "sentences": [
+        "She likes to shop for clothes.",
+        "There's a new coffee shop on the corner."
+      ],
+      "translations": [
+        "היא אוהבת לקנות בגדים.",
+        "יש בית קפה חדש בפינה."
+      ]
+    },
+    {
+      "word": "market",
+   
+      "sentences": [
+        "We bought fresh vegetables at the farmers market.",
+        "The market was very crowded."
+      ],
+      "translations": [
+        "קנינו ירקות טריים בשוק האיכרים.",
+        "השוק היה מאוד צפוף."
+      ]
+    },
+    {
+      "word": "restaurant",
+     
+      "sentences": [
+        "Let's eat at that new Italian restaurant.",
+        "We had a delicious meal at the restaurant."
+      ],
+      "translations": [
+        "בוא נאכל במסעדה האיטלקית החדשה הזו.",
+        "אכלנו ארוחה טעימה במסעדה."
+      ]
+    },
+    {
+      "word": "food",
+   
+      "sentences": [
+        "What kind of food do you like?",
+        "We ordered some delicious food at the restaurant."
+      ],
+      "translations": [
+        "איזה סוג אוכל אתה אוהב?",
+        "הזמנו אוכל טעים במסעדה."
+      ]
+    },
+    {
+      "word": "drink",
+  
+      "sentences": [
+        "Can I get you a drink?",
+        "Water is a healthy drink."
+      ],
+      "translations": [
+        "האם אני יכול להביא לך משקה?",
+        "מים הם משקה בריא."
+      ]
+    },
+    {
+      "word": "snack",
+    
+      "sentences": [
+        "I'm feeling hungry, I need a snack.",
+        "He packed a snack for his hike."
+      ],
+      "translations": [
+        "אני מרגיש רעב, אני צריך נשנוש.",
+        "הוא ארז נשנוש לטיול שלו."
+      ]
+    },
+    {
+      "word": "clothes",
+     
+      "sentences": [
+        "I need to wash my clothes.",
+        "She bought some new clothes at the mall."
+      ],
+      "translations": [
+        "אני צריך לכבס את הבגדים שלי.",
+        "היא קנתה כמה בגדים חדשים בקניון."
+      ]
+    },
+    {
+      "word": "shirt",
+ 
+      "sentences": [
+        "He wore a blue shirt.",
+        "This shirt is very comfortable."
+      ],
+      "translations": [
+        "הוא לבש חולצה כחולה.",
+        "החולצה הזו מאוד נוחה."
+      ]
+    },
+    {
+      "word": "pants",
+    
+      "sentences": [
+        "I need a new pair of pants.",
+        "These pants are too tight."
+      ],
+      "translations": [
+        "אני צריך זוג מכנסיים חדש.",
+        "המכנסיים האלה צמודים מדי."
+      ]
+    },
+    {
+      "word": "dress",
+ 
+      "sentences": [
+        "She wore a beautiful dress to the party.",
+        "That dress looks lovely on you."
+      ],
+      "translations": [
+        "היא לבשה שמלה יפה למסיבה.",
+        "השמלה הזו נראית מקסימה עלייך."
+      ]
+    },
+    {
+      "word": "shoes",
+    
+      "sentences": [
+        "I need to buy new shoes.",
+        "These shoes are very comfortable for walking."
+      ],
+      "translations": [
+        "אני צריך לקנות נעליים חדשות.",
+        "הנעליים האלה מאוד נוחות להליכה."
+      ]
+    },
+    {
+      "word": "jacket",
+   
+      "sentences": [
+        "It's cold outside, you should wear a jacket.",
+        "He has a leather jacket."
+      ],
+      "translations": [
+        "קר בחוץ, אתה צריך ללבוש מעיל קל.",
+        "יש לו מעיל עור."
+      ]
+    },
+    {
+      "word": "hat",
+     
+      "sentences": [
+        "She wore a straw hat to protect herself from the sun.",
+        "He took off his hat when he entered the room."
+      ],
+      "translations": [
+        "היא חבשה כובע קש כדי להגן על עצמה מהשמש.",
+        "הוא הוריד את כובעו כשנכנס לחדר."
+      ]
+    },
+    {
+      "word": "gloves",
+      
+      "sentences": [
+        "Don't forget your gloves, it's freezing outside.",
+        "She wore warm wool gloves."
+      ],
+      "translations": [
+        "אל תשכח את הכפפות שלך, קפוא בחוץ.",
+        "היא לבשה כפפות צמר חמות."
+      ]
+    },
+    {
+      "word": "socks",
+    
+      "sentences": [
+        "I need to do laundry, I'm out of clean socks.",
+        "He wore thick winter socks."
+      ],
+      "translations": [
+        "אני צריך לעשות כביסה, נגמרו לי הגרביים הנקיות.",
+        "הוא לבש גרבי חורף עבות."
+      ]
+    },
+    {
+      "word": "coat",
+   
+      "sentences": [
+        "It's raining, you should wear a coat.",
+        "She has a long winter coat."
+      ],
+      "translations": [
+        "יורד גשם, אתה צריך ללבוש מעיל.",
+        "יש לה מעיל חורף ארוך."
+      ]
+    },
+    {
+      "word": "umbrella",
+    
+      "sentences": [
+        "Don't forget your umbrella, it might rain.",
+        "He opened his umbrella to shield himself from the sun."
+      ],
+      "translations": [
+        "אל תשכח את המטרייה שלך, אולי יירד גשם.",
+        "הוא פתח את המטרייה שלו כדי להתגונן מהשמש."
+      ]
+    },
+    {
+      "word": "sun",
+   
+      "sentences": [
+        "The sun is shining brightly today.",
+        "We basked in the warm sun."
+      ],
+      "translations": [
+        "השמש זורחת בחוזקה היום.",
+        "התחממנו בשמש הנעימה."
+      ]
+    },
+    {
+      "word": "moon",
+     
+      "sentences": [
+        "The moon looks beautiful tonight.",
+        "We sat outside under the light of the moon."
+      ],
+      "translations": [
+        "הירח נראה יפה הלילה.",
+        "ישבנו בחוץ לאור הירח."
+      ]
+    },
+    {
+      "word": "star",
+   
+      "sentences": [
+        "We could see many stars in the clear night sky.",
+        "He wished upon a shooting star."
+      ],
+      "translations": [
+        "יכולנו לראות כוכבים רבים בשמי הלילה הבהירים.",
+        "הוא ביקש משאלה מכוכב נופל."
+      ]
+    },
+    {
+      "word": "sky",
+    
+      "sentences": [
+        "The sky is blue and clear.",
+        "Dark clouds filled the sky before the storm."
+      ],
+      "translations": [
+        "השמיים כחולים ובהירים.",
+        "עננים כהים מילאו את השמיים לפני הסערה."
+      ]
+    },
+    {
+      "word": "cloud",
+  
+      "sentences": [
+        "There are some fluffy white clouds in the sky.",
+        "The sun disappeared behind a dark cloud."
+      ],
+      "translations": [
+        "יש כמה עננים לבנים ורכים בשמיים.",
+        "השמש נעלמה מאחורי ענן כהה."
+      ]
+    },
+    {
+      "word": "rain",
+
+      "sentences": [
+        "The rain started to fall heavily.",
+        "We stayed inside because of the rain."
+      ],
+      "translations": [
+        "הגשם התחיל לרדת בחוזקה.",
+        "נשארנו בבית בגלל הגשם."
+      ]
+    },
+    {
+      "word": "snow",
+    
+      "sentences": [
+        "It started to snow last night.",
+        "The ground was covered in a blanket of snow."
+      ],
+      "translations": [
+        "התחיל לרדת שלג בלילה שעבר.",
+        "האדמה הייתה מכוסה בשמיכת שלג."
+      ]
+    },
+    {
+      "word": "wind",
+     
+      "sentences": [
+        "The wind was blowing strongly.",
+        "The leaves rustled in the wind."
+      ],
+      "translations": [
+        "הרוח נשבה בעוצמה.",
+        "העלים רשרשו ברוח."
+      ]
+    },
+    {
+      "word": "storm",
+    
+      "sentences": [
+        "A big storm is approaching.",
+        "We lost power during the storm."
+      ],
+      "translations": [
+        "סערה גדולה מתקרבת.",
+        "איבדנו חשמל במהלך הסערה."
+      ]
+    },
+    {
+      "word": "thunder",
+
+      "sentences": [
+        "We heard a loud clap of thunder.",
+        "The storm brought heavy rain and thunder."
+      ],
+      "translations": [
+        "שמענו רעם חזק.",
+        "הסערה הביאה גשם כבד ורעמים."
+      ]
+    },
+    {
+      "word": "lightning",
+      
+      "sentences": [
+        "A flash of lightning lit up the sky.",
+        "Be careful during the storm, there might be lightning."
+      ],
+      "translations": [
+        "הבזק ברק האיר את השמיים.",
+        "היזהר במהלך הסערה, עלול להיות ברקים."
+      ]
+    },
+    {
+      "word": "hot",
+    
+      "sentences": [
+        "It's very hot today.",
+        "The soup is still hot."
+      ],
+      "translations": [
+        "מאוד חם היום.",
+        "המרק עדיין חם."
+      ]
+    },
+    {
+      "word": "cold",
+  
+      "sentences": [
+        "It's cold outside, wear a jacket.",
+        "The water in the lake was very cold."
+      ],
+      "translations": [
+        "קר בחוץ, תלבש מעיל קל.",
+        "המים באגם היו מאוד קרים."
+      ]
+    },
+    {
+      "word": "warm",
+    
+      "sentences": [
+        "The sun felt warm on my skin.",
+        "This blanket is nice and warm."
+      ],
+      "translations": [
+        "השמש הרגישה חמימה על העור שלי.",
+        "השמיכה הזו נעימה וחמימה."
+      ]
+    },
+    {
+      "word": "cool",
+   
+      "sentences": [
+        "The evening air was cool and refreshing.",
+        "Keep the drinks in a cool place."
+      ],
+      "translations": [
+        "אוויר הערב היה קריר ומרענן.",
+        "תשמור את המשקאות במקום קריר."
+      ]
+    }
 ]

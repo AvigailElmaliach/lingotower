@@ -1,75 +1,806 @@
 [
-  { "word": "forest", "sentences": ["The forest is home to many wildlife species.", "They went hiking through the forest."] },
-  { "word": "ocean", "sentences": ["The ocean is vast and mysterious.", "She loves to swim in the ocean."] },
-  { "word": "mountain", "sentences": ["The mountain peaks were covered in snow.", "They reached the summit of the mountain."] },
-  { "word": "river", "sentences": ["The river flows gently through the valley.", "They enjoyed a boat ride on the river."] },
-  { "word": "lake", "sentences": ["The lake was serene and calm.", "They went fishing by the lake."] },
-  { "word": "desert", "sentences": ["The desert is a harsh environment.", "They explored the vast desert dunes."] },
-  { "word": "wildlife", "sentences": ["The wildlife in the jungle is diverse.", "Conservation efforts are important for protecting wildlife."] },
-  { "word": "ecosystem", "sentences": ["The forest ecosystem is fragile.", "They studied the impact of pollution on the ecosystem."] },
-  { "word": "climate", "sentences": ["The climate in the region is temperate.", "Climate change is a global issue."] },
-  { "word": "pollution", "sentences": ["Air pollution is a growing concern.", "They are working to reduce water pollution."] },
-  { "word": "species", "sentences": ["There are many endangered species in the rainforest.", "They studied the different species of birds in the area."] },
-  { "word": "biodiversity", "sentences": ["Biodiversity is essential for ecosystem health.", "They are working to protect biodiversity in the region."] },
-  { "word": "greenhouse", "sentences": ["The greenhouse effect contributes to global warming.", "They built a greenhouse to grow plants in winter."] },
-  { "word": "sustainability", "sentences": ["Sustainability is key to preserving natural resources.", "They promote sustainability in their business practices."] },
-  { "word": "deforestation", "sentences": ["Deforestation threatens wildlife habitats.", "Efforts are being made to combat deforestation."] },
-  { "word": "renewable", "sentences": ["Renewable energy sources are essential for a sustainable future.", "They invested in renewable energy technologies."] },
-  { "word": "energy", "sentences": ["The city relies on renewable energy sources.", "Energy conservation is important for the environment."] },
-  { "word": "pollutant", "sentences": ["Carbon dioxide is a major greenhouse gas pollutant.", "Industrial waste is a common pollutant in rivers."] },
-  { "word": "recycling", "sentences": ["Recycling helps reduce waste and conserve resources.", "They encourage recycling in their community."] },
-  { "word": "conservation", "sentences": ["Wildlife conservation is essential for species survival.", "They support conservation efforts around the world."] },
-  { "word": "ozone", "sentences": ["The ozone layer protects the Earth from harmful UV rays.", "Ozone depletion is a major environmental issue."] },
-  { "word": "global warming", "sentences": ["Global warming is causing rising sea levels.", "Governments are taking steps to address global warming."] },
-  { "word": "natural resources", "sentences": ["Natural resources must be managed wisely.", "They focus on sustainable use of natural resources."] },
-  { "word": "carbon footprint", "sentences": ["Reducing your carbon footprint is crucial for combating climate change.", "They are working to lower their carbon footprint."] },
-  { "word": "rainforest", "sentences": ["Rainforests are vital for biodiversity.", "They explored the Amazon rainforest."] },
-  { "word": "forest fire", "sentences": ["Forest fires can have devastating effects on ecosystems.", "They were evacuated due to a nearby forest fire."] },
-  { "word": "wildlife conservation", "sentences": ["Wildlife conservation programs are essential for endangered species.", "They donated to wildlife conservation efforts."] },
-  { "word": "waterfall", "sentences": ["The waterfall cascades down the rocky cliff.", "They admired the beauty of the waterfall during their hike."] },
-  { "word": "landfill", "sentences": ["The landfill was filled with household waste.", "They work to reduce waste that ends up in landfills."] },
-  { "word": "biodiversity loss", "sentences": ["Biodiversity loss is a major concern for conservationists.", "The loss of biodiversity threatens ecosystems worldwide."] },
-  { "word": "ecosystem services", "sentences": ["Ecosystem services provide essential benefits to humanity.", "Protecting ecosystems ensures the availability of ecosystem services."] },
-  { "word": "climate change", "sentences": ["Climate change is causing more extreme weather events.", "They are actively working to mitigate climate change effects."] },
-  { "word": "vegetation", "sentences": ["The vegetation in the area is lush and diverse.", "They studied the types of vegetation in the tropical forest."] },
-  { "word": "habitat", "sentences": ["The rainforest is home to many species of wildlife.", "Destroying habitats can lead to species extinction."] },
-  { "word": "green energy", "sentences": ["Green energy is produced from renewable sources.", "They invest in green energy solutions for sustainability."] },
-  { "word": "overfishing", "sentences": ["Overfishing threatens marine life.", "They are working to prevent overfishing in local waters."] },
-  { "word": "carbon emissions", "sentences": ["Carbon emissions contribute to global warming.", "They are reducing their carbon emissions by using renewable energy."] },
-  { "word": "earthquake", "sentences": ["The earthquake caused widespread damage.", "They prepared for the possibility of an earthquake in the region."] },
-  { "word": "hurricane", "sentences": ["The hurricane caused massive destruction along the coast.", "They evacuated the area before the hurricane made landfall."] },
-  { "word": "tsunami", "sentences": ["The tsunami hit the coastal villages with great force.", "They monitored the tsunami warning system for updates."] },
-  { "word": "volcano", "sentences": ["The volcano erupted after being dormant for centuries.", "They studied the volcanic activity in the region."] },
-  { "word": "flood", "sentences": ["The flood submerged entire neighborhoods.", "They helped victims of the flood by providing aid."] },
-  { "word": "tornado", "sentences": ["The tornado caused severe damage to buildings.", "They sought shelter in the basement during the tornado."] },
-  { "word": "earth", "sentences": ["The Earth orbits around the Sun.", "They studied the Earth's geology and atmosphere."] },
-  { "word": "soil", "sentences": ["Healthy soil is essential for growing crops.", "They tested the soil for its nutrient content."] },
-  { "word": "air quality", "sentences": ["Air quality is measured by the level of pollutants in the air.", "They monitor air quality to ensure public health."] },
-  { "word": "pollution control", "sentences": ["Pollution control measures help reduce environmental harm.", "The company implemented pollution control technologies."] },
-  { "word": "biodegradable", "sentences": ["Biodegradable materials break down naturally in the environment.", "They use biodegradable packaging to reduce waste."] },
-  { "word": "solar energy", "sentences": ["Solar energy is a clean and renewable power source.", "They installed solar panels to harness solar energy."] },
-  { "word": "wind energy", "sentences": ["Wind energy is harnessed through turbines.", "They invested in wind energy to reduce carbon emissions."] },
-  { "word": "geothermal energy", "sentences": ["Geothermal energy is derived from the heat beneath the Earth's surface.", "They use geothermal energy to heat their homes."] },
-  { "word": "hydropower", "sentences": ["Hydropower generates electricity from moving water.", "They are working on hydropower projects to provide clean energy."] },
-  { "word": "clean energy", "sentences": ["Clean energy reduces greenhouse gas emissions.", "They advocate for clean energy sources like solar and wind."] },
-  { "word": "carbon neutral", "sentences": ["Being carbon neutral means balancing carbon emissions with reductions.", "The company aims to be carbon neutral by 2030."] },
-  { "word": "fossil fuels", "sentences": ["Fossil fuels are non-renewable energy sources.", "They are transitioning from fossil fuels to renewable energy."] },
-  { "word": "sustainable living", "sentences": ["Sustainable living practices reduce environmental impact.", "They adopted sustainable living practices to conserve resources."] },
-  { "word": "eco-friendly", "sentences": ["Eco-friendly products are made from sustainable materials.", "They use eco-friendly cleaning supplies in their home."] },
-  { "word": "greenhouse gases", "sentences": ["Greenhouse gases trap heat in the Earth's atmosphere.", "Reducing greenhouse gases is crucial for combating climate change."] },
-  { "word": "carbon offset", "sentences": ["Carbon offset programs help neutralize emissions.", "They purchased carbon offsets to make their business more sustainable."] },
-  { "word": "nature reserve", "sentences": ["The nature reserve is home to many endangered species.", "They visit the nature reserve to observe wildlife."] },
-  { "word": "rainwater", "sentences": ["Rainwater can be collected for irrigation purposes.", "They installed a system to collect rainwater for their garden."] },
-  { "word": "pollution-free", "sentences": ["A pollution-free environment is essential for health.", "They strive to create a pollution-free community."] },
-  { "word": "wildlife protection", "sentences": ["Wildlife protection is crucial for maintaining biodiversity.", "They participate in wildlife protection programs."] },
-  { "word": "carbon dioxide", "sentences": ["Carbon dioxide is a major greenhouse gas.", "They aim to reduce carbon dioxide emissions from transportation."] },
-  { "word": "conservation efforts", "sentences": ["Conservation efforts help protect endangered species.", "Their conservation efforts focus on habitat restoration."] },
-  { "word": "natural disaster", "sentences": ["Natural disasters can have devastating effects on communities.", "They provided emergency aid after the natural disaster."] },
-  { "word": "green space", "sentences": ["Green spaces are important for urban environments.", "They enjoy walking in the local green space."] },
-  { "word": "global conservation", "sentences": ["Global conservation efforts aim to protect ecosystems worldwide.", "They support global conservation initiatives to preserve biodiversity."] },
-  { "word": "reforestation", "sentences": ["Reforestation is key to combating deforestation.", "They are involved in reforestation projects to restore forests."] },
-  { "word": "nature trail", "sentences": ["They hiked along the nature trail in the forest.", "The nature trail offers stunning views of the valley."] },
-  { "word": "environmental impact", "sentences": ["They studied the environmental impact of the new factory.", "Reducing environmental impact is a priority for the company."] },
-  { "word": "natural beauty", "sentences": ["The area is known for its natural beauty.", "They marveled at the natural beauty of the mountain landscape."] },
-  { "word": "green technology", "sentences": ["Green technology aims to reduce environmental damage.", "They invest in green technology to improve sustainability."] }
-]
+  {
+    "word": "forest",
+    "sentences": [
+      "The forest is home to many wildlife species.",
+      "They went hiking through the forest."
+    ],
+    "translations": [
+      "היער הוא ביתם של מיני חיות בר רבים.",
+      "הם יצאו לטיול רגלי דרך היער."
+    ]
+  },
+  {
+    "word": "ocean",
+    "sentences": [
+      "The ocean is vast and mysterious.",
+      "She loves to swim in the ocean."
+    ],
+    "translations": [
+      "האוקיינוס עצום ומסתורי.",
+      "היא אוהבת לשחות באוקיינוס."
+    ]
+  },
+  {
+    "word": "mountain",
+    "sentences": [
+      "The mountain peaks were covered in snow.",
+      "They reached the summit of the mountain."
+    ],
+    "translations": [
+      "פסגות ההרים היו מכוסות בשלג.",
+      "הם הגיעו לפסגת ההר."
+    ]
+  },
+  {
+    "word": "river",
+    "sentences": [
+      "The river flows gently through the valley.",
+      "They enjoyed a boat ride on the river."
+    ],
+    "translations": [
+      "הנהר זורם בעדינות דרך העמק.",
+      "הם נהנו משייט בנהר."
+    ]
+  },
+  {
+    "word": "lake",
+    "sentences": [
+      "The lake was serene and calm.",
+      "They went fishing by the lake."
+    ],
+    "translations": [
+      "האגם היה שליו ורגוע.",
+      "הם הלכו לדוג ליד האגם."
+    ]
+  },
+  {
+    "word": "desert",
+    "sentences": [
+      "The desert is a harsh environment.",
+      "They explored the vast desert dunes."
+    ],
+    "translations": [
+      "המדבר הוא סביבה קשה.",
+      "הם חקרו את דיונות המדבר העצומות."
+    ]
+  },
+  {
+    "word": "wildlife",
+    "sentences": [
+      "The wildlife in the jungle is diverse.",
+      "Conservation efforts are important for protecting wildlife."
+    ],
+    "translations": [
+      "חיות הבר בג'ונגל מגוונות.",
+      "מאמצי שימור חשובים להגנה על חיות הבר."
+    ]
+  },
+  {
+    "word": "ecosystem",
+    "sentences": [
+      "The forest ecosystem is fragile.",
+      "They studied the impact of pollution on the ecosystem."
+    ],
+    "translations": [
+      "מערכת האקולוגית של היער שברירית.",
+      "הם חקרו את השפעת הזיהום על המערכת האקולוגית."
+    ]
+  },
+  {
+    "word": "climate",
+    "sentences": [
+      "The climate in the region is temperate.",
+      "Climate change is a global issue."
+    ],
+    "translations": [
+      "האקלים באזור ממוזג.",
+      "שינויי האקלים הם בעיה גלובלית."
+    ]
+  },
+  {
+    "word": "pollution",
+    "sentences": [
+      "Air pollution is a growing concern.",
+      "They are working to reduce water pollution."
+    ],
+    "translations": [
+      "זיהום אוויר הוא דאגה גוברת.",
+      "הם פועלים להפחתת זיהום המים."
+    ]
+  },
+  {
+    "word": "species",
+    "sentences": [
+      "There are many endangered species in the rainforest.",
+      "They studied the different species of birds in the area."
+    ],
+    "translations": [
+      "ישנם מינים רבים בסכנת הכחדה ביער הגשם.",
+      "הם חקרו את מיני הציפורים השונים באזור."
+    ]
+  },
+  {
+    "word": "biodiversity",
+    "sentences": [
+      "Biodiversity is essential for ecosystem health.",
+      "They are working to protect biodiversity in the region."
+    ],
+    "translations": [
+      "מגוון ביולוגי חיוני לבריאות המערכת האקולוגית.",
+      "הם פועלים להגנה על המגוון הביולוגי באזור."
+    ]
+  },
+  {
+    "word": "greenhouse",
+    "sentences": [
+      "The greenhouse effect contributes to global warming.",
+      "They built a greenhouse to grow plants in winter."
+    ],
+    "translations": [
+      "אפקט החממה תורם להתחממות הגלובלית.",
+      "הם בנו חממה כדי לגדל צמחים בחורף."
+    ]
+  },
+  {
+    "word": "sustainability",
+    "sentences": [
+      "Sustainability is key to preserving natural resources.",
+      "They promote sustainability in their business practices."
+    ],
+    "translations": [
+      "קיימות היא המפתח לשימור משאבי הטבע.",
+      "הם מקדמים קיימות בפרקטיקות העסקיות שלהם."
+    ]
+  },
+  {
+    "word": "deforestation",
+    "sentences": [
+      "Deforestation threatens wildlife habitats.",
+      "Efforts are being made to combat deforestation."
+    ],
+    "translations": [
+      "כריתת יערות מאיימת על בתי הגידול של חיות הבר.",
+      "נעשים מאמצים למאבק בכריתת היערות."
+    ]
+  },
+  {
+    "word": "renewable",
+    "sentences": [
+      "Renewable energy sources are essential for a sustainable future.",
+      "They invested in renewable energy technologies."
+    ],
+    "translations": [
+      "מקורות אנרגיה מתחדשים חיוניים לעתיד בר קיימא.",
+      "הם השקיעו בטכנולוגיות אנרגיה מתחדשת."
+    ]
+  },
+  {
+    "word": "energy",
+    "sentences": [
+      "The city relies on renewable energy sources.",
+      "Energy conservation is important for the environment."
+    ],
+    "translations": [
+      "העיר נסמכת על מקורות אנרגיה מתחדשים.",
+      "חיסכון באנרגיה חשוב לסביבה."
+    ]
+  },
+  {
+    "word": "pollutant",
+    "sentences": [
+      "Carbon dioxide is a major greenhouse gas pollutant.",
+      "Industrial waste is a common pollutant in rivers."
+    ],
+    "translations": [
+      "פחמן דו-חמצני הוא מזהם גז חממה מרכזי.",
+      "פסולת תעשייתית היא מזהם נפוץ בנהרות."
+    ]
+  },
+  {
+    "word": "recycling",
+    "sentences": [
+      "Recycling helps reduce waste and conserve resources.",
+      "They encourage recycling in their community."
+    ],
+    "translations": [
+      "מיחזור עוזר להפחית פסולת ולשמר משאבים.",
+      "הם מעודדים מיחזור בקהילה שלהם."
+    ]
+  },
+  {
+    "word": "conservation",
+    "sentences": [
+      "Wildlife conservation is essential for species survival.",
+      "They support conservation efforts around the world."
+    ],
+    "translations": [
+      "שימור חיות בר חיוני להישרדות מינים.",
+      "הם תומכים במאמצי שימור ברחבי העולם."
+    ]
+  },
+  {
+    "word": "ozone",
+    "sentences": [
+      "The ozone layer protects the Earth from harmful UV rays.",
+      "Ozone depletion is a major environmental issue."
+    ],
+    "translations": [
+      "שכבת האוזון מגנה על כדור הארץ מפני קרני UV מזיקות.",
+      "דילול שכבת האוזון הוא בעיה סביבתית מרכזית."
+    ]
+  },
+  {
+    "word": "global warming",
+    "sentences": [
+      "Global warming is causing rising sea levels.",
+      "Governments are taking steps to address global warming."
+    ],
+    "translations": [
+      "ההתחממות הגלובלית גורמת לעליית פני הים.",
+      "ממשלות נוקטות צעדים כדי להתמודד עם ההתחממות הגלובלית."
+    ]
+  },
+  {
+    "word": "natural resources",
+    "sentences": [
+      "Natural resources must be managed wisely.",
+      "They focus on sustainable use of natural resources."
+    ],
+    "translations": [
+      "יש לנהל את משאבי הטבע בחוכמה.",
+      "הם מתמקדים בשימוש בר קיימא במשאבי הטבע."
+    ]
+  },
+  {
+    "word": "carbon footprint",
+    "sentences": [
+      "Reducing your carbon footprint is crucial for combating climate change.",
+      "They are working to lower their carbon footprint."
+    ],
+    "translations": [
+      "הפחתת טביעת הרגל הפחמנית שלך חיונית למאבק בשינויי האקלים.",
+      "הם פועלים להורדת טביעת הרגל הפחמנית שלהם."
+    ]
+  },
+  {
+    "word": "rainforest",
+    "sentences": [
+      "Rainforests are vital for biodiversity.",
+      "They explored the Amazon rainforest."
+    ],
+    "translations": [
+      "יערות הגשם חיוניים למגוון הביולוגי.",
+      "הם חקרו את יער האמזונס."
+    ]
+  },
+  {
+    "word": "forest fire",
+    "sentences": [
+      "Forest fires can have devastating effects on ecosystems.",
+      "They were evacuated due to a nearby forest fire."
+    ],
+    "translations": [
+      "שריפות יער יכולות להיות בעלות השפעות הרסניות על מערכות אקולוגיות.",
+      "הם פונו עקב שריפת יער סמוכה."
+    ]
+  },
+  {
+    "word": "wildlife conservation",
+    "sentences": [
+      "Wildlife conservation programs are essential for endangered species.",
+      "They donated to wildlife conservation efforts."
+    ],
+    "translations": [
+      "תוכניות שימור חיות בר חיוניות למינים בסכנת הכחדה.",
+      "הם תרמו למאמצי שימור חיות הבר."
+    ]
+  },
+  {
+    "word": "waterfall",
+    "sentences": [
+      "The waterfall cascades down the rocky cliff.",
+      "They admired the beauty of the waterfall during their hike."
+    ],
+    "translations": [
+      "המפל זורם במורד הצוק הסלעי.",
+      "הם התפעלו מיופיו של המפל במהלך הטיול שלהם."
+    ]
+  },
+  {
+    "word": "landfill",
+    "sentences": [
+      "The landfill was filled with household waste.",
+      "They work to reduce waste that ends up in landfills."
+    ],
+    "translations": [
+      "מזבלת הפסולת הייתה מלאה בפסולת ביתית.",
+      "הם פועלים להפחתת הפסולת שמגיעה למזבלות."
+    ]
+  },
+  {
+    "word": "biodiversity loss",
+    "sentences": [
+      "Biodiversity loss is a major concern for conservationists.",
+      "The loss of biodiversity threatens ecosystems worldwide."
+    ],
+    "translations": [
+      "אובדן המגוון הביולוגי הוא דאגה מרכזית עבור אנשי שימור.",
+      "אובדן המגוון הביולוגי מאיים על מערכות אקולוגיות ברחבי העולם."
+    ]
+  },
+  {
+    "word": "ecosystem services",
+    "sentences": [
+      "Ecosystem services provide essential benefits to humanity.",
+      "Protecting ecosystems ensures the availability of ecosystem services."
+    ],
+    "translations": [
+      "שירותי המערכת האקולוגית מספקים יתרונות חיוניים לאנושות.",
+      "הגנה על מערכות אקולוגיות מבטיחה את זמינות שירותי המערכת האקולוגית."
+    ]
+  },
+  {
+    "word": "climate change",
+    "sentences": [
+      "Climate change is causing more extreme weather events.",
+      "They are actively working to mitigate climate change effects."
+    ],
+    "translations": [
+      "שינויי האקלים גורמים לאירועי מזג אוויר קיצוניים יותר.",
+      "הם פועלים באופן פעיל כדי למתן את השפעות שינויי האקלים."
+    ]
+  },
+  {
+    "word": "vegetation",
+    "sentences": [
+      "The vegetation in the area is lush and diverse.",
+      "They studied the types of vegetation in the tropical forest."
+    ],
+    "translations": [
+      "הצמחייה באזור עשירה ומגוונת.",
+      "הם חקרו את סוגי הצמחייה ביער הטרופי."
+    ]
+  },
+  {
+    "word": "habitat",
+    "sentences": [
+      "The rainforest is home to many species of wildlife.",
+      "Destroying habitats can lead to species extinction."
+    ],
+    "translations": [
+      "יער הגשם הוא ביתם של מינים רבים של חיות בר.",
+      "הרס בתי גידול עלול להוביל להכחדת מינים."
+    ]
+  },
+  {
+    "word": "green energy",
+    "sentences": [
+      "Green energy is produced from renewable sources.",
+      "They invest in green energy solutions for sustainability."
+    ],
+    "translations": [
+      "אנרגיה ירוקה מיוצרת ממקורות מתחדשים.",
+      "הם משקיעים בפתרונות אנרגיה ירוקה לצורך קיימות."
+    ]
+  },
+  {
+    "word": "overfishing",
+    "sentences": [
+      "Overfishing threatens marine life.",
+      "They are working to prevent overfishing in local waters."
+    ],
+    "translations": [
+      "דיג יתר מאיים על חיי הים.",
+      "הם פועלים למניעת דיג יתר במים המקומיים."
+    ]
+  },
+  {
+    "word": "carbon emissions",
+    "sentences": [
+      "Carbon emissions contribute to global warming.",
+      "They are reducing their carbon emissions by using renewable energy."
+    ],
+    "translations": [
+      "פליטות פחמן תורמות להתחממות הגלובלית.",
+      "הם מפחיתים את פליטות הפחמן שלהם על ידי שימוש באנרגיה מתחדשת."
+    ]
+  },
+  {
+    "word": "earthquake",
+    "sentences": [
+      "The earthquake caused widespread damage.",
+      "They prepared for the possibility of an earthquake in the region."
+    ],
+    "translations": [
+      "רעידת האדמה גרמה לנזק נרחב.",
+      "הם התכוננו לאפשרות של רעידת אדמה באזור."
+    ]
+  },
+  {
+    "word": "hurricane",
+    "sentences": [
+      "The hurricane caused massive destruction along the coast.",
+      "They evacuated the area before the hurricane made landfall."
+    ],
+    "translations": [
+      "ההוריקן גרם להרס עצום לאורך החוף.",
+      "הם פינו את האזור לפני שההוריקן הגיע ליבשה."
+    ]
+  },
+  {
+    "word": "tsunami",
+    "sentences": [
+      "The tsunami hit the coastal villages with great force.",
+      "They monitored the tsunami warning system for updates."
+    ],
+    "translations": [
+      "הצונאמי פגע בכפרי החוף בעוצמה רבה.",
+      "הם עקבו אחר מערכת ההתרעה מפני צונאמי לקבלת עדכונים."
+    ]
+  },
+  {
+    "word": "volcano",
+    "sentences": [
+      "The volcano erupted after being dormant for centuries.",
+      "They studied the volcanic activity in the region."
+    ],
+    "translations": [
+      "ההר געש התפרץ לאחר שהיה רדום במשך מאות שנים.",
+      "הם חקרו את הפעילות הגעשית באזור."
+    ]
+  },
+  {
+    "word": "flood",
+    "sentences": [
+      "The flood submerged entire neighborhoods.",
+      "They helped victims of the flood by providing aid."
+ 
+      ],
+      "translations": [
+        "השיטפון הציף שכונות שלמות.",
+        "הם עזרו לנפגעי השיטפון על ידי מתן סיוע."
+      ]
+    },
+    {
+      "word": "tornado",
+      "sentences": [
+        "The tornado caused severe damage to buildings.",
+        "They sought shelter in the basement during the tornado."
+      ],
+      "translations": [
+        "הטורנדו גרם לנזק חמור למבנים.",
+        "הם חיפשו מחסה במרתף בזמן הטורנדו."
+      ]
+    },
+    {
+      "word": "earth",
+      "sentences": [
+        "The Earth orbits around the Sun.",
+        "They studied the Earth's geology and atmosphere."
+      ],
+      "translations": [
+        "כדור הארץ מקיף את השמש.",
+        "הם חקרו את הגאולוגיה והאטמוספירה של כדור הארץ."
+      ]
+    },
+    {
+      "word": "soil",
+      "sentences": [
+        "Healthy soil is essential for growing crops.",
+        "They tested the soil for its nutrient content."
+      ],
+      "translations": [
+        "אדמה בריאה חיונית לגידולים חקלאיים.",
+        "הם בדקו את האדמה כדי לדעת את תכולת החומרים המזינים שלה."
+      ]
+    },
+    {
+      "word": "air quality",
+      "sentences": [
+        "Air quality is measured by the level of pollutants in the air.",
+        "They monitor air quality to ensure public health."
+      ],
+      "translations": [
+        "איכות האוויר נמדדת לפי רמת המזהמים באוויר.",
+        "הם עוקבים אחר איכות האוויר כדי להבטיח את בריאות הציבור."
+      ]
+    },
+    {
+      "word": "pollution control",
+      "sentences": [
+        "Pollution control measures help reduce environmental harm.",
+        "The company implemented pollution control technologies."
+      ],
+      "translations": [
+        "אמצעי בקרת זיהום עוזרים להפחית נזק סביבתי.",
+        "החברה יישמה טכנולוגיות בקרת זיהום."
+      ]
+    },
+    {
+      "word": "biodegradable",
+      "sentences": [
+        "Biodegradable materials break down naturally in the environment.",
+        "They use biodegradable packaging to reduce waste."
+      ],
+      "translations": [
+        "חומרים מתכלים מתפרקים באופן טבעי בסביבה.",
+        "הם משתמשים באריזות מתכלות כדי להפחית פסולת."
+      ]
+    },
+    {
+      "word": "solar energy",
+      "sentences": [
+        "Solar energy is a clean and renewable power source.",
+        "They installed solar panels to harness solar energy."
+      ],
+      "translations": [
+        "אנרגיה סולארית היא מקור כוח נקי ומתחדש.",
+        "הם התקינו פאנלים סולאריים כדי לרתום אנרגיה סולארית."
+      ]
+    },
+    {
+      "word": "wind energy",
+      "sentences": [
+        "Wind energy is harnessed through turbines.",
+        "They invested in wind energy to reduce carbon emissions."
+      ],
+      "translations": [
+        "אנרגיית רוח נרתמת באמצעות טורבינות.",
+        "הם השקיעו באנרגיית רוח כדי להפחית פליטות פחמן."
+      ]
+    },
+    {
+      "word": "geothermal energy",
+      "sentences": [
+        "Geothermal energy is derived from the heat beneath the Earth's surface.",
+        "They use geothermal energy to heat their homes."
+      ],
+      "translations": [
+        "אנרגיה גיאותרמית מופקת מהחום שמתחת לפני כדור הארץ.",
+        "הם משתמשים באנרגיה גיאותרמית כדי לחמם את בתיהם."
+      ]
+    },
+    {
+      "word": "hydropower",
+      "sentences": [
+        "Hydropower generates electricity from moving water.",
+        "They are working on hydropower projects to provide clean energy."
+      ],
+      "translations": [
+        "אנרגיה הידרואלקטרית מייצרת חשמל ממים זורמים.",
+        "הם עובדים על פרויקטים של אנרגיה הידרואלקטרית כדי לספק אנרגיה נקייה."
+      ]
+    },
+    {
+      "word": "clean energy",
+      "sentences": [
+        "Clean energy reduces greenhouse gas emissions.",
+        "They advocate for clean energy sources like solar and wind."
+      ],
+      "translations": [
+        "אנרגיה נקייה מפחיתה פליטות גזי חממה.",
+        "הם תומכים במקורות אנרגיה נקיים כמו אנרגיה סולארית ורוח."
+      ]
+    },
+    {
+      "word": "carbon neutral",
+      "sentences": [
+        "Being carbon neutral means balancing carbon emissions with reductions.",
+        "The company aims to be carbon neutral by 2030."
+      ],
+      "translations": [
+        "להיות ניטרלי פחמן פירושו לאזן פליטות פחמן עם הפחתות.",
+        "החברה שואפת להיות ניטרלית פחמן עד 2030."
+      ]
+    },
+    {
+      "word": "fossil fuels",
+      "sentences": [
+        "Fossil fuels are non-renewable energy sources.",
+        "They are transitioning from fossil fuels to renewable energy."
+      ],
+      "translations": [
+        "דלקים מאובנים הם מקורות אנרגיה לא מתחדשים.",
+        "הם עוברים מדלקים מאובנים לאנרגיה מתחדשת."
+      ]
+    },
+    {
+      "word": "sustainable living",
+      "sentences": [
+        "Sustainable living practices reduce environmental impact.",
+        "They adopted sustainable living practices to conserve resources."
+      ],
+      "translations": [
+        "פרקטיקות של חיים ברי קיימא מפחיתות את ההשפעה הסביבתית.",
+        "הם אימצו פרקטיקות של חיים ברי קיימא כדי לשמר משאבים."
+      ]
+    },
+    {
+      "word": "eco-friendly",
+      "sentences": [
+        "Eco-friendly products are made from sustainable materials.",
+        "They use eco-friendly cleaning supplies in their home."
+      ],
+      "translations": [
+        "מוצרים ידידותיים לסביבה עשויים מחומרים ברי קיימא.",
+        "הם משתמשים בחומרי ניקוי ידידותיים לסביבה בביתם."
+      ]
+    },
+    {
+      "word": "greenhouse gases",
+      "sentences": [
+        "Greenhouse gases trap heat in the Earth's atmosphere.",
+        "Reducing greenhouse gases is crucial for combating climate change."
+      ],
+      "translations": [
+        "גזי חממה לוכדים חום באטמוספירה של כדור הארץ.",
+        "הפחתת גזי חממה חיונית למאבק בשינויי האקלים."
+      ]
+    },
+    {
+      "word": "carbon offset",
+      "sentences": [
+        "Carbon offset programs help neutralize emissions.",
+        "They purchased carbon offsets to make their business more sustainable."
+      ],
+      "translations": [
+        "תוכניות קיזוז פחמן עוזרות לנטרל פליטות.",
+        "הם רכשו קיזוזי פחמן כדי להפוך את העסק שלהם ליותר בר קיימא."
+      ]
+    },
+    {
+      "word": "nature reserve",
+      "sentences": [
+        "The nature reserve is home to many endangered species.",
+        "They visit the nature reserve to observe wildlife."
+      ],
+      "translations": [
+        "שמורת הטבע היא ביתם של מינים רבים בסכנת הכחדה.",
+        "הם מבקרים בשמורת הטבע כדי לצפות בחיות בר."
+      ]
+    },
+    {
+      "word": "rainwater",
+      "sentences": [
+        "Rainwater can be collected for irrigation purposes.",
+        "They installed a system to collect rainwater for their garden."
+      ],
+      "translations": [
+        "מי גשמים ניתנים לאיסוף לצורך השקיה.",
+        "הם התקינו מערכת לאיסוף מי גשמים לגינה שלהם."
+      ]
+    },
+    {
+      "word": "pollution-free",
+      "sentences": [
+        "A pollution-free environment is essential for health.",
+        "They strive to create a pollution-free community."
+      ],
+      "translations": [
+        "סביבה נקייה מזיהום חיונית לבריאות.",
+        "הם שואפים ליצור קהילה נקייה מזיהום."
+      ]
+    },
+    {
+      "word": "wildlife protection",
+      "sentences": [
+        "Wildlife protection is crucial for maintaining biodiversity.",
+        "They participate in wildlife protection programs."
+      ],
+      "translations": [
+        "הגנה על חיות בר חיונית לשמירה על המגוון הביולוגי.",
+        "הם משתתפים בתוכניות להגנה על חיות בר."
+      ]
+    },
+    {
+      "word": "carbon dioxide",
+      "sentences": [
+        "Carbon dioxide is a major greenhouse gas.",
+        "They aim to reduce carbon dioxide emissions from transportation."
+      ],
+      "translations": [
+        "פחמן דו-חמצני הוא גז חממה מרכזי.",
+        "הם שואפים להפחית פליטות פחמן דו-חמצני מתחבורה."
+      ]
+    },
+    {
+      "word": "conservation efforts",
+      "sentences": [
+        "Conservation efforts help protect endangered species.",
+        "Their conservation efforts focus on habitat restoration."
+      ],
+      "translations": [
+        "מאמצי שימור עוזרים להגן על מינים בסכנת הכחדה.",
+        "מאמצי השימור שלהם מתמקדים בשיקום בתי גידול."
+      ]
+    },
+    {
+      "word": "natural disaster",
+      "sentences": [
+        "Natural disasters can have devastating effects on communities.",
+        "They provided emergency aid after the natural disaster."
+      ],
+      "translations": [
+        "אסונות טבע עלולים להיות בעלי השפעות הרסניות על קהילות.",
+        "הם סיפקו סיוע חירום לאחר אסון הטבע."
+      ]
+    },
+    {
+      "word": "green space",
+      "sentences": [
+        "Green spaces are important for urban environments.",
+        "They enjoy walking in the local green space."
+      ],
+      "translations": [
+        "שטחים ירוקים חשובים לסביבות עירוניות.",
+        "הם נהנים ללכת בשטח הירוק המקומי."
+      ]
+    },
+    {
+      "word": "global conservation",
+      "sentences": [
+        "Global conservation efforts aim to protect ecosystems worldwide.",
+        "They support global conservation initiatives to preserve biodiversity."
+      ],
+      "translations": [
+        "מאמצי שימור גלובליים שואפים להגן על מערכות אקולוגיות ברחבי העולם.",
+        "הם תומכים ביוזמות שימור גלובליות לשימור המגוון הביולוגי."
+      ]
+    },
+    {
+      "word": "reforestation",
+      "sentences": [
+        "Reforestation is key to combating deforestation.",
+        "They are involved in reforestation projects to restore forests."
+      ],
+      "translations": [
+        "ייעור מחדש הוא המפתח למאבק בכריתת יערות.",
+        "הם מעורבים בפרויקטים של ייעור מחדש כדי לשקם יערות."
+      ]
+    },
+    {
+      "word": "nature trail",
+      "sentences": [
+        "They hiked along the nature trail in the forest.",
+        "The nature trail offers stunning views of the valley."
+      ],
+      "translations": [
+        "הם טיילו לאורך שביל הטבע ביער.",
+        "שביל הטבע מציע נופים מדהימים של העמק."
+      ]
+    },
+    {
+      "word": "environmental impact",
+      "sentences": [
+        "They studied the environmental impact of the new factory.",
+        "Reducing environmental impact is a priority for the company."
+      ],
+      "translations": [
+        "הם חקרו את ההשפעה הסביבתית של המפעל החדש.",
+        "הפחתת ההשפעה הסביבתית היא בראש סדר העדיפויות של החברה."
+      ]
+    },
+    {
+      "word": "natural beauty",
+      "sentences": [
+        "The area is known for its natural beauty.",
+        "They marveled at the natural beauty of the mountain landscape."
+      ],
+      "translations": [
+        "האזור ידוע ביופיו הטבעי.",
+        "הם התפעלו מהיופי הטבעי של נוף ההרים."
+      ]
+    },
+    {
+      "word": "green technology",
+      "sentences": [
+        "Green technology aims to reduce environmental damage.",
+        "They invest in green technology to improve sustainability."
+      ],
+      "translations": [
+        "טכנולוגיה ירוקה שואפת להפחית נזק סביבתי.",
+        "הם משקיעים בטכנולוגיה ירוקה כדי לשפר את הקיימות."
+      ]
+    }
+  ]

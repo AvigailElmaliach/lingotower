@@ -8,17 +8,17 @@ public class WordDTO {
     private String sourceLanguage;
     private String targetLanguage;
     private String category;
+    private String translate; 
     
-    
-
     public WordDTO() {}
 
-    public WordDTO(String word, Difficulty difficulty, String sourceLanguage,String targetLanguage, String category) {
+    public WordDTO(String word, Difficulty difficulty, String sourceLanguage, String targetLanguage, String category, String translate) {
         this.word = word;
         this.difficulty = difficulty;
         this.sourceLanguage = sourceLanguage;
         this.targetLanguage = targetLanguage;
         this.category = category;
+        this.translate = translate; 
     }
 
     public String getWord() {
@@ -41,11 +41,10 @@ public class WordDTO {
         return sourceLanguage;
     }
 
-    public void setSourceLanguage(String SourceLanguage) {
-        this.sourceLanguage = SourceLanguage;
+    public void setSourceLanguage(String sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
     }
-    
-    
+
     public String getTargetLanguage() {
         return targetLanguage;
     }
@@ -62,8 +61,11 @@ public class WordDTO {
         this.category = category;
     }
 
+    public String getTranslate() {
+        return translate; 
+    }
 
-
-
+    public void setTranslate(String translate) {
+        this.translate = translate; 
+    }
 }
-

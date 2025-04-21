@@ -11,22 +11,26 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
-	  @Query("SELECT w FROM Word w WHERE w.category.id = :categoryId")
-	    List<Word> findByCategoryId(@Param("categoryId") Long categoryId);
-   // List<Word> findByCategory(Long categoryId);
-  //  List<Word> getCategoryById(Long categoryId);
-   // List<Word> findByCategoryId(Long categoryId);
-	  Optional<Word> findByWordAndSourceLanguage(String word, String sourceLanguage);
-    List<Word> findByCategoryIdAndDifficulty(Long categoryId, Difficulty difficulty);
-    Optional<Word> findByWord(String word);
-    List<Word> findByCategoryIdAndDifficultyAndTranslation(Long categoryId, Difficulty difficulty, String translation);
-    List<Word> findByTranslationIsNull();
-    List<Word> findByDifficulty(Difficulty difficulty);
-    List<Word> findByCategoryAndDifficulty(Category category, Difficulty difficulty);
+	@Query("SELECT w FROM Word w WHERE w.category.id = :categoryId")
+	List<Word> findByCategoryId(@Param("categoryId") Long categoryId);
 
+	Optional<Word> findByWordAndSourceLanguage(String word, String sourceLanguage);
 
+	List<Word> findByCategoryIdAndDifficulty(Long categoryId, Difficulty difficulty);
 
+	Optional<Word> findByWord(String word);
+
+	List<Word> findByCategoryIdAndDifficultyAndTranslation(Long categoryId, Difficulty difficulty, String translation);
+
+	List<Word> findByTranslationIsNull();
+
+	List<Word> findByDifficulty(Difficulty difficulty);
+
+	List<Word> findByCategoryAndDifficulty(Category category, Difficulty difficulty);
+
+	Optional<Word> findByWordAndCategory(String word, Category category);
 
 }

@@ -30,28 +30,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/words")
 public class WordController {
-    private final WordService wordService;
-    private final CategoryService categoryService;
-    private TranslationService translationService;
-    private final UserService userService;
-    private static final int DEFAULT_RANDOM_WORD_COUNT = 10;
+	private final WordService wordService;
+	private final CategoryService categoryService;
+	private TranslationService translationService;
+	private final UserService userService;
+	private static final int DEFAULT_RANDOM_WORD_COUNT = 10;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
 
+	public WordController(WordService wordService, CategoryService categoryService,
+			TranslationService translationService, UserService userService) {
+		this.wordService = wordService;
+		this.categoryService = categoryService;
+		this.translationService = translationService;
+		this.userService = userService;
+	}
 
-    public WordController(WordService wordService,CategoryService categoryService,TranslationService translationService,UserService userService) {
-        this.wordService = wordService;
-        this.categoryService=categoryService;
-        this.translationService=translationService;
-        this.userService = userService;
-    }
+	@GetMapping
+	public ResponseEntity<List<Word>> getAllWords() {
+		return ResponseEntity.ok(wordService.getAllWords());
+	}
 
-    @GetMapping
-    public ResponseEntity<List<Word>> getAllWords() {
-        return ResponseEntity.ok(wordService.getAllWords());
-    }
-   
 ///
 //    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random")
 //    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
@@ -74,79 +74,72 @@ public class WordController {
 //                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 //                : ResponseEntity.ok(randomWords);
 //    }
-   
 
-        @PutMapping("/{wordId}")
-        public ResponseEntity<Void> updateWord(
-                @PathVariable Long wordId,
-                @RequestBody WordByCategory updateDTO,
-                Principal principal) {
+	@PutMapping("/{wordId}")
+	public ResponseEntity<Void> updateWord(@PathVariable Long wordId, @RequestBody WordByCategory updateDTO,
+			Principal principal) {
 
-            String username = principal.getName();
+		String username = principal.getName();
 
-            if (updateDTO.getId() != null && !updateDTO.getId().equals(wordId)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and body ID");
-            }
+		if (updateDTO.getId() != null && !updateDTO.getId().equals(wordId)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and body ID");
+		}
 
-            wordService.updateWord(wordId, updateDTO, username);
-            return ResponseEntity.noContent().build(); // 204 No Content
-        }
+		wordService.updateWord(wordId, updateDTO, username);
+		return ResponseEntity.noContent().build();
+	}
 
-    @GetMapping("/category/{categoryId}/random")
-    public ResponseEntity<List<WordByCategory>> getRandomWordsByCategory(
-            @PathVariable Long categoryId, 
-            Principal principal) {
-        
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+	@GetMapping("/category/{categoryId}/random")
+	public ResponseEntity<List<WordByCategory>> getRandomWordsByCategory(@PathVariable Long categoryId,
+			Principal principal) {
 
-        String userLanguage = user.getTargetLanguage();
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 
-        List<WordByCategory> randomWords = wordService.getRandomWordsByCategory(categoryId, userLanguage);
-        
-        return randomWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(randomWords);
-    }
+		String userLanguage = user.getTargetLanguage();
 
-    @GetMapping("/difficulty/{difficulty}/random")
-    public ResponseEntity<List<WordByCategory>> getRandomWordsByDifficulty(
-            @PathVariable Difficulty difficulty, 
-            Principal principal) {
-        
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+		List<WordByCategory> randomWords = wordService.getRandomWordsByCategory(categoryId, userLanguage);
 
-        String userLanguage = user.getTargetLanguage();
+		return randomWords.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+				: ResponseEntity.ok(randomWords);
+	}
 
-        List<WordByCategory> randomWords = wordService.getRandomWordsByDifficulty(difficulty, userLanguage);
-        
-        return randomWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(randomWords);
-    }
+	@GetMapping("/difficulty/{difficulty}/random")
+	public ResponseEntity<List<WordByCategory>> getRandomWordsByDifficulty(@PathVariable Difficulty difficulty,
+			Principal principal) {
 
-    @GetMapping("/random")
-    public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsForAllCategoriesAndDifficulties(
-            Principal principal) {
-        
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 
-        String userLanguage = user.getTargetLanguage();
+		String userLanguage = user.getTargetLanguage();
 
-        List<WordByCategory> randomWords = wordService.getRandomTranslatedWordsForAllCategoriesAndDifficulties(userLanguage);
-        
-        return randomWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(randomWords);
-    }
+		List<WordByCategory> randomWords = wordService.getRandomWordsByDifficulty(difficulty, userLanguage);
+
+		return randomWords.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+				: ResponseEntity.ok(randomWords);
+	}
+
+	@GetMapping("/random")
+	public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsForAllCategoriesAndDifficulties(
+			Principal principal) {
+
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		String userLanguage = user.getTargetLanguage();
+
+		List<WordByCategory> randomWords = wordService
+				.getRandomTranslatedWordsForAllCategoriesAndDifficulties(userLanguage);
+
+		return randomWords.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+				: ResponseEntity.ok(randomWords);
+	}
 ///
 
 // // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
@@ -169,140 +162,136 @@ public class WordController {
 //                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 //                : ResponseEntity.ok(translatedWords);
 //    }
-    @GetMapping("/category/{categoryId}/translate")
-    public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategory(
-            @PathVariable Long categoryId,
-            Principal principal) {
+	@GetMapping("/category/{categoryId}/translate")
+	public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategory(@PathVariable Long categoryId,
+			Principal principal) {
 
-    String username = principal.getName();
+		String username = principal.getName();
 
-        
-        List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
+		List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, username);
 
-        return translatedWords.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-                : ResponseEntity.ok(translatedWords);
-    }
+		return translatedWords.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+				: ResponseEntity.ok(translatedWords);
+	}
 
+	// שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
+	@GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
+	public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategoryAndDifficulty(@PathVariable Long categoryId,
+			@PathVariable Difficulty difficulty, Principal principal) {
+		// קבלת פרטי המשתמש והעברית או אנגלית
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		String userLanguage = user.getTargetLanguage();
 
-    
-    // שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
-    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
-    public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategoryAndDifficulty(
-            @PathVariable Long categoryId,
-            @PathVariable Difficulty difficulty,
-            Principal principal) {
-        // קבלת פרטי המשתמש והעברית או אנגלית
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String userLanguage = user.getTargetLanguage();
+		List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId,
+				difficulty, userLanguage);
 
-        List<WordByCategory> translatedWords = wordService.getTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
-        
-        return ResponseEntity.ok(translatedWords);
-    }
- // שיטה להחזרת מילים אקראיות לפי קטגוריה, רמת קושי ושפת המשתמש
-    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random/translate")
-    public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsByCategoryAndDifficulty(
-            @PathVariable Long categoryId,
-            @PathVariable Difficulty difficulty,
-            Principal principal) {
+		return ResponseEntity.ok(translatedWords);
+	}
 
-        User user = userService.getUserByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String userLanguage = user.getTargetLanguage();
+	// שיטה להחזרת מילים אקראיות לפי קטגוריה, רמת קושי ושפת המשתמש
+	@GetMapping("/category/{categoryId}/difficulty/{difficulty}/random/translate")
+	public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsByCategoryAndDifficulty(
+			@PathVariable Long categoryId, @PathVariable Difficulty difficulty, Principal principal) {
 
-        List<WordByCategory> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
-        
-        return ResponseEntity.ok(translatedWords);
-    }
-   
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		String userLanguage = user.getTargetLanguage();
 
-    @GetMapping("/{id}/translate")
-    public ResponseEntity<WordByCategory> getTranslatedWordById(
-            @PathVariable Long id,
-            @RequestParam String targetLang) {
-        try {
-        	WordByCategory translatedWord = wordService.getTranslatedWordById(id, targetLang);
-            return ResponseEntity.ok(translatedWord);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
+		List<WordByCategory> translatedWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId,
+				difficulty, userLanguage);
 
-    @PostMapping("/add")
-    public ResponseEntity<Void> addWordWithTranslation(///כרגע פונקציה מיותרת
-            @RequestBody WordDTO wordDTO,
-            @RequestParam String targetLang) {
-        wordService.addWordWithTranslation(wordDTO, targetLang);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+		return ResponseEntity.ok(translatedWords);
+	}
 
-    @DeleteMapping("/deleteAll")
-    public ResponseEntity<String> deleteAllWords() {
-        try {
-            wordService.deleteAllWords();
-            return ResponseEntity.ok("כל המילים נמחקו בהצלחה");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("שגיאה במחיקת המילים: " + e.getMessage());
-        }
-    }
-   
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadWords(@RequestParam("category") String categoryName,
-                                              @RequestParam("file") MultipartFile file) {
-        try {
-        	System.out.println("Category: " + categoryName);  
-            System.out.println("File name: " + file.getOriginalFilename());  
+	@GetMapping("/{id}/translate")
+	public ResponseEntity<WordByCategory> getTranslatedWordById(@PathVariable Long id,
+			@RequestParam String targetLang) {
+		try {
+			WordByCategory translatedWord = wordService.getTranslatedWordById(id, targetLang);
+			return ResponseEntity.ok(translatedWord);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
 
-            Category category = categoryService.getOrCreateCategory(categoryName);
-            List<Word> words = file.getOriginalFilename().endsWith(".csv") ?
-                               parseCsv(file, category) : parseJson(file, category);
-            
-            wordService.saveWords(words);
-            return ResponseEntity.ok("המילים נוספו בהצלחה");
-        } catch (Exception e) {
-        	e.printStackTrace();  
-            return ResponseEntity.badRequest().body("שגיאהעעעע: " + e.getMessage());
-        }
-    }
-    private List<Word> parseJson(MultipartFile file, Category category) throws Exception {
-        Word[] wordsArray = objectMapper.readValue(file.getInputStream(), Word[].class);
-        for (Word word : wordsArray) {
-            word.setCategory(category);  
-            word.setTranslation(translationService.translateText(word.getWord(), word.getSourceLanguage(), word.getTargetLanguage()));
-        }
-        return List.of(wordsArray);
-    }
-    private List<Word> parseCsv(MultipartFile file, Category category) throws Exception {
-        List<Word> words = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length < 4) continue;
+	@PostMapping("/add")
+	public ResponseEntity<Void> addWordWithTranslation(/// כרגע פונקציה מיותרת
+			@RequestBody WordDTO wordDTO, @RequestParam String targetLang) {
+		wordService.addWordWithTranslation(wordDTO, targetLang);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
 
-            String wordText = parts[0].trim();
-            String sourceLang = parts[1].trim();
-            String targetLang = parts[2].trim();
-            Difficulty difficulty = Difficulty.valueOf(parts[3].trim().toUpperCase());
-            String translation = translationService.translateText(wordText, sourceLang, targetLang);
+	@DeleteMapping("/deleteAll")
+	public ResponseEntity<String> deleteAllWords() {
+		try {
+			wordService.deleteAllWords();
+			return ResponseEntity.ok("כל המילים נמחקו בהצלחה");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("שגיאה במחיקת המילים: " + e.getMessage());
+		}
+	}
 
-            words.add(new Word(null, wordText, translation, sourceLang, targetLang, difficulty, category));
-        }
-        return words;
-    }
-    @GetMapping("/daily")
-    public ResponseEntity<WordByCategory> getDailyWord(Principal principal) {
-        String username = principal.getName(); 
-        WordByCategory word = wordService.getDailyWord(username);
-        return ResponseEntity.ok(word);
-    }
+	@PostMapping("/upload")
+	public ResponseEntity<String> uploadWords(@RequestParam("category") String categoryName,
+			@RequestParam("file") MultipartFile file) {
+		try {
+			System.out.println("Category: " + categoryName);
+			System.out.println("File name: " + file.getOriginalFilename());
 
- 
+			Category category = categoryService.getOrCreateCategory(categoryName);
+			List<Word> words = file.getOriginalFilename().endsWith(".csv") ? parseCsv(file, category)
+					: parseJson(file, category);
+
+			wordService.saveWords(words);
+			return ResponseEntity.ok("המילים נוספו בהצלחה");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("שגיאהעעעע: " + e.getMessage());
+		}
+	}
+
+	private List<Word> parseJson(MultipartFile file, Category category) throws Exception {
+		Word[] wordsArray = objectMapper.readValue(file.getInputStream(), Word[].class);
+		for (Word word : wordsArray) {
+			word.setCategory(category);
+			word.setTranslation(translationService.translateText(word.getWord(), word.getSourceLanguage(),
+					word.getTargetLanguage()));
+		}
+		return List.of(wordsArray);
+	}
+
+	private List<Word> parseCsv(MultipartFile file, Category category) throws Exception {
+		List<Word> words = new ArrayList<>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String[] parts = line.split(",");
+			if (parts.length < 4)
+				continue;
+
+			String wordText = parts[0].trim();
+			String sourceLang = parts[1].trim();
+			String targetLang = parts[2].trim();
+			Difficulty difficulty = Difficulty.valueOf(parts[3].trim().toUpperCase());
+			String translation = translationService.translateText(wordText, sourceLang, targetLang);
+
+			words.add(new Word(null, wordText, translation, sourceLang, targetLang, difficulty, category));
+		}
+		return words;
+	}
+
+	@GetMapping("/daily")
+	public ResponseEntity<WordByCategory> getDailyWord(Principal principal) {
+		String username = principal.getName();
+		WordByCategory word = wordService.getDailyWord(username);
+		return ResponseEntity.ok(word);
+	}
+
 }

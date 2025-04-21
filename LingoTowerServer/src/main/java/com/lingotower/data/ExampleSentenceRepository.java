@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ExampleSentenceRepository extends JpaRepository<ExampleSentence, Long> {
 	List<ExampleSentence> findByWord(Word word);
+	List<ExampleSentence> findByTranslatedTextIsNull();
 
 }
