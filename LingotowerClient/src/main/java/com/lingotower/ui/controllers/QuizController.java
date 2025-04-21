@@ -1,7 +1,9 @@
 package com.lingotower.ui.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
@@ -399,6 +401,7 @@ public class QuizController {
 		// Get category and difficulty from the quiz
 		Long categoryId = quiz.getCategory().getId();
 		String categoryName = quiz.getCategory().getName();
+		String categoryTranslation = quiz.getCategory().getTranslation(); // Hebrew name if available
 		String difficulty = quiz.getDifficulty().toString();
 		String quizName = quiz.getName();
 
@@ -416,15 +419,32 @@ public class QuizController {
 
 		try {
 			List<Question> generatedQuestions = null;
-
-			// Check if this is a sentence completion quiz or a regular quiz
 			boolean isSentenceCompletionQuiz = quizName.startsWith("Sentence Completion");
 
 			if (isSentenceCompletionQuiz) {
-				// Generate sentence completion questions
-				logger.info("Starting sentence completion quiz with category: {}, difficulty: {}", categoryName,
-						difficulty);
-				List<SentenceCompletionDTO> sentences = quizService.generateSentenceCompletions(categoryName,
+				// Determine which category name to use for the API call
+				String apiCategoryName = categoryName;
+				String displayCategoryName = categoryName;
+
+				// If the category name is in Hebrew
+				if (containsHebrew(categoryName)) {
+					logger.info("Category name is in Hebrew, mapping to English for API call");
+					apiCategoryName = mapCategoryName(categoryName, true);
+					displayCategoryName = categoryName; // Keep Hebrew for display
+				} else {
+					// Category is in English already, good for API
+					// But get Hebrew for display if we're in Hebrew UI
+					String hebrewName = mapCategoryName(categoryName, false);
+					if (!hebrewName.equals(categoryName) && containsHebrew(hebrewName)) {
+						displayCategoryName = hebrewName;
+					}
+				}
+
+				// Generate sentence completion questions using the appropriate category name
+				logger.info("Starting sentence completion quiz with API category name: '{}', difficulty: {}",
+						apiCategoryName, difficulty);
+
+				List<SentenceCompletionDTO> sentences = quizService.generateSentenceCompletions(apiCategoryName,
 						difficulty);
 
 				if (sentences != null && !sentences.isEmpty()) {
@@ -433,7 +453,7 @@ public class QuizController {
 				} else {
 					logger.warn("Failed to get sentence completion questions. Using fallback method...");
 					// FALLBACK: Create sample sentence completion questions
-					generatedQuestions = createFallbackSentenceQuestions(categoryName, difficulty);
+					generatedQuestions = createFallbackSentenceQuestions(displayCategoryName, difficulty);
 
 					// Show a warning to the user that these are fallback questions
 					Platform.runLater(() -> {
@@ -442,15 +462,21 @@ public class QuizController {
 					});
 				}
 
-				// Set the quiz name
-				quizName = COMPLETION_PREFIX + categoryName + " (" + difficulty + ")";
+				// Set the quiz name using the display category name (could be Hebrew)
+				quizName = COMPLETION_PREFIX + displayCategoryName + " (" + difficulty + ")";
 			} else {
 				// Generate regular quiz questions
 				logger.info("Starting regular quiz with categoryId: {}, difficulty: {}", categoryId, difficulty);
+
 				generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
 
-				// Set the quiz name
-				quizName = QUIZ_PREFIX + categoryName + " (" + difficulty + ")";
+				// Set the quiz name - use translation if available and we're in Hebrew mode
+				if (categoryTranslation != null && !categoryTranslation.isEmpty()
+						&& containsHebrew(categoryTranslation)) {
+					quizName = QUIZ_PREFIX + categoryTranslation + " (" + difficulty + ")";
+				} else {
+					quizName = QUIZ_PREFIX + categoryName + " (" + difficulty + ")";
+				}
 			}
 
 			// Process generated questions
@@ -673,7 +699,6 @@ public class QuizController {
 			String completedSentence = getCompleteSentence(question.getQuestionText(), selectedAnswer);
 			// Set a different color based on correctness
 			if (isCorrect) {
-				correctAnswersCount++;
 				questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
 			} else {
 				questionText.setStyle(STYLE_TEXT_FILL_RED); // Red for incorrect
@@ -816,6 +841,90 @@ public class QuizController {
 	private void handleBackToQuizzesClick(ActionEvent event) {
 		summaryContent.setVisible(false);
 		welcomeContent.setVisible(true);
+	}
+
+	/**
+	 * Checks if a string contains Hebrew characters.
+	 * 
+	 * @param text The text to check
+	 * @return True if the text contains Hebrew characters, false otherwise
+	 */
+	private boolean containsHebrew(String text) {
+		if (text == null || text.isEmpty()) {
+			return false;
+		}
+
+		// Check if any character in the string belongs to the Hebrew Unicode block
+		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
+	}
+
+	/**
+	 * Maps between Hebrew and English category names. This function handles the
+	 * conversion in both directions.
+	 * 
+	 * @param categoryName The category name to map (could be Hebrew or English)
+	 * @param toEnglish    True if converting from Hebrew to English, false for
+	 *                     English to Hebrew
+	 * @return The mapped category name or the original if no mapping is found
+	 */
+	private String mapCategoryName(String categoryName, boolean toEnglish) {
+		// Hard-coded mappings based on your application's categories
+		Map<String, String> hebrewToEnglishMap = new HashMap<>();
+
+		// Populate with known mappings
+		hebrewToEnglishMap.put("חיי יום-יום ואוצר מילים בסיסי", "Everyday Life and Essential Vocabulary");
+		hebrewToEnglishMap.put("אנשים ויחסים", "People and Relationships");
+		hebrewToEnglishMap.put("עבודה וחינוך", "Work and Education");
+		hebrewToEnglishMap.put("בריאות ורווחה", "Health and Well-being");
+		hebrewToEnglishMap.put("נסיעות ופנאי", "Travel and Leisure");
+		hebrewToEnglishMap.put("סביבה וטבע", "Environment and Nature");
+
+		// First, try the direct mapping
+		if (toEnglish) {
+			if (hebrewToEnglishMap.containsKey(categoryName)) {
+				String englishName = hebrewToEnglishMap.get(categoryName);
+				logger.debug("Mapped Hebrew '{}' to English '{}'", categoryName, englishName);
+				return englishName;
+			}
+		} else {
+			// Find the Hebrew equivalent of an English name
+			for (Map.Entry<String, String> entry : hebrewToEnglishMap.entrySet()) {
+				if (entry.getValue().equals(categoryName)) {
+					String hebrewName = entry.getKey();
+					logger.debug("Mapped English '{}' to Hebrew '{}'", categoryName, hebrewName);
+					return hebrewName;
+				}
+			}
+		}
+
+		// If direct mapping failed, try to find it in the categories list
+		try {
+			List<Category> allCategories = categoryService.getAllCategories();
+
+			for (Category cat : allCategories) {
+				if (toEnglish) {
+					// Looking for Hebrew -> English
+					if (cat.getTranslation() != null && cat.getTranslation().equals(categoryName)) {
+						logger.debug("Found category mapping: Hebrew '{}' to English '{}'", categoryName,
+								cat.getName());
+						return cat.getName();
+					}
+				} else {
+					// Looking for English -> Hebrew
+					if (cat.getName().equals(categoryName) && cat.getTranslation() != null) {
+						logger.debug("Found category mapping: English '{}' to Hebrew '{}'", categoryName,
+								cat.getTranslation());
+						return cat.getTranslation();
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error while trying to map category name: {}", e.getMessage());
+		}
+
+		// Return original if no mapping found
+		logger.warn("No mapping found for category name: {}", categoryName);
+		return categoryName;
 	}
 
 	// Public method to manually refresh quizzes if needed

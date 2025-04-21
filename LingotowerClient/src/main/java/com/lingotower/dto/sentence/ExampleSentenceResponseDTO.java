@@ -14,6 +14,7 @@ public class ExampleSentenceResponseDTO {
 
 	private String word; // The word for which sentences were requested
 	private List<String> sentences; // The list of example sentences
+	private List<String> translations;
 
 	// Getters and Setters
 
@@ -52,4 +53,13 @@ public class ExampleSentenceResponseDTO {
 	public void setSentences(List<String> sentences) {
 		this.sentences = sentences;
 	}
+
+	public List<String> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(List<String> translations) {
+		this.translations = translations;
+	}
+
 }

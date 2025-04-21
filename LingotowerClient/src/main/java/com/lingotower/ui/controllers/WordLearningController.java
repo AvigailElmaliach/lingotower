@@ -238,6 +238,7 @@ public class WordLearningController {
 			examplesUsageLabel.setVisible(true);
 			return;
 		}
+
 		Word currentWord = words.get(currentWordIndex);
 		// --- Check if word object or word text is null/blank ---
 		if (currentWord == null || currentWord.getWord() == null || currentWord.getWord().isBlank()) {
@@ -246,33 +247,44 @@ public class WordLearningController {
 			examplesUsageLabel.setVisible(true);
 			return;
 		}
-		String wordText = currentWord.getWord(); // --- Use word text ---
+
+		// Determine which word to send to the service (English word)
+		String wordToLookup;
+
+		// If the current word is in Hebrew, we need to use its translation (English)
+		if (containsHebrew(currentWord.getWord())) {
+			// Use the translated text (English) for lookup
+			if (currentWord.getTranslatedText() != null && !currentWord.getTranslatedText().isBlank()) {
+				wordToLookup = currentWord.getTranslatedText();
+				logger.debug("Using English translation '{}' to lookup examples for Hebrew word '{}'", wordToLookup,
+						currentWord.getWord());
+			} else {
+				logger.warn("Hebrew word has no English translation: {}", currentWord.getWord());
+				examplesUsageLabel.setText("Cannot fetch examples: Missing English translation.");
+				examplesUsageLabel.setVisible(true);
+				return;
+			}
+		} else {
+			// If it's already English, use the word directly
+			wordToLookup = currentWord.getWord();
+		}
 
 		examplesUsageLabel.setText("Loading examples..."); // Provide feedback while loading
 		examplesUsageLabel.setVisible(true);
 		showExamplesButton.setDisable(true); // Disable button immediately
 
 		try {
-			// --- Fetch Examples using the Service with WORD TEXT ---
-			logger.debug("Fetching examples for word: {}", wordText); // --- Call the actual service method with String
-																		// ---
-			List<String> examples = exampleSentencesService.getExampleSentences(wordText);
+			// --- Fetch Examples using the Service with the ENGLISH word ---
+			logger.debug("Fetching examples for word: {}", wordToLookup);
+			List<String> examples = exampleSentencesService.getExampleSentences(wordToLookup);
 
 			if (examples != null && !examples.isEmpty()) {
 				// --- Check if the returned list contains a specific info/error message from
 				// the service ---
 				String firstLine = examples.get(0);
-				boolean isInfoMessage = examples.size() == 1
-						&& (firstLine.startsWith("No example sentences") || firstLine.startsWith("Error") || // Catches
-																												// "Error
-																												// connecting..."
-																												// and
-																												// "An
-																												// unexpected
-																												// error..."
-								firstLine.startsWith("Authentication error") || firstLine.startsWith("HTTP Error")
-								|| firstLine.startsWith("No word provided")); // Check for messages defined in the
-																				// service
+				boolean isInfoMessage = examples.size() == 1 && (firstLine.startsWith("No example sentences")
+						|| firstLine.startsWith("Error") || firstLine.startsWith("Authentication error")
+						|| firstLine.startsWith("HTTP Error") || firstLine.startsWith("No word provided"));
 
 				if (isInfoMessage) {
 					examplesUsageLabel.setText(firstLine); // Display the message directly from the service
@@ -280,8 +292,7 @@ public class WordLearningController {
 				} else {
 					// Format the actual examples (assuming the list contains real sentences)
 					String examplesText = examples.stream().filter(s -> s != null && !s.isBlank()) // Filter out null or
-																									// blank lines just
-																									// in case
+																									// blank lines
 							.map(s -> "- " + s) // Add a bullet point
 							.collect(Collectors.joining("\n")); // Join with newlines
 
@@ -291,8 +302,9 @@ public class WordLearningController {
 						examplesUsageLabel.setText("No valid examples found for this word.");
 					} else {
 						examplesUsageLabel.setText(examplesText);
-						logger.debug("Displayed {} example sentences.", examples.size()); // --- Set RTL if examples
-																							// contain Hebrew ---
+						logger.debug("Displayed {} example sentences.", examples.size());
+
+						// --- Set RTL if examples contain Hebrew ---
 						if (containsHebrew(examplesUsageLabel.getText())) {
 							examplesUsageLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 						} else {
@@ -301,17 +313,15 @@ public class WordLearningController {
 					}
 				}
 			} else {
-				// This case means the service returned null or an empty list, which shouldn't
-				// happen based on its code, but good to handle defensively.
+				// This case means the service returned null or an empty list
 				examplesUsageLabel.setText("No examples returned for this word.");
-				logger.warn("Service returned null or empty list for word: {}", wordText);
+				logger.warn("Service returned null or empty list for word: {}", wordToLookup);
 			}
-			// --- End Fetch Examples ---
 
 		} catch (Exception e) {
 			// Catch any truly unexpected exceptions from the service call itself
-			logger.error("Unexpected error calling ExampleSentencesService for word '{}': {}", wordText, e.getMessage(),
-					e);
+			logger.error("Unexpected error calling ExampleSentencesService for word '{}': {}", wordToLookup,
+					e.getMessage(), e);
 			e.printStackTrace(); // Log the full stack trace for debugging
 			examplesUsageLabel.setText("System error loading examples."); // Show a generic error
 		}

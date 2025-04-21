@@ -214,21 +214,41 @@ public class DailyWordController {
 		}
 
 		try {
-			logger.debug("Fetching example sentences for: {}", word);
-			List<String> examples = exampleSentencesService.getExampleSentences(word);
+			// For simplicity, since this method only receives a String word, not a Word
+			// object,
+			// we'll need to handle translations differently
 
+			// Determine which word to use for lookup
+			String wordToLookup = word;
+
+			// If we're in the DailyWordController and have access to the dailyWord object
+			if (containsHebrew(word) && dailyWord != null) {
+				// If the current daily word matches our input and has a translation
+				if (dailyWord.getWord().equals(word) && dailyWord.getTranslatedText() != null
+						&& !dailyWord.getTranslatedText().isBlank()) {
+
+					wordToLookup = dailyWord.getTranslatedText();
+					logger.debug("Using English translation '{}' for Hebrew word '{}'", wordToLookup, word);
+				} else {
+					logger.warn("Hebrew word has no English translation: {}", word);
+					return "Cannot fetch examples: Missing English translation.";
+				}
+			}
+
+			logger.debug("Fetching example sentences for: {}", wordToLookup);
+			List<String> examples = exampleSentencesService.getExampleSentences(wordToLookup);
+
+			// Rest of your existing code to process the examples...
 			// Check if the list itself is null or empty
 			if (examples == null || examples.isEmpty()) {
-				logger.debug("No examples list returned or list is empty for: {}", word);
+				logger.debug("No examples list returned or list is empty for: {}", wordToLookup);
 				return "No examples available."; // Return default message
 			}
 
-			// Check if the first element indicates an error or default message from the
-			// service
+			// Check if the first element indicates an error or default message
 			String firstExample = examples.get(0);
 			if (firstExample.startsWith("No example sentences available") || firstExample.startsWith("Error fetching")
-					|| firstExample.startsWith("HTTP Error") || // Add other potential error prefixes from the service
-					firstExample.startsWith("Authentication error")
+					|| firstExample.startsWith("HTTP Error") || firstExample.startsWith("Authentication error")
 					|| firstExample.startsWith("An unexpected error occurred")) {
 
 				logger.debug("Service returned specific message: {}", firstExample);
@@ -237,11 +257,12 @@ public class DailyWordController {
 
 			// We have at least one valid sentence
 			logger.debug("Found first example: {}", firstExample);
+
 			// Check if there is a second sentence
 			if (examples.size() >= 2) {
 				String secondExample = examples.get(1);
-				logger.debug("Found second example: " + secondExample); // Return the first two sentences joined
-																		// by a newline
+				logger.debug("Found second example: {}", secondExample);
+				// Return the first two sentences joined by a newline
 				return firstExample + "\n" + secondExample;
 			} else {
 				// Only one sentence available, return just the first one
@@ -297,6 +318,21 @@ public class DailyWordController {
 			e.printStackTrace();
 			displayError("An error occurred. Please try again.");
 		}
+	}
+
+	/**
+	 * Checks if a string contains Hebrew characters.
+	 * 
+	 * @param text The text to check
+	 * @return True if the text contains Hebrew characters, false otherwise
+	 */
+	private boolean containsHebrew(String text) {
+		if (text == null || text.isEmpty()) {
+			return false;
+		}
+
+		// Check if any character in the string belongs to the Hebrew Unicode block
+		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
 	}
 
 }
