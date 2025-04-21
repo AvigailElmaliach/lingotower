@@ -11,12 +11,13 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lingotower.dto.category.CategoryDTO;
 import com.lingotower.model.Category;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.TranslationService;
 
 @Component
-@Order(1) // מבטיח שהקטגוריות נטענות ראשונות
+@Order(1)
 public class CategoryDataInitializer implements CommandLineRunner {
 
     @Autowired
@@ -32,46 +33,57 @@ public class CategoryDataInitializer implements CommandLineRunner {
     private TranslationService translationService;
 
     @Override
-    public void run(String... args) throws Exception {
-        System.out.println("אתחול קטגוריות...");
+    public void run(String... args) {
         loadCategoriesFromJson("classpath:category.json");
-        System.out.println("אתחול קטגוריות הסתיים.");
     }
 
     private void loadCategoriesFromJson(String resourcePath) {
         try {
-            System.out.println(" 📂 טוען קטגוריות מהקובץ: " + resourcePath);
-            Resource resource = resourceLoader.getResource(resourcePath);
-
-            if (resource.exists()) {
-                Category[] categories = objectMapper.readValue(resource.getInputStream(), Category[].class);
-                System.out.println("נטענו " + categories.length + " קטגוריות מהקובץ");
-
-                for (Category categoryFromJson : categories) {
-                    String categoryName = categoryFromJson.getName();
-                    Optional<Category> existingCategory = categoryService.findByName(categoryName);
-
-                    if (existingCategory.isPresent()) {
-                        System.out.println("   קטגוריה '" + categoryName + "' כבר קיימת (ID: " + existingCategory.get().getId() + ")");
-                    } else {
-                        Category newCategory = new Category();
-                        newCategory.setName(categoryName);
-                        String translatedCategoryName = translationService.translateText(categoryName, "en", "he");
-                        newCategory.setTranslation(translatedCategoryName);
-
-                        try {
-                            Category savedCategory = categoryService.addCategory(newCategory);
-                            System.out.println("קטגוריה '" + categoryName + "' נוספה (ID: " + savedCategory.getId() + ")");
-                        } catch (Exception e) {
-                            System.err.println("שגיאה בהוספת קטגוריה '" + categoryName + "': " + e.getMessage());
-                        }
-                    }
-                }
-            } else {
-                System.out.println("קובץ קטגוריות לא נמצא: " + resourcePath);
+            Resource resource = getResource(resourcePath);
+            if (resource == null || !resource.exists()) {
+                System.out.println("Category file not found: " + resourcePath);
+                return;
             }
+
+            CategoryDTO[] categoryDtos = parseJsonToCategoryDTO(resource);
+            processCategories(categoryDtos);
+
         } catch (IOException e) {
-            System.err.println("  שגיאה בטעינת קטגוריות: " + e.getMessage());
+            System.err.println("Error loading categories: " + e.getMessage());
         }
+    }
+
+    private Resource getResource(String resourcePath) {
+        return resourceLoader.getResource(resourcePath);
+    }
+
+    private CategoryDTO[] parseJsonToCategoryDTO(Resource resource) throws IOException {
+        return objectMapper.readValue(resource.getInputStream(), CategoryDTO[].class);
+    }
+
+    private void processCategories(CategoryDTO[] categoryDtos) {
+        for (CategoryDTO dto : categoryDtos) {
+            String name = dto.getName();
+            String translation = dto.getTranslation();
+
+            Optional<Category> existingCategory = categoryService.findByName(name);
+
+            if (existingCategory.isEmpty()) {
+                Category newCategory = createCategory(name, translation);
+                categoryService.addCategory(newCategory);
+            }
+        }
+    }
+
+    private Category createCategory(String name, String translation) {
+        Category newCategory = new Category();
+        newCategory.setName(name);
+
+        if (translation == null || translation.trim().isEmpty()) {
+            translation = translationService.translateText(name, "en", "he");
+        }
+
+        newCategory.setTranslation(translation);
+        return newCategory;
     }
 }

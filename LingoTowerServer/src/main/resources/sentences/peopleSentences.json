@@ -1,534 +1,914 @@
 [
   {
     "word": "family",
-    "exampleSentences": [
+
+    "sentences": [
       "I love spending time with my family.",
       "Family is very important to me."
+    ],
+    "translations": [
+      "אני אוהב לבלות זמן עם המשפחה שלי.",
+      "משפחה מאוד חשובה לי."
     ]
   },
   {
     "word": "friend",
-    "exampleSentences": [
+   
+    "sentences": [
       "She is my best friend.",
       "I'm meeting a friend for coffee."
+    ],
+    "translations": [
+      "היא החברה הכי טובה שלי.",
+      "אני נפגש עם חבר לקפה."
     ]
   },
   {
     "word": "mother",
-    "exampleSentences": [
+   
+    "sentences": [
       "My mother is a wonderful person.",
       "I called my mother to tell her the news."
+    ],
+    "translations": [
+      "אמא שלי היא אדם נפלא.",
+      "התקשרתי לאמא שלי לספר לה את החדשות."
     ]
   },
   {
     "word": "father",
-    "exampleSentences": [
+   
+    "sentences": [
       "My father taught me many things.",
       "I went fishing with my father last weekend."
+    ],
+    "translations": [
+      "אבא שלי לימד אותי דברים רבים.",
+      "הלכתי לדוג עם אבא שלי בסוף השבוע שעבר."
     ]
   },
   {
     "word": "brother",
-    "exampleSentences": [
+   
+    "sentences": [
       "I have an older brother.",
       "My brother is coming to visit."
+    ],
+    "translations": [
+      "יש לי אח גדול.",
+      "אחי בא לבקר."
     ]
   },
   {
     "word": "sister",
-    "exampleSentences": [
+    
+    "sentences": [
       "She has a younger sister.",
       "My sister and I are very close."
+    ],
+    "translations": [
+      "יש לה אחות קטנה.",
+      "אחותי ואני מאוד קרובות."
     ]
   },
   {
     "word": "husband",
-    "exampleSentences": [
+   
+    "sentences": [
       "She loves her husband very much.",
       "My husband is a great cook."
+    ],
+    "translations": [
+      "היא אוהבת את בעלה מאוד.",
+      "בעלי הוא טבח נהדר."
     ]
   },
   {
     "word": "wife",
-    "exampleSentences": [
+   
+    "sentences": [
       "He is very proud of his wife.",
       "My wife and I enjoy traveling together."
+    ],
+    "translations": [
+      "הוא מאוד גאה באשתו.",
+      "אשתי ואני נהנים לטייל ביחד."
     ]
   },
   {
     "word": "son",
-    "exampleSentences": [
+
+    "sentences": [
       "They have a beautiful son.",
       "He is a proud father of his son."
+    ],
+    "translations": [
+      "יש להם בן יפה.",
+      "הוא אב גאה לבנו."
     ]
   },
   {
     "word": "daughter",
-    "exampleSentences": [
+
+    "sentences": [
       "She has a lovely daughter.",
       "They are very proud of their daughter."
+    ],
+    "translations": [
+      "יש לה בת מקסימה.",
+      "הם מאוד גאים בבת שלהם."
     ]
   },
   {
     "word": "friendship",
-    "exampleSentences": [
+   
+    "sentences": [
       "Friendship is a valuable thing.",
       "Their friendship has lasted for many years."
+    ],
+    "translations": [
+      "ידידות היא דבר בעל ערך.",
+      "הידידות שלהם נמשכה שנים רבות."
     ]
   },
   {
     "word": "love",
-    "exampleSentences": [
+  
+    "sentences": [
       "Love makes the world go round.",
       "They share a deep love for each other."
+    ],
+    "translations": [
+      "אהבה מסובבת את העולם.",
+      "הם חולקים אהבה עמוקה זה לזה."
     ]
   },
   {
     "word": "partner",
-    "exampleSentences": [
+   
+    "sentences": [
       "She is my life partner.",
       "They work together as business partners."
+    ],
+    "translations": [
+      "היא שותפתי לחיים.",
+      "הם עובדים יחד כשותפים עסקיים."
     ]
   },
   {
     "word": "relationship",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Communication is key to a healthy relationship.",
       "They have a strong and loving relationship."
+    ],
+    "translations": [
+      "תקשורת היא המפתח למערכת יחסים בריאה.",
+      "יש להם מערכת יחסים חזקה ואוהבת."
     ]
   },
   {
     "word": "child",
-    "exampleSentences": [
+   
+    "sentences": [
       "The child was playing happily.",
       "Parents are responsible for their child's upbringing."
+    ],
+    "translations": [
+      "הילד שיחק בשמחה.",
+      "הורים אחראים לגידול ילדיהם."
     ]
   },
   {
     "word": "parents",
-    "exampleSentences": [
+  
+    "sentences": [
       "My parents are very supportive.",
       "They are loving parents to their children."
+    ],
+    "translations": [
+      "ההורים שלי מאוד תומכים.",
+      "הם הורים אוהבים לילדיהם."
     ]
   },
   {
     "word": "grandfather",
-    "exampleSentences": [
+  
+    "sentences": [
       "My grandfather tells great stories.",
       "I enjoy visiting my grandfather."
+    ],
+    "translations": [
+      "סבא שלי מספר סיפורים נהדרים.",
+      "אני נהנה לבקר את סבא שלי."
     ]
   },
   {
     "word": "grandmother",
-    "exampleSentences": [
+  
+    "sentences": [
       "My grandmother is a wonderful cook.",
       "We spent the holiday with our grandmother."
+    ],
+    "translations": [
+      "סבתא שלי היא טבחית נהדרת.",
+      "בילינו את החג עם סבתא שלנו."
     ]
   },
   {
     "word": "uncle",
-    "exampleSentences": [
+ 
+    "sentences": [
       "My uncle lives in another city.",
       "We went to visit my uncle and aunt."
+    ],
+    "translations": [
+      "דוד שלי גר בעיר אחרת.",
+      "נסענו לבקר את דודי ודודתי."
     ]
   },
   {
     "word": "aunt",
-    "exampleSentences": [
+  
+    "sentences": [
       "My aunt always gives good advice.",
       "I have several aunts on my mother's side."
+    ],
+    "translations": [
+      "דודתי תמיד נותנת עצות טובות.",
+      "יש לי כמה דודות מצד אמא שלי."
     ]
   },
   {
     "word": "nephew",
-    "exampleSentences": [
+ 
+    "sentences": [
       "My sister has a new baby nephew.",
       "I enjoy playing with my nephew."
+    ],
+    "translations": [
+      "לאחותי יש אחיין תינוק חדש.",
+      "אני נהנה לשחק עם האחיין שלי."
     ]
   },
   {
     "word": "niece",
-    "exampleSentences": [
+  
+    "sentences": [
       "My brother has a lovely niece.",
       "I bought a gift for my niece."
+    ],
+    "translations": [
+      "לאחי יש אחיינית מקסימה.",
+      "קניתי מתנה לאחיינית שלי."
     ]
   },
   {
     "word": "cousin",
-    "exampleSentences": [
+   
+    "sentences": [
       "I have many cousins.",
       "We had a family reunion with all our cousins."
+    ],
+    "translations": [
+      "יש לי בני דודים רבים.",
+      "הייתה לנו פגישת מחזור משפחתית עם כל בני הדודים שלנו."
     ]
   },
   {
     "word": "friendliness",
-    "exampleSentences": [
+
+    "sentences": [
       "Her friendliness makes everyone feel welcome.",
       "Friendliness is a positive trait."
+    ],
+    "translations": [
+      "הידידותיות שלה גורמת לכולם להרגיש רצויים.",
+      "ידידותיות היא תכונה חיובית."
     ]
   },
   {
     "word": "support",
-    "exampleSentences": [
+  
+    "sentences": [
       "They offer each other great support.",
       "I appreciate your support during this time."
+    ],
+    "translations": [
+      "הם מציעים זה לזה תמיכה רבה.",
+      "אני מעריך את תמיכתך בתקופה זו."
     ]
   },
   {
     "word": "trust",
-    "exampleSentences": [
+
+    "sentences": [
       "Trust is essential in any relationship.",
       "It takes time to build trust."
+    ],
+    "translations": [
+      "אמון הוא חיוני בכל מערכת יחסים.",
+      "לוקח זמן לבנות אמון."
     ]
   },
   {
     "word": "honesty",
-    "exampleSentences": [
+
+    "sentences": [
       "Honesty is the best policy.",
       "I value honesty in my friends."
+    ],
+    "translations": [
+      "יושר הוא המדיניות הטובה ביותר.",
+      "אני מעריך יושר בחברים שלי."
     ]
   },
   {
     "word": "respect",
-    "exampleSentences": [
+   
+    "sentences": [
       "We should always treat each other with respect.",
       "He earned the respect of his colleagues."
+    ],
+    "translations": [
+      "תמיד עלינו להתייחס זה לזה בכבוד.",
+      "הוא זכה בכבודם של עמיתיו."
     ]
   },
   {
     "word": "conflict",
-    "exampleSentences": [
+    
+    "sentences": [
       "They tried to avoid conflict.",
       "Communication can help resolve conflict."
+    ],
+    "translations": [
+      "הם ניסו להימנע מעימות.",
+      "תקשורת יכולה לעזור לפתור עימותים."
     ]
   },
   {
     "word": "communication",
-    "exampleSentences": [
+   
+    "sentences": [
       "Good communication is vital in a relationship.",
       "They had open and honest communication."
+    ],
+    "translations": [
+      "תקשורת טובה היא חיונית במערכת יחסים.",
+      "הייתה להם תקשורת פתוחה וכנה."
     ]
   },
   {
     "word": "compromise",
-    "exampleSentences": [
+  
+    "sentences": [
       "Compromise is often necessary in a partnership.",
       "They reached a compromise on the issue."
+    ],
+    "translations": [
+      "פשרה היא לרוב הכרחית בשותפות.",
+      "הם הגיעו לפשרה בנושא."
     ]
   },
   {
     "word": "reconciliation",
-    "exampleSentences": [
+
+    "sentences": [
       "The process of reconciliation took time.",
       "They hoped for reconciliation after the argument."
+    ],
+    "translations": [
+      "תהליך ההתפייסות ארך זמן.",
+      "הם קיוו להתפייסות אחרי הריב."
     ]
   },
   {
     "word": "anger",
-    "exampleSentences": [
+ 
+    "sentences": [
       "He tried to control his anger.",
       "Anger can lead to negative outcomes."
+    ],
+    "translations": [
+      "הוא ניסה לשלוט בכעסו.",
+      "כעס יכול להוביל לתוצאות שליליות."
     ]
   },
   {
     "word": "empathy",
-    "exampleSentences": [
+    
+    "sentences": [
       "Empathy helps us understand others' feelings.",
       "She showed great empathy towards her friend."
+    ],
+    "translations": [
+      "אמפתיה עוזרת לנו להבין את רגשות האחרים.",
+      "היא גילתה אמפתיה רבה כלפי חברתה."
     ]
   },
   {
     "word": "forgiveness",
-    "exampleSentences": [
+   
+    "sentences": [
       "Forgiveness can be difficult but healing.",
       "He asked for forgiveness for his mistake."
+    ],
+    "translations": [
+      "סליחה יכולה להיות קשה אך מרפאת.",
+      "הוא ביקש סליחה על טעותו."
     ]
   },
   {
     "word": "understanding",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Understanding each other is important.",
       "She showed a lot of understanding."
+    ],
+    "translations": [
+      "חשוב להבין זה את זה.",
+      "היא גילתה הרבה הבנה."
     ]
   },
   {
     "word": "laughter",
-    "exampleSentences": [
+  
+    "sentences": [
       "Laughter is the best medicine.",
       "Their conversation was filled with laughter."
+    ],
+    "translations": [
+      "צחוק הוא התרופה הטובה ביותר.",
+      "השיחה שלהם הייתה מלאה בצחוק."
     ]
   },
   {
     "word": "compassion",
-    "exampleSentences": [
+  
+    "sentences": [
       "She showed great compassion for those in need.",
       "Compassion is a valuable human quality."
+    ],
+    "translations": [
+      "היא גילתה חמלה רבה כלפי הנזקקים.",
+      "חמלה היא תכונה אנושית חשובה."
     ]
   },
   {
     "word": "sacrifice",
-    "exampleSentences": [
+  
+    "sentences": [
       "Parents often make sacrifices for their children.",
       "He made a personal sacrifice for the team."
+    ],
+    "translations": [
+      "הורים לרוב מקריבים קורבנות למען ילדיהם.",
+      "הוא הקריב קורבן אישי למען הקבוצה."
     ]
   },
   {
     "word": "patience",
-    "exampleSentences": [
+   
+    "sentences": [
       "Patience is a virtue.",
       "It requires patience to learn a new skill."
+    ],
+    "translations": [
+      "סבלנות היא סגולה.",
+      "נדרשת סבלנות כדי ללמוד מיומנות חדשה."
     ]
   },
   {
     "word": "argument",
-    "exampleSentences": [
+ 
+    "sentences": [
       "They had a minor argument.",
       "It's important to resolve arguments peacefully."
+    ],
+    "translations": [
+      "היה להם ויכוח קל.",
+      "חשוב לפתור ויכוחים בדרכי שלום."
     ]
   },
-  {
-    "word": "harmony",
-    "exampleSentences": [
-      "They strive for harmony in their home.",
-      "The community lived in harmony."
-    ]
-  },
-  {
-    "word": "bond",
-    "exampleSentences": [
-      "They share a strong bond.",
-      "The bond between siblings is often very close."
-    ]
-  },
-  {
-    "word": "connection",
-    "exampleSentences": [
-      "They felt a strong connection.",
-      "Building a connection with others is important."
-    ]
-  },
-  {
-    "word": "attachment",
-    "exampleSentences": [
-      "Attachment theory describes the importance of early bonds.",
-      "The child showed a strong attachment to their caregiver."
-    ]
-  },
-  {
-    "word": "affection",
-    "exampleSentences": [
-      "They showed their affection openly.",
-      "Affection is important in close relationships."
-    ]
-  },
-  {
-    "word": "bonding",
-    "exampleSentences": [
-      "The trip was a great opportunity for family bonding.",
-      "They enjoyed the bonding experience."
-    ]
-  },
-  {
-    "word": "intimacy",
-    "exampleSentences": [
-      "Intimacy involves emotional and physical closeness.",
-      "Building intimacy takes time and trust."
-    ]
-  },
-  {
-    "word": "reliable",
-    "exampleSentences": [
-      "He is a very reliable friend.",
-      "We need a reliable car for the trip."
-    ]
-  },
-  {
-    "word": "dependable",
-    "exampleSentences": [
-      "She is a dependable colleague.",
-      "You can always count on him, he's very dependable."
-    ]
-  },
-  {
-    "word": "loyalty",
-    "exampleSentences": [
-      "Loyalty is a key aspect of true friendship.",
-      "They showed great loyalty to their team."
-    ]
-  },
-  {
-    "word": "affectionate",
-    "exampleSentences": [
-      "He is a very affectionate person.",
-      "They shared an affectionate hug."
-    ]
-  },
-  {
-    "word": "fond",
-    "exampleSentences": [
-      "I have fond memories of our time together.",
-      "She is very fond of her grandchildren."
-    ]
-  },
-  {
-    "word": "sympathy",
-    "exampleSentences": [
-      "I felt sympathy for her situation.",
-      "They expressed their sympathy for his loss."
-    ]
-  },
-  {
-    "word": "consolation",
-    "exampleSentences": [
-      "He offered words of consolation.",
-      "She found consolation in her friends' support."
-    ]
-  },
-  {
-    "word": "help",
-    "exampleSentences": [
-      "Can I help you with something?",
-      "They offered their help willingly."
-    ]
-  },
-  {
-    "word": "assistance",
-    "exampleSentences": [
-      "We appreciate your assistance with this project.",
-      "He provided valuable assistance."
-    ]
-  },
-  {
-    "word": "team",
-    "exampleSentences": [
-      "We work together as a team.",
-      "The team celebrated their victory."
-    ]
-  },
-  {
-    "word": "cooperation",
-    "exampleSentences": [
-      "Cooperation is essential for success.",
-      "They showed great cooperation on the task."
-    ]
-  },
-  {
-    "word": "compassionate",
-    "exampleSentences": [
-      "She is a very compassionate person.",
-      "They offered compassionate support."
-    ]
-  },
-  {
-    "word": "romance",
-    "exampleSentences": [
-      "Their story is full of romance.",
-      "They enjoyed a romantic evening."
-    ]
-  },
-  {
-    "word": "dating",
-    "exampleSentences": [
-      "They started dating a few months ago.",
-      "Dating can be an interesting experience."
-    ]
-  },
-  {
-    "word": "boyfriend",
-    "exampleSentences": [
-      "She introduced me to her boyfriend.",
-      "My boyfriend is very supportive."
-    ]
-  },
-  {
-    "word": "girlfriend",
-    "exampleSentences": [
-      "He is taking his girlfriend to the movies.",
-      "My girlfriend is a talented artist."
-    ]
-  },
-  {
-    "word": "marriage",
-    "exampleSentences": [
-      "They celebrated their tenth wedding anniversary.",
-      "Marriage is a big commitment."
-    ]
-  },
-  {
-    "word": "wedding",
-    "exampleSentences": [
-      "We are going to a wedding this weekend.",
-      "Their wedding was a beautiful celebration."
-    ]
-  },
-  {
-    "word": "commitment",
-    "exampleSentences": [
-      "Marriage requires a strong commitment.",
-      "He showed great commitment to his work."
-    ]
-  },
-  {
-    "word": "divorce",
-    "exampleSentences": [
-      "They went through a difficult divorce.",
-      "Divorce can be a painful process."
-    ]
-  },
-  {
-    "word": "single",
-    "exampleSentences": [
-      "She is currently single.",
-      "He enjoys being single."
-    ]
-  },
-  {
-    "word": "together",
-    "exampleSentences": [
-      "They enjoy spending time together.",
-      "We will face this challenge together."
-    ]
-  },
-  {
-    "word": "separation",
-    "exampleSentences": [
-      "They decided to have a trial separation.",
-      "The separation was difficult for both of them."
-    ]
-  },
-  {
-    "word": "jealousy",
-    "exampleSentences": [
-      "Jealousy can damage relationships.",
-      "He felt a pang of jealousy."
-    ]
-  },
-  {
-    "word": "trustworthy",
-    "exampleSentences": [
-      "He is a very trustworthy person.",
-      "We need someone trustworthy for this task."
-    ]
-  },
-  {
-    "word": "hurt",
-    "exampleSentences": [
-      "His words really hurt me.",
-      "She tried to hide her hurt feelings."
-    ]
-  },
-  {
-    "word": "betrayal",
-    "exampleSentences": [
-      "Betrayal can be very painful.",
-      "He felt a deep sense of betrayal."
-    ]
-  },
-  {
-    "word": "dependency",
-    "exampleSentences": [
-      "Healthy relationships avoid excessive dependency.",
-      "He struggled with emotional dependency."
-    ]
-  }
-]
+    {
+      "word": "harmony",
+    
+      "sentences": [
+        "They strive for harmony in their home.",
+        "The community lived in harmony."
+      ],
+      "translations": [
+        "הם שואפים להרמוניה בביתם.",
+        "הקהילה חיה בהרמוניה."
+      ]
+    },
+    {
+      "word": "bond",
+ 
+      "sentences": [
+        "They share a strong bond.",
+        "The bond between siblings is often very close."
+      ],
+      "translations": [
+        "יש להם קשר חזק.",
+        "הקשר בין אחים הוא לרוב מאוד קרוב."
+      ]
+    },
+    {
+      "word": "connection",
+    
+      "sentences": [
+        "They felt a strong connection.",
+        "Building a connection with others is important."
+      ],
+      "translations": [
+        "הם חשו חיבור חזק.",
+        "בניית חיבור עם אחרים היא חשובה."
+      ]
+    },
+    {
+      "word": "attachment",
+  
+      "sentences": [
+        "Attachment theory describes the importance of early bonds.",
+        "The child showed a strong attachment to their caregiver."
+      ],
+      "translations": [
+        "תאוריית ההיקשרות מתארת את חשיבות הקשרים המוקדמים.",
+        "הילד גילה היקשרות חזקה למטפל שלו."
+      ]
+    },
+    {
+      "word": "affection",
+   
+      "sentences": [
+        "They showed their affection openly.",
+        "Affection is important in close relationships."
+      ],
+      "translations": [
+        "הם גילו את חיבתם בפתיחות.",
+        "חיבה חשובה במערכות יחסים קרובות."
+      ]
+    },
+    {
+      "word": "bonding",
+   
+      "sentences": [
+        "The trip was a great opportunity for family bonding.",
+        "They enjoyed the bonding experience."
+      ],
+      "translations": [
+        "הטיול היה הזדמנות נהדרת להתגבשות משפחתית.",
+        "הם נהנו מחוויית ההתגבשות."
+      ]
+    },
+    {
+      "word": "intimacy",
+   
+      "sentences": [
+        "Intimacy involves emotional and physical closeness.",
+        "Building intimacy takes time and trust."
+      ],
+      "translations": [
+        "אינטימיות כוללת קרבה רגשית ופיזית.",
+        "בניית אינטימיות דורשת זמן ואמון."
+      ]
+    },
+    {
+      "word": "reliable",
+   
+      "sentences": [
+        "He is a very reliable friend.",
+        "We need a reliable car for the trip."
+      ],
+      "translations": [
+        "הוא חבר מאוד מהימן.",
+        "אנחנו צריכים מכונית מהימנה לטיול."
+      ]
+    },
+    {
+      "word": "dependable",
+   
+      "sentences": [
+        "She is a dependable colleague.",
+        "You can always count on him, he's very dependable."
+      ],
+      "translations": [
+        "היא עמיתה אמינה.",
+        "תמיד אפשר לסמוך עליו, הוא מאוד אמין."
+      ]
+    },
+    {
+      "word": "loyalty",
+     
+      "sentences": [
+        "Loyalty is a key aspect of true friendship.",
+        "They showed great loyalty to their team."
+      ],
+      "translations": [
+        "נאמנות היא היבט מרכזי של ידידות אמיתית.",
+        "הם גילו נאמנות רבה לצוות שלהם."
+      ]
+    },
+    {
+      "word": "affectionate",
+     
+      "sentences": [
+        "He is a very affectionate person.",
+        "They shared an affectionate hug."
+      ],
+      "translations": [
+        "הוא אדם מאוד אוהב.",
+        "הם התחבקו בחיבה."
+      ]
+    },
+    {
+      "word": "fond",
+    
+      "sentences": [
+        "I have fond memories of our time together.",
+        "She is very fond of her grandchildren."
+      ],
+      "translations": [
+        "יש לי זיכרונות נעימים מהזמן שלנו ביחד.",
+        "היא מאוד מחבבת את נכדיה."
+      ]
+    },
+    {
+      "word": "sympathy",
+   
+      "sentences": [
+        "I felt sympathy for her situation.",
+        "They expressed their sympathy for his loss."
+      ],
+      "translations": [
+        "הרגשתי אהדה למצבה.",
+        "הם הביעו את אהדתם על אובדנו."
+      ]
+    },
+    {
+      "word": "consolation",
+     
+      "sentences": [
+        "He offered words of consolation.",
+        "She found consolation in her friends' support."
+      ],
+      "translations": [
+        "הוא הציע מילות נחמה.",
+        "היא מצאה נחמה בתמיכת חבריה."
+      ]
+    },
+    {
+      "word": "help",
+    
+      "sentences": [
+        "Can I help you with something?",
+        "They offered their help willingly."
+      ],
+      "translations": [
+        "האם אוכל לעזור לך במשהו?",
+        "הם הציעו את עזרתם ברצון."
+      ]
+    },
+    {
+      "word": "assistance",
+   
+      "sentences": [
+        "We appreciate your assistance with this project.",
+        "He provided valuable assistance."
+      ],
+      "translations": [
+        "אנו מעריכים את סיועך בפרויקט זה.",
+        "הוא סיפק סיוע רב ערך."
+      ]
+    },
+    {
+      "word": "team",
+ 
+      "sentences": [
+        "We work together as a team.",
+        "The team celebrated their victory."
+      ],
+      "translations": [
+        "אנחנו עובדים יחד כצוות.",
+        "הצוות חגג את ניצחונו."
+      ]
+    },
+    {
+      "word": "cooperation",
+    
+      "sentences": [
+        "Cooperation is essential for success.",
+        "They showed great cooperation on the task."
+      ],
+      "translations": [
+        "שיתוף פעולה חיוני להצלחה.",
+        "הם גילו שיתוף פעולה נהדר במשימה."
+      ]
+    },
+    {
+      "word": "compassionate",
+     
+      "sentences": [
+        "She is a very compassionate person.",
+        "They offered compassionate support."
+      ],
+      "translations": [
+        "היא אדם מאוד רחום.",
+        "הם הציעו תמיכה רחומה."
+      ]
+    },
+    {
+      "word": "romance",
+  
+      "sentences": [
+        "Their story is full of romance.",
+        "They enjoyed a romantic evening."
+      ],
+      "translations": [
+        "הסיפור שלהם מלא רומנטיקה.",
+        "הם נהנו מערב רומנטי."
+      ]
+    },
+    {
+      "word": "dating",
+  
+      "sentences": [
+        "They started dating a few months ago.",
+        "Dating can be an interesting experience."
+      ],
+      "translations": [
+        "הם התחילו לצאת לפני כמה חודשים.",
+        "היכרויות יכולות להיות חוויה מעניינת."
+      ]
+    },
+    {
+      "word": "boyfriend",
+    
+      "sentences": [
+        "She introduced me to her boyfriend.",
+        "My boyfriend is very supportive."
+      ],
+      "translations": [
+        "היא הציגה אותי בפני החבר שלה.",
+        "החבר שלי מאוד תומך."
+      ]
+    },
+    {
+      "word": "girlfriend",
+    
+      "sentences": [
+        "He is taking his girlfriend to the movies.",
+        "My girlfriend is a talented artist."
+      ],
+      "translations": [
+        "הוא לוקח את חברתו לסרט.",
+        "חברתי היא אמנית מוכשרת."
+      ]
+    },
+    {
+      "word": "marriage",
+   
+      "sentences": [
+        "They celebrated their tenth wedding anniversary.",
+        "Marriage is a big commitment."
+      ],
+      "translations": [
+        "הם חגגו את יום נישואיהם העשירי.",
+        "נישואין הם מחויבות גדולה."
+      ]
+    },
+    {
+      "word": "wedding",
+  
+      "sentences": [
+        "We are going to a wedding this weekend.",
+        "Their wedding was a beautiful celebration."
+      ],
+      "translations": [
+        "אנחנו הולכים לחתונה בסוף השבוע הזה.",
+        "החתונה שלהם הייתה חגיגה יפה."
+      ]
+    },
+    {
+      "word": "commitment",
+    
+      "sentences": [
+        "Marriage requires a strong commitment.",
+        "He showed great commitment to his work."
+      ],
+      "translations": [
+        "נישואין דורשים מחויבות חזקה.",
+        "הוא גילה מחויבות רבה לעבודתו."
+      ]
+    },
+    {
+      "word": "divorce",
+    
+      "sentences": [
+        "They went through a difficult divorce.",
+        "Divorce can be a painful process."
+      ],
+      "translations": [
+        "הם עברו גירושין קשים.",
+        "גירושין יכולים להיות תהליך כואב."
+      ]
+    },
+    {
+      "word": "single",
+    
+      "sentences": [
+        "She is currently single.",
+        "He enjoys being single."
+      ],
+      "translations": [
+        "היא כרגע רווקה.",
+        "הוא נהנה להיות רווק."
+      ]
+    },
+    {
+      "word": "together",
+     
+      "sentences": [
+        "They enjoy spending time together.",
+        "We will face this challenge together."
+      ],
+      "translations": [
+        "הם נהנים לבלות זמן ביחד.",
+        "אנחנו נתמודד עם האתגר הזה ביחד."
+      ]
+    },
+    {
+      "word": "separation",
+   
+      "sentences": [
+        "They decided to have a trial separation.",
+        "The separation was difficult for both of them."
+      ],
+      "translations": [
+        "הם החליטו על תקופת ניסיון של פרידה.",
+        "הפרידה הייתה קשה לשניהם."
+      ]
+    },
+    {
+      "word": "jealousy",
+ 
+      "sentences": [
+        "Jealousy can damage relationships.",
+        "He felt a pang of jealousy."
+      ],
+      "translations": [
+        "קנאה יכולה לפגוע במערכות יחסים.",
+        "הוא חש דקירה של קנאה."
+      ]
+    },
+    {
+      "word": "trustworthy",
+  
+      "sentences": [
+        "He is a very trustworthy person.",
+        "We need someone trustworthy for this task."
+      ],
+      "translations": [
+        "הוא אדם מאוד ראוי לאמון.",
+        "אנחנו צריכים מישהו ראוי לאמון למשימה הזו."
+      ]
+    },
+    {
+      "word": "hurt",
+   
+      "sentences": [
+        "His words really hurt me.",
+        "She tried to hide her hurt feelings."
+      ],
+      "translations": [
+        "המילים שלו ממש פגעו בי.",
+        "היא ניסתה להסתיר את רגשותיה הפגועים."
+      ]
+    },
+    {
+      "word": "betrayal",
+  
+      "sentences": [
+        "Betrayal can be very painful.",
+        "He felt a deep sense of betrayal."
+      ],
+      "translations": [
+        "בגידה יכולה להיות מאוד כואבת.",
+        "הוא חש תחושת בגידה עמוקה."
+      ]
+    },
+    {
+      "word": "dependency",
+  
+      "sentences": [
+        "Healthy relationships avoid excessive dependency.",
+        "He struggled with emotional dependency."
+      ],
+      "translations": [
+        "מערכות יחסים בריאות נמנעות מתלות מוגזמת.",
+        "הוא התמודד עם תלות רגשית."
+      ]
+    }
+  ]

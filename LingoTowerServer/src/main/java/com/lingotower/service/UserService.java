@@ -35,11 +35,12 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserService(UserRepository userRepository, WordRepository wordRepository, WordService wordService,PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepository, WordRepository wordRepository, WordService wordService,
+			PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.wordRepository = wordRepository;
 		this.wordService = wordService;
-		this.passwordEncoder=passwordEncoder;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public List<User> getAllUsers() {
@@ -56,7 +57,7 @@ public class UserService {
 	}
 
 	public void deleteUser(Long id) {
-		// כאן  להוסיף בדיקה אם המשתמש קיים לפני המחיקה
+		// כאן להוסיף בדיקה אם המשתמש קיים לפני המחיקה
 		userRepository.deleteById(id);
 	}
 
@@ -65,22 +66,6 @@ public class UserService {
 		long totalWords = wordRepository.count();
 		return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
 	}
-
-//	public double getLearningProgress(Long userId) {
-//		List<Word> learnedWords = userRepository.findLearnedWordsByUser(userId);
-//		long totalWords = wordRepository.count();
-//		return totalWords == 0 ? 0 : (learnedWords.size() * 100.0) / totalWords;
-//	}
-
-//	public void addLearnedWord(Long userId, Long wordId) {
-//		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-//		Word word = wordRepository.findById(wordId).orElseThrow(() -> new WordNotFoundException("Word not found"));
-//
-//		if (!user.getLearnedWords().contains(word)) {
-//			user.getLearnedWords().add(word);
-//			userRepository.save(user);
-//		}
-//	}
 
 	public User getUserByUsername(String username) {
 		return userRepository.findByUsername(username).orElse(null);
@@ -98,18 +83,6 @@ public class UserService {
 		return false;
 	}
 
-//	public List<WordByCategory> getLearnedWordsForUser(String username) {
-//		User user = getUserByUsername(username);
-//		if (user == null) {
-//			throw new UsernameNotFoundException("User not found");
-//		}
-//
-//		String targetLanguage = user.getTargetLanguage();
-//
-//		List<Word> learnedWords = userRepository.findLearnedWordsByUsernameAndTargetLanguage(username, targetLanguage);
-//
-//		return wordService.mapWordsToLanguage(learnedWords, targetLanguage);
-//	}
 	@Transactional
 	public List<WordByCategory> getLearnedWordsForUser(String username) {
 		User user = getUserByUsername(username);
@@ -117,7 +90,6 @@ public class UserService {
 			throw new UsernameNotFoundException("User not found");
 		}
 
-		// שליפת כל המילים שנלמדו (בלי קשר לשפת יעד)
 		List<Word> learnedWords = user.getLearnedWords().stream().toList();
 
 		// מחזירים את כולן כמו שהן – עם המילה והתרגום
@@ -137,6 +109,7 @@ public class UserService {
 		}
 
 	}
+
 	public void updatePassword(String username, String newPassword) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));

@@ -1,499 +1,783 @@
 [
   {
     "word": "job",
-    "exampleSentences": [
+    "sentences": [
       "I'm looking for a new job.",
       "What is your job?"
+    ],
+    "translations": [
+      "אני מחפש עבודה חדשה.",
+      "מה העבודה שלך?"
     ]
   },
   {
     "word": "work",
-    "exampleSentences": [
+    "sentences": [
       "I have a lot of work to do today.",
       "He enjoys his work."
+    ],
+    "translations": [
+      "יש לי הרבה עבודה לעשות היום.",
+      "הוא נהנה מהעבודה שלו."
     ]
   },
   {
     "word": "career",
-    "exampleSentences": [
+    "sentences": [
       "She has a successful career in marketing.",
       "He is building a career in technology."
+    ],
+    "translations": [
+      "יש לה קריירה מצליחה בשיווק.",
+      "הוא בונה קריירה בטכנולוגיה."
     ]
   },
   {
     "word": "profession",
-    "exampleSentences": [
+    "sentences": [
       "Teaching is a rewarding profession.",
       "He chose law as his profession."
+    ],
+    "translations": [
+      "הוראה היא מקצוע מתגמל.",
+      "הוא בחר במשפטים כמקצוע שלו."
     ]
   },
   {
     "word": "employee",
-    "exampleSentences": [
+    "sentences": [
       "She is a valued employee of the company.",
       "The company has over 100 employees."
+    ],
+    "translations": [
+      "היא עובדת מוערכת בחברה.",
+      "לחברה יש יותר מ-100 עובדים."
     ]
   },
   {
     "word": "employer",
-    "exampleSentences": [
+    "sentences": [
       "My employer is a large corporation.",
       "The employer provides health insurance."
+    ],
+    "translations": [
+      "המעסיק שלי הוא תאגיד גדול.",
+      "המעסיק מספק ביטוח בריאות."
     ]
   },
   {
     "word": "office",
-    "exampleSentences": [
+    "sentences": [
       "I work in a busy office.",
       "His office is on the third floor."
+    ],
+    "translations": [
+      "אני עובד במשרד עמוס.",
+      "המשרד שלו נמצא בקומה השלישית."
     ]
   },
   {
     "word": "business",
-    "exampleSentences": [
+    "sentences": [
       "She started her own business.",
       "Business is booming this year."
+    ],
+    "translations": [
+      "היא פתחה עסק משלה.",
+      "העסקים פורחים השנה."
     ]
   },
   {
     "word": "meeting",
-    "exampleSentences": [
+    "sentences": [
       "We have a meeting at 10 AM.",
       "The meeting was very productive."
+    ],
+    "translations": [
+      "יש לנו פגישה בשעה 10 בבוקר.",
+      "הפגישה הייתה מאוד פרודוקטיבית."
     ]
   },
   {
     "word": "salary",
-    "exampleSentences": [
+    "sentences": [
       "He earns a good salary.",
       "What is the starting salary for this position?"
+    ],
+    "translations": [
+      "הוא מרוויח משכורת טובה.",
+      "מה המשכורת ההתחלתית לתפקיד הזה?"
     ]
   },
   {
     "word": "promotion",
-    "exampleSentences": [
+    "sentences": [
       "She received a promotion to senior manager.",
       "He is hoping for a promotion soon."
+    ],
+    "translations": [
+      "היא קיבלה קידום למנהלת בכירה.",
+      "הוא מקווה לקבל קידום בקרוב."
     ]
   },
   {
     "word": "vacation",
-    "exampleSentences": [
+    "sentences": [
       "I'm going on vacation next week.",
       "We had a relaxing vacation."
+    ],
+    "translations": [
+      "אני יוצא לחופשה בשבוע הבא.",
+      "הייתה לנו חופשה מרגיעה."
     ]
   },
   {
     "word": "training",
-    "exampleSentences": [
+    "sentences": [
       "New employees receive training.",
       "The company offers ongoing training opportunities."
+    ],
+    "translations": [
+      "עובדים חדשים מקבלים הכשרה.",
+      "החברה מציעה הזדמנויות הכשרה מתמשכות."
     ]
   },
   {
     "word": "internship",
-    "exampleSentences": [
+    "sentences": [
       "She did an internship at a law firm.",
       "An internship can provide valuable experience."
+    ],
+    "translations": [
+      "היא עשתה התמחות במשרד עורכי דין.",
+      "התמחות יכולה לספק ניסיון רב ערך."
     ]
   },
   {
     "word": "interview",
-    "exampleSentences": [
+    "sentences": [
       "I have a job interview tomorrow.",
       "The interview process was quite thorough."
+    ],
+    "translations": [
+      "יש לי ראיון עבודה מחר.",
+      "תהליך הראיונות היה יסודי למדי."
     ]
   },
   {
     "word": "resume",
-    "exampleSentences": [
+    "sentences": [
       "Please send me your resume.",
       "I need to update my resume."
+    ],
+    "translations": [
+      "בבקשה שלח לי את קורות החיים שלך.",
+      "אני צריך לעדכן את קורות החיים שלי."
     ]
   },
   {
     "word": "curriculum",
-    "exampleSentences": [
+    "sentences": [
       "The university has a challenging curriculum.",
       "She reviewed the curriculum for the new course."
+    ],
+    "translations": [
+      "לאוניברסיטה יש תוכנית לימודים מאתגרת.",
+      "היא סקרה את תוכנית הלימודים לקורס החדש."
     ]
   },
   {
     "word": "degree",
-    "exampleSentences": [
+    "sentences": [
       "He has a degree in computer science.",
       "She is pursuing a master's degree."
+    ],
+    "translations": [
+      "יש לו תואר במדעי המחשב.",
+      "היא עושה תואר שני."
     ]
   },
   {
     "word": "university",
-    "exampleSentences": [
+    "sentences": [
       "She studies at the local university.",
       "The university has a large campus."
+    ],
+    "translations": [
+      "היא לומדת באוניברסיטה המקומית.",
+      "לאוניברסיטה יש קמפוס גדול."
     ]
   },
   {
     "word": "college",
-    "exampleSentences": [
+    "sentences": [
       "He went to college in Boston.",
       "The college offers various programs."
+    ],
+    "translations": [
+      "הוא למד במכללה בבוסטון.",
+      "המכללה מציעה תוכניות לימודים שונות."
     ]
   },
   {
     "word": "school",
-    "exampleSentences": [
+    "sentences": [
       "My children go to the local school.",
       "School starts at 8 AM."
+    ],
+    "translations": [
+      "הילדים שלי הולכים לבית הספר המקומי.",
+      "בית הספר מתחיל בשעה 8 בבוקר."
     ]
   },
   {
     "word": "class",
-    "exampleSentences": [
+    "sentences": [
       "I have a math class this morning.",
       "The class was very interesting."
+    ],
+    "translations": [
+      "יש לי שיעור מתמטיקה הבוקר.",
+      "השיעור היה מאוד מעניין."
     ]
   },
   {
     "word": "student",
-    "exampleSentences": [
+    "sentences": [
       "She is a hardworking student.",
       "The students are preparing for their exams."
+    ],
+    "translations": [
+      "היא תלמידה חרוצה.",
+      "התלמידים מתכוננים למבחנים שלהם."
     ]
   },
   {
     "word": "teacher",
-    "exampleSentences": [
+    "sentences": [
       "Our teacher is very knowledgeable.",
       "I asked the teacher a question."
+    ],
+    "translations": [
+      "המורה שלנו מאוד ידען.",
+      "שאלתי את המורה שאלה."
     ]
   },
   {
     "word": "principal",
-    "exampleSentences": [
+    "sentences": [
       "The principal addressed the students.",
       "She had a meeting with the school principal."
+    ],
+    "translations": [
+      "המנהל נאם בפני התלמידים.",
+      "הייתה לה פגישה עם מנהל בית הספר."
     ]
   },
   {
     "word": "lecture",
-    "exampleSentences": [
+    "sentences": [
       "The professor gave an interesting lecture.",
       "I took notes during the lecture."
+    ],
+    "translations": [
+      "הפרופסור העביר הרצאה מעניינת.",
+      "רשמתי הערות במהלך ההרצאה."
     ]
   },
   {
     "word": "exam",
-    "exampleSentences": [
+    "sentences": [
       "I have an exam next week.",
       "She studied hard for the final exam."
+    ],
+    "translations": [
+      "יש לי בחינה בשבוע הבא.",
+      "היא למדה קשה לבחינה הסופית."
     ]
   },
   {
     "word": "grade",
-    "exampleSentences": [
+    "sentences": [
       "He got a good grade on the test.",
       "What was your grade in math?"
+    ],
+    "translations": [
+      "הוא קיבל ציון טוב במבחן.",
+      "מה הציון שלך במתמטיקה?"
     ]
   },
   {
     "word": "study",
-    "exampleSentences": [
+    "sentences": [
       "I need to study for my exam.",
       "He enjoys studying history."
+    ],
+    "translations": [
+      "אני צריך ללמוד למבחן שלי.",
+      "הוא נהנה ללמוד היסטוריה."
     ]
   },
   {
     "word": "research",
-    "exampleSentences": [
+    "sentences": [
       "She is conducting research on climate change.",
       "The research findings were published."
+    ],
+    "translations": [
+      "היא עורכת מחקר על שינויי אקלים.",
+      "ממצאי המחקר פורסמו."
     ]
   },
   {
     "word": "homework",
-    "exampleSentences": [
+    "sentences": [
       "I have a lot of homework tonight.",
       "Did you finish your homework?"
+    ],
+    "translations": [
+      "יש לי הרבה שיעורי בית הערב.",
+      "סיימת את שיעורי הבית שלך?"
     ]
   },
   {
     "word": "assignment",
-    "exampleSentences": [
+    "sentences": [
       "We have a group assignment due next week.",
       "The assignment was quite challenging."
+    ],
+    "translations": [
+      "יש לנו עבודה קבוצתית שצריך להגיש בשבוע הבא.",
+      "העבודה הייתה די מאתגרת."
     ]
   },
   {
     "word": "deadline",
-    "exampleSentences": [
+    "sentences": [
       "The project deadline is Friday.",
       "I'm working hard to meet the deadline."
+    ],
+    "translations": [
+      "המועד האחרון של הפרויקט הוא יום שישי.",
+      "אני עובד קשה כדי לעמוד בלוח הזמנים."
     ]
   },
   {
     "word": "course",
-    "exampleSentences": [
+    "sentences": [
       "I'm taking a course in graphic design.",
       "The college offers many different courses."
+    ],
+    "translations": [
+      "אני לוקח קורס בעיצוב גרפי.",
+      "המכללה מציעה קורסים שונים רבים."
     ]
   },
   {
     "word": "subject",
-    "exampleSentences": [
+    "sentences": [
       "Math is my favorite subject.",
       "What subjects are you studying?"
+    ],
+    "translations": [
+      "מתמטיקה זה המקצוע האהוב עליי.",
+      "אילו מקצועות אתה לומד?"
     ]
   },
   {
     "word": "seminar",
-    "exampleSentences": [
+    "sentences": [
       "I attended a seminar on marketing.",
       "The seminar was very informative."
+    ],
+    "translations": [
+      "השתתפתי בסמינר על שיווק.",
+      "הסמינר היה מאוד אינפורמטיבי."
     ]
   },
   {
     "word": "study group",
-    "exampleSentences": [
+    "sentences": [
       "We formed a study group for the final exam.",
       "The study group meets twice a week."
+    ],
+    "translations": [
+      "הקמנו קבוצת לימוד למבחן הסופי.",
+      "קבוצת הלימוד נפגשת פעמיים בשבוע."
     ]
   },
   {
     "word": "scholarship",
-    "exampleSentences": [
+    "sentences": [
       "She received a scholarship to attend university.",
       "There are many scholarships available for students."
+    ],
+    "translations": [
+      "היא קיבלה מלגה כדי ללמוד באוניברסיטה.",
+      "ישנן מלגות רבות זמינות לסטודנטים."
     ]
   },
   {
     "word": "diploma",
-    "exampleSentences": [
+    "sentences": [
       "He received his high school diploma.",
       "The college offers a diploma in business administration."
+    ],
+    "translations": [
+      "הוא קיבל את תעודת הבגרות שלו.",
+      "המכללה מציעה דיפלומה במנהל עסקים."
     ]
   },
   {
     "word": "graduation",
-    "exampleSentences": [
+    "sentences": [
       "We celebrated her graduation.",
       "Graduation day is a special occasion."
+    ],
+    "translations": [
+      "חגגנו את סיום הלימודים שלה.",
+      "יום הסיום הוא אירוע מיוחד."
     ]
   },
   {
     "word": "degree",
-    "exampleSentences": [
+    "sentences": [
       "She earned a bachelor's degree.",
       "A law degree requires many years of study."
+    ],
+    "translations": [
+      "היא קיבלה תואר ראשון.",
+      "תואר במשפטים דורש שנות לימוד רבות."
     ]
   },
   {
     "word": "certificate",
-    "exampleSentences": [
+    "sentences": [
       "He received a certificate in web development.",
       "The training program offers a certificate upon completion."
+    ],
+    "translations": [
+      "הוא קיבל תעודה בפיתוח אתרים.",
+      "תוכנית ההכשרה מציעה תעודה עם סיום."
     ]
   },
   {
     "word": "field of study",
-    "exampleSentences": [
+    "sentences": [
       "What is your field of study?",
       "She chose medicine as her field of study."
+    ],
+    "translations": [
+      "מה תחום הלימודים שלך?",
+      "היא בחרה ברפואה כתחום הלימודים שלה."
     ]
   },
   {
     "word": "tuition",
-    "exampleSentences": [
+    "sentences": [
       "Tuition fees have increased this year.",
       "Paying for university tuition can be expensive."
+    ],
+    "translations": [
+      "שכר הלימוד עלה השנה.",
+      "תשלום שכר לימוד באוניברסיטה יכול להיות יקר."
     ]
   },
   {
     "word": "tuition fee",
-    "exampleSentences": [
+    "sentences": [
       "The tuition fee is due at the start of the semester.",
       "Many students struggle to pay the high tuition fee."
+    ],
+    "translations": [
+      "יש לשלם את שכר הלימוד בתחילת הסמסטר.",
+      "סטודנטים רבים מתקשים לשלם את שכר הלימוד הגבוה."
     ]
   },
   {
     "word": "faculty",
-    "exampleSentences": [
+    "sentences": [
       "The university has a distinguished faculty.",
       "He is a member of the science faculty."
+    ],
+    "translations": [
+      "באוניברסיטה יש סגל מכובד.",
+      "הוא חבר בפקולטה למדעים."
     ]
   },
   {
-    "word": "lecture hall",
-    "exampleSentences": [
-      "The lecture hall was packed with students.",
-      "The professor spoke in a large lecture hall."
-    ]
-  },
-  {
-    "word": "campus",
-    "exampleSentences": [
-      "The university campus is very beautiful.",
-      "There are many facilities on campus."
-    ]
-  },
-  {
-    "word": "classroom",
-    "exampleSentences": [
-      "The classroom was bright and spacious.",
-      "Students sat at desks in the classroom."
-    ]
-  },
-  {
-    "word": "student loan",
-    "exampleSentences": [
-      "Many students rely on student loans to pay for their education.",
-      "He is still paying off his student loan."
-    ]
-  },
-  {
-    "word": "study material",
-    "exampleSentences": [
-      "Make sure you have all the necessary study material.",
-      "The professor provided useful study material."
-    ]
-  },
-  {
-    "word": "workshop",
-    "exampleSentences": [
-      "I attended a writing workshop.",
-      "The company organized a team-building workshop."
-    ]
-  },
-  {
-    "word": "intern",
-    "exampleSentences": [
-      "She is working as an intern this summer.",
-      "The company has several interns."
-    ]
-  },
-  {
-    "word": "supervisor",
-    "exampleSentences": [
-      "My supervisor is very supportive.",
-      "He had a meeting with his supervisor."
-    ]
-  },
-  {
-    "word": "colleague",
-    "exampleSentences": [
-      "I enjoy working with my colleagues.",
-      "She is a helpful colleague."
-    ]
-  },
-  {
-    "word": "team",
-    "exampleSentences": [
-      "We work well as a team.",
-      "The team achieved its goals."
-    ]
-  },
-  {
-    "word": "conference",
-    "exampleSentences": [
-      "I'm attending a conference next month.",
-      "The conference brought together experts in the field."
-    ]
-  },
-  {
-    "word": "presentation",
-    "exampleSentences": [
-      "He gave a clear and informative presentation.",
-      "We need to prepare a presentation for the meeting."
-    ]
-  },
-  {
-    "word": "teamwork",
-    "exampleSentences": [
-      "Teamwork is essential for this project.",
-      "They demonstrated excellent teamwork."
-    ]
-  },
-  {
-    "word": "achievement",
-    "exampleSentences": [
-      "Graduating with honors was a great achievement.",
-      "The project was a significant achievement."
-    ]
-  },
-  {
-    "word": "job interview",
-    "exampleSentences": [
-      "I have a job interview this afternoon.",
-      "Prepare thoroughly for your job interview."
-    ]
-  },
-  {
-    "word": "performance review",
-    "exampleSentences": [
-      "I have my annual performance review next week.",
-      "The performance review provided constructive feedback."
-    ]
-  },
-  {
-    "word": "workplace",
-    "exampleSentences": [
-      "The workplace environment is very positive.",
-      "Safety is important in the workplace."
-    ]
-  },
-  {
-    "word": "project",
-    "exampleSentences": [
-      "We are working on a new project.",
-      "The project is due next month."
-    ]
-  },
-  {
-    "word": "employee benefits",
-    "exampleSentences": [
-      "The company offers excellent employee benefits.",
-      "Health insurance is a common employee benefit."
-    ]
-  },
-  {
-    "word": "contract",
-    "exampleSentences": [
-      "He signed the employment contract.",
-      "The contract outlines the terms of employment."
-    ]
-  },
-  {
-    "word": "work hours",
-    "exampleSentences": [
-      "My work hours are 9 to 5.",
-      "What are your standard work hours?"
-    ]
-  },
-  {
-    "word": "overtime",
-    "exampleSentences": [
-      "I had to work overtime last week.",
-      "Overtime pay is usually higher."
-    ]
-  },
-  {
-    "word": "raise",
-    "exampleSentences": [
-      "He received a raise in his salary.",
-      "She asked for a raise during her performance review."
-    ]
-  },
-  {
-    "word": "employment",
-    "exampleSentences": [
-      "She is seeking full-time employment.",
-      "Employment rates have improved this year."
-    ]
-  },
-  {
-    "word": "position",
-    "exampleSentences": [
-      "There is a job opening for a marketing position.",
-      "He applied for several different positions."
-    ]
-  }
-]
+        "word": "lecture hall",
+        "sentences": [
+          "The lecture hall was packed with students.",
+          "The professor spoke in a large lecture hall."
+        ],
+        "translations": [
+          "אולם ההרצאות היה מלא בסטודנטים.",
+          "הפרופסור דיבר באולם הרצאות גדול."
+        ]
+      },
+      {
+        "word": "campus",
+        "sentences": [
+          "The university campus is very beautiful.",
+          "There are many facilities on campus."
+        ],
+        "translations": [
+          "קמפוס האוניברסיטה מאוד יפה.",
+          "יש מתקנים רבים בקמפוס."
+        ]
+      },
+      {
+        "word": "classroom",
+        "sentences": [
+          "The classroom was bright and spacious.",
+          "Students sat at desks in the classroom."
+        ],
+        "translations": [
+          "הכיתה הייתה מוארת ומרווחת.",
+          "התלמידים ישבו בשולחנות בכיתה."
+        ]
+      },
+      {
+        "word": "student loan",
+        "sentences": [
+          "Many students rely on student loans to pay for their education.",
+          "He is still paying off his student loan."
+        ],
+        "translations": [
+          "סטודנטים רבים מסתמכים על הלוואות סטודנטים כדי לשלם עבור השכלתם.",
+          "הוא עדיין משלם את הלוואת הסטודנטים שלו."
+        ]
+      },
+      {
+        "word": "study material",
+        "sentences": [
+          "Make sure you have all the necessary study material.",
+          "The professor provided useful study material."
+        ],
+        "translations": [
+          "ודא שיש לך את כל חומר הלימוד הדרוש.",
+          "הפרופסור סיפק חומר לימוד שימושי."
+        ]
+      },
+      {
+        "word": "workshop",
+        "sentences": [
+          "I attended a writing workshop.",
+          "The company organized a team-building workshop."
+        ],
+        "translations": [
+          "השתתפתי בסדנת כתיבה.",
+          "החברה ארגנה סדנת גיבוש צוות."
+        ]
+      },
+      {
+        "word": "intern",
+        "sentences": [
+          "She is working as an intern this summer.",
+          "The company has several interns."
+        ],
+        "translations": [
+          "היא עובדת כמתמחה הקיץ הזה.",
+          "לחברה יש מספר מתמחים."
+        ]
+      },
+      {
+        "word": "supervisor",
+        "sentences": [
+          "My supervisor is very supportive.",
+          "He had a meeting with his supervisor."
+        ],
+        "translations": [
+          "הממונה עליי מאוד תומך.",
+          "הייתה לו פגישה עם הממונה עליו."
+        ]
+      },
+      {
+        "word": "colleague",
+        "sentences": [
+          "I enjoy working with my colleagues.",
+          "She is a helpful colleague."
+        ],
+        "translations": [
+          "אני נהנה לעבוד עם הקולגות שלי.",
+          "היא קולגה עוזרת."
+        ]
+      },
+      {
+        "word": "team",
+        "sentences": [
+          "We work well as a team.",
+          "The team achieved its goals."
+        ],
+        "translations": [
+          "אנחנו עובדים טוב כצוות.",
+          "הצוות השיג את מטרותיו."
+        ]
+      },
+      {
+        "word": "conference",
+        "sentences": [
+          "I'm attending a conference next month.",
+          "The conference brought together experts in the field."
+        ],
+        "translations": [
+          "אני אשתתף בכנס בחודש הבא.",
+          "הכנס קיבץ מומחים בתחום."
+        ]
+      },
+      {
+        "word": "presentation",
+        "sentences": [
+          "He gave a clear and informative presentation.",
+          "We need to prepare a presentation for the meeting."
+        ],
+        "translations": [
+          "הוא נתן מצגת ברורה ואינפורמטיבית.",
+          "אנחנו צריכים להכין מצגת לפגישה."
+        ]
+      },
+      {
+        "word": "teamwork",
+        "sentences": [
+          "Teamwork is essential for this project.",
+          "They demonstrated excellent teamwork."
+        ],
+        "translations": [
+          "עבודת צוות חיונית לפרויקט הזה.",
+          "הם הדגימו עבודת צוות מצוינת."
+        ]
+      },
+      {
+        "word": "achievement",
+        "sentences": [
+          "Graduating with honors was a great achievement.",
+          "The project was a significant achievement."
+        ],
+        "translations": [
+          "סיום הלימודים בהצטיינות היה הישג גדול.",
+          "הפרויקט היה הישג משמעותי."
+        ]
+      },
+      {
+        "word": "job interview",
+        "sentences": [
+          "I have a job interview this afternoon.",
+          "Prepare thoroughly for your job interview."
+        ],
+        "translations": [
+          "יש לי ראיון עבודה אחר הצהריים.",
+          "התכונן היטב לראיון העבודה שלך."
+        ]
+      },
+      {
+        "word": "performance review",
+        "sentences": [
+          "I have my annual performance review next week.",
+          "The performance review provided constructive feedback."
+        ],
+        "translations": [
+          "יש לי הערכת ביצועים שנתית בשבוע הבא.",
+          "הערכת הביצועים סיפקה משוב בונה."
+        ]
+      },
+      {
+        "word": "workplace",
+        "sentences": [
+          "The workplace environment is very positive.",
+          "Safety is important in the workplace."
+        ],
+        "translations": [
+          "סביבת העבודה מאוד חיובית.",
+          "בטיחות חשובה במקום העבודה."
+        ]
+      },
+      {
+        "word": "project",
+        "sentences": [
+          "We are working on a new project.",
+          "The project is due next month."
+        ],
+        "translations": [
+          "אנחנו עובדים על פרויקט חדש.",
+          "הפרויקט אמור להסתיים בחודש הבא."
+        ]
+      },
+      {
+        "word": "employee benefits",
+        "sentences": [
+          "The company offers excellent employee benefits.",
+          "Health insurance is a common employee benefit."
+        ],
+        "translations": [
+          "החברה מציעה הטבות עובדים מצוינות.",
+          "ביטוח בריאות הוא הטבת עובדים נפוצה."
+        ]
+      },
+      {
+        "word": "contract",
+        "sentences": [
+          "He signed the employment contract.",
+          "The contract outlines the terms of employment."
+        ],
+        "translations": [
+          "הוא חתם על חוזה העבודה.",
+          "החוזה מפרט את תנאי ההעסקה."
+        ]
+      },
+      {
+        "word": "work hours",
+        "sentences": [
+          "My work hours are 9 to 5.",
+          "What are your standard work hours?"
+        ],
+        "translations": [
+          "שעות העבודה שלי הן מ-9 עד 5.",
+          "מהן שעות העבודה הסטנדרטיות שלך?"
+        ]
+      },
+      {
+        "word": "overtime",
+        "sentences": [
+          "I had to work overtime last week.",
+          "Overtime pay is usually higher."
+        ],
+        "translations": [
+          "הייתי צריך לעבוד שעות נוספות בשבוע שעבר.",
+          "תשלום עבור שעות נוספות הוא בדרך כלל גבוה יותר."
+        ]
+      },
+      {
+        "word": "raise",
+        "sentences": [
+          "He received a raise in his salary.",
+          "She asked for a raise during her performance review."
+        ],
+        "translations": [
+          "הוא קיבל העלאה במשכורת שלו.",
+          "היא ביקשה העלאה במהלך הערכת הביצועים שלה."
+        ]
+      },
+      {
+        "word": "employment",
+        "sentences": [
+          "She is seeking full-time employment.",
+          "Employment rates have improved this year."
+        ],
+        "translations": [
+          "היא מחפשת עבודה במשרה מלאה.",
+          "שיעורי התעסוקה השתפרו השנה."
+        ]
+      },
+      {
+        "word": "position",
+        "sentences": [
+          "There is a job opening for a marketing position.",
+          "He applied for several different positions."
+        ],
+        "translations": [
+          "יש משרת דרושים בתחום השיווק.",
+          "הוא הגיש מועמדות למספר משרות שונות."
+        ]
+      }
+  ]

@@ -27,117 +27,124 @@ import java.util.stream.Collectors;
 @Transactional
 public class CompletionPracticeService {
 
-    @Autowired
-    private ExampleSentenceRepository exampleSentenceRepository;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private WordService wordService;
-    @Autowired
-    private QuestionBankService questionBankService;
-    @Autowired
-    private WordRepository wordRepository;
-    @Autowired
-    private QuestionMapper questionMapper;
+	@Autowired
+	private ExampleSentenceRepository exampleSentenceRepository;
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private WordService wordService;
+	@Autowired
+	private QuestionBankService questionBankService;
+	@Autowired
+	private WordRepository wordRepository;
+	@Autowired
+	private QuestionMapper questionMapper;
 
-    private final Random random = new Random();
-    private static final int DEFAULT_COMPLETION_QUESTIONS = 10;
+	private final Random random = new Random();
+	private static final int DEFAULT_COMPLETION_QUESTIONS = 10;
 
-    public Optional<QuestionDTO> generateCompletionPractice(String categoryName, Difficulty difficulty, String username) {
-        Optional<Category> categoryOptional = categoryService.findByName(categoryName);
-        if (categoryOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        Category category = categoryOptional.get();
-        String userLanguage = wordService.getUserLanguage(username);
+	public Optional<QuestionDTO> generateCompletionPractice(String categoryName, Difficulty difficulty,
+			String username) {
+		Optional<Category> categoryOptional = categoryService.findByName(categoryName);
+		if (categoryOptional.isEmpty()) {
+			return Optional.empty();
+		}
+		Category category = categoryOptional.get();
+		String userLanguage = wordService.getUserLanguage(username);
+		boolean isHebrew = "he".equalsIgnoreCase(userLanguage);
 
-        List<WordByCategory> randomWords = questionBankService.getRandomTranslatedWords(
-                category.getName(), difficulty, userLanguage, 1);
-        if (randomWords.isEmpty()) {
-            return Optional.empty();
-        }
-        WordByCategory wordByCategory = randomWords.get(0);
+		List<WordByCategory> randomWords = questionBankService.getRandomTranslatedWords(category.getName(), difficulty,
+				userLanguage, 1);
+		if (randomWords.isEmpty()) {
+			return Optional.empty();
+		}
+		WordByCategory wordByCategory = randomWords.get(0);
 
-        Optional<Word> wordOptional = wordRepository.findById(wordByCategory.getId());
-        if (wordOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        Word word = wordOptional.get();
+		Optional<Word> wordOptional = wordRepository.findById(wordByCategory.getId());
+		if (wordOptional.isEmpty()) {
+			return Optional.empty();
+		}
+		Word word = wordOptional.get();
 
-        List<ExampleSentence> sentences = exampleSentenceRepository.findByWord(word);
-        if (sentences.isEmpty()) {
-            return Optional.empty();
-        }
-        ExampleSentence selectedSentence = sentences.get(random.nextInt(sentences.size()));
-        String sentenceText = selectedSentence.getSentenceText();
+		List<ExampleSentence> sentences = exampleSentenceRepository.findByWord(word);
+		if (sentences.isEmpty()) {
+			return Optional.empty();
+		}
+		ExampleSentence selectedSentence = sentences.get(random.nextInt(sentences.size()));
+		String sentenceText = selectedSentence.getSentenceText();
+		String translatedSentenceText = selectedSentence.getTranslatedText();
 
-        String correctAnswer = extractCorrectAnswer(sentenceText);
-        if (correctAnswer == null) {
-            return Optional.empty();
-        }
-        String questionText = sentenceText.replaceFirst("\\b" + correctAnswer + "\\b", "_____");
+		String correctAnswerOriginal = extractCorrectAnswer(sentenceText);
+		if (correctAnswerOriginal == null) {
+			return Optional.empty();
+		}
 
-        List<String> wrongAnswers = questionBankService.getWrongCompletionOptions(
-                category.getName(), difficulty, correctAnswer, 4);
+		String questionText;
+		String finalCorrectAnswer;
 
-        Question question = questionBankService.createCompletionQuestion(
-                questionText, correctAnswer, wrongAnswers, category, difficulty
-        );
+		if (isHebrew && translatedSentenceText != null) {
+			String translatedCorrectAnswer = word.getTranslation(); // השתמש בתרגום של המילה
+			if (translatedCorrectAnswer == null) {
+				return Optional.empty(); // אם אין תרגום למילה, דלג על השאלה
+			}
+			questionText = translatedSentenceText.replaceFirst("\\b" + translatedCorrectAnswer + "\\b", "_____");
+			finalCorrectAnswer = translatedCorrectAnswer;
+		} else {
+			questionText = sentenceText.replaceFirst("\\b" + correctAnswerOriginal + "\\b", "_____");
+			finalCorrectAnswer = correctAnswerOriginal;
+		}
 
-        // יצירת רשימת אפשרויות
-        List<String> options = new ArrayList<>();
-        options.addAll(question.getWrongAnswers());
-        options.add(question.getCorrectAnswer());
-        Collections.shuffle(options);
+		List<String> wrongAnswers = questionBankService.getWrongCompletionOptions(category.getName(), difficulty,
+				correctAnswerOriginal, 4);
+		if (isHebrew) {
+			wrongAnswers = wrongAnswers.stream().map(wrongAnswer -> {
+				Optional<Word> wrongWordOptional = wordRepository.findByWordAndCategory(wrongAnswer, category);
+				return wrongWordOptional.map(Word::getTranslation).orElse(wrongAnswer);
+			}).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+		}
 
-        // בחירת עד 4 תשובות שגויות + התשובה הנכונה
-        List<String> finalOptions = new ArrayList<>();
-        finalOptions.add(question.getCorrectAnswer()); // הוספת התשובה הנכונה ראשונה
-        options.stream()
-                .filter(option -> !option.equals(question.getCorrectAnswer())) // סינון התשובה הנכונה
-                .limit(4) // לקיחת עד 4 תשובות שגויות
-                .forEach(finalOptions::add);
-        Collections.shuffle(finalOptions); // ערבוב הרשימה הסופית
+		Question question = questionBankService.createCompletionQuestion(questionText, finalCorrectAnswer, wrongAnswers,
+				category, difficulty);
 
-        // יצירת ה-DTO עם רשימת האפשרויות הנכונה
-        QuestionDTO dto = new QuestionDTO(
-                question.getId(),
-                question.getQuestionText(),
-                finalOptions,
-                question.getCorrectAnswer(),
-                question.getCategory()
-        );
-        return Optional.of(dto);
-    }
+		List<String> finalOptions = new ArrayList<>();
+		finalOptions.add(question.getCorrectAnswer());
+		wrongAnswers.stream().limit(4).forEach(finalOptions::add);
+		Collections.shuffle(finalOptions);
 
-    private String extractCorrectAnswer(String sentenceText) {
-        String[] wordsInSentence = sentenceText.split("\\s+");
-        List<String> commonShortWords = List.of("a", "the", "is", "are", "in", "on", "at", "to", "for", "with");
-        for (String word : wordsInSentence) {
-            if (word.length() > 2 && !commonShortWords.contains(word.toLowerCase())) {
-                return word;
-            }
-        }
-        return null;
-    }
+		QuestionDTO dto = new QuestionDTO(question.getId(), question.getQuestionText(), finalOptions,
+				question.getCorrectAnswer(), question.getCategory());
+		return Optional.of(dto);
+	}
 
-    public List<QuestionDTO> generateMultipleCompletionPractices(String categoryName, Difficulty difficulty, Integer count, String username) {
-        int numQuestions = (count != null) ? count : DEFAULT_COMPLETION_QUESTIONS;
-        List<QuestionDTO> questions = new ArrayList<>();
-        Set<String> generatedQuestions = new HashSet<>();
+	private String extractCorrectAnswer(String sentenceText) {
+		String[] wordsInSentence = sentenceText.split("\\s+");
+		List<String> commonShortWords = List.of("a", "the", "is", "are", "in", "on", "at", "to", "for", "with");
+		for (String word : wordsInSentence) {
+			if (word.length() > 2 && !commonShortWords.contains(word.toLowerCase())) {
+				return word;
+			}
+		}
+		return null;
+	}
 
-        for (int i = 0; i < numQuestions; i++) {
-            Optional<QuestionDTO> questionOptional = generateCompletionPractice(categoryName, difficulty, username);
-            questionOptional.ifPresent(question -> {
-                if (!generatedQuestions.contains(question.getQuestionText())) {
-                    questions.add(question);
-                    generatedQuestions.add(question.getQuestionText());
-                }
-            });
-            if (questions.size() == numQuestions) {
-                break;
-            }
-        }
-        return questions;
-    }
+	public List<QuestionDTO> generateMultipleCompletionPractices(String categoryName, Difficulty difficulty,
+			Integer count, String username) {
+		int numQuestions = (count != null) ? count : DEFAULT_COMPLETION_QUESTIONS;
+		List<QuestionDTO> questions = new ArrayList<>();
+		Set<String> generatedQuestions = new HashSet<>();
+
+		for (int i = 0; i < numQuestions; i++) {
+			Optional<QuestionDTO> questionOptional = generateCompletionPractice(categoryName, difficulty, username);
+			questionOptional.ifPresent(question -> {
+				if (!generatedQuestions.contains(question.getQuestionText())) {
+					questions.add(question);
+					generatedQuestions.add(question.getQuestionText());
+				}
+			});
+			if (questions.size() == numQuestions) {
+				break;
+			}
+		}
+		return questions;
+	}
 }

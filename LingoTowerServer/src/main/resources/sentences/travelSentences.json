@@ -1,506 +1,866 @@
 [
   {
     "word": "vacation",
-    "exampleSentences": [
+  
+    "sentences": [
       "We are planning a summer vacation.",
       "I need a relaxing vacation."
+    ],
+    "translations": [
+      "אנחנו מתכננים חופשת קיץ.",
+      "אני צריך חופשה מרגיעה."
     ]
   },
   {
     "word": "tourism",
-    "exampleSentences": [
+  
+    "sentences": [
       "Tourism is a major industry in many countries.",
       "Sustainable tourism is becoming increasingly important."
+    ],
+    "translations": [
+      "תיירות היא תעשייה מרכזית במדינות רבות.",
+      "תיירות בת קיימא הופכת חשובה יותר ויותר."
     ]
   },
   {
     "word": "destination",
-    "exampleSentences": [
+   
+    "sentences": [
       "Paris is a popular tourist destination.",
       "We chose our vacation destination carefully."
+    ],
+    "translations": [
+      "פריז היא יעד תיירותי פופולרי.",
+      "בחרנו בקפידה את יעד החופשה שלנו."
     ]
   },
   {
     "word": "trip",
-    "exampleSentences": [
+  
+    "sentences": [
       "We took a short trip to the coast.",
       "How was your trip to Italy?"
+    ],
+    "translations": [
+      "יצאנו לטיול קצר לחוף.",
+      "איך היה הטיול שלך לאיטליה?"
     ]
   },
   {
     "word": "adventure",
-    "exampleSentences": [
+  
+    "sentences": [
       "They went on an exciting adventure in the jungle.",
       "He is always looking for a new adventure."
+    ],
+    "translations": [
+      "הם יצאו להרפתקה מרגשת בג'ונגל.",
+      "הוא תמיד מחפש הרפתקה חדשה."
     ]
   },
   {
     "word": "journey",
-    "exampleSentences": [
+
+    "sentences": [
       "The journey was long but rewarding.",
       "Life is a journey of discovery."
+    ],
+    "translations": [
+      "המסע היה ארוך אך מתגמל.",
+      "החיים הם מסע של גילוי."
     ]
   },
   {
     "word": "explore",
-    "exampleSentences": [
+
+    "sentences": [
       "We want to explore new cultures.",
       "They decided to explore the old city."
+    ],
+    "translations": [
+      "אנחנו רוצים לחקור תרבויות חדשות.",
+      "הם החליטו לחקור את העיר העתיקה."
     ]
   },
   {
     "word": "holiday",
-    "exampleSentences": [
+  
+    "sentences": [
       "We are going on holiday next week.",
       "Christmas is a popular holiday."
+    ],
+    "translations": [
+      "אנחנו נוסעים לחופשה בשבוע הבא.",
+      "חג המולד הוא חופשה פופולרית."
     ]
   },
   {
     "word": "resort",
-    "exampleSentences": [
+   
+    "sentences": [
       "We stayed at a beautiful beach resort.",
       "The resort offered many amenities."
+    ],
+    "translations": [
+      "שהינו באתר נופש יפהפה על החוף.",
+      "אתר הנופש הציע שירותים רבים."
     ]
   },
   {
     "word": "beach",
-    "exampleSentences": [
+   
+    "sentences": [
       "We spent the day relaxing on the beach.",
       "The beach was crowded with tourists."
+    ],
+    "translations": [
+      "בילינו את היום במנוחה על החוף.",
+      "החוף היה מלא בתיירים."
     ]
   },
   {
     "word": "mountain",
-    "exampleSentences": [
+  
+    "sentences": [
       "They went hiking in the mountains.",
       "The view from the top of the mountain was breathtaking."
+    ],
+    "translations": [
+      "הם הלכו לטייל בהרים.",
+      "הנוף מראש ההר היה עוצר נשימה."
     ]
   },
   {
     "word": "camping",
-    "exampleSentences": [
+  
+    "sentences": [
       "We went camping in the forest.",
       "Camping can be a great way to connect with nature."
+    ],
+    "translations": [
+      "יצאנו לקמפינג ביער.",
+      "קמפינג יכול להיות דרך נהדרת להתחבר לטבע."
     ]
   },
   {
     "word": "sightseeing",
-    "exampleSentences": [
+    
+    "sentences": [
       "We did some sightseeing in the city.",
       "Sightseeing tours are a good way to see the main attractions."
+    ],
+    "translations": [
+      "עשינו קצת סיור בעיר.",
+      "סיורי תיירים הם דרך טובה לראות את האטרקציות העיקריות."
     ]
   },
   {
     "word": "city tour",
-    "exampleSentences": [
+   
+    "sentences": [
       "We took a city tour to see the historical sites.",
       "The city tour guide was very informative."
+    ],
+    "translations": [
+      "יצאנו לסיור בעיר כדי לראות את האתרים ההיסטוריים.",
+      "מדריך הסיורים בעיר היה מאוד אינפורמטיבי."
     ]
   },
   {
     "word": "cruise",
-    "exampleSentences": [
+   
+    "sentences": [
       "They went on a Caribbean cruise.",
       "A cruise can be a relaxing way to travel."
+    ],
+    "translations": [
+      "הם יצאו לשייט בקריביים.",
+      "שייט יכול להיות דרך מרגיעה לטייל."
     ]
   },
   {
     "word": "hotel",
-    "exampleSentences": [
+   
+    "sentences": [
       "We booked a room at a nice hotel.",
       "The hotel offered excellent service."
+    ],
+    "translations": [
+      "הזמנו חדר במלון נחמד.",
+      "המלון הציע שירות מצוין."
     ]
   },
   {
     "word": "airport",
-    "exampleSentences": [
+    
+    "sentences": [
       "We need to go to the airport to catch our flight.",
       "The airport was very busy."
+    ],
+    "translations": [
+      "אנחנו צריכים ללכת לשדה התעופה כדי לתפוס את הטיסה שלנו.",
+      "שדה התעופה היה מאוד עמוס."
     ]
   },
   {
     "word": "flight",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Our flight was delayed due to weather.",
       "We had a smooth flight."
+    ],
+    "translations": [
+      "הטיסה שלנו התעכבה בגלל מזג האוויר.",
+      "הייתה לנו טיסה חלקה."
     ]
   },
   {
     "word": "boarding",
-    "exampleSentences": [
+   
+    "sentences": [
       "Boarding will begin in fifteen minutes.",
       "We waited for our boarding call."
+    ],
+    "translations": [
+      "העלייה למטוס תתחיל בעוד חמש עשרה דקות.",
+      "חיכינו לקריאת העלייה למטוס שלנו."
     ]
   },
   {
     "word": "reservation",
-    "exampleSentences": [
+  
+    "sentences": [
       "We made a hotel reservation online.",
       "Do you have a reservation?"
+    ],
+    "translations": [
+      "ביצענו הזמנה למלון באינטרנט.",
+      "יש לך הזמנה?"
     ]
   },
   {
     "word": "passport",
-    "exampleSentences": [
+   
+    "sentences": [
       "Don't forget to bring your passport.",
       "You need a valid passport for international travel."
+    ],
+    "translations": [
+      "אל תשכח להביא את הדרכון שלך.",
+      "אתה צריך דרכון בתוקף לנסיעות בינלאומיות."
     ]
   },
   {
     "word": "visa",
-    "exampleSentences": [
+  
+    "sentences": [
       "Do I need a visa for this country?",
       "She applied for a tourist visa."
+    ],
+    "translations": [
+      "האם אני צריך ויזה למדינה הזו?",
+      "היא הגישה בקשה לויזת תייר."
     ]
   },
   {
     "word": "tour guide",
-    "exampleSentences": [
+  
+    "sentences": [
       "The tour guide explained the history of the monument.",
       "We hired a local tour guide."
+    ],
+    "translations": [
+      "מדריך הטיולים הסביר את ההיסטוריה של האנדרטה.",
+      "שכרנו מדריך טיולים מקומי."
     ]
   },
   {
     "word": "backpacking",
-    "exampleSentences": [
+   
+    "sentences": [
       "They went backpacking through Europe.",
       "Backpacking can be a budget-friendly way to travel."
+    ],
+    "translations": [
+      "הם יצאו לתרמילאות ברחבי אירופה.",
+      "תרמילאות יכולה להיות דרך חסכונית לטייל."
     ]
   },
   {
     "word": "excursion",
-    "exampleSentences": [
+   
+    "sentences": [
       "We took a day excursion to a nearby island.",
       "The tour included several interesting excursions."
+    ],
+    "translations": [
+      "יצאנו לטיול יום לאי סמוך.",
+      "הסיור כלל כמה טיולים קצרים מעניינים."
     ]
   },
   {
     "word": "attraction",
-    "exampleSentences": [
+  
+    "sentences": [
       "The Eiffel Tower is a famous tourist attraction.",
       "We visited several popular attractions in the city."
+    ],
+    "translations": [
+      "מגדל אייפל הוא אטרקציה תיירותית מפורסמת.",
+      "ביקרנו בכמה אטרקציות פופולריות בעיר."
     ]
   },
   {
     "word": "landmark",
-    "exampleSentences": [
+  
+    "sentences": [
       "The Statue of Liberty is a well-known landmark.",
       "We visited many historical landmarks."
+    ],
+    "translations": [
+      "פסל החירות הוא נקודת ציון ידועה.",
+      "ביקרנו בנקודות ציון היסטוריות רבות."
     ]
   },
   {
     "word": "souvenir",
-    "exampleSentences": [
+
+    "sentences": [
       "I bought a souvenir to remember the trip.",
       "She collected souvenirs from every place she visited."
+    ],
+    "translations": [
+      "קניתי מזכרת כדי לזכור את הטיול.",
+      "היא אספה מזכרות מכל מקום שבו ביקרה."
     ]
   },
   {
     "word": "hiking",
-    "exampleSentences": [
+   
+    "sentences": [
       "We went hiking in the mountains.",
       "Hiking is a great way to enjoy nature."
+    ],
+    "translations": [
+      "הלכנו לטיול רגלי בהרים.",
+      "טיול רגלי הוא דרך נהדרת ליהנות מהטבע."
     ]
   },
   {
     "word": "explorer",
-    "exampleSentences": [
+   
+    "sentences": [
       "He is a famous explorer.",
       "Early explorers mapped the world."
+    ],
+    "translations": [
+      "הוא חוקר מפורסם.",
+      "חוקרים מוקדמים מיפו את העולם."
     ]
   },
   {
     "word": "paradise",
-    "exampleSentences": [
+   
+    "sentences": [
       "The tropical island felt like paradise.",
       "They found their own little paradise."
+    ],
+    "translations": [
+      "האי הטרופי הרגיש כמו גן עדן.",
+      "הם מצאו את גן העדן הקטן שלהם."
     ]
   },
   {
     "word": "itinerary",
-    "exampleSentences": [
+   
+    "sentences": [
       "We planned a detailed travel itinerary.",
       "The itinerary included visits to several museums."
+    ],
+    "translations": [
+      "תכננו מסלול טיול מפורט.",
+      "מסלול הטיול כלל ביקורים בכמה מוזיאונים."
     ]
   },
   {
     "word": "luggage",
-    "exampleSentences": [
+   
+    "sentences": [
       "We need to check our luggage.",
       "The luggage carousel was crowded."
+    ],
+    "translations": [
+      "אנחנו צריכים לשלוח את המזוודות שלנו.",
+      "קרוסלת המזוודות הייתה עמוסה."
     ]
   },
   {
     "word": "baggage",
-    "exampleSentences": [
+
+    "sentences": [
       "Where is the baggage claim?",
       "He carried his baggage onto the plane."
+    ],
+    "translations": [
+      "איפה מסוע המזוודות?",
+      "הוא נשא את המטען שלו למטוס."
     ]
   },
   {
     "word": "tourist",
-    "exampleSentences": [
+   
+    "sentences": [
       "The city was full of tourists.",
       "He asked a tourist for directions."
+    ],
+    "translations": [
+      "העיר הייתה מלאה בתיירים.",
+      "הוא שאל תייר על כיוונים."
     ]
   },
   {
     "word": "vacation rental",
-    "exampleSentences": [
+   
+    "sentences": [
       "We stayed in a vacation rental by the sea.",
       "Vacation rentals can be a good option for families."
+    ],
+    "translations": [
+      "שהינו בדירת נופש ליד הים.",
+      "דירות נופש יכולות להיות אופציה טובה למשפחות."
     ]
   },
   {
     "word": "cruise ship",
-    "exampleSentences": [
+  
+    "sentences": [
       "The cruise ship was enormous.",
       "We enjoyed the amenities on the cruise ship."
+    ],
+    "translations": [
+      "אוניית התענוגות הייתה ענקית.",
+      "נהנינו מהמתקנים באוניית התענוגות."
     ]
   },
   {
     "word": "guidebook",
-    "exampleSentences": [
+    
+    "sentences": [
       "I bought a guidebook for the city.",
       "The guidebook provided useful information."
+    ],
+    "translations": [
+      "קניתי מדריך טיולים לעיר.",
+      "מדריך הטיולים סיפק מידע שימושי."
     ]
   },
   {
     "word": "travel agent",
-    "exampleSentences": [
+   
+    "sentences": [
       "We booked our trip through a travel agent.",
       "The travel agent helped us find the best deals."
+    ],
+    "translations": [
+      "הזמנו את הטיול שלנו דרך סוכן נסיעות.",
+      "סוכן הנסיעות עזר לנו למצוא את העסקאות הטובות ביותר."
     ]
   },
   {
     "word": "road trip",
-    "exampleSentences": [
+    
+    "sentences": [
       "We are planning a road trip across the country.",
       "A road trip can be a fun way to see the sights."
+    ],
+    "translations": [
+      "אנחנו מתכננים טיול בכביש ברחבי הארץ.",
+      "טיול בכביש יכול להיות דרך מהנה לראות את הנופים."
     ]
   },
   {
     "word": "holidaymaker",
-    "exampleSentences": [
+
+    "sentences": [
       "The beach was filled with holidaymakers.",
       "Holidaymakers enjoy the sunny weather."
+    ],
+    "translations": [
+      "החוף היה מלא בנופשים.",
+      "נופשים נהנים ממזג האוויר השמשי."
     ]
   },
   {
     "word": "vacation spot",
-    "exampleSentences": [
+   
+    "sentences": [
       "This island is a popular vacation spot.",
       "They are looking for a quiet vacation spot."
+    ],
+    "translations": [
+      "האי הזה הוא מקום נופש פופולרי.",
+      "הם מחפשים מקום נופש שקט."
     ]
   },
   {
     "word": "destination guide",
-    "exampleSentences": [
+    
+    "sentences": [
       "The destination guide provided detailed information.",
       "We used a destination guide to plan our activities."
+    ],
+    "translations": [
+      "מדריך היעד סיפק מידע מפורט.",
+      "השתמשנו במדריך יעד כדי לתכנן את הפעילויות שלנו."
     ]
   },
   {
     "word": "travel blog",
-    "exampleSentences": [
+   
+    "sentences": [
       "She writes a popular travel blog.",
       "I found some great tips on a travel blog."
+    ],
+    "translations": [
+      "היא כותבת בלוג טיולים פופולרי.",
+      "מצאתי כמה טיפים נהדרים בבלוג טיולים."
     ]
   },
   {
     "word": "tourist attraction",
-    "exampleSentences": [
+   
+    "sentences": [
       "This museum is a major tourist attraction.",
       "We visited several historical tourist attractions."
+    ],
+    "translations": [
+      "המוזיאון הזה הוא אטרקציה תיירותית מרכזית.",
+      "ביקרנו בכמה אטרקציות תיירותיות היסטוריות."
     ]
   },
   {
     "word": "beach resort",
-    "exampleSentences": [
+   
+    "sentences": [
       "We stayed at a luxurious beach resort.",
       "The beach resort offered stunning ocean views."
+    ],
+    "translations": [
+      "שהינו באתר נופש יוקרתי על החוף.",
+      "אתר הנופש על החוף הציע נוף מדהים לאוקיינוס."
     ]
   },
   {
     "word": "campfire",
-    "exampleSentences": [
+
+    "sentences": [
       "We sat around the campfire at night.",
       "They roasted marshmallows over the campfire."
+    ],
+    "translations": [
+      "ישבנו סביב המדורה בלילה.",
+      "הם קלו מרשמלו מעל המדורה."
     ]
   },
   {
     "word": "sailing",
-    "exampleSentences": [
+    
+    "sentences": [
       "They went sailing on the lake.",
       "Sailing can be a peaceful and relaxing activity."
+    ],
+    "translations": [
+      "הם יצאו לשייט באגם.",
+      "שיט יכול להיות פעילות שלווה ומרגיעה."
     ]
   },
   {
     "word": "expedition",
-    "exampleSentences": [
+  
+    "sentences": [
       "They embarked on a scientific expedition.",
       "The expedition team faced many challenges."
+    ],
+    "translations": [
+      "הם יצאו למשלחת מדעית.",
+      "צוות המשלחת התמודד עם אתגרים רבים."
     ]
   },
   {
     "word": "tourist trap",
-    "exampleSentences": [
+ 
+    "sentences": [
       "This place is a bit of a tourist trap.",
       "Be careful of tourist traps when buying souvenirs."
+    ],
+    "translations": [
+      "המקום הזה הוא קצת מלכודת תיירים.",
+      "היזהר ממלכודות תיירים כשאתה קונה מזכרות."
     ]
   },
   {
     "word": "glamping",
-    "exampleSentences": [
+   
+    "sentences": [
       "We tried glamping for a luxurious camping experience.",
       "Glamping combines nature with comfort."
+    ],
+    "translations": [
+      "ניסינו גלאמפינג לחוויית קמפינג יוקרתית.",
+      "גלאמפינג משלב טבע עם נוחות."
     ]
   },
   {
     "word": "zip-lining",
-    "exampleSentences": [
+   
+    "sentences": [
       "Zip-lining was an exhilarating experience.",
       "They went zip-lining through the forest canopy."
+    ],
+    "translations": [
+      "גלישה באומגה הייתה חוויה מלהיבה.",
+      "הם גלשו באומגה דרך צמרות העצים ביער."
     ]
   },
   {
     "word": "snorkeling",
-    "exampleSentences": [
+  
+    "sentences": [
       "We went snorkeling in the coral reefs.",
       "Snorkeling is a great way to see underwater life."
+    ],
+    "translations": [
+      "עשינו שנירקול בשוניות האלמוגים.",
+      "שנירקול הוא דרך נהדרת לראות את החיים מתחת למים."
     ]
   },
   {
     "word": "diving",
-    "exampleSentences": [
+   
+    "sentences": [
       "He enjoys scuba diving.",
       "Diving allows you to explore the deep sea."
+    ],
+    "translations": [
+      "הוא נהנה מצלילה עם ציוד צלילה.",
+      "צלילה מאפשרת לך לחקור את הים העמוק."
     ]
   },
   {
     "word": "mountain climbing",
-    "exampleSentences": [
+    
+    "sentences": [
       "Mountain climbing requires skill and endurance.",
       "They went mountain climbing in the Himalayas."
+    ],
+    "translations": [
+      "טיפוס הרים דורש מיומנות וסיבולת.",
+      "הם יצאו לטיפוס הרים בהרי ההימלאיה."
     ]
   },
   {
     "word": "fishing",
-    "exampleSentences": [
+    
+    "sentences": [
       "We went fishing in the lake.",
       "Fishing can be a relaxing hobby."
+    ],
+    "translations": [
+      "יצאנו לדוג באגם.",
+      "דיג יכול להיות תחביב מרגיע."
     ]
   },
   {
     "word": "kayaking",
-    "exampleSentences": [
+   
+    "sentences": [
       "They went kayaking down the river.",
       "Kayaking is a fun water activity."
+    ],
+    "translations": [
+      "הם יצאו לקיאקים במורד הנהר.",
+      "קיאקים היא פעילות מים מהנה."
     ]
   },
   {
     "word": "surfing",
-    "exampleSentences": [
+   
+    "sentences": [
       "He loves to go surfing.",
       "The waves were perfect for surfing."
+    ],
+    "translations": [
+      "הוא אוהב לגלוש.",
+      "הגלים היו מושלמים לגלישה."
     ]
   },
   {
     "word": "sightseer",
-    "exampleSentences": [
+  
+    "sentences": [
       "The sightseer took many photos.",
       "Sightseers often visit famous landmarks."
+    ],
+    "translations": [
+      "הסייר צילם תמונות רבות.",
+      "סיירים מבקרים לעתים קרובות בנקודות ציון מפורסמות."
     ]
   },
   {
     "word": "traveler",
-    "exampleSentences": [
+    
+    "sentences": [
       "She is an experienced traveler.",
       "Travelers often share their stories."
+    ],
+    "translations": [
+      "היא נוסעת מנוסה.",
+      "נוסעים חולקים לעתים קרובות את סיפוריהם."
     ]
   },
   {
     "word": "adventure sports",
-    "exampleSentences": [
+   
+    "sentences": [
       "They tried various adventure sports.",
       "Adventure sports can be very exciting."
+    ],
+    "translations": [
+      "הם ניסו סוגים שונים של ספורט אתגרי.",
+      "ספורט אתגרי יכול להיות מאוד מרגש."
     ]
   },
   {
     "word": "airline",
-    "exampleSentences": [
+    
+    "sentences": [
       "Which airline are you flying with?",
       "The airline offered good service."
+    ],
+    "translations": [
+      "עם איזו חברת תעופה אתה טס?",
+      "חברת התעופה הציעה שירות טוב."
     ]
   },
   {
     "word": "passport control",
-    "exampleSentences": [
+   
+    "sentences": [
       "We had to go through passport control at the airport.",
       "The lines at passport control were long."
+    ],
+    "translations": [
+      "היינו צריכים לעבור ביקורת דרכונים בשדה התעופה.",
+      "התורים בביקורת הדרכונים היו ארוכים."
     ]
   },
   {
     "word": "tourist visa",
-    "exampleSentences": [
+
+    "sentences": [
       "You might need a tourist visa for your trip.",
       "She applied for a tourist visa several weeks in advance."
+    ],
+    "translations": [
+      "ייתכן שתצטרך ויזת תייר לטיול שלך.",
+      "היא הגישה בקשה לויזת תייר כמה שבועות מראש."
     ]
   },
   {
     "word": "jet lag",
-    "exampleSentences": [
+   
+    "sentences": [
       "I'm suffering from jet lag after the long flight.",
       "It takes a few days to recover from jet lag."
+    ],
+    "translations": [
+      "אני סובל מיעפת אחרי הטיסה הארוכה.",
+      "לוקח כמה ימים להתאושש מיעפת."
     ]
   },
   {
     "word": "staycation",
-    "exampleSentences": [
+  
+    "sentences": [
       "We decided to have a staycation this year.",
       "A staycation can be a relaxing and affordable option."
+    ],
+    "translations": [
+      "החלטנו לעשות נופש ביתי השנה.",
+      "נופש ביתי יכול להיות אופציה מרגיעה ומשתלמת."
     ]
   },
   {
     "word": "travel insurance",
-    "exampleSentences": [
+   
+    "sentences": [
       "It's important to have travel insurance.",
       "We bought travel insurance before our trip."
+    ],
+    "translations": [
+      "חשוב שיהיה ביטוח נסיעות.",
+      "קנינו ביטוח נסיעות לפני הטיול שלנו."
     ]
   },
   {
     "word": "budget travel",
-    "exampleSentences": [
+ 
+    "sentences": [
       "He is an expert at budget travel.",
       "Budget travel allows you to see the world without spending a lot."
+    ],
+    "translations": [
+      "הוא מומחה בטיולים בתקציב.",
+      "טיול בתקציב מאפשר לך לראות את העולם בלי להוציא הרבה כסף."
     ]
   },
   {
     "word": "luxury travel",
-    "exampleSentences": [
+   
+    "sentences": [
       "They prefer luxury travel.",
       "Luxury travel offers high-end accommodations and services."
+    ],
+    "translations": [
+      "הם מעדיפים טיולי יוקרה.",
+      "טיולי יוקרה מציעים לינה ושירותים ברמה גבוהה."
     ]
   },
   {
     "word": "travel guide",
-    "exampleSentences": [
+  
+    "sentences": [
       "He works as a travel guide.",
       "The travel guide shared interesting facts about the area."
+    ],
+    "translations": [
+      "הוא עובד כמדריך טיולים.",
+      "מדריך הטיולים שיתף עובדות מעניינות על האזור."
     ]
   },
   {
     "word": "overnight stay",
-    "exampleSentences": [
+   
+    "sentences": [
       "We had an overnight stay in a small town.",
       "The hotel offered a comfortable overnight stay."
+    ],
+    "translations": [
+      "הייתה לנו לינה בעיירה קטנה.",
+      "המלון הציע לינה נוחה."
     ]
   },
   {
     "word": "sleeping bag",
-    "exampleSentences": [
+    
+    "sentences": [
       "We packed our sleeping bags for the camping trip.",
       "It was warm and cozy in my sleeping bag."
+    ],
+    "translations": [
+      "ארזנו את שקי השינה שלנו לטיול הקמפינג.",
+      "היה חמים ונעים בשק השינה שלי."
     ]
   }
 ]

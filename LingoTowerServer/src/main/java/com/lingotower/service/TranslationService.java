@@ -39,11 +39,11 @@ public class TranslationService {
                 return translatedText;
             } else {
                 logger.error("Translation response is null or has no data.");
-                return "Translation error";
+                return null;
             }
         } catch (Exception e) {
             logger.error("Error during translation: ", e);
-            return "Translation errorרררר";
+            return null;
         }
     }
    

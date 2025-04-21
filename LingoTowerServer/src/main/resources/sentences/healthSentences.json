@@ -1,534 +1,914 @@
 [
   {
     "word": "health",
-    "exampleSentences": [
+
+    "sentences": [
       "Good health is very important.",
       "He is concerned about his health."
+    ],
+    "translations": [
+      "בריאות טובה היא מאוד חשובה.",
+      "הוא מודאג לגבי בריאותו."
     ]
   },
   {
     "word": "fitness",
-    "exampleSentences": [
+  
+    "sentences": [
       "Regular exercise is important for fitness.",
       "She goes to the gym to improve her fitness."
+    ],
+    "translations": [
+      "פעילות גופנית סדירה חשובה לכושר.",
+      "היא הולכת לחדר הכושר כדי לשפר את הכושר שלה."
     ]
   },
   {
     "word": "exercise",
-    "exampleSentences": [
+ 
+    "sentences": [
       "I try to get some exercise every day.",
       "Running is a good form of exercise."
+    ],
+    "translations": [
+      "אני מנסה לעשות קצת פעילות גופנית כל יום.",
+      "ריצה היא סוג טוב של פעילות גופנית."
     ]
   },
   {
     "word": "diet",
-    "exampleSentences": [
+   
+    "sentences": [
       "A balanced diet is crucial for good health.",
       "He is on a special diet."
+    ],
+    "translations": [
+      "תזונה מאוזנת חיונית לבריאות טובה.",
+      "הוא נמצא בדיאטה מיוחדת."
     ]
   },
   {
     "word": "nutrition",
-    "exampleSentences": [
+    
+    "sentences": [
       "Proper nutrition is essential for growth and development.",
       "She is studying nutrition."
+    ],
+    "translations": [
+      "תזונה נכונה חיונית לגדילה והתפתחות.",
+      "היא לומדת תזונה."
     ]
   },
   {
-    "word": "well-being",
-    "exampleSentences": [
+    "word": "well being",
+  
+    "sentences": [
       "Meditation can improve your overall well-being.",
       "Her well-being is her top priority."
+    ],
+    "translations": [
+      "מדיטציה יכולה לשפר את הרווחה הכללית שלך.",
+      "הרווחה שלה היא בראש סדר העדיפויות שלה."
     ]
   },
   {
     "word": "sleep",
-    "exampleSentences": [
+  
+    "sentences": [
       "Getting enough sleep is important for health.",
       "I didn't get much sleep last night."
+    ],
+    "translations": [
+      "שינה מספקת חשובה לבריאות.",
+      "לא ישנתי הרבה הלילה."
     ]
   },
   {
     "word": "mental health",
-    "exampleSentences": [
+ 
+    "sentences": [
       "It's important to take care of your mental health.",
       "She is seeking support for her mental health."
+    ],
+    "translations": [
+      "חשוב לטפל בבריאות הנפשית שלך.",
+      "היא מחפשת תמיכה לבריאות הנפשית שלה."
     ]
   },
   {
     "word": "stress",
-    "exampleSentences": [
+  
+    "sentences": [
       "Work can be a major source of stress.",
       "Learning to manage stress is important."
+    ],
+    "translations": [
+      "עבודה יכולה להיות מקור מרכזי ללחץ.",
+      "ללמוד לנהל לחץ זה חשוב."
     ]
   },
   {
     "word": "meditation",
-    "exampleSentences": [
+  
+    "sentences": [
       "She practices meditation every morning.",
       "Meditation can help reduce stress."
+    ],
+    "translations": [
+      "היא מתרגלת מדיטציה כל בוקר.",
+      "מדיטציה יכולה לעזור להפחית לחץ."
     ]
   },
   {
     "word": "yoga",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Yoga is a great way to improve flexibility.",
       "He goes to a yoga class twice a week."
+    ],
+    "translations": [
+      "יוגה היא דרך מצוינת לשפר את הגמישות.",
+      "הוא הולך לשיעור יוגה פעמיים בשבוע."
     ]
   },
   {
     "word": "relaxation",
-    "exampleSentences": [
+
+    "sentences": [
       "Listening to music can aid relaxation.",
       "She enjoys reading for relaxation."
+    ],
+    "translations": [
+      "האזנה למוזיקה יכולה לעזור להרפיה.",
+      "היא נהנית לקרוא לצורך הרפיה."
     ]
   },
   {
     "word": "exercise routine",
-    "exampleSentences": [
+  
+    "sentences": [
       "He follows a strict exercise routine.",
       "It's important to have a consistent exercise routine."
+    ],
+    "translations": [
+      "הוא עוקב אחר שגרת אימונים קפדנית.",
+      "חשוב שתהיה שגרת אימונים עקבית."
     ]
   },
   {
     "word": "physical health",
-    "exampleSentences": [
+
+    "sentences": [
       "Regular exercise contributes to good physical health.",
       "His physical health has improved significantly."
+    ],
+    "translations": [
+      "פעילות גופנית סדירה תורמת לבריאות גופנית טובה.",
+      "בריאותו הגופנית השתפרה באופן משמעותי."
     ]
   },
   {
     "word": "hygiene",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Good personal hygiene helps prevent illness.",
       "They emphasized the importance of hygiene."
+    ],
+    "translations": [
+      "היגיינה אישית טובה עוזרת למנוע מחלות.",
+      "הם הדגישו את חשיבות ההיגיינה."
     ]
   },
   {
     "word": "doctor",
-    "exampleSentences": [
+    
+    "sentences": [
       "You should see a doctor if you feel unwell.",
       "The doctor examined the patient."
+    ],
+    "translations": [
+      "אתה צריך לראות רופא אם אתה מרגיש לא טוב.",
+      "הרופא בדק את המטופל."
     ]
   },
   {
     "word": "nurse",
-    "exampleSentences": [
+ 
+    "sentences": [
       "The nurse took my temperature.",
       "Nurses provide essential care for patients."
+    ],
+    "translations": [
+      "האחות מדדה לי חום.",
+      "אחיות מספקות טיפול חיוני למטופלים."
     ]
   },
   {
     "word": "hospital",
-    "exampleSentences": [
+  
+    "sentences": [
       "He was admitted to the hospital.",
       "The hospital provides emergency care."
+    ],
+    "translations": [
+      "הוא אושפז בבית החולים.",
+      "בית החולים מספק טיפול חירום."
     ]
   },
   {
     "word": "clinic",
-    "exampleSentences": [
+ 
+    "sentences": [
       "She went to the clinic for a check-up.",
       "The clinic offers various medical services."
+    ],
+    "translations": [
+      "היא הלכה למרפאה לבדיקה.",
+      "המרפאה מציעה שירותים רפואיים שונים."
     ]
   },
   {
     "word": "check-up",
-    "exampleSentences": [
+
+    "sentences": [
       "It's important to have a regular medical check-up.",
       "I have a doctor's check-up next week."
+    ],
+    "translations": [
+      "חשוב לעבור בדיקה רפואית סדירה.",
+      "יש לי בדיקה רפואית אצל הרופא בשבוע הבא."
     ]
   },
   {
     "word": "treatment",
-    "exampleSentences": [
+
+    "sentences": [
       "He is undergoing treatment for his injury.",
       "The doctor recommended a new treatment plan."
+    ],
+    "translations": [
+      "הוא עובר טיפול בפציעה שלו.",
+      "הרופא המליץ על תוכנית טיפול חדשה."
     ]
   },
   {
     "word": "medicine",
-    "exampleSentences": [
+   
+    "sentences": [
       "Take this medicine three times a day.",
       "The pharmacy sells various over-the-counter medicines."
+    ],
+    "translations": [
+      "קח את התרופה הזו שלוש פעמים ביום.",
+      "בית המרקחת מוכר תרופות שונות ללא מרשם."
     ]
   },
   {
     "word": "prescription",
-    "exampleSentences": [
+ 
+    "sentences": [
       "You need a doctor's prescription for this medication.",
       "She picked up her prescription from the pharmacy."
+    ],
+    "translations": [
+      "אתה צריך מרשם רופא לתרופה הזו.",
+      "היא אספה את המרשם שלה מבית המרקחת."
     ]
   },
   {
     "word": "symptom",
-    "exampleSentences": [
+  
+    "sentences": [
       "A fever is a common symptom of the flu.",
       "He described his symptoms to the doctor."
+    ],
+    "translations": [
+      "חום הוא סימפטום נפוץ של שפעת.",
+      "הוא תיאר את הסימפטומים שלו לרופא."
     ]
   },
   {
     "word": "disease",
-    "exampleSentences": [
+  
+    "sentences": [
       "Early detection can help in treating the disease.",
       "Researchers are working to find a cure for the disease."
+    ],
+    "translations": [
+      "גילוי מוקדם יכול לעזור בטיפול במחלה.",
+      "חוקרים עובדים על מציאת תרופה למחלה."
     ]
   },
   {
     "word": "illness",
-    "exampleSentences": [
+    "translation": "מחלה",
+    "sentences": [
       "He stayed home from work due to illness.",
       "The illness spread quickly through the school."
+    ],
+    "translations": [
+      "הוא נשאר בבית מהעבודה עקב מחלה.",
+      "המחלה התפשטה במהירות בבית הספר."
     ]
   },
   {
     "word": "treatment plan",
-    "exampleSentences": [
+  
+    "sentences": [
       "The doctor developed a personalized treatment plan for him.",
       "They discussed the details of the treatment plan."
+    ],
+    "translations": [
+      "הרופא פיתח עבורו תוכנית טיפול מותאמת אישית.",
+      "הם דנו בפרטי תוכנית הטיפול."
     ]
   },
   {
     "word": "recovery",
-    "exampleSentences": [
+ 
+    "sentences": [
       "His recovery from surgery is going well.",
       "Rest is important for a full recovery."
+    ],
+    "translations": [
+      "ההחלמה שלו מהניתוח מתקדמת היטב.",
+      "מנוחה חשובה להחלמה מלאה."
     ]
   },
   {
     "word": "surgery",
-    "exampleSentences": [
+  
+    "sentences": [
       "She had to undergo surgery for her injury.",
       "The surgery was successful."
+    ],
+    "translations": [
+      "היא נאלצה לעבור ניתוח בגלל הפציעה שלה.",
+      "הניתוח הצליח."
     ]
   },
   {
     "word": "vaccine",
-    "exampleSentences": [
+
+    "sentences": [
       "Getting a vaccine can protect you from the disease.",
       "They are developing a new vaccine."
+    ],
+    "translations": [
+      "קבלת חיסון יכולה להגן עליך מפני המחלה.",
+      "הם מפתחים חיסון חדש."
     ]
   },
   {
     "word": "immunity",
-    "exampleSentences": [
+
+    "sentences": [
       "A healthy lifestyle can boost your immunity.",
       "Some people have natural immunity to certain diseases."
+    ],
+    "translations": [
+      "אורח חיים בריא יכול לחזק את החסינות שלך.",
+      "לחלק מהאנשים יש חסינות טבעית למחלות מסוימות."
     ]
   },
   {
     "word": "flu",
-    "exampleSentences": [
+   
+    "sentences": [
       "Many people get the flu in the winter.",
       "She stayed home because she had the flu."
+    ],
+    "translations": [
+      "אנשים רבים חולים בשפעת בחורף.",
+      "היא נשארה בבית כי הייתה לה שפעת."
     ]
   },
   {
     "word": "cold",
-    "exampleSentences": [
+  
+    "sentences": [
       "I think I'm catching a cold.",
       "Drink plenty of fluids if you have a cold."
+    ],
+    "translations": [
+      "אני חושב שאני מצטנן.",
+      "שתה הרבה נוזלים אם יש לך הצטננות."
     ]
   },
   {
     "word": "allergy",
-    "exampleSentences": [
+ 
+    "sentences": [
       "She has an allergy to pollen.",
       "Allergy symptoms can be unpleasant."
+    ],
+    "translations": [
+      "יש לה אלרגיה לאבקה.",
+      "תסמיני אלרגיה יכולים להיות לא נעימים."
     ]
   },
   {
     "word": "headache",
-    "exampleSentences": [
+   
+    "sentences": [
       "I have a terrible headache.",
       "Stress can cause headaches."
+    ],
+    "translations": [
+      "יש לי כאב ראש נורא.",
+      "לחץ יכול לגרום לכאבי ראש."
     ]
   },
   {
     "word": "fever",
-    "exampleSentences": [
+   
+    "sentences": [
       "He has a high fever.",
       "A fever can be a sign of infection."
+    ],
+    "translations": [
+      "יש לו חום גבוה.",
+      "חום יכול להיות סימן לזיהום."
     ]
   },
   {
     "word": "chronic",
-    "exampleSentences": [
+  
+    "sentences": [
       "He suffers from a chronic illness.",
       "Chronic pain can be debilitating."
+    ],
+    "translations": [
+      "הוא סובל ממחלה כרונית.",
+      "כאב כרוני יכול להיות מתיש."
     ]
   },
   {
     "word": "acute",
-    "exampleSentences": [
+ 
+    "sentences": [
       "She had an acute attack of pain.",
       "Acute illnesses usually have a sudden onset."
+    ],
+    "translations": [
+      "היה לה התקף כאבים חריף.",
+      "למחלות חריפות יש בדרך כלל התחלה פתאומית."
     ]
   },
   {
     "word": "emergency",
-    "exampleSentences": [
+  
+    "sentences": [
       "Call the emergency number if you need immediate help.",
       "This is a medical emergency."
+    ],
+    "translations": [
+      "התקשר למספר החירום אם אתה זקוק לעזרה מיידית.",
+      "זהו מקרה חירום רפואי."
     ]
   },
   {
     "word": "first aid",
-    "exampleSentences": [
+   
+    "sentences": [
       "Knowing basic first aid can save lives.",
       "She administered first aid until the paramedics arrived."
+    ],
+    "translations": [
+      "ידע בסיסי בעזרה ראשונה יכול להציל חיים.",
+      "היא העניקה עזרה ראשונה עד שהגיעו הפרמדיקים."
     ]
   },
   {
     "word": "dentist",
-    "exampleSentences": [
+    
+    "sentences": [
       "I have an appointment with the dentist.",
       "Regular visits to the dentist are important for oral health."
+    ],
+    "translations": [
+      "יש לי תור לרופא שיניים.",
+      "ביקורים קבועים אצל רופא השיניים חשובים לבריאות הפה."
     ]
   },
   {
     "word": "eye doctor",
-    "exampleSentences": [
+   
+    "sentences": [
       "I need to see an eye doctor for a vision check.",
       "The eye doctor prescribed new glasses."
+    ],
+    "translations": [
+      "אני צריך ללכת לרופא עיניים לבדיקת ראייה.",
+      "רופא העיניים רשם משקפיים חדשים."
     ]
   },
   {
     "word": "mental illness",
-    "exampleSentences": [
+    
+    "sentences": [
       "It's important to raise awareness about mental illness.",
       "Support is available for people living with mental illness."
+    ],
+    "translations": [
+      "חשוב להעלות את המודעות למחלות נפש.",
+      "תמיכה זמינה לאנשים החיים עם מחלות נפש."
     ]
   },
   {
     "word": "psychologist",
-    "exampleSentences": [
+    
+    "sentences": [
       "She is seeing a psychologist for therapy.",
       "The psychologist helped him understand his feelings."
+    ],
+    "translations": [
+      "היא מטופלת אצל פסיכולוג לצורך טיפול.",
+      "הפסיכולוג עזר לו להבין את רגשותיו."
     ]
   },
   {
     "word": "therapist",
-    "exampleSentences": [
+  
+    "sentences": [
       "He found a good therapist to talk to.",
       "The therapist provided valuable guidance."
+    ],
+    "translations": [
+      "הוא מצא מטפל טוב לדבר איתו.",
+      "המטפל סיפק הדרכה חשובה."
     ]
   },
   {
     "word": "counselor",
-    "exampleSentences": [
+    
+    "sentences": [
       "The school counselor offers support to students.",
       "She spoke with a counselor about her problems."
+    ],
+    "translations": [
+      "יועץ בית הספר מציע תמיכה לתלמידים.",
+      "היא דיברה עם יועץ על בעיותיה."
     ]
   },
   {
     "word": "addiction",
-    "exampleSentences": [
+   
+    "sentences": [
       "Addiction can have serious consequences.",
       "He is seeking help to overcome his addiction."
+    ],
+    "translations": [
+      "להתמכרות יכולות להיות השלכות חמורות.",
+      "הוא מחפש עזרה כדי להתגבר על ההתמכרות שלו."
     ]
   },
   {
     "word": "mental health support",
-    "exampleSentences": [
+   
+    "sentences": [
       "Access to mental health support is crucial.",
       "There are many organizations that offer mental health support."
+    ],
+    "translations": [
+      "גישה לתמיכה בבריאות הנפש היא חיונית.",
+      "ישנם ארגונים רבים המציעים תמיכה בבריאות הנפש."
     ]
   },
   {
     "word": "self-care",
-    "exampleSentences": [
+
+    "sentences": [
       "Making time for self-care is important for well-being.",
       "She practices various self-care activities."
+    ],
+    "translations": [
+      "הקצאת זמן לטיפול עצמי חשובה לרווחה.",
+      "היא נוהגת בפעילויות שונות של טיפול עצמי."
     ]
   },
   {
     "word": "nutritionist",
-    "exampleSentences": [
+   
+    "sentences": [
       "The nutritionist provided advice on healthy eating.",
       "She consulted a nutritionist to create a meal plan."
+    ],
+    "translations": [
+      "התזונאי סיפק עצות בנוגע לאכילה בריאה.",
+      "היא התייעצה עם תזונאי כדי ליצור תוכנית ארוחות."
     ]
   },
   {
     "word": "dietitian",
-    "exampleSentences": [
+
+    "sentences": [
       "The dietitian helped her manage her dietary restrictions.",
       "He works as a registered dietitian."
+    ],
+    "translations": [
+      "הדיאטן עזר לה לנהל את מגבלות התזונה שלה.",
+      "הוא עובד כדיאטן רשום."
     ]
   },
   {
     "word": "weight loss",
-    "exampleSentences": [
+  
+    "sentences": [
       "He is trying to achieve weight loss through diet and exercise.",
       "There are many approaches to weight loss."
+    ],
+    "translations": [
+      "הוא מנסה להשיג ירידה במשקל באמצעות דיאטה ופעילות גופנית.",
+      "ישנן גישות רבות לירידה במשקל."
     ]
   },
   {
     "word": "weight gain",
-    "exampleSentences": [
+
+    "sentences": [
       "Some medical conditions can lead to unintentional weight gain.",
       "He is trying to achieve healthy weight gain."
+    ],
+    "translations": [
+      "מצבים רפואיים מסוימים עלולים להוביל לעלייה בלתי מכוונת במשקל.",
+      "הוא מנסה להשיג עלייה בריאה במשקל."
     ]
   },
   {
     "word": "wellness",
-    "exampleSentences": [
+   
+    "sentences": [
       "The retreat focused on holistic wellness.",
       "She is interested in improving her overall wellness."
+    ],
+    "translations": [
+      "הסדנה התמקדה ברווחה הוליסטית.",
+      "היא מעוניינת לשפר את הרווחה הכללית שלה."
     ]
   },
   {
     "word": "balance",
-    "exampleSentences": [
+   
+    "sentences": [
       "Maintaining a good work-life balance is important.",
       "Balance is key to a healthy lifestyle."
+    ],
+    "translations": [
+      "שמירה על איזון טוב בין עבודה לחיים חשובה.",
+      "איזון הוא המפתח לאורח חיים בריא."
     ]
   },
   {
     "word": "healthy habits",
-    "exampleSentences": [
+ 
+    "sentences": [
       "Developing healthy habits takes time and effort.",
       "She is working on incorporating more healthy habits into her routine."
+    ],
+    "translations": [
+      "פיתוח הרגלים בריאים דורש זמן ומאמץ.",
+      "היא עובדת על שילוב הרגלים בריאים יותר בשגרת יומה."
     ]
   },
   {
     "word": "mental clarity",
-    "exampleSentences": [
+  
+    "sentences": [
       "Meditation can help improve mental clarity.",
       "Getting enough sleep contributes to mental clarity."
+    ],
+    "translations": [
+      "מדיטציה יכולה לעזור לשפר את הבהירות המחשבתית.",
+      "שינה מספקת תורמת לבהירות מחשבתית."
     ]
   },
   {
     "word": "immune system",
-    "exampleSentences": [
+  
+    "sentences": [
       "A strong immune system helps fight off infections.",
       "Diet and sleep play a role in the immune system."
+    ],
+    "translations": [
+      "מערכת חיסון חזקה עוזרת להילחם בזיהומים.",
+      "תזונה ושינה ממלאות תפקיד במערכת החיסון."
     ]
   },
   {
     "word": "dehydration",
-    "exampleSentences": [
+  
+    "sentences": [
       "It's important to avoid dehydration, especially in hot weather.",
       "Symptoms of dehydration include headache and dizziness."
+    ],
+    "translations": [
+      "חשוב להימנע מהתייבשות, במיוחד במזג אוויר חם.",
+      "תסמינים של התייבשות כוללים כאבי ראש וסחרחורת."
     ]
   },
   {
     "word": "hydration",
-    "exampleSentences": [
+    
+    "sentences": [
       "Proper hydration is essential for good health.",
       "Drinking enough water ensures good hydration."
+    ],
+    "translations": [
+      "הידרציה נאותה חיונית לבריאות טובה.",
+      "שתיית מספיק מים מבטיחה הידרציה טובה."
     ]
   },
   {
     "word": "sanitation",
-    "exampleSentences": [
+   
+    "sentences": [
       "Improving sanitation is crucial for public health.",
       "Poor sanitation can lead to the spread of diseases."
+    ],
+    "translations": [
+      "שיפור התברואה חיוני לבריאות הציבור.",
+      "תברואה לקויה עלולה להוביל להתפשטות מחלות."
     ]
   },
   {
     "word": "cleanliness",
-    "exampleSentences": [
+   
+    "sentences": [
       "Cleanliness helps prevent the spread of germs.",
       "Maintaining cleanliness in the kitchen is important."
+    ],
+    "translations": [
+      "ניקיון עוזר למנוע את התפשטות החיידקים.",
+      "שמירה על ניקיון במטבח חשובה."
     ]
   },
   {
     "word": "wellness check",
-    "exampleSentences": [
+  
+    "sentences": [
       "She scheduled a wellness check with her doctor.",
       "Regular wellness checks can help detect health issues early."
+    ],
+    "translations": [
+      "היא קבעה בדיקת רווחה אצל הרופא שלה.",
+      "בדיקות רווחה קבועות יכולות לעזור לגלות בעיות בריאות בשלב מוקדם."
     ]
   },
   {
     "word": "body mass index",
-    "exampleSentences": [
+  
+    "sentences": [
       "Body mass index is a measure of body fat based on height and weight.",
       "The doctor calculated his body mass index."
+    ],
+    "translations": [
+      "מדד מסת גוף הוא מדד של שומן גוף המבוסס על גובה ומשקל.",
+      "הרופא חישב את מדד מסת הגוף שלו."
     ]
   },
   {
     "word": "cholesterol",
-    "exampleSentences": [
+    
+    "sentences": [
       "High cholesterol can increase the risk of heart disease.",
       "He is monitoring his cholesterol levels."
+    ],
+    "translations": [
+      "כולסטרול גבוה עלול להגביר את הסיכון למחלות לב.",
+      "הוא עוקב אחר רמות הכולסטרול שלו."
     ]
   },
   {
     "word": "blood pressure",
-    "exampleSentences": [
+
+    "sentences": [
       "Regularly checking your blood pressure is important.",
       "His blood pressure was within the normal range."
+    ],
+    "translations": [
+      "בדיקה קבועה של לחץ הדם חשובה.",
+      "לחץ הדם שלו היה בטווח הנורמה."
     ]
   },
   {
     "word": "heart rate",
-    "exampleSentences": [
+  
+    "sentences": [
       "Exercise can increase your heart rate.",
       "The doctor checked his heart rate."
+    ],
+    "translations": [
+      "פעילות גופנית יכולה להעלות את קצב הלב שלך.",
+      "הרופא בדק את קצב הלב שלו."
     ]
   },
   {
     "word": "stress management",
-    "exampleSentences": [
+   
+    "sentences": [
       "Learning effective stress management techniques is important.",
       "Yoga and meditation are forms of stress management."
+    ],
+    "translations": [
+      "למידת טכניקות יעילות לניהול מתחים חשובה.",
+      "יוגה ומדיטציה הן צורות של ניהול מתחים."
     ]
   },
   {
     "word": "anxiety",
-    "exampleSentences": [
+  
+    "sentences": [
       "She experiences anxiety in social situations.",
       "Therapy can help manage anxiety."
+    ],
+    "translations": [
+      "היא חווה חרדה במצבים חברתיים.",
+      "טיפול יכול לעזור בניהול חרדה."
     ]
   },
   {
     "word": "depression",
-    "exampleSentences": [
+  
+    "sentences": [
       "Depression is a serious mental health condition.",
       "Support groups can help people struggling with depression."
+    ],
+    "translations": [
+      "דיכאון הוא מצב בריאות נפשית חמור.",
+      "קבוצות תמיכה יכולות לעזור לאנשים המתמודדים עם דיכאון."
     ]
   },
   {
     "word": "self-esteem",
-    "exampleSentences": [
+  
+    "sentences": [
       "Building healthy self-esteem is important for mental well-being.",
       "Positive affirmations can help improve self-esteem."
+    ],
+    "translations": [
+      "בניית הערכה עצמית בריאה חשובה לרווחה נפשית.",
+      "אישורים חיוביים יכולים לעזור לשפר את ההערכה העצמית."
     ]
   },
   {
     "word": "happiness",
-    "exampleSentences": [
+  
+    "sentences": [
       "Spending time with loved ones brings happiness.",
       "She found happiness in simple things."
+    ],
+    "translations": [
+      "בילוי זמן עם יקיריהם מביא אושר.",
+      "היא מצאה אושר בדברים פשוטים."
     ]
   },
   {
     "word": "positive thinking",
-    "exampleSentences": [
+   
+    "sentences": [
       "Practicing positive thinking can improve your outlook.",
       "She tries to maintain a positive thinking attitude."
+    ],
+    "translations": [
+      "תרגול חשיבה חיובית יכול לשפר את השקפתך.",
+      "היא מנסה לשמור על גישה של חשיבה חיובית."
     ]
   },
   {
     "word": "mental strength",
-    "exampleSentences": [
+   
+    "sentences": [
       "Overcoming challenges can build mental strength.",
       "He showed great mental strength during the difficult time."
+    ],
+    "translations": [
+      "התגברות על אתגרים יכולה לבנות חוזק נפשי.",
+      "הוא גילה חוזק נפשי רב במהלך התקופה הקשה."
     ]
   },
   {
     "word": "motivation",
-    "exampleSentences": [
+
+    "sentences": [
       "Finding motivation to exercise can be difficult.",
       "His speech provided great motivation to the team."
+    ],
+    "translations": [
+      "מציאת מוטיבציה להתאמן יכולה להיות קשה.",
+      "נאומו סיפק מוטיבציה רבה לצוות."
     ]
   },
   {
     "word": "wellness routine",
-    "exampleSentences": [
+  
+    "sentences": [
       "She has a daily wellness routine that includes meditation and exercise.",
       "Establishing a consistent wellness routine can improve overall health."
+    ],
+    "translations": [
+      "יש לה שגרת רווחה יומית הכוללת מדיטציה ופעילות גופנית.",
+      "יצירת שגרת רווחה עקבית יכולה לשפר את הבריאות הכללית."
     ]
   }
 ]

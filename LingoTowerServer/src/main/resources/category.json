@@ -1,26 +1,32 @@
 [
     {
         "id": 1,
-        "name": "Everyday Life and Essential Vocabulary"
+        "name": "Everyday Life and Essential Vocabulary",
+        "translation": "חיי יום-יום ואוצר מילים בסיסי"
     },
     {
         "id": 2,
-        "name": "People and Relationships"
+        "name": "People and Relationships",
+        "translation": "אנשים ויחסים"
     },
     {
         "id": 3,
-        "name": "Work and Education"
+        "name": "Work and Education",
+        "translation": "עבודה וחינוך"
     },
     {
         "id": 4,
-        "name": "Health and Well being"
+        "name": "Health and Well being",
+        "translation": "בריאות ורווחה"
     },
     {
         "id": 5,
-        "name": "Travel and Leisure"
+        "name": "Travel and Leisure",
+        "translation": "טיולים ופנאי"
     },
     {
         "id": 6,
-        "name": "Environment and Nature"
+        "name": "Environment and Nature",
+        "translation": "סביבה וטבע"
     }
 ]
