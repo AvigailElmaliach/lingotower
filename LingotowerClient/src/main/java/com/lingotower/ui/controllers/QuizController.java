@@ -1,19 +1,24 @@
 package com.lingotower.ui.controllers;
 
+import static com.lingotower.constants.QuizConstants.BLANK_PLACEHOLDER;
+import static com.lingotower.constants.QuizConstants.COMPLETION_PREFIX;
+import static com.lingotower.constants.QuizConstants.DIFFICULTIES;
+import static com.lingotower.constants.QuizConstants.FALLBACK_CATEGORIES;
+import static com.lingotower.constants.QuizConstants.STYLE_TEXT_FILL_GREEN;
+import static com.lingotower.constants.QuizConstants.STYLE_TEXT_FILL_RED;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 
-import com.lingotower.dto.sentence.SentenceCompletionDTO;
 import com.lingotower.model.Category;
-import com.lingotower.model.Difficulty;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
+import com.lingotower.ui.quiz.QuizGenerator;
+import com.lingotower.ui.quiz.QuizUIHelper;
 import com.lingotower.utils.LoggingUtility;
 
 import javafx.animation.KeyFrame;
@@ -23,8 +28,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -57,7 +60,7 @@ public class QuizController {
 	@FXML
 	private VBox questionContent;
 	@FXML
-	private VBox summaryContent; // Summaries/score display
+	private VBox summaryContent;
 
 	// Quiz preview elements
 	@FXML
@@ -99,7 +102,6 @@ public class QuizController {
 	private Label correctAnswerLabel;
 	@FXML
 	private Button submitBtn;
-
 	@FXML
 	private Button nextBtn;
 
@@ -107,61 +109,40 @@ public class QuizController {
 	@FXML
 	private Label summaryLabel;
 
+	// Services
 	private QuizService quizService;
 	private CategoryService categoryService;
-	private ToggleGroup answerGroup;
+	private QuizGenerator quizGenerator;
 
+	// State
+	private ToggleGroup answerGroup;
 	private Quiz currentQuiz;
 	private int currentQuestionIndex = 0;
 	private int correctAnswersCount = 0;
+
 	private static final Logger logger = LoggingUtility.getLogger(QuizController.class);
-
-	private static final ObservableList<String> FALLBACK_CATEGORIES = FXCollections.unmodifiableObservableList(
-			FXCollections.observableArrayList("Everyday Life and Essential Vocabulary", "People and Relationships",
-					"Work and Education", "Health and Well-being", "Travel and Leisure", "Environment and Nature"));
-
-	private static final String STYLE_TEXT_FILL_RED = "-fx-text-fill: #c62828;";
-	private static final String STYLE_TEXT_FILL_GREEN = "-fx-text-fill: #2e7d32;";
-
-	private static final String BLANK_PLACEHOLDER = "_____";
-	private static final String QUIZ_PREFIX = "Words Quiz - ";
-	private static final String COMPLETION_PREFIX = "Sentence Completion - ";
 
 	@FXML
 	private void initialize() {
+		// Initialize services
 		this.quizService = new QuizService();
 		this.categoryService = new CategoryService();
+		this.quizGenerator = new QuizGenerator(quizService, categoryService);
 
-		// Initialize ComboBoxes for difficulties
-		ObservableList<String> difficulties = FXCollections.observableArrayList("EASY", "MEDIUM", "HARD");
-		difficultyComboBox.setItems(difficulties);
+		// Initialize difficulty dropdown
+		difficultyComboBox.setItems(DIFFICULTIES);
 		difficultyComboBox.setValue("EASY");
 
-		// Update categories to match the API
+		// Load available categories
 		loadCategories();
 
 		// Set up ToggleGroup for radio buttons
-		answerGroup = new ToggleGroup();
-		answer1.setToggleGroup(answerGroup);
-		answer2.setToggleGroup(answerGroup);
-		answer3.setToggleGroup(answerGroup);
-		answer4.setToggleGroup(answerGroup);
-		answer5.setToggleGroup(answerGroup);
+		setupRadioButtons();
 
-		// Set up the ListView cell factory to display only the quiz name
-		quizListView.setCellFactory(lv -> new ListCell<Quiz>() {
-			@Override
-			protected void updateItem(Quiz quiz, boolean empty) {
-				super.updateItem(quiz, empty);
-				if (empty || quiz == null) {
-					setText(null);
-				} else {
-					setText(quiz.getName());
-				}
-			}
-		});
+		// Set up quiz ListView display
+		setupQuizListView();
 
-		// Generate and add some sample quizzes to select from
+		// Generate sample quizzes
 		generateSampleQuizzes();
 
 		// Ensure welcome content is visible initially
@@ -192,11 +173,40 @@ public class QuizController {
 				categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
 			}
 		} catch (Exception e) {
-			logger.error("Error starting quiz: {}", e.getMessage(), e);
+			logger.error("Error loading categories: {}", e.getMessage(), e);
 			// Fallback categories
 			categoryComboBox.setItems(FALLBACK_CATEGORIES);
 			categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
 		}
+	}
+
+	/**
+	 * Set up the radio button toggle group
+	 */
+	private void setupRadioButtons() {
+		answerGroup = new ToggleGroup();
+		answer1.setToggleGroup(answerGroup);
+		answer2.setToggleGroup(answerGroup);
+		answer3.setToggleGroup(answerGroup);
+		answer4.setToggleGroup(answerGroup);
+		answer5.setToggleGroup(answerGroup);
+	}
+
+	/**
+	 * Set up the quiz list view cell factory
+	 */
+	private void setupQuizListView() {
+		quizListView.setCellFactory(lv -> new ListCell<Quiz>() {
+			@Override
+			protected void updateItem(Quiz quiz, boolean empty) {
+				super.updateItem(quiz, empty);
+				if (empty || quiz == null) {
+					setText(null);
+				} else {
+					setText(quiz.getName());
+				}
+			}
+		});
 	}
 
 	/**
@@ -212,41 +222,17 @@ public class QuizController {
 
 		// For each category, create both regular quizzes and sentence completion
 		// quizzes
-		long quizId = 1;
 		for (String categoryName : categories) {
 			for (String difficultyName : difficulties) {
 				// Create regular vocabulary quiz
-				Quiz vocabQuiz = new Quiz();
-				vocabQuiz.setId(quizId++);
-				vocabQuiz.setName(QUIZ_PREFIX + categoryName + " (" + difficultyName + ")");
-
-				// Set category
-				Category category = new Category();
-				category.setId(getCategoryIdByName(categoryName));
-				category.setName(categoryName);
-				vocabQuiz.setCategory(category);
-
-				// Set difficulty
-				vocabQuiz.setDifficulty(Difficulty.valueOf(difficultyName));
-
-				sampleQuizzes.add(vocabQuiz);
+				sampleQuizzes.add(quizGenerator.createSampleQuiz(categoryName, difficultyName, false));
 
 				// Create sentence completion quiz
-				Quiz sentenceQuiz = new Quiz();
-				sentenceQuiz.setId(quizId++);
-				sentenceQuiz.setName(COMPLETION_PREFIX + categoryName + " (" + difficultyName + ")");
-
-				// Use the same category
-				sentenceQuiz.setCategory(category);
-
-				// Set difficulty
-				sentenceQuiz.setDifficulty(Difficulty.valueOf(difficultyName));
-
-				sampleQuizzes.add(sentenceQuiz);
+				sampleQuizzes.add(quizGenerator.createSampleQuiz(categoryName, difficultyName, true));
 			}
 		}
 
-		// Set the items to the new list (replacing any existing items)
+		// Set the items to the new list
 		quizListView.setItems(sampleQuizzes);
 
 		// Add selection listener to preview the selected quiz
@@ -256,41 +242,6 @@ public class QuizController {
 				showQuizPreview(newQuiz);
 			}
 		});
-	}
-
-	/**
-	 * Maps category names to their IDs based on the provided API information.
-	 */
-	private Long getCategoryIdByName(String categoryName) {
-		switch (categoryName) {
-		case "Everyday Life and Essential Vocabulary":
-			return 1L;
-		case "People and Relationships":
-			return 2L;
-		case "Work and Education":
-			return 3L;
-		case "Health and Well-being":
-			return 4L;
-		case "Travel and Leisure":
-			return 5L;
-		case "Environment and Nature":
-			return 6L;
-		default:
-			// If not found, try to match partially
-			if (categoryName.contains("Everyday") || categoryName.contains("Essential"))
-				return 1L;
-			if (categoryName.contains("People") || categoryName.contains("Relationship"))
-				return 2L;
-			if (categoryName.contains("Work") || categoryName.contains("Education"))
-				return 3L;
-			if (categoryName.contains("Health") || categoryName.contains("Well"))
-				return 4L;
-			if (categoryName.contains("Travel") || categoryName.contains("Leisure"))
-				return 5L;
-			if (categoryName.contains("Environment") || categoryName.contains("Nature"))
-				return 6L;
-			return 1L; // Default to first category
-		}
 	}
 
 	/**
@@ -304,7 +255,8 @@ public class QuizController {
 		logger.debug("Filter button clicked!");
 		logger.debug("Selected difficulty = {}", selectedDifficulty);
 		logger.debug("Selected category = {}", selectedCategory);
-		// Re-generate sample quizzes with filter
+
+		// Filter existing quizzes
 		ObservableList<Quiz> filteredQuizzes = FXCollections.observableArrayList();
 
 		// Get all quizzes
@@ -320,29 +272,13 @@ public class QuizController {
 			}
 		}
 
+		// If no matches, create new filtered quizzes
 		if (filteredQuizzes.isEmpty()) {
-			// If no matches, create a new quiz with the selected criteria
-			Quiz filteredQuiz = new Quiz();
-			filteredQuiz.setId(System.currentTimeMillis());
-			filteredQuiz.setName(QUIZ_PREFIX + selectedCategory + " (" + selectedDifficulty + ")");
+			// Create regular quiz with selected criteria
+			filteredQuizzes.add(quizGenerator.createSampleQuiz(selectedCategory, selectedDifficulty, false));
 
-			Category category = new Category();
-			category.setId(getCategoryIdByName(selectedCategory));
-			category.setName(selectedCategory);
-			filteredQuiz.setCategory(category);
-
-			filteredQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
-
-			filteredQuizzes.add(filteredQuiz);
-
-			// Add sentence completion quiz
-			Quiz sentenceQuiz = new Quiz();
-			sentenceQuiz.setId(System.currentTimeMillis() + 1);
-			sentenceQuiz.setName(COMPLETION_PREFIX + selectedCategory + " (" + selectedDifficulty + ")");
-			sentenceQuiz.setCategory(category);
-			sentenceQuiz.setDifficulty(Difficulty.valueOf(selectedDifficulty));
-			filteredQuizzes.add(sentenceQuiz);
-
+			// Create sentence completion quiz
+			filteredQuizzes.add(quizGenerator.createSampleQuiz(selectedCategory, selectedDifficulty, true));
 		}
 
 		// Update the ListView
@@ -353,14 +289,14 @@ public class QuizController {
 	 * Displays preview info about the selected quiz.
 	 */
 	private void showQuizPreview(Quiz quiz) {
-		// Hide others
+		// Hide others, show preview
 		welcomeContent.setVisible(false);
 		questionContent.setVisible(false);
 		summaryContent.setVisible(false);
 		previewContent.setVisible(true);
 
 		// Check if this is a sentence completion quiz
-		boolean isSentenceCompletionQuiz = quiz.getName().startsWith("Sentence Completion");
+		boolean isSentenceCompletionQuiz = quiz.getName().startsWith(COMPLETION_PREFIX);
 
 		// Populate preview
 		quizNameLabel.setText(quiz.getName());
@@ -389,21 +325,17 @@ public class QuizController {
 			logger.info("Starting quiz: {}", currentQuiz.getName());
 			startQuiz(currentQuiz);
 		} else {
-			showError("Please select a quiz first");
+			QuizUIHelper.showError("Please select a quiz first");
 		}
 	}
 
+	/**
+	 * Starts a quiz by generating questions and showing the first one
+	 */
 	private void startQuiz(Quiz quiz) {
-		// Clear previous state
+		// Reset state
 		currentQuestionIndex = 0;
 		correctAnswersCount = 0;
-
-		// Get category and difficulty from the quiz
-		Long categoryId = quiz.getCategory().getId();
-		String categoryName = quiz.getCategory().getName();
-		String categoryTranslation = quiz.getCategory().getTranslation(); // Hebrew name if available
-		String difficulty = quiz.getDifficulty().toString();
-		String quizName = quiz.getName();
 
 		// Show loading indication
 		activeQuizNameLabel.setText("Loading quiz questions...");
@@ -418,97 +350,57 @@ public class QuizController {
 		nextBtn.setDisable(true);
 
 		try {
-			List<Question> generatedQuestions = null;
-			boolean isSentenceCompletionQuiz = quizName.startsWith("Sentence Completion");
+			// Generate the quiz using the service
+			Quiz generatedQuiz = quizGenerator.generateQuizWithQuestions(quiz);
 
-			if (isSentenceCompletionQuiz) {
-				// Determine which category name to use for the API call
-				String apiCategoryName = categoryName;
-				String displayCategoryName = categoryName;
-
-				// If the category name is in Hebrew
-				if (containsHebrew(categoryName)) {
-					logger.info("Category name is in Hebrew, mapping to English for API call");
-					apiCategoryName = mapCategoryName(categoryName, true);
-					displayCategoryName = categoryName; // Keep Hebrew for display
-				} else {
-					// Category is in English already, good for API
-					// But get Hebrew for display if we're in Hebrew UI
-					String hebrewName = mapCategoryName(categoryName, false);
-					if (!hebrewName.equals(categoryName) && containsHebrew(hebrewName)) {
-						displayCategoryName = hebrewName;
-					}
-				}
-
-				// Generate sentence completion questions using the appropriate category name
-				logger.info("Starting sentence completion quiz with API category name: '{}', difficulty: {}",
-						apiCategoryName, difficulty);
-
-				List<SentenceCompletionDTO> sentences = quizService.generateSentenceCompletions(apiCategoryName,
-						difficulty);
-
-				if (sentences != null && !sentences.isEmpty()) {
-					generatedQuestions = quizService.convertSentencesToQuestions(sentences);
-					logger.info("Successfully converted {} sentences to questions", sentences.size());
-				} else {
-					logger.warn("Failed to get sentence completion questions. Using fallback method...");
-					// FALLBACK: Create sample sentence completion questions
-					generatedQuestions = createFallbackSentenceQuestions(displayCategoryName, difficulty);
-
-					// Show a warning to the user that these are fallback questions
-					Platform.runLater(() -> {
-						showError(
-								"Could not get real sentence completion questions from the server. Using sample questions instead.");
-					});
-				}
-
-				// Set the quiz name using the display category name (could be Hebrew)
-				quizName = COMPLETION_PREFIX + displayCategoryName + " (" + difficulty + ")";
-			} else {
-				// Generate regular quiz questions
-				logger.info("Starting regular quiz with categoryId: {}, difficulty: {}", categoryId, difficulty);
-
-				generatedQuestions = quizService.generateQuiz(categoryId, difficulty);
-
-				// Set the quiz name - use translation if available and we're in Hebrew mode
-				if (categoryTranslation != null && !categoryTranslation.isEmpty()
-						&& containsHebrew(categoryTranslation)) {
-					quizName = QUIZ_PREFIX + categoryTranslation + " (" + difficulty + ")";
-				} else {
-					quizName = QUIZ_PREFIX + categoryName + " (" + difficulty + ")";
-				}
-			}
-
-			// Process generated questions
-			if (generatedQuestions != null && !generatedQuestions.isEmpty()) {
-				// Replace the quiz's questions with the generated ones
-				quiz.getQuestions().clear();
-				for (Question question : generatedQuestions) {
-					quiz.addQuestion(question);
-				}
-
-				currentQuiz = quiz;
-				quiz.setName(quizName);
+			if (generatedQuiz != null && !generatedQuiz.getQuestions().isEmpty()) {
+				currentQuiz = generatedQuiz;
 
 				// Update quiz name display
-				activeQuizNameLabel.setText(quizName);
+				activeQuizNameLabel.setText(currentQuiz.getName());
 
 				// Enable controls
 				answersBox.setDisable(false);
+
+				// Check if fallback questions are being used
+				boolean usingFallback = false;
+				if (!currentQuiz.getQuestions().isEmpty()) {
+					Question firstQuestion = currentQuiz.getQuestions().get(0);
+					if (firstQuestion.getCategory() != null && firstQuestion.getCategory().getName() != null
+							&& firstQuestion.getCategory().getName().endsWith("_FALLBACK")) {
+						usingFallback = true;
+
+						// Clean up the category name for display purposes while keeping the flag
+						for (Question q : currentQuiz.getQuestions()) {
+							if (q.getCategory() != null && q.getCategory().getName().endsWith("_FALLBACK")) {
+								String originalName = q.getCategory().getName().replace("_FALLBACK", "");
+								q.getCategory().setName(originalName);
+							}
+						}
+
+						// Show a warning to the user
+						Platform.runLater(() -> {
+							QuizUIHelper.showWarning("Using sample questions",
+									"Could not retrieve real questions from the server. "
+											+ "Using sample questions instead.");
+
+						});
+					}
+				}
 
 				// Show first question
 				showCurrentQuestion();
 			} else {
 				// Handle error - no questions generated
 				String errorMessage = "No questions available for the selected category and difficulty. Please try a different selection";
-				showError(errorMessage);
+				QuizUIHelper.showError(errorMessage);
 
 				// Go back to welcome screen
 				questionContent.setVisible(false);
 				welcomeContent.setVisible(true);
 			}
 		} catch (Exception e) {
-			showError("Error starting quiz: " + e.getMessage());
+			QuizUIHelper.showError("Error starting quiz: " + e.getMessage());
 			e.printStackTrace();
 			// Go back to welcome screen
 			questionContent.setVisible(false);
@@ -517,89 +409,8 @@ public class QuizController {
 	}
 
 	/**
-	 * Creates fallback sentence completion questions when the API fails. This is
-	 * just a temporary solution for testing.
+	 * Display the current question
 	 */
-	private List<Question> createFallbackSentenceQuestions(String categoryName, String difficulty) {
-		List<Question> questions = new ArrayList<>();
-
-		// Create a category object
-		Category category = new Category();
-		category.setId(getCategoryIdByName(categoryName));
-		category.setName(categoryName);
-
-		// Create sample questions based on category
-		if (categoryName.contains("Everyday Life")) {
-			// Question 1
-			Question q1 = new Question();
-			q1.setQuestionText("I _____ to make a phone call.");
-			q1.setCorrectAnswer("need");
-			q1.setOptions(List.of("need", "thank you", "hello", "goodbye", "please"));
-			q1.setCategory(category);
-			questions.add(q1);
-
-			// Question 2
-			Question q2 = new Question();
-			q2.setQuestionText("Please _____ me the directions to the store.");
-			q2.setCorrectAnswer("give");
-			q2.setOptions(List.of("give", "happy", "blue", "seven", "today"));
-			q2.setCategory(category);
-			questions.add(q2);
-
-			// Question 3
-			Question q3 = new Question();
-			q3.setQuestionText("What time _____ it?");
-			q3.setCorrectAnswer("is");
-			q3.setOptions(List.of("is", "are", "car", "house", "day"));
-			q3.setCategory(category);
-			questions.add(q3);
-		} else if (categoryName.contains("Work")) {
-			// Question 1
-			Question q1 = new Question();
-			q1.setQuestionText("I have a meeting with my _____ today.");
-			q1.setCorrectAnswer("boss");
-			q1.setOptions(List.of("boss", "apple", "car", "dog", "tree"));
-			q1.setCategory(category);
-			questions.add(q1);
-
-			// Question 2
-			Question q2 = new Question();
-			q2.setQuestionText("Please _____ this document by tomorrow.");
-			q2.setCorrectAnswer("complete");
-			q2.setOptions(List.of("complete", "orange", "table", "chair", "computer"));
-			q2.setCategory(category);
-			questions.add(q2);
-		} else {
-			// Default questions for any category
-			Question q1 = new Question();
-			q1.setQuestionText("I _____ to learn this language.");
-			q1.setCorrectAnswer("want");
-			q1.setOptions(List.of("want", "blue", "car", "apple", "house"));
-			q1.setCategory(category);
-			questions.add(q1);
-
-			Question q2 = new Question();
-			q2.setQuestionText("What is your _____?");
-			q2.setCorrectAnswer("name");
-			q2.setOptions(List.of("name", "blue", "water", "chair", "tree"));
-			q2.setCategory(category);
-			questions.add(q2);
-		}
-
-		// Add difficulty-based questions
-		if (difficulty.equals("HARD")) {
-			Question q = new Question();
-			q.setQuestionText("The company _____ its annual report yesterday.");
-			q.setCorrectAnswer("published");
-			q.setOptions(List.of("published", "happy", "blue", "run", "eat"));
-			q.setCategory(category);
-			questions.add(q);
-		}
-
-		logger.info("Created {} fallback sentence completion questions", questions.size());
-		return questions;
-	}
-
 	private void showCurrentQuestion() {
 		if (currentQuiz == null || currentQuiz.getQuestions() == null || currentQuiz.getQuestions().isEmpty()) {
 			return;
@@ -629,20 +440,8 @@ public class QuizController {
 			questionText.getStyleClass().removeAll("sentence-completion");
 		}
 
-		// Get all options for this question
-		List<String> options = question.getOptions();
-
-		if (options == null || options.isEmpty()) {
-			showError("No answer options available for this question");
-			return;
-		}
-
-		// Update the radio buttons
-		answer1.setText(options.get(0));
-		answer2.setText(options.get(1));
-		answer3.setText(options.get(2));
-		answer4.setText(options.get(3));
-		answer5.setText(options.get(4));
+		// Set up the answer options
+		QuizUIHelper.setUpAnswers(question, answer1, answer2, answer3, answer4, answer5);
 
 		// Clear previous selection
 		answerGroup.selectToggle(null);
@@ -650,8 +449,7 @@ public class QuizController {
 		// Hide feedback
 		feedbackBox.setVisible(false);
 
-		// Update progress label
-		// Update progress bar
+		// Update progress label and bar
 		int total = currentQuiz.getQuestions().size();
 		double progress = (double) (currentQuestionIndex + 1) / total;
 		progressBar.setProgress(progress);
@@ -685,18 +483,18 @@ public class QuizController {
 		}
 
 		// Show feedback
-		showAnswerFeedback(isCorrect, question.getCorrectAnswer());
+		QuizUIHelper.showAnswerFeedback(isCorrect, question.getCorrectAnswer(), feedbackBox, feedbackLabel,
+				correctAnswerLabel, question);
 
 		// Disable submit button, enable next
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(false);
 
-		// If this is a sentence completion question, highlight the blank with the
-		// selected answer
+		// If this is a sentence completion question, highlight the completed sentence
 		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
 		if (isSentenceCompletion) {
 			// Replace the blank with the selected answer and show it in the question text
-			String completedSentence = getCompleteSentence(question.getQuestionText(), selectedAnswer);
+			String completedSentence = QuizUIHelper.getCompleteSentence(question.getQuestionText(), selectedAnswer);
 			// Set a different color based on correctness
 			if (isCorrect) {
 				questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
@@ -716,60 +514,6 @@ public class QuizController {
 		resetColorTimeline.play();
 	}
 
-	private void showAnswerFeedback(boolean correct, String correctAnswer) {
-		feedbackBox.setVisible(true);
-		feedbackBox.getStyleClass().removeAll("correct", "incorrect");
-
-		// Get current question to check if it's a sentence completion
-		Question currentQuestion = currentQuiz.getQuestions().get(currentQuestionIndex);
-		boolean isSentenceCompletion = currentQuestion.getQuestionText().contains(BLANK_PLACEHOLDER);
-
-		if (correct) {
-			feedbackBox.getStyleClass().add("correct");
-			feedbackLabel.setText("Correct!");
-			feedbackLabel.setStyle(STYLE_TEXT_FILL_GREEN);
-
-			if (isSentenceCompletion) {
-				// Show the complete sentence for sentence completion questions
-				String completeSentence = getCompleteSentence(currentQuestion.getQuestionText(), correctAnswer);
-				correctAnswerLabel.setText("Complete sentence: " + completeSentence);
-				correctAnswerLabel.setVisible(true);
-			} else {
-				correctAnswerLabel.setVisible(false);
-			}
-		} else {
-			feedbackBox.getStyleClass().add("incorrect");
-			feedbackLabel.setText("Incorrect!");
-			feedbackLabel.setStyle(STYLE_TEXT_FILL_RED);
-
-			if (isSentenceCompletion) {
-				// Show the complete sentence for sentence completion questions
-				String completeSentence = getCompleteSentence(currentQuestion.getQuestionText(), correctAnswer);
-				correctAnswerLabel.setText(
-						"The correct answer is: " + correctAnswer + "\nComplete sentence: " + completeSentence);
-			} else {
-				correctAnswerLabel.setText("The correct answer is: " + correctAnswer);
-			}
-			correctAnswerLabel.setVisible(true);
-		}
-	}
-
-	/**
-	 * Replaces the blank in a sentence completion question with the correct answer.
-	 * 
-	 * @param question The question text containing blanks (_____)
-	 * @param answer   The correct answer to insert
-	 * @return The complete sentence with the answer inserted
-	 */
-	private String getCompleteSentence(String question, String answer) {
-		if (question == null || answer == null) {
-			return question;
-		}
-
-		// Replace the blank with the correct answer
-		return question.replace(BLANK_PLACEHOLDER, answer);
-	}
-
 	/**
 	 * Move to next question or show summary if at the end.
 	 */
@@ -778,6 +522,7 @@ public class QuizController {
 		if (currentQuiz == null) {
 			return;
 		}
+
 		currentQuestionIndex++;
 		if (currentQuestionIndex < currentQuiz.getQuestions().size()) {
 			showCurrentQuestion();
@@ -795,43 +540,13 @@ public class QuizController {
 		summaryContent.setVisible(true);
 
 		int totalQuestions = currentQuiz.getQuestions().size();
+		boolean isSentenceCompletionQuiz = currentQuiz.getName().startsWith(COMPLETION_PREFIX);
 
-		// Check if this was a sentence completion quiz
-		boolean isSentenceCompletionQuiz = currentQuiz.getName().startsWith("Sentence Completion");
+		// Generate appropriate summary text
+		String summaryText = QuizUIHelper.generateSummaryText(correctAnswersCount, totalQuestions,
+				isSentenceCompletionQuiz);
 
-		// Calculate score percentage
-		int scorePercentage = (correctAnswersCount * 100) / totalQuestions;
-
-		// Create appropriate summary message
-		StringBuilder summaryBuilder = new StringBuilder();
-		summaryBuilder.append(
-				String.format("You scored %d out of %d! (%d%%)", correctAnswersCount, totalQuestions, scorePercentage));
-
-		// Add specific feedback based on quiz type
-		if (isSentenceCompletionQuiz) {
-			summaryBuilder.append("\n\nYou're doing great with sentence completion!");
-
-			// Add level-based feedback
-			if (scorePercentage >= 90) {
-				summaryBuilder.append("\nExcellent job! You have a strong grasp of sentence structure.");
-			} else if (scorePercentage >= 70) {
-				summaryBuilder.append("\nGood work! Keep practicing to improve your language skills.");
-			} else {
-				summaryBuilder.append(
-						"\nKeep practicing! Sentence completion exercises will help you understand language context better.");
-			}
-		} else {
-			// Regular quiz feedback
-			if (scorePercentage >= 90) {
-				summaryBuilder.append("\n\nExcellent vocabulary knowledge!");
-			} else if (scorePercentage >= 70) {
-				summaryBuilder.append("\n\nGood vocabulary skills! Keep learning new words.");
-			} else {
-				summaryBuilder.append("\n\nKeep building your vocabulary with more practice.");
-			}
-		}
-
-		summaryLabel.setText(summaryBuilder.toString());
+		summaryLabel.setText(summaryText);
 	}
 
 	/**
@@ -844,99 +559,10 @@ public class QuizController {
 	}
 
 	/**
-	 * Checks if a string contains Hebrew characters.
-	 * 
-	 * @param text The text to check
-	 * @return True if the text contains Hebrew characters, false otherwise
+	 * Public method to manually refresh quizzes if needed from another controller
 	 */
-	private boolean containsHebrew(String text) {
-		if (text == null || text.isEmpty()) {
-			return false;
-		}
-
-		// Check if any character in the string belongs to the Hebrew Unicode block
-		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
-	}
-
-	/**
-	 * Maps between Hebrew and English category names. This function handles the
-	 * conversion in both directions.
-	 * 
-	 * @param categoryName The category name to map (could be Hebrew or English)
-	 * @param toEnglish    True if converting from Hebrew to English, false for
-	 *                     English to Hebrew
-	 * @return The mapped category name or the original if no mapping is found
-	 */
-	private String mapCategoryName(String categoryName, boolean toEnglish) {
-		// Hard-coded mappings based on your application's categories
-		Map<String, String> hebrewToEnglishMap = new HashMap<>();
-
-		// Populate with known mappings
-		hebrewToEnglishMap.put("חיי יום-יום ואוצר מילים בסיסי", "Everyday Life and Essential Vocabulary");
-		hebrewToEnglishMap.put("אנשים ויחסים", "People and Relationships");
-		hebrewToEnglishMap.put("עבודה וחינוך", "Work and Education");
-		hebrewToEnglishMap.put("בריאות ורווחה", "Health and Well-being");
-		hebrewToEnglishMap.put("נסיעות ופנאי", "Travel and Leisure");
-		hebrewToEnglishMap.put("סביבה וטבע", "Environment and Nature");
-
-		// First, try the direct mapping
-		if (toEnglish) {
-			if (hebrewToEnglishMap.containsKey(categoryName)) {
-				String englishName = hebrewToEnglishMap.get(categoryName);
-				logger.debug("Mapped Hebrew '{}' to English '{}'", categoryName, englishName);
-				return englishName;
-			}
-		} else {
-			// Find the Hebrew equivalent of an English name
-			for (Map.Entry<String, String> entry : hebrewToEnglishMap.entrySet()) {
-				if (entry.getValue().equals(categoryName)) {
-					String hebrewName = entry.getKey();
-					logger.debug("Mapped English '{}' to Hebrew '{}'", categoryName, hebrewName);
-					return hebrewName;
-				}
-			}
-		}
-
-		// If direct mapping failed, try to find it in the categories list
-		try {
-			List<Category> allCategories = categoryService.getAllCategories();
-
-			for (Category cat : allCategories) {
-				if (toEnglish) {
-					// Looking for Hebrew -> English
-					if (cat.getTranslation() != null && cat.getTranslation().equals(categoryName)) {
-						logger.debug("Found category mapping: Hebrew '{}' to English '{}'", categoryName,
-								cat.getName());
-						return cat.getName();
-					}
-				} else {
-					// Looking for English -> Hebrew
-					if (cat.getName().equals(categoryName) && cat.getTranslation() != null) {
-						logger.debug("Found category mapping: English '{}' to Hebrew '{}'", categoryName,
-								cat.getTranslation());
-						return cat.getTranslation();
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Error while trying to map category name: {}", e.getMessage());
-		}
-
-		// Return original if no mapping found
-		logger.warn("No mapping found for category name: {}", categoryName);
-		return categoryName;
-	}
-
-	// Public method to manually refresh quizzes if needed
 	public void refresh() {
+		loadCategories();
 		generateSampleQuizzes();
-	}
-
-	private void showError(String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Error");
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 }

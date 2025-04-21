@@ -11,6 +11,7 @@ import com.lingotower.model.Word;
 import com.lingotower.service.ExampleSentencesService; // Import the service
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.utils.HebrewUtils;
 import com.lingotower.utils.LoggingUtility;
 
 import javafx.event.ActionEvent;
@@ -110,7 +111,7 @@ public class WordLearningController {
 		if (category != null) {
 			categoryNameLabel.setText(category.getName());
 			// Set RTL if needed
-			if (containsHebrew(category.getName())) {
+			if (HebrewUtils.containsHebrew(category.getName())) {
 				categoryNameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			} else {
 				categoryNameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -197,14 +198,14 @@ public class WordLearningController {
 		markLearnedButton.setDisable(true); // Mark learned disabled until translation or example is shown
 
 		// Set RTL if needed for word
-		if (containsHebrew(currentWord.getWord())) {
+		if (HebrewUtils.containsHebrew(currentWord.getWord())) {
 			wordLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		} else {
 			wordLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		}
 
 		// Set RTL if needed for translation
-		if (containsHebrew(currentWord.getTranslatedText())) {
+		if (HebrewUtils.containsHebrew(currentWord.getTranslatedText())) {
 			translationLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		} else {
 			translationLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -252,7 +253,7 @@ public class WordLearningController {
 		String wordToLookup;
 
 		// If the current word is in Hebrew, we need to use its translation (English)
-		if (containsHebrew(currentWord.getWord())) {
+		if (HebrewUtils.containsHebrew(currentWord.getWord())) {
 			// Use the translated text (English) for lookup
 			if (currentWord.getTranslatedText() != null && !currentWord.getTranslatedText().isBlank()) {
 				wordToLookup = currentWord.getTranslatedText();
@@ -305,7 +306,7 @@ public class WordLearningController {
 						logger.debug("Displayed {} example sentences.", examples.size());
 
 						// --- Set RTL if examples contain Hebrew ---
-						if (containsHebrew(examplesUsageLabel.getText())) {
+						if (HebrewUtils.containsHebrew(examplesUsageLabel.getText())) {
 							examplesUsageLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 						} else {
 							examplesUsageLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -432,12 +433,12 @@ public class WordLearningController {
 		progressLabel.setText((displayIndex + 1) + "/" + words.size());
 	}
 
-	private boolean containsHebrew(String text) {
-		if (text == null)
-			return false;
-		// Check if any character in the string belongs to the Hebrew Unicode block
-		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
-	}
+//	private boolean containsHebrew(String text) {
+//		if (text == null)
+//			return false;
+//		// Check if any character in the string belongs to the Hebrew Unicode block
+//		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
+//	}
 
 	public void setOnBackToDashboard(Runnable callback) {
 		this.onBackToDashboard = callback;

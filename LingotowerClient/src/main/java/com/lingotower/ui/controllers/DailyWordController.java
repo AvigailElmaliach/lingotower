@@ -11,6 +11,7 @@ import com.lingotower.model.Word;
 import com.lingotower.service.ExampleSentencesService;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.utils.HebrewUtils;
 import com.lingotower.utils.LoggingUtility;
 
 import javafx.event.ActionEvent;
@@ -222,7 +223,7 @@ public class DailyWordController {
 			String wordToLookup = word;
 
 			// If we're in the DailyWordController and have access to the dailyWord object
-			if (containsHebrew(word) && dailyWord != null) {
+			if (HebrewUtils.containsHebrew(word) && dailyWord != null) {
 				// If the current daily word matches our input and has a translation
 				if (dailyWord.getWord().equals(word) && dailyWord.getTranslatedText() != null
 						&& !dailyWord.getTranslatedText().isBlank()) {
@@ -326,13 +327,13 @@ public class DailyWordController {
 	 * @param text The text to check
 	 * @return True if the text contains Hebrew characters, false otherwise
 	 */
-	private boolean containsHebrew(String text) {
-		if (text == null || text.isEmpty()) {
-			return false;
-		}
-
-		// Check if any character in the string belongs to the Hebrew Unicode block
-		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
-	}
+//	private boolean containsHebrew(String text) {
+//		if (text == null || text.isEmpty()) {
+//			return false;
+//		}
+//
+//		// Check if any character in the string belongs to the Hebrew Unicode block
+//		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
+//	}
 
 }
