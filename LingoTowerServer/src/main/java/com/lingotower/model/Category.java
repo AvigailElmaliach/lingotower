@@ -36,7 +36,7 @@ public class Category {
 	private String translation;
 	private String sourceLanguage;
 	private String targetLanguage;
-	
+
 //	 @OneToMany(mappedBy = "category")
 //	 private List<Word> words;
 	public Category() {
@@ -44,11 +44,9 @@ public class Category {
 
 	public Category(String name) {
 		this.name = name;
+		this.sourceLanguage = "en";
+		this.targetLanguage = "he";
 	}
-//	 public Category(String name, List<Word> words) {
-//	        this.name = name;
-//	        this.words = words;
-//	    }
 
 	public Long getId() {
 		return id;
@@ -93,15 +91,15 @@ public class Category {
 		Category category = (Category) o;
 		return id != null && id.equals(category.id);
 	}
+
 	public String getTranslation() {
-	    return translation;
+		return translation;
 	}
 
 	public void setTranslation(String translation) {
-	    this.translation = translation;
+		this.translation = translation;
 	}
 
-	
 	/*
 	 * @Override public String toString() { return "Category{" + "id=" + id +
 	 * ", name='" + name + '\'' + '}'; }

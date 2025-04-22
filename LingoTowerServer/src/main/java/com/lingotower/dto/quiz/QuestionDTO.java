@@ -19,6 +19,11 @@ public class QuestionDTO {
 		this.category = category;
 	}
 
+	public QuestionDTO(String questionText, String correctAnswer) {
+		this.questionText = questionText;
+		this.correctAnswer = correctAnswer;
+	}
+
 	public Long getId() {
 		return id;
 	}

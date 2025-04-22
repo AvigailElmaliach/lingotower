@@ -30,7 +30,9 @@ import com.lingotower.model.User;
 public class CategoryService {
 
 	private final UserService userService;
-	private final CategoryRepository categoryRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
+
 	private final CategoryMapper categoryMapper;
 	private AdminRepository adminRepository;
 	private UserRepository userRepository;
