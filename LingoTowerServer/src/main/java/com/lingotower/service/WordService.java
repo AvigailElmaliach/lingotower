@@ -67,10 +67,6 @@ public class WordService {
 		entityManager.clear();
 	}
 
-//	// שיטה לשמור מילה
-//	public Word saveWord(Word word) {
-//		return wordRepository.save(word);
-//	}
 	public Word saveWord(Word word, String sourceLang, String targetLang) {
 		if (word.getTranslation() == null || word.getTranslation().isEmpty()) {
 			String translatedText = translationService.translateText(word.getWord(), sourceLang, targetLang);
@@ -210,10 +206,9 @@ public class WordService {
 	}
 
 	public String getUserLanguage(String username) {
-		// חיפוש המשתמש הרגיל ב-UserRepository
 		Optional<User> user = userRepository.findByUsername(username);
-		if (user.isPresent()) { // בודקים אם ה-Optional מכיל ערך
-			return user.get().getTargetLanguage(); // אם כן, מחזירים את שפת היעד של המשתמש
+		if (user.isPresent()) { 
+			return user.get().getTargetLanguage(); 
 		}
 
 		// אם לא נמצא משתמש רגיל, ננסה לחפש את המנהל ב-AdminRepository
@@ -260,58 +255,34 @@ public class WordService {
 		word.setCategory(category);
 		wordRepository.save(word);
 	}
+
 	public WordByCategory getDailyWord(String username) {
-	    // 1. קבלת שפת היעד של המשתמש
-	    String userLanguage = getUserLanguage(username);
+		// 1. קבלת שפת היעד של המשתמש
+		String userLanguage = getUserLanguage(username);
 
-	    // 2. שליפת כל המילים הקיימות
-	    List<Word> allWords = wordRepository.findAll();
+		// 2. שליפת כל המילים הקיימות
+		List<Word> allWords = wordRepository.findAll();
 
-	    if (allWords.isEmpty()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No words available in the system.");
-	    }
+		if (allWords.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No words available in the system.");
+		}
 
-	    // 3. יצירת ערך ייחודי על בסיס תאריך ושם משתמש
-	    String uniqueSeed = username + LocalDate.now().toString();
-	    int hash = Math.abs(uniqueSeed.hashCode());
+		// 3. יצירת ערך ייחודי על בסיס תאריך ושם משתמש
+		String uniqueSeed = username + LocalDate.now().toString();
+		int hash = Math.abs(uniqueSeed.hashCode());
 
-	    // 4. קביעת אינדקס לפי גודל הרשימה
-	    int index = hash % allWords.size();
-	    Word selectedWord = allWords.get(index);
+		// 4. קביעת אינדקס לפי גודל הרשימה
+		int index = hash % allWords.size();
+		Word selectedWord = allWords.get(index);
 
-	    // 5. התאמה לשפת המשתמש
-	    if ("he".equals(userLanguage)) {
-	        return new WordByCategory(
-	                selectedWord.getId(),
-	                selectedWord.getTranslation(),
-	                selectedWord.getWord(),
-	                selectedWord.getCategory(),
-	                selectedWord.getDifficulty()
-	        );
-	    } else {
-	        return new WordByCategory(
-	                selectedWord.getId(),
-	                selectedWord.getWord(),
-	                selectedWord.getTranslation(),
-	                selectedWord.getCategory(),
-	                selectedWord.getDifficulty()
-	        );
-	    }
+		// 5. התאמה לשפת המשתמש
+		if ("he".equals(userLanguage)) {
+			return new WordByCategory(selectedWord.getId(), selectedWord.getTranslation(), selectedWord.getWord(),
+					selectedWord.getCategory(), selectedWord.getDifficulty());
+		} else {
+			return new WordByCategory(selectedWord.getId(), selectedWord.getWord(), selectedWord.getTranslation(),
+					selectedWord.getCategory(), selectedWord.getDifficulty());
+		}
 	}
-
-//למחוק אם לא צריך
-//    public List<TranslationResponseDTO> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty, String userLanguage) {
-//        List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
-//
-//        if (words.isEmpty()) {
-//            return Collections.emptyList();
-//        }
-//
-//        Random random = new Random();
-//        Collections.shuffle(words, random);
-//        List<Word> randomWords = words.stream().limit(10).collect(Collectors.toList());
-//
-//        return mapWordsToLanguage(randomWords, userLanguage);
-//    }
 
 }

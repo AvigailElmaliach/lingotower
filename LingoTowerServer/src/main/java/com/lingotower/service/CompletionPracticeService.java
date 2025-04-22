@@ -14,13 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +42,7 @@ public class CompletionPracticeService {
 			String username) {
 		Optional<Category> categoryOptional = categoryService.findByName(categoryName);
 		if (categoryOptional.isEmpty()) {
+			System.err.println("שגיאה: לא נמצאה קטגוריה מתאימה");
 			return Optional.empty();
 		}
 		Category category = categoryOptional.get();
@@ -62,37 +58,37 @@ public class CompletionPracticeService {
 
 		Optional<Word> wordOptional = wordRepository.findById(wordByCategory.getId());
 		if (wordOptional.isEmpty()) {
+			System.err.println("שגיאה: לא נמצאה מילה מתאימה");
 			return Optional.empty();
 		}
 		Word word = wordOptional.get();
 
 		List<ExampleSentence> sentences = exampleSentenceRepository.findByWord(word);
 		if (sentences.isEmpty()) {
+			System.err.println("שגיאה: לא נמצאה משפט");
 			return Optional.empty();
 		}
 		ExampleSentence selectedSentence = sentences.get(random.nextInt(sentences.size()));
 		String sentenceText = selectedSentence.getSentenceText();
 		String translatedSentenceText = selectedSentence.getTranslatedText();
 
-		String correctAnswerOriginal = extractCorrectAnswer(sentenceText);
+		String correctAnswerOriginal;
+		if (isHebrew && translatedSentenceText != null) {
+			correctAnswerOriginal = extractCorrectAnswerHebrew(translatedSentenceText);
+		} else {
+			correctAnswerOriginal = extractCorrectAnswer(sentenceText);
+		}
 		if (correctAnswerOriginal == null) {
 			return Optional.empty();
 		}
 
-		String questionText;
-		String finalCorrectAnswer;
+		String questionText = isHebrew && translatedSentenceText != null
+				? translatedSentenceText.replaceFirst("\\b" + Pattern.quote(correctAnswerOriginal) + "\\b", "_____")
+				: sentenceText.replaceFirst("\\b" + Pattern.quote(correctAnswerOriginal) + "\\b", "_____");
 
-		if (isHebrew && translatedSentenceText != null) {
-			String translatedCorrectAnswer = word.getTranslation(); // השתמש בתרגום של המילה
-			if (translatedCorrectAnswer == null) {
-				return Optional.empty(); // אם אין תרגום למילה, דלג על השאלה
-			}
-			questionText = translatedSentenceText.replaceFirst("\\b" + translatedCorrectAnswer + "\\b", "_____");
-			finalCorrectAnswer = translatedCorrectAnswer;
-		} else {
-			questionText = sentenceText.replaceFirst("\\b" + correctAnswerOriginal + "\\b", "_____");
-			finalCorrectAnswer = correctAnswerOriginal;
-		}
+		questionText = questionText.replaceAll("\\s+", " ").trim();
+
+		String finalCorrectAnswer = correctAnswerOriginal;
 
 		List<String> wrongAnswers = questionBankService.getWrongCompletionOptions(category.getName(), difficulty,
 				correctAnswerOriginal, 4);
@@ -100,7 +96,7 @@ public class CompletionPracticeService {
 			wrongAnswers = wrongAnswers.stream().map(wrongAnswer -> {
 				Optional<Word> wrongWordOptional = wordRepository.findByWordAndCategory(wrongAnswer, category);
 				return wrongWordOptional.map(Word::getTranslation).orElse(wrongAnswer);
-			}).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+			}).filter(Objects::nonNull).collect(Collectors.toList());
 		}
 
 		Question question = questionBankService.createCompletionQuestion(questionText, finalCorrectAnswer, wrongAnswers,
@@ -119,8 +115,27 @@ public class CompletionPracticeService {
 	private String extractCorrectAnswer(String sentenceText) {
 		String[] wordsInSentence = sentenceText.split("\\s+");
 		List<String> commonShortWords = List.of("a", "the", "is", "are", "in", "on", "at", "to", "for", "with");
-		for (String word : wordsInSentence) {
+
+		// מתחילים מהמילה השנייה במשפט
+		for (int i = 1; i < wordsInSentence.length; i++) {
+			String word = wordsInSentence[i];
 			if (word.length() > 2 && !commonShortWords.contains(word.toLowerCase())) {
+				return word;
+			}
+		}
+		return null;
+	}
+
+	private String extractCorrectAnswerHebrew(String sentenceText) {
+		List<String> commonShortWords = List.of("של", "עם", "זה", "על", "גם", "את", "אם", "לא", "כן", "יש", "אין", "מה",
+				"אני", "הוא", "היא", "אתה", "את", "אנחנו", "הם", "הן", "ב", "ל", "ו", "כ", "ש", "מ");
+
+		String[] wordsInSentence = sentenceText.split("\\s+");
+
+		// מתחילים מהמילה השנייה במשפט
+		for (int i = 1; i < wordsInSentence.length; i++) {
+			String word = wordsInSentence[i].replaceAll("[^א-ת]", "").trim();
+			if (word.length() > 2 && !commonShortWords.contains(word)) {
 				return word;
 			}
 		}
