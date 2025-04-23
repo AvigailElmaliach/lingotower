@@ -1,63 +1,118 @@
 package com.lingotower.exception;
 
 import com.fasterxml.jackson.databind.DatabindException;
-import com.lingotower.exception.*;
+
+import jakarta.validation.ConstraintViolationException;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+/**
+ * Global exception handler for centralized error management across the
+ * application.
+ */
+@RestControllerAdvice
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // טיפול בשגיאה כאשר אדמין לא נמצא
-    @ExceptionHandler(AdminNotFoundException.class)
-    public ResponseEntity<String> handleAdminNotFoundException(AdminNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+	/**
+	 * Handles AdminNotFoundException when an admin is not found.
+	 */
+	@ExceptionHandler(AdminNotFoundException.class)
+	public ResponseEntity<String> handleAdminNotFoundException(AdminNotFoundException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	}
 
-    // טיפול בשגיאה כאשר משתמש לא נמצא
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+	/**
+	 * Handles UserNotFoundException when a user is not found.
+	 */
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	}
 
-    // טיפול בשגיאות כאשר המשתמש לא נמצא
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
+	/**
+	 * Handles IllegalArgumentException for invalid method arguments.
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	}
 
-    // טיפול בשגיאות של גישה לא מורשית (SecurityException)
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<String> handleSecurityException(SecurityException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-    }
+	/**
+	 * Handles SecurityException for unauthorized access attempts.
+	 */
+	@ExceptionHandler(SecurityException.class)
+	public ResponseEntity<String> handleSecurityException(SecurityException e) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+	}
 
+	/**
+	 * Handles WordNotFoundException when a requested word is not found.
+	 */
+	@ExceptionHandler(WordNotFoundException.class)
+	public ResponseEntity<String> handleWordNotFound(WordNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
 
-    @ExceptionHandler(WordNotFoundException.class)
-    public ResponseEntity<String> handleWordNotFound(WordNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+	/**
+	 * Handles CategoryAlreadyExistsException when attempting to create a category
+	 * that already exists.
+	 */
+	@ExceptionHandler(CategoryAlreadyExistsException.class)
+	public ResponseEntity<String> handleCategoryAlreadyExistsException(CategoryAlreadyExistsException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	}
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    @ExceptionHandler(CategoryAlreadyExistsException.class)
-    public ResponseEntity<String> handleCategoryAlreadyExistsException(CategoryAlreadyExistsException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
+	/**
+	 * Handles IOException during file operations.
+	 */
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<String> handleIOException(IOException e) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File handling error: " + e.getMessage());
+	}
 
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<String> handleIOException(IOException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body("❌ שגיאה בניהול הקבצים: " + e.getMessage());
-    }
-    @ExceptionHandler(DatabindException.class)
-    public ResponseEntity<String> handleDatabindException(DatabindException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body("❌ שגיאה בקריאת JSON: " + e.getMessage());
-    }
+	/**
+	 * Handles DatabindException when processing JSON fails.
+	 */
+	@ExceptionHandler(DatabindException.class)
+	public ResponseEntity<String> handleDatabindException(DatabindException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error reading JSON: " + e.getMessage());
+	}
+
+	/**
+	 * Handles all uncaught exceptions.
+	 */
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handleGeneralException(Exception ex) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("An unexpected error occurred. Please try again later.");
+	}
+
+	/**
+	 * Handles validation errors (e.g., invalid input) Returns a 400 error response
+	 * with the validation error message.
+	 */
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
+	    return ResponseEntity.badRequest().body("Validation failed: " + ex.getMessage());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+	    Map<String, String> errors = new HashMap<>();
+	    ex.getBindingResult().getFieldErrors().forEach(error ->
+	        errors.put(error.getField(), error.getDefaultMessage()));
+	    return ResponseEntity.badRequest().body(errors);
+	}
+
 }

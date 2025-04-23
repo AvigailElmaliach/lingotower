@@ -1,7 +1,9 @@
 package com.lingotower.dto;
 
-public class LoginRequest {
+import jakarta.validation.constraints.NotEmpty;
 
+public class LoginRequest {
+	@NotEmpty(message = "Username or email is required")
     private String identifier; // יכול להיות username או email
     private String password;
 
