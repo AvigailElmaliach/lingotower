@@ -11,6 +11,9 @@ import com.lingotower.dto.LoginRequest;
 import com.lingotower.dto.RegisterRequest;
 import com.lingotower.security.JwtTokenProvider;
 
+import com.nulabinc.zxcvbn.Zxcvbn;
+import com.nulabinc.zxcvbn.Strength;
+
 /**
  * Service class responsible for user authentication and registration.
  * This class handles user sign-up, login, and token generation.
@@ -43,6 +46,7 @@ public class UserAuthService {
      * @return A JWT token for the newly registered user.
      * @throws IllegalArgumentException if the email or username is already taken.
      */
+
 //    public String registerUser(RegisterRequest request) {
 //        if (userRepository.existsByEmail(request.getEmail())) {
 //            throw new IllegalArgumentException("Email already exists");
@@ -51,13 +55,13 @@ public class UserAuthService {
 //        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 //            throw new IllegalArgumentException("Username is already taken");
 //        }
-//        String target=request.getSourceLanguage();
+//
 //        User newUser = new User(
 //            request.getUsername(),
 //            passwordEncoder.encode(request.getPassword()),
 //            request.getEmail(),
-//            target,
-//            request.getTargetLanguage(target),//לשנות את זה בהמשך לא טוב
+//            request.getSourceLanguage(),
+//            request.getTargetLanguage(), 
 //            Role.USER  
 //        );
 //
@@ -73,13 +77,17 @@ public class UserAuthService {
             throw new IllegalArgumentException("Username is already taken");
         }
 
+        if (!isPasswordStrong(request.getPassword())) {
+            throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
+        }
+
         User newUser = new User(
             request.getUsername(),
             passwordEncoder.encode(request.getPassword()),
             request.getEmail(),
             request.getSourceLanguage(),
             request.getTargetLanguage(), 
-            Role.USER  
+            Role.USER
         );
 
         userRepository.save(newUser);
@@ -107,14 +115,10 @@ public class UserAuthService {
         return jwtTokenProvider.generateToken(user);
     }
 
-//    public String login(LoginRequest request) {
-//        User user = userRepository.findByUsername(request.getUsername())
-//                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-//
-//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-//            throw new IllegalArgumentException("Invalid credentials");
-//        }
-//
-//        return jwtTokenProvider.generateToken(user);
-//    }
+    private boolean isPasswordStrong(String password) {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        return strength.getScore() >= 3; // ציון 3 מתוך 4 או 5 זה נחשב חזק מספיק
+    }
+
 }
