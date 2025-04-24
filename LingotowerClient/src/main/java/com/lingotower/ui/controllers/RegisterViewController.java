@@ -124,7 +124,8 @@ public class RegisterViewController implements Initializable {
 				}
 			} else {
 				logger.error("Registration failed for user: {}. Username may already exist", username);
-				showError("Registration failed. Username may already exist.");
+				showError("Registration failed: username exists or weak password.");
+
 			}
 		} catch (Exception e) {
 			logger.error("Exception during registration: {}", e.getMessage(), e);

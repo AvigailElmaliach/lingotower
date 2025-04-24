@@ -8,15 +8,19 @@ import com.lingotower.model.Admin;
 import com.lingotower.service.AdminService;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+
+import jakarta.validation.Valid;
+
 import com.lingotower.dto.baseUser.PasswordUpdateRequestDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.lingotower.model.Role;
+//import com.lingotower.model.Role;
 import com.lingotower.model.User;
 import com.lingotower.security.JwtTokenProvider;
 
@@ -25,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
@@ -60,7 +65,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> createAdmin(@RequestBody AdminCreateDTO adminCreateDTO,
+	public ResponseEntity<String> createAdmin(@Valid @RequestBody AdminCreateDTO adminCreateDTO,
 			@RequestHeader("Authorization") String token) {
 		try {
 			adminService.registerAdmin(adminCreateDTO, token);
@@ -72,7 +77,6 @@ public class AdminController {
 		}
 	}
 
-	// לחשוב אם כדאי לבדוק אם משתמש הוא מנהל
 	@DeleteMapping("word/{wordId}")
 	public ResponseEntity<Void> deleteWord(@PathVariable Long wordId, Principal principal) {
 		try {
@@ -84,7 +88,7 @@ public class AdminController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id,
+	public ResponseEntity<AdminResponseDTO> updateAdmin(@Valid @PathVariable Long id,
 			@RequestBody AdminUpdateDTO adminUpdateDTO) {
 		Optional<Admin> updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);
 		if (updatedAdmin.isPresent()) {

@@ -98,21 +98,24 @@ public class GlobalExceptionHandler {
 	}
 
 	/**
-	 * Handles validation errors (e.g., invalid input) Returns a 400 error response
-	 * with the validation error message.
+	 * Handles validation errors for request parameters (e.g., @RequestParam). for
+	 * get
 	 */
-
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
-	    return ResponseEntity.badRequest().body("Validation failed: " + ex.getMessage());
+		return ResponseEntity.badRequest().body("Validation failed: " + ex.getMessage());
 	}
 
+	/**
+	 * Handles validation errors for @RequestBody objects (e.g., DTOs). for post and
+	 * put
+	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-	    Map<String, String> errors = new HashMap<>();
-	    ex.getBindingResult().getFieldErrors().forEach(error ->
-	        errors.put(error.getField(), error.getDefaultMessage()));
-	    return ResponseEntity.badRequest().body(errors);
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getFieldErrors()
+				.forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+		return ResponseEntity.badRequest().body(errors);
 	}
 
 }

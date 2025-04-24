@@ -1,124 +1,52 @@
 package com.lingotower.service;
 
+import com.lingotower.data.UserRepository;
+import com.lingotower.dto.LoginRequest;
+import com.lingotower.dto.RegisterRequest;
+import com.lingotower.model.Role;
+import com.lingotower.model.User;
+import com.lingotower.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.lingotower.data.UserRepository;
-import com.lingotower.model.Role;
-import com.lingotower.model.User;
-import com.lingotower.dto.LoginRequest;
-import com.lingotower.dto.RegisterRequest;
-import com.lingotower.security.JwtTokenProvider;
-
-import com.nulabinc.zxcvbn.Zxcvbn;
-import com.nulabinc.zxcvbn.Strength;
-
-/**
- * Service class responsible for user authentication and registration.
- * This class handles user sign-up, login, and token generation.
+/*
+ * This class manages user registration and login.
+ * It works with a helper class that handles the main logic.
  */
 @Service
 public class UserAuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+	private final AuthHelperService<User> authHelperService;
 
-    /**
-     * Constructs an instance of {@code UserAuthService} with necessary dependencies.
-     *
-     * @param userRepository    Repository for accessing user data.
-     * @param passwordEncoder   Encoder for securing passwords.
-     * @param jwtTokenProvider  Provider for generating JWT authentication tokens.
-     */
-    @Autowired
-    public UserAuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	/*
+	 * Constructor: creates the helper service that will do the real work. It needs
+	 * access to the database (UserRepository), password encoder, and JWT token
+	 * generator.
+	 */
+	@Autowired
+	public UserAuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+			JwtTokenProvider jwtTokenProvider) {
+		this.authHelperService = new AuthHelperService<>(userRepository, passwordEncoder, jwtTokenProvider);
+	}
 
-    /**
-     * Registers a new user.
-     *
-     * @param request The registration request containing user details.
-     * @return A JWT token for the newly registered user.
-     * @throws IllegalArgumentException if the email or username is already taken.
-     */
+	/*
+	 * This method registers a new user. It checks the request details and passes
+	 * the user and password to the helper service which handles saving and token
+	 * generation.
+	 */
+	public String registerUser(RegisterRequest request) {
+		User user = new User(request.getUsername(), null, // password will be set and encoded by the helper
+				request.getEmail(), request.getSourceLanguage(), request.getTargetLanguage(), Role.USER);
+		return authHelperService.register(user, request.getPassword());
+	}
 
-//    public String registerUser(RegisterRequest request) {
-//        if (userRepository.existsByEmail(request.getEmail())) {
-//            throw new IllegalArgumentException("Email already exists");
-//        }
-//
-//        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-//            throw new IllegalArgumentException("Username is already taken");
-//        }
-//
-//        User newUser = new User(
-//            request.getUsername(),
-//            passwordEncoder.encode(request.getPassword()),
-//            request.getEmail(),
-//            request.getSourceLanguage(),
-//            request.getTargetLanguage(), 
-//            Role.USER  
-//        );
-//
-//        userRepository.save(newUser);
-//        return jwtTokenProvider.generateToken(newUser);
-//    }
-    public String registerUser(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username is already taken");
-        }
-
-        if (!isPasswordStrong(request.getPassword())) {
-            throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
-        }
-
-        User newUser = new User(
-            request.getUsername(),
-            passwordEncoder.encode(request.getPassword()),
-            request.getEmail(),
-            request.getSourceLanguage(),
-            request.getTargetLanguage(), 
-            Role.USER
-        );
-
-        userRepository.save(newUser);
-        return jwtTokenProvider.generateToken(newUser);
-    }
-
-
-    /**
-     * Authenticates a user and generates a JWT token.
-     *
-     * @param request The login request containing username and password.
-     * @return A JWT token if authentication is successful.
-     * @throws IllegalArgumentException if the user is not found or credentials are invalid.
-     */
-    public String login(LoginRequest request) {
-
-        User user = userRepository.findByUsername(request.getIdentifier())
-                .orElseGet(() -> userRepository.findByEmail(request.getIdentifier())
-                .orElseThrow(() -> new IllegalArgumentException("User not found")));
-        
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials");
-        }
-
-        return jwtTokenProvider.generateToken(user);
-    }
-
-    private boolean isPasswordStrong(String password) {
-        Zxcvbn zxcvbn = new Zxcvbn();
-        Strength strength = zxcvbn.measure(password);
-        return strength.getScore() >= 3; // ציון 3 מתוך 4 או 5 זה נחשב חזק מספיק
-    }
-
+	/*
+	 * This method logs in a user. It passes the identifier (username or email) and
+	 * password to the helper service, which returns a JWT token if login is
+	 * successful.
+	 */
+	public String login(LoginRequest request) {
+		return authHelperService.login(request.getIdentifier(), request.getPassword());
+	}
 }

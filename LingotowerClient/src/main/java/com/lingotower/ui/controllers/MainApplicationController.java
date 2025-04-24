@@ -114,8 +114,16 @@ public class MainApplicationController {
 			if (dashboardView == null) {
 				dashboardView = new DashboardView();
 			}
+			// for show all categories
+			dashboardView.setMainController(this);
+
 			Parent dashboardRoot = dashboardView.createView();
 			mainLayout.setCenter(dashboardRoot);
+
+			// if the user changes the target language it will reload
+			if (dashboardView.getController() != null) {
+				dashboardView.getController().loadCategories();
+			}
 		} catch (Exception e) {
 			handleError("Error showing dashboard", e);
 		}
