@@ -432,6 +432,7 @@ public class AdminManagementController {
 						logger.warn("Update failed: No admin selected");
 						Platform.runLater(() -> {
 							showStatusMessage("No admin selected for update", true);
+
 						});
 						return;
 					}
@@ -487,7 +488,9 @@ public class AdminManagementController {
 									currentAdmin != null ? currentAdmin.getUsername() : "unknown", "admin:" + username,
 									"failed");
 							LoggingUtility.logPerformance(logger, "update_admin", duration, "failed");
-							showStatusMessage("Failed to update admin", true);
+							showStatusMessage(
+									"Failed to update admin. Make sure the password is strong enough and the email is in the correct format ",
+									true);
 						}
 					});
 				}

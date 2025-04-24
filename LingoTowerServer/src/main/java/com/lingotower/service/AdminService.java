@@ -3,7 +3,9 @@ package com.lingotower.service;
 import com.lingotower.data.AdminRepository;
 import com.lingotower.data.BaseUserRepository;
 import com.lingotower.dto.admin.AdminCreateDTO;
+import com.lingotower.dto.admin.AdminResponseDTO;
 import com.lingotower.dto.admin.AdminUpdateDTO;
+import com.lingotower.exception.AdminNotFoundException;
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
 import com.lingotower.security.JwtTokenProvider;
@@ -31,44 +33,51 @@ public class AdminService extends BaseUserService<Admin> {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	// Change password of an admin by username
 	@Override
 	public void updatePassword(String username, String newPassword) {
 		Admin admin = findByUsername(username);
 		super.updatePasswordInternal(admin, newPassword);
 	}
 
+	// Save admin to the database
 	@Override
 	protected void saveUser(Admin admin) {
 		adminRepository.save(admin);
 	}
 
+	// Find an admin by their username
 	@Override
 	public Admin findByUsername(String username) {
 		return adminRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Admin not found with username: " + username));
 	}
 
-	// קבלת כל המנהלים
+	// Get a list of all admins
 	public List<Admin> getAllAdmins() {
 		return adminRepository.findAll();
 	}
 
-	// קבלת מנהל לפי מזהה
-	public Optional<Admin> getAdminById(Long id) {
-		return adminRepository.findById(id);
+//	// Get one admin by ID
+	public Admin getAdminById(Long id) {
+		return adminRepository.findById(id)
+				.orElseThrow(() -> new AdminNotFoundException("Admin not found with ID: " + id));
 	}
 
-	// שמירת מנהל
+	// Save a given admin object
 	public Admin saveAdmin(Admin admin) {
 		return adminRepository.save(admin);
 	}
 
-	// מחיקת מנהל
+	// Delete an admin by their ID
 	public void deleteAdmin(Long id) {
+		if (!adminRepository.existsById(id)) {
+			throw new AdminNotFoundException("Admin not found with ID: " + id);
+		}
 		adminRepository.deleteById(id);
 	}
 
-	// רישום מנהל חדש
+	// Create a new admin, only if the request is made by an existing admin
 	public void registerAdmin(AdminCreateDTO adminCreateDTO, String token) {
 		String cleanToken = token.replace("Bearer ", "");
 		String role = jwtTokenProvider.extractRole(cleanToken);
@@ -84,6 +93,7 @@ public class AdminService extends BaseUserService<Admin> {
 		if (!AuthHelperService.isPasswordStrong(adminCreateDTO.getPassword())) {
 			throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
 		}
+
 		Admin newAdmin = new Admin(adminCreateDTO.getUsername(), passwordEncoder.encode(adminCreateDTO.getPassword()),
 				adminCreateDTO.getEmail(), adminCreateDTO.getSourceLanguage(), adminCreateDTO.getTargetLanguage(),
 				Role.ADMIN);
@@ -91,31 +101,35 @@ public class AdminService extends BaseUserService<Admin> {
 		adminRepository.save(newAdmin);
 	}
 
-	public Optional<Admin> updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
-		Optional<Admin> existingAdmin = adminRepository.findById(id);
-		if (existingAdmin.isPresent()) {
-			Admin admin = existingAdmin.get();
+//	// Update an existing admin's fields
+	public AdminResponseDTO updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
+		Admin admin = adminRepository.findById(id)
+				.orElseThrow(() -> new AdminNotFoundException("Admin not found with ID: " + id));
 
-			if (adminUpdateDTO.getUsername() != null) {
-				admin.setUsername(adminUpdateDTO.getUsername());
-			}
+		updateAdminFields(admin, adminUpdateDTO);
+		Admin updatedAdmin = adminRepository.save(admin);
 
-			if (adminUpdateDTO.getRole() != null) {
-				admin.setRole(adminUpdateDTO.getRole());
-			}
+		return new AdminResponseDTO(updatedAdmin.getId(), updatedAdmin.getUsername(), updatedAdmin.getEmail(),
+				updatedAdmin.getRole());
+	}
 
-			if (adminUpdateDTO.getEmail() != null) {
-				admin.setEmail(adminUpdateDTO.getEmail());
-			}
+	// Helper method to update fields of the admin if they are not null
+	private void updateAdminFields(Admin admin, AdminUpdateDTO adminUpdateDTO) {
+		if (adminUpdateDTO.getUsername() != null) {
+			admin.setUsername(adminUpdateDTO.getUsername());
+		}
 
-			if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
-				String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
-				admin.setPassword(encodedPassword);
-			}
+		if (adminUpdateDTO.getRole() != null) {
+			admin.setRole(adminUpdateDTO.getRole());
+		}
 
-			return Optional.of(adminRepository.save(admin));
-		} else {
-			return Optional.empty();
+		if (adminUpdateDTO.getEmail() != null) {
+			admin.setEmail(adminUpdateDTO.getEmail());
+		}
+
+		if (adminUpdateDTO.getPassword() != null && !adminUpdateDTO.getPassword().isEmpty()) {
+			String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
+			admin.setPassword(encodedPassword);
 		}
 	}
 }
