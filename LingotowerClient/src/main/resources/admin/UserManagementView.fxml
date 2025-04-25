@@ -93,6 +93,15 @@
                         <TextField fx:id="languageField" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
+
+                    <!--password-->
+				      <HBox alignment="CENTER_LEFT" spacing="10.0">
+				         <children>
+				            <Label prefWidth="100.0" text="Password:" />
+				            <TextField fx:id="passwordField" HBox.hgrow="ALWAYS" />
+				         </children>
+				      </HBox>
+				      
                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#handleCancelEdit" styleClass="secondary-button" text="Cancel" />

@@ -62,6 +62,8 @@ public class AdminManagementController {
 
 	@FXML
 	private TextField emailField;
+	@FXML
+	private TextField oldPasswordField;
 
 	@FXML
 	private TextField passwordField;
@@ -351,6 +353,7 @@ public class AdminManagementController {
 		String email = emailField.getText().trim();
 		String password = passwordField.getText().trim();
 		String role = roleComboBox.getValue();
+		String oldPassword = oldPasswordField.getText().trim();
 
 		// Validate inputs
 		if (username.isEmpty() || email.isEmpty()) {

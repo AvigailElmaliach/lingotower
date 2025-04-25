@@ -2,13 +2,18 @@ package com.lingotower.service;
 
 import com.lingotower.data.AdminRepository;
 import com.lingotower.data.BaseUserRepository;
+import com.lingotower.data.UserRepository;
 import com.lingotower.dto.admin.AdminCreateDTO;
 import com.lingotower.dto.admin.AdminResponseDTO;
 import com.lingotower.dto.admin.AdminUpdateDTO;
 import com.lingotower.exception.AdminNotFoundException;
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
+import com.lingotower.model.User;
 import com.lingotower.security.JwtTokenProvider;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +28,16 @@ public class AdminService extends BaseUserService<Admin> {
 	private final AdminRepository adminRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
 
 	@Autowired
 	public AdminService(PasswordEncoder passwordEncoder, BaseUserRepository<Admin> baseUserRepository,
-			AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider) {
+			AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
 		super(passwordEncoder, baseUserRepository);
 		this.adminRepository = adminRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.passwordEncoder = passwordEncoder;
+		this.userRepository = userRepository;
 	}
 
 	// Change password of an admin by username
@@ -131,5 +138,13 @@ public class AdminService extends BaseUserService<Admin> {
 			String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
 			admin.setPassword(encodedPassword);
 		}
+	}
+
+	@Transactional
+	public void resetUserPasswordByAdmin(Long userId, String newPassword) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
 	}
 }
