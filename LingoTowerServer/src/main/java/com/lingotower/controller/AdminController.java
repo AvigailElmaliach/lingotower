@@ -16,6 +16,7 @@ import com.lingotower.dto.baseUser.PasswordUpdateRequestDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ import com.lingotower.security.JwtTokenProvider;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -133,6 +135,22 @@ public class AdminController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	@PutMapping("/admin/reset-password/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> resetUserPasswordByAdmin(@PathVariable Long id, @RequestBody Map<String, String> request) {
+		String newPassword = request.get("newPassword");
+		if (newPassword == null || newPassword.isEmpty()) {
+			return ResponseEntity.badRequest().body("New password cannot be empty");
+		}
+
+		try {
+			adminService.resetUserPasswordByAdmin(id, newPassword);
+			return ResponseEntity.ok("Password reset successfully for user ID: " + id);
+		} catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 }

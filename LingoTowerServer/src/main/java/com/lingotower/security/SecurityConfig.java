@@ -27,7 +27,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") 
-                .requestMatchers("/api/user/**").hasRole("USER") 
+                //.requestMatchers("/api/user/**").hasRole("USER") 
                // .requestMatchers("/word/upload").permitAll() 
                 .anyRequest().authenticated() 
             )

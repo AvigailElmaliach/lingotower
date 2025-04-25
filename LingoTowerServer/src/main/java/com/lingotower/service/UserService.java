@@ -3,6 +3,7 @@ package com.lingotower.service;
 import com.lingotower.data.UserRepository;
 import com.lingotower.data.WordRepository;
 import com.lingotower.dto.translation.TranslationResponseDTO;
+import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.dto.word.WordByCategory;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
@@ -82,7 +83,31 @@ public class UserService {
 		}
 		return false;
 	}
+	 @Transactional
+	    public void updateUser(String username, UserUpdateDTO userUpdateDTO) {
+	        User user = userRepository.findByUsername(username)
+	                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+	        // טיפול בעדכון סיסמה אם סופקה סיסמה חדשה וישנה
+	        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty() &&
+	            userUpdateDTO.getOldPassword() != null && !userUpdateDTO.getOldPassword().isEmpty()) {
+	            if (!passwordEncoder.matches(userUpdateDTO.getOldPassword(), user.getPassword())) {
+	                throw new IllegalArgumentException("Invalid old password");
+	            }
+	            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+	        } else if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()) {
+	            // אפשרות לעדכון סיסמה ללא סיסמה ישנה - שקול אם לאפשר זאת
+	            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+	        }
+
+	        // עדכון שאר הפרטים
+	        user.setUsername(userUpdateDTO.getUsername());
+	        user.setEmail(userUpdateDTO.getEmail());
+	        user.setSourceLanguage(userUpdateDTO.getSourceLanguage());
+	        user.setTargetLanguage(userUpdateDTO.getTargetLanguage());
+
+	        userRepository.save(user);
+	    }
 	@Transactional
 	public List<WordByCategory> getLearnedWordsForUser(String username) {
 		User user = getUserByUsername(username);
@@ -110,10 +135,18 @@ public class UserService {
 
 	}
 
+//	public void updatePassword(String username, String newPassword) {
+//		User user = userRepository.findByUsername(username)
+//				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//		user.setPassword(passwordEncoder.encode(newPassword));
+//		userRepository.save(user);
+//	}
 	public void updatePassword(String username, String newPassword) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		user.setPassword(passwordEncoder.encode(newPassword));
-		userRepository.save(user);
+	    User user = userRepository.findByUsername(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+	    user.setPassword(passwordEncoder.encode(newPassword));
+	    userRepository.save(user);
 	}
+
 }

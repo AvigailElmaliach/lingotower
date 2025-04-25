@@ -83,6 +83,12 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
+                        <Label prefWidth="100.0" text="Current Password:" />
+                        <TextField fx:id="oldPasswordField" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
                         <Label prefWidth="100.0" text="Password:" />
                         <TextField fx:id="passwordField" HBox.hgrow="ALWAYS" />
                      </children>

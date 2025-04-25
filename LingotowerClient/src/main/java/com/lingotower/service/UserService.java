@@ -125,7 +125,7 @@ public class UserService extends BaseService {
 
 	/**
 	 * Updates an existing user.
-	 * 
+	 *
 	 * @param user The updated user information
 	 * @return true if update was successful, false otherwise
 	 */
@@ -157,26 +157,22 @@ public class UserService extends BaseService {
 			userUpdateDTO.setUsername(user.getUsername());
 			userUpdateDTO.setEmail(user.getEmail());
 			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
+			userUpdateDTO.setPassword(user.getPassword());
 
-			// Set up headers with authentication and content type
 			HttpHeaders headers = createAuthHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			// Create HTTP entity with the DTO and headers
 			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
 
-			// Construct the URL with the user ID
 			String url = buildUrl(USERS_PATH, user.getId().toString());
 
-			// Log the request for debugging
-			logger.debug("Updating user profile - URL: {}, User ID: {}, Username: {}, Email: {}, SourceLanguage: {}",
+			logger.debug(
+					"Updating user profile - URL: {}, User ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password: {}",
 					url, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(),
-					userUpdateDTO.getSourceLanguage());
+					userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
 
-			// Make the PUT request to update the user
 			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
 
-			// Log the response for debugging
 			boolean success = response.getStatusCode().is2xxSuccessful();
 			logger.debug("User update response: {}", response.getStatusCode());
 
@@ -194,12 +190,6 @@ public class UserService extends BaseService {
 		}
 	}
 
-	/**
-	 * Deletes a user by their ID.
-	 * 
-	 * @param id The ID of the user to delete
-	 * @return true if deletion was successful, false otherwise
-	 */
 	public boolean deleteUser(Long id) {
 		try {
 			if (id == null) {

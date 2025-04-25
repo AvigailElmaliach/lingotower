@@ -13,6 +13,7 @@ public class User {
 	private Long id; // The unique identifier for the user
 	private String username; // The username of the user
 	private String password; // The password of the user
+	private String oldPassword;
 	private String email; // The email address of the user
 	private String language; // The preferred language of the user
 	private LocalDateTime atCreated; // The timestamp when the user was created
@@ -82,7 +83,23 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	/**
+     * Gets the old password of the user (used for password change).
+     *
+     * @return the old password of the user
+     */
+    public String getOldPassword() {
+        return oldPassword;
+    }
 
+    /**
+     * Sets the old password of the user (used for password change).
+     *
+     * @param oldPassword the old password of the user
+     */
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
 	/**
 	 * Gets the email address of the user.
 	 *
