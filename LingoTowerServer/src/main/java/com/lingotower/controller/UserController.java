@@ -8,6 +8,7 @@ import com.lingotower.dto.user.UserDTO;
 import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.dto.word.WordByCategory;
+import com.lingotower.exception.UserNotFoundException;
 import com.lingotower.data.UserRepository;
 import com.lingotower.model.User;
 import com.lingotower.service.UserService;
@@ -65,31 +66,31 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(new UserDTO(savedUser.getId(), savedUser.getUsername(),
 				savedUser.getEmail(), savedUser.getSourceLanguage()));
 	}
-
-	/**
-	 * Updates an existing user's information. Allows updating password if old and
-	 * new passwords are provided.
-	 */
-	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
-	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO,
-			Principal principal) {
-		Optional<User> userOptional = userService.getUserById(id);
-		if (userOptional.isPresent()) {
-			User user = userOptional.get();
-
-			try {
-				userService.updateUser(user.getUsername(), userUpdateDTO);
-				User updatedUser = userService.getUserByUsername(userUpdateDTO.getUsername()); // Retrieve the updated
-																								// user
-				return ResponseEntity.ok(new UserUpdateDTO(updatedUser.getUsername(), updatedUser.getEmail(),
-						updatedUser.getSourceLanguage(), null)); // Do not return the password
-			} catch (IllegalArgumentException e) {
-				return ResponseEntity.badRequest().body(e.getMessage()); // Return a bad request with the error message
-			}
-		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return not found if the user does not exist
-	}
+//
+//	/**
+//	 * Updates an existing user's information. Allows updating password if old and
+//	 * new passwords are provided.
+//	 */
+//	@PutMapping("/{id}")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+//	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO,
+//			Principal principal) {
+//		Optional<User> userOptional = userService.getUserById(id);
+//		if (userOptional.isPresent()) {
+//			User user = userOptional.get();
+//
+//			try {
+//				userService.updateUser(user.getUsername(), userUpdateDTO);
+//				User updatedUser = userService.getUserByUsername(userUpdateDTO.getUsername()); // Retrieve the updated
+//																								// user
+//				return ResponseEntity.ok(new UserUpdateDTO(updatedUser.getUsername(), updatedUser.getEmail(),
+//						updatedUser.getSourceLanguage(), null)); // Do not return the password
+//			} catch (IllegalArgumentException e) {
+//				return ResponseEntity.badRequest().body(e.getMessage()); // Return a bad request with the error message
+//			}
+//		}
+//		return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return not found if the user does not exist
+//	}
 
 	/**
 	 * Retrieves the learning progress of the currently logged-in user.
@@ -172,5 +173,22 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
+	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO,
+	        Principal principal) {
+	    try {
+	        userService.updateUserById(id, userUpdateDTO); 
+	        
+	        Optional<User> updatedUserOptional = userService.getUserById(id);
+	        return updatedUserOptional.map(updatedUser -> ResponseEntity.ok(new UserUpdateDTO(
+	                updatedUser.getUsername(), updatedUser.getEmail(), updatedUser.getSourceLanguage(), null)))
+	                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
+	    } catch (UserNotFoundException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    }
+	}
 }
