@@ -334,6 +334,7 @@ public class UserManagementController {
 
 	@FXML
 	private void handleSaveUser() {
+		// Handles the action when the user clicks the "Save Changes" button.
 		if (selectedUser == null) {
 			showStatusMessage("No user selected", true);
 			return;
@@ -345,80 +346,110 @@ public class UserManagementController {
 		String email = emailField.getText().trim();
 		String language = languageField.getText().trim();
 		String newPassword = passwordField.getText();
+		System.out.println("Attempting to save user with username: " + username);
 
+		// Validate required fields
+		if (!validateInput(username, email, language)) {
+			return; // Validation failed
+		}
+
+		// Update the selectedUser object with the new values
+		updateSelectedUser(username, email, language, newPassword);
+
+		showStatusMessage("Updating user...", false);
+		logger.info("Attempting to update user: {} (ID: {})", username, selectedUser.getId());
+
+		// Perform user update in a background thread
+		Thread updateThread = new Thread(() -> performUserUpdate(startTime, username));
+		updateThread.start();
+	}
+
+	/**
+	 * Validates the input fields.
+	 */
+	private boolean validateInput(String username, String email, String language) {
 		if (username.isEmpty() || email.isEmpty()) {
 			showStatusMessage("Username and email are required", true);
-			return;
+			return false;
 		}
-
 		if (!language.equals("en") && !language.equals("he")) {
 			showStatusMessage("Language must be 'en' or 'he'", true);
-			return;
+			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Updates the selectedUser object.
+	 */
+	private void updateSelectedUser(String username, String email, String language, String newPassword) {
+		selectedUser.setUsername(username);
+		selectedUser.setEmail(email);
+		selectedUser.setLanguage(language); // Ensure field name matches your User model
 
 		if (newPassword != null && !newPassword.isEmpty()) {
 			selectedUser.setPassword(newPassword);
 		} else {
 			selectedUser.setPassword(null);
 		}
-
-		showStatusMessage("Updating user...", false);
-		logger.info("Attempting to update user: {} (ID: {})", username, selectedUser.getId());
-
-		Thread updateThread = new Thread(() -> {
-			try {
-				if (userService == null) {
-					userService = new UserService();
-				}
-
-				boolean success = userService.updateUser(selectedUser);
-
-				Platform.runLater(() -> {
-					if (success) {
-						if (editUserForm != null) {
-							editUserForm.setVisible(false);
-						}
-						int index = usersList.indexOf(selectedUser);
-						if (index >= 0) {
-							usersList.set(index, selectedUser);
-						}
-						selectedUser = null;
-						showStatusMessage("User updated successfully", false);
-						passwordField.clear();
-						long duration = System.currentTimeMillis() - startTime;
-						LoggingUtility.logPerformance(logger, "update_user", duration, "success");
-						LoggingUtility.logAction(logger, "update",
-								currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
-								"success");
-					} else {
-						showStatusMessage("Failed to update user", true);
-						long duration = System.currentTimeMillis() - startTime;
-						LoggingUtility.logPerformance(logger, "update_user", duration, "failed");
-						LoggingUtility.logAction(logger, "update",
-								currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
-								"failed");
-					}
-				});
-			} catch (Exception e) {
-				logger.error("Error updating user: {}", e.getMessage(), e);
-				Platform.runLater(() -> {
-					showStatusMessage("Error updating user: " + e.getMessage(), true);
-					long duration = System.currentTimeMillis() - startTime;
-					LoggingUtility.logPerformance(logger, "update_user", duration, "error");
-					LoggingUtility.logAction(logger, "update",
-							currentAdmin != null ? currentAdmin.getUsername() : "system", "user:" + username,
-							"error: " + e.getMessage());
-				});
-			}
-		});
-		updateThread.start();
 	}
 
-	private boolean isOldPasswordValid(String inputOldPassword) {
-		if (selectedUser == null)
-			return false;
-		String currentPasswordInSystem = selectedUser.getPassword();
-		return inputOldPassword.equals(currentPasswordInSystem);
+	/**
+	 * Performs the user update.
+	 */
+	private void performUserUpdate(long startTime, String username) {
+		try {
+			if (userService == null) {
+				userService = new UserService();
+			}
+
+			boolean success = userService.updateUser(selectedUser);
+
+			Platform.runLater(() -> handleUpdateResult(success, startTime, username));
+
+		} catch (Exception e) {
+			Platform.runLater(() -> handleUpdateError(e, startTime, username));
+		}
+	}
+
+	/**
+	 * Handles the update result on the UI thread.
+	 */
+	private void handleUpdateResult(boolean success, long startTime, String username) {
+		if (success) {
+			if (editUserForm != null) {
+				editUserForm.setVisible(false);
+			}
+			int index = usersList.indexOf(selectedUser);
+			if (index >= 0) {
+				usersList.set(index, selectedUser);
+			}
+			selectedUser = null;
+			showStatusMessage("User updated successfully", false);
+			passwordField.clear();
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "update_user", duration, "success");
+			LoggingUtility.logAction(logger, "update", currentAdmin != null ? currentAdmin.getUsername() : "system",
+					"user:" + username, "success");
+		} else {
+			showStatusMessage("Failed to update user", true);
+			long duration = System.currentTimeMillis() - startTime;
+			LoggingUtility.logPerformance(logger, "update_user", duration, "failed");
+			LoggingUtility.logAction(logger, "update", currentAdmin != null ? currentAdmin.getUsername() : "system",
+					"user:" + username, "failed");
+		}
+	}
+
+	/**
+	 * Handles errors during the update process on the UI thread.
+	 */
+	private void handleUpdateError(Exception e, long startTime, String username) {
+		logger.error("Error updating user: {}", e.getMessage(), e);
+		showStatusMessage("Error updating user: " + e.getMessage(), true);
+		long duration = System.currentTimeMillis() - startTime;
+		LoggingUtility.logPerformance(logger, "update_user", duration, "error");
+		LoggingUtility.logAction(logger, "update", currentAdmin != null ? currentAdmin.getUsername() : "system",
+				"user:" + username, "error: " + e.getMessage());
 	}
 
 	/**

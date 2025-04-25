@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 
 import com.lingotower.exception.UserNotFoundException;
 import com.lingotower.exception.WordNotFoundException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 //import com.lingotower.exception;
 @Service
 public class UserService {
@@ -43,6 +44,7 @@ public class UserService {
 		this.wordService = wordService;
 		this.passwordEncoder = passwordEncoder;
 	}
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
@@ -148,5 +150,79 @@ public class UserService {
 	    user.setPassword(passwordEncoder.encode(newPassword));
 	    userRepository.save(user);
 	}
+//	 @Transactional
+//	    public void updateUserById(Long id, UserUpdateDTO userUpdateDTO) {
+//	        User user = userRepository.findById(id)
+//	                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+//
+//	        // עדכון שאר הפרטים
+//	        user.setUsername(userUpdateDTO.getUsername());
+//	        user.setEmail(userUpdateDTO.getEmail());
+//	        user.setSourceLanguage(userUpdateDTO.getSourceLanguage());
+//	        user.setTargetLanguage(userUpdateDTO.getTargetLanguage());
+//
+//	        // טיפול בעדכון סיסמה
+//	        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()) {
+//	            if (userUpdateDTO.getOldPassword() != null && !userUpdateDTO.getOldPassword().isEmpty()) {
+//	                if (!passwordEncoder.matches(userUpdateDTO.getOldPassword(), user.getPassword())) {
+//	                    throw new IllegalArgumentException("Invalid old password");
+//	                }
+//	                user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+//	            } else {
+//	                // אפשרות לעדכון סיסמה ללא סיסמה ישנה - שקול אם לאפשר זאת
+//	                user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+//	            }
+//	        }
+//
+//	        userRepository.save(user);
+//	        
+//	    }
+	 @Transactional
+	    public void updateUserById(Long id, UserUpdateDTO userUpdateDTO) {
+	        logger.info("Attempting to update user with ID: {}", id);
+	        logger.debug("Received UserUpdateDTO: {}", userUpdateDTO);
 
-}
+	        User user = userRepository.findById(id)
+	                .orElseThrow(() -> {
+	                    logger.warn("User not found with ID: {}", id);
+	                    return new UserNotFoundException("User not found with ID: " + id);
+	                });
+
+	        logger.debug("Retrieved user from database: {}", user);
+
+	        // עדכון שאר הפרטים
+	        logger.debug("Updating username from '{}' to '{}'", user.getUsername(), userUpdateDTO.getUsername());
+	        user.setUsername(userUpdateDTO.getUsername());
+	        logger.debug("Updating email from '{}' to '{}'", user.getEmail(), userUpdateDTO.getEmail());
+	        user.setEmail(userUpdateDTO.getEmail());
+	        logger.debug("Updating source language from '{}' to '{}'", user.getSourceLanguage(), userUpdateDTO.getSourceLanguage());
+	        user.setSourceLanguage(userUpdateDTO.getSourceLanguage());
+	        logger.debug("Updating target language from '{}' to '{}'", user.getTargetLanguage(), userUpdateDTO.getTargetLanguage());
+	        user.setTargetLanguage(userUpdateDTO.getTargetLanguage());
+
+	        // טיפול בעדכון סיסמה
+	        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()) {
+	            logger.info("Attempting to update password for user ID: {}", id);
+	            if (userUpdateDTO.getOldPassword() != null && !userUpdateDTO.getOldPassword().isEmpty()) {
+	                logger.debug("Checking old password...");
+	                if (!passwordEncoder.matches(userUpdateDTO.getOldPassword(), user.getPassword())) {
+	                    logger.warn("Invalid old password provided for user ID: {}", id);
+	                    throw new IllegalArgumentException("Invalid old password");
+	                }
+	                logger.debug("Old password matches. Encoding new password.");
+	                user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+	                logger.debug("New password encoded.");
+	            } else {
+	                logger.warn("New password provided without old password for user ID: {}. Consider security implications.", id);
+	                user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+	                logger.debug("New password encoded (without old password check).");
+	            }
+	        } else {
+	            logger.info("Password update not requested for user ID: {}", id);
+	        }
+
+	        logger.debug("User object before saving: {}", user);
+	        userRepository.save(user);
+	        logger.info("User with ID {} updated successfully.", id);
+	    }
+	}
