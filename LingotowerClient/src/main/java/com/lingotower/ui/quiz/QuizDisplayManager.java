@@ -28,60 +28,27 @@ public class QuizDisplayManager {
 	private static final Logger logger = LoggingUtility.getLogger(QuizDisplayManager.class);
 
 	// Preview elements
-	private final Label quizNameLabel;
-	private final Label categoryLabel;
-	private final Label difficultyLabel;
-	private final Label sampleQuestionText;
+	private final PreviewComponents previewComponents;
 
 	// Question elements
-	private final Label activeQuizNameLabel;
-	private final Label progressLabel;
-	private final ProgressBar progressBar;
-	private final Label questionText;
-	private final ToggleGroup answerGroup;
-	private final RadioButton answer1;
-	private final RadioButton answer2;
-	private final RadioButton answer3;
-	private final RadioButton answer4;
-	private final RadioButton answer5;
+	private final QuestionComponents questionComponents;
 
 	// Feedback elements
-	private final VBox feedbackBox;
-	private final Label feedbackLabel;
-	private final Label correctAnswerLabel;
+	private final FeedbackComponents feedbackComponents;
 
 	/**
-	 * Constructs a new QuizDisplayManager.
+	 * Constructs a new QuizDisplayManager with component groups.
+	 * 
+	 * @param previewComponents  The preview components group
+	 * @param questionComponents The question components group
+	 * @param feedbackComponents The feedback components group
 	 */
-	public QuizDisplayManager(
-			// Preview elements
-			Label quizNameLabel, Label categoryLabel, Label difficultyLabel, Label sampleQuestionText,
-			// Question elements
-			Label activeQuizNameLabel, Label progressLabel, ProgressBar progressBar, Label questionText,
-			ToggleGroup answerGroup, RadioButton answer1, RadioButton answer2, RadioButton answer3, RadioButton answer4,
-			RadioButton answer5,
-			// Feedback elements
-			VBox feedbackBox, Label feedbackLabel, Label correctAnswerLabel) {
+	public QuizDisplayManager(PreviewComponents previewComponents, QuestionComponents questionComponents,
+			FeedbackComponents feedbackComponents) {
 
-		this.quizNameLabel = quizNameLabel;
-		this.categoryLabel = categoryLabel;
-		this.difficultyLabel = difficultyLabel;
-		this.sampleQuestionText = sampleQuestionText;
-
-		this.activeQuizNameLabel = activeQuizNameLabel;
-		this.progressLabel = progressLabel;
-		this.progressBar = progressBar;
-		this.questionText = questionText;
-		this.answerGroup = answerGroup;
-		this.answer1 = answer1;
-		this.answer2 = answer2;
-		this.answer3 = answer3;
-		this.answer4 = answer4;
-		this.answer5 = answer5;
-
-		this.feedbackBox = feedbackBox;
-		this.feedbackLabel = feedbackLabel;
-		this.correctAnswerLabel = correctAnswerLabel;
+		this.previewComponents = previewComponents;
+		this.questionComponents = questionComponents;
+		this.feedbackComponents = feedbackComponents;
 	}
 
 	/**
@@ -94,18 +61,20 @@ public class QuizDisplayManager {
 		boolean isSentenceCompletionQuiz = quiz.getName().startsWith(COMPLETION_PREFIX);
 
 		// Populate preview
-		quizNameLabel.setText(quiz.getName());
-		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
-		difficultyLabel
+		previewComponents.quizNameLabel.setText(quiz.getName());
+		previewComponents.categoryLabel
+				.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
+		previewComponents.difficultyLabel
 				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
 
 		// Set appropriate description based on quiz type
 		if (isSentenceCompletionQuiz) {
-			sampleQuestionText.setText("This quiz will test your language skills with sentence completion exercises. "
-					+ "You'll be shown sentences with missing words and asked to select the correct word "
-					+ "to fill in the blank.");
+			previewComponents.sampleQuestionText
+					.setText("This quiz will test your language skills with sentence completion exercises. "
+							+ "You'll be shown sentences with missing words and asked to select the correct word "
+							+ "to fill in the blank.");
 		} else {
-			sampleQuestionText
+			previewComponents.sampleQuestionText
 					.setText("This quiz will generate random vocabulary questions based on the selected category "
 							+ "and difficulty level. Test your language knowledge!");
 		}
@@ -121,25 +90,25 @@ public class QuizDisplayManager {
 	public void setLoadingState(boolean isLoading) {
 		if (isLoading) {
 			// Show loading state
-			activeQuizNameLabel.setText("Loading quiz questions...");
-			questionText.setText("Loading...");
+			questionComponents.activeQuizNameLabel.setText("Loading quiz questions...");
+			questionComponents.questionText.setText("Loading...");
 
 			// Disable controls while loading
-			answer1.setDisable(true);
-			answer2.setDisable(true);
-			answer3.setDisable(true);
-			answer4.setDisable(true);
-			answer5.setDisable(true);
+			questionComponents.answer1.setDisable(true);
+			questionComponents.answer2.setDisable(true);
+			questionComponents.answer3.setDisable(true);
+			questionComponents.answer4.setDisable(true);
+			questionComponents.answer5.setDisable(true);
 
 			// Hide feedback box
-			feedbackBox.setVisible(false);
+			feedbackComponents.feedbackBox.setVisible(false);
 		} else {
 			// Reset controls state
-			answer1.setDisable(false);
-			answer2.setDisable(false);
-			answer3.setDisable(false);
-			answer4.setDisable(false);
-			answer5.setDisable(false);
+			questionComponents.answer1.setDisable(false);
+			questionComponents.answer2.setDisable(false);
+			questionComponents.answer3.setDisable(false);
+			questionComponents.answer4.setDisable(false);
+			questionComponents.answer5.setDisable(false);
 		}
 	}
 
@@ -149,7 +118,7 @@ public class QuizDisplayManager {
 	 * @param quizName The name of the active quiz
 	 */
 	public void setActiveQuizName(String quizName) {
-		activeQuizNameLabel.setText(quizName);
+		questionComponents.activeQuizNameLabel.setText(quizName);
 	}
 
 	/**
@@ -164,30 +133,31 @@ public class QuizDisplayManager {
 		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
 
 		// Update question text and style it appropriately
-		questionText.setText(question.getQuestionText());
-		questionText.setStyle("-fx-text-fill: black;"); // Reset style
+		questionComponents.questionText.setText(question.getQuestionText());
+		questionComponents.questionText.setStyle("-fx-text-fill: black;"); // Reset style
 
 		if (isSentenceCompletion) {
 			// Add special styling for sentence completion questions
-			questionText.getStyleClass().add("sentence-completion");
+			questionComponents.questionText.getStyleClass().add("sentence-completion");
 		} else {
 			// Remove the special styling if not a sentence completion
-			questionText.getStyleClass().removeAll("sentence-completion");
+			questionComponents.questionText.getStyleClass().removeAll("sentence-completion");
 		}
 
 		// Set up the answer options
-		QuizUIHelper.setUpAnswers(question, answer1, answer2, answer3, answer4, answer5);
+		QuizUIHelper.setUpAnswers(question, questionComponents.answer1, questionComponents.answer2,
+				questionComponents.answer3, questionComponents.answer4, questionComponents.answer5);
 
 		// Clear previous selection
-		answerGroup.selectToggle(null);
+		questionComponents.answerGroup.selectToggle(null);
 
 		// Hide feedback
-		feedbackBox.setVisible(false);
+		feedbackComponents.feedbackBox.setVisible(false);
 
 		// Update progress label and bar
 		double progress = (double) (currentIndex + 1) / totalQuestions;
-		progressBar.setProgress(progress);
-		progressLabel.setText(String.format("Question %d of %d", currentIndex + 1, totalQuestions));
+		questionComponents.progressBar.setProgress(progress);
+		questionComponents.progressLabel.setText(String.format("Question %d of %d", currentIndex + 1, totalQuestions));
 
 		logger.debug("Displayed question {}/{}: {}", currentIndex + 1, totalQuestions,
 				question.getQuestionText().length() > 30 ? question.getQuestionText().substring(0, 30) + "..."
@@ -201,12 +171,12 @@ public class QuizDisplayManager {
 	 * @return true if the answer was correct, false otherwise
 	 */
 	public boolean processAnswer(Question question) {
-		if (answerGroup.getSelectedToggle() == null) {
+		if (questionComponents.answerGroup.getSelectedToggle() == null) {
 			// No answer selected
 			return false;
 		}
 
-		RadioButton selectedButton = (RadioButton) answerGroup.getSelectedToggle();
+		RadioButton selectedButton = (RadioButton) questionComponents.answerGroup.getSelectedToggle();
 		String selectedAnswer = selectedButton.getText();
 
 		boolean isCorrect = selectedAnswer.equals(question.getCorrectAnswer());
@@ -223,7 +193,7 @@ public class QuizDisplayManager {
 	 * @param isCorrect      Whether the answer is correct
 	 */
 	public void showAnswerFeedback(Question question, String selectedAnswer, boolean isCorrect) {
-		RadioButton selectedButton = (RadioButton) answerGroup.getSelectedToggle();
+		RadioButton selectedButton = (RadioButton) questionComponents.answerGroup.getSelectedToggle();
 
 		if (isCorrect) {
 			selectedButton.setStyle(STYLE_TEXT_FILL_GREEN); // Green for selected answer
@@ -232,8 +202,8 @@ public class QuizDisplayManager {
 		}
 
 		// Show feedback
-		QuizUIHelper.showAnswerFeedback(isCorrect, question.getCorrectAnswer(), feedbackBox, feedbackLabel,
-				correctAnswerLabel, question);
+		QuizUIHelper.showAnswerFeedback(isCorrect, question.getCorrectAnswer(), feedbackComponents.feedbackBox,
+				feedbackComponents.feedbackLabel, feedbackComponents.correctAnswerLabel, question);
 
 		// If this is a sentence completion question, highlight the completed sentence
 		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
@@ -242,16 +212,16 @@ public class QuizDisplayManager {
 			String completedSentence = QuizUIHelper.getCompleteSentence(question.getQuestionText(), selectedAnswer);
 			// Set a different color based on correctness
 			if (isCorrect) {
-				questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
+				questionComponents.questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
 			} else {
-				questionText.setStyle(STYLE_TEXT_FILL_RED); // Red for incorrect
+				questionComponents.questionText.setStyle(STYLE_TEXT_FILL_RED); // Red for incorrect
 			}
-			questionText.setText(completedSentence);
+			questionComponents.questionText.setText(completedSentence);
 		}
 
 		// Create a Timeline to reset the color after a delay
 		Timeline resetColorTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-			questionText.setStyle("-fx-text-fill: black;"); // Reset to black
+			questionComponents.questionText.setStyle("-fx-text-fill: black;"); // Reset to black
 			selectedButton.setStyle("-fx-text-fill: black;"); // Reset to black
 		}));
 
@@ -267,9 +237,73 @@ public class QuizDisplayManager {
 	 * @return The selected answer text or null if none selected
 	 */
 	public String getSelectedAnswer() {
-		if (answerGroup.getSelectedToggle() == null) {
+		if (questionComponents.answerGroup.getSelectedToggle() == null) {
 			return null;
 		}
-		return ((RadioButton) answerGroup.getSelectedToggle()).getText();
+		return ((RadioButton) questionComponents.answerGroup.getSelectedToggle()).getText();
+	}
+
+	/**
+	 * Container class for quiz preview UI components
+	 */
+	public static class PreviewComponents {
+		public final Label quizNameLabel;
+		public final Label categoryLabel;
+		public final Label difficultyLabel;
+		public final Label sampleQuestionText;
+
+		public PreviewComponents(Label quizNameLabel, Label categoryLabel, Label difficultyLabel,
+				Label sampleQuestionText) {
+			this.quizNameLabel = quizNameLabel;
+			this.categoryLabel = categoryLabel;
+			this.difficultyLabel = difficultyLabel;
+			this.sampleQuestionText = sampleQuestionText;
+		}
+	}
+
+	/**
+	 * Container class for quiz question UI components
+	 */
+	public static class QuestionComponents {
+		public final Label activeQuizNameLabel;
+		public final Label progressLabel;
+		public final ProgressBar progressBar;
+		public final Label questionText;
+		public final ToggleGroup answerGroup;
+		public final RadioButton answer1;
+		public final RadioButton answer2;
+		public final RadioButton answer3;
+		public final RadioButton answer4;
+		public final RadioButton answer5;
+
+		public QuestionComponents(Label activeQuizNameLabel, Label progressLabel, ProgressBar progressBar,
+				Label questionText, ToggleGroup answerGroup, RadioButton answer1, RadioButton answer2,
+				RadioButton answer3, RadioButton answer4, RadioButton answer5) {
+			this.activeQuizNameLabel = activeQuizNameLabel;
+			this.progressLabel = progressLabel;
+			this.progressBar = progressBar;
+			this.questionText = questionText;
+			this.answerGroup = answerGroup;
+			this.answer1 = answer1;
+			this.answer2 = answer2;
+			this.answer3 = answer3;
+			this.answer4 = answer4;
+			this.answer5 = answer5;
+		}
+	}
+
+	/**
+	 * Container class for quiz feedback UI components
+	 */
+	public static class FeedbackComponents {
+		public final VBox feedbackBox;
+		public final Label feedbackLabel;
+		public final Label correctAnswerLabel;
+
+		public FeedbackComponents(VBox feedbackBox, Label feedbackLabel, Label correctAnswerLabel) {
+			this.feedbackBox = feedbackBox;
+			this.feedbackLabel = feedbackLabel;
+			this.correctAnswerLabel = correctAnswerLabel;
+		}
 	}
 }

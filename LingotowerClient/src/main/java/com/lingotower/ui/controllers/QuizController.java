@@ -154,15 +154,20 @@ public class QuizController {
 		listManager = new QuizListManager(quizListView, difficultyComboBox, categoryComboBox, categoryService,
 				quizGenerator);
 
-		// Initialize display manager
-		displayManager = new QuizDisplayManager(
-				// Preview elements
-				quizNameLabel, categoryLabel, difficultyLabel, sampleQuestionText,
-				// Question elements
+		// Create component groups for the display manager
+		QuizDisplayManager.PreviewComponents previewComponents = new QuizDisplayManager.PreviewComponents(quizNameLabel,
+				categoryLabel, difficultyLabel, sampleQuestionText);
+
+		QuizDisplayManager.QuestionComponents questionComponents = new QuizDisplayManager.QuestionComponents(
 				activeQuizNameLabel, progressLabel, progressBar, questionText, answerGroup, answer1, answer2, answer3,
-				answer4, answer5,
-				// Feedback elements
+				answer4, answer5);
+
+		QuizDisplayManager.FeedbackComponents feedbackComponents = new QuizDisplayManager.FeedbackComponents(
 				feedbackBox, feedbackLabel, correctAnswerLabel);
+
+		// Initialize display manager with component groups instead of individual
+		// components
+		displayManager = new QuizDisplayManager(previewComponents, questionComponents, feedbackComponents);
 
 		// Initialize results manager
 		resultsManager = new QuizResultsManager(summaryLabel);
