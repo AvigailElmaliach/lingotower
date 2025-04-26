@@ -31,24 +31,33 @@ public class FallbackQuizGenerator {
 
 		// Create a category object
 		Category category = new Category();
-		category.setId(CategoryMappingUtils.getCategoryIdByName(categoryName));
-		category.setName(categoryName);
+		// Handle null categoryName when setting ID and name
+		if (categoryName != null && !categoryName.trim().isEmpty()) {
+			category.setId(CategoryMappingUtils.getCategoryIdByName(categoryName));
+			category.setName(categoryName);
+		} else {
+			// Provide a default category if categoryName is null or empty
+			category.setId(1L); // Default ID
+			category.setName("Default Fallback Category"); // Default name
+			logger.warn("createFallbackSentenceQuestions received null or empty categoryName, using default category.");
+		}
 
 		logger.info("Creating fallback sentence completion questions for category: {}, difficulty: {}", categoryName,
 				difficulty);
 
 		// Create sample questions based on category
-		if (categoryName.contains("Everyday Life")) {
+		if (categoryName != null && categoryName.contains("Everyday Life")) {
 			addEverydayLifeQuestions(questions, category);
-		} else if (categoryName.contains("People") || categoryName.contains("Relationship")) {
+		} else if (categoryName != null && (categoryName.contains("People") || categoryName.contains("Relationship"))) {
 			addPeopleRelationshipsQuestions(questions, category);
-		} else if (categoryName.contains("Work") || categoryName.contains("Education")) {
+		} else if (categoryName != null && (categoryName.contains("Work") || categoryName.contains("Education"))) {
 			addWorkEducationQuestions(questions, category);
-		} else if (categoryName.contains("Health") || categoryName.contains("Well")) {
+		} else if (categoryName != null && (categoryName.contains("Health") || categoryName.contains("Well"))) {
 			addHealthWellbeingQuestions(questions, category);
-		} else if (categoryName.contains("Travel") || categoryName.contains("Leisure")) {
+		} else if (categoryName != null && (categoryName.contains("Travel") || categoryName.contains("Leisure")
+				|| categoryName.contains("טיולים"))) { // Added check for "טיולים"
 			addTravelLeisureQuestions(questions, category);
-		} else if (categoryName.contains("Environment") || categoryName.contains("Nature")) {
+		} else if (categoryName != null && (categoryName.contains("Environment") || categoryName.contains("Nature"))) {
 			addEnvironmentNatureQuestions(questions, category);
 		} else {
 			addDefaultQuestions(questions, category);

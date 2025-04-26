@@ -74,18 +74,18 @@ public class DashboardViewController {
 
 	/**
 	 * Set the current user
-	 * 
+	 *
 	 * @param user The current user
 	 */
 	public void setUser(User user) {
 		logger.debug("Setting user: {}", user != null ? user.getUsername() : "null");
 		this.currentUser = user;
-		// You can update UI elements based on the user if needed
+		
 	}
 
 	/**
 	 * Set the logout callback
-	 * 
+	 *
 	 * @param callback The callback to run when logout is requested
 	 */
 	public void setOnLogoutCallback(Runnable callback) {
@@ -141,6 +141,11 @@ public class DashboardViewController {
 
 		// Add a tile for each category by loading the FXML for each
 		for (Category category : categories) {
+			//  null check for category object and its name
+			if (category == null || category.getName() == null) {
+				logger.warn("Skipping category with null object or name.");
+				continue; // Skip this iteration if the category or its name is null
+			}
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CategoryTile.fxml"));
 				VBox categoryTile = loader.load();
@@ -176,7 +181,7 @@ public class DashboardViewController {
 
 	/**
 	 * Shows an error message
-	 * 
+	 *
 	 * @param message The error message to display
 	 */
 	public void showErrorMessage(String message) {

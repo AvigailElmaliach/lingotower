@@ -9,6 +9,7 @@ import static com.lingotower.constants.QuizConstants.STYLE_TEXT_FILL_RED;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
@@ -163,12 +164,25 @@ public class QuizController {
 				ObservableList<String> categoryNames = FXCollections.observableArrayList();
 
 				for (Category category : categories) {
-					categoryNames.add(category.getName());
+					// Only add category name if it's not null or empty
+					if (category != null && category.getName() != null && !category.getName().trim().isEmpty()) {
+						categoryNames.add(category.getName());
+					} else {
+						logger.warn("Skipping category with null or empty name from service.");
+					}
 				}
 
-				categoryComboBox.setItems(categoryNames);
-				categoryComboBox.setValue(categoryNames.get(0));
+				if (!categoryNames.isEmpty()) {
+					categoryComboBox.setItems(categoryNames);
+					categoryComboBox.setValue(categoryNames.get(0));
+				} else {
+					// If no valid names were found, use fallback
+					logger.warn("No valid category names retrieved from service, using fallback categories.");
+					categoryComboBox.setItems(FALLBACK_CATEGORIES);
+					categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
+				}
 			} else {
+				logger.warn("No categories retrieved from service, using fallback categories.");
 				categoryComboBox.setItems(FALLBACK_CATEGORIES);
 				categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
 			}
@@ -216,8 +230,10 @@ public class QuizController {
 		// Clear existing quizzes first to prevent duplicates
 		ObservableList<Quiz> sampleQuizzes = FXCollections.observableArrayList();
 
-		// Get categories and difficulties
-		List<String> categories = new ArrayList<>(categoryComboBox.getItems());
+		// Get categories and difficulties, filtering out null/empty category names
+		List<String> categories = new ArrayList<>(categoryComboBox.getItems()).stream()
+				.filter(name -> name != null && !name.trim().isEmpty()).collect(Collectors.toList());
+
 		List<String> difficulties = new ArrayList<>(difficultyComboBox.getItems());
 
 		// For each category, create both regular quizzes and sentence completion
