@@ -6,9 +6,10 @@ import com.lingotower.model.Admin;
 import com.lingotower.ui.controllers.admin.admin.AdminFormValidator;
 import com.lingotower.ui.controllers.admin.admin.AdminFormValidator.ValidationResult;
 import com.lingotower.ui.controllers.admin.admin.AdminRepository;
-import com.lingotower.ui.controllers.admin.admin.DialogHelper;
 import com.lingotower.ui.views.admin.AdminManagementView;
 import com.lingotower.utils.LoggingUtility;
+import com.lingotower.utils.ui.DialogUtils;
+import com.lingotower.utils.ui.UIUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -416,9 +417,10 @@ public class AdminManagementController {
 		// Store the selected admin
 		this.selectedAdmin = admin;
 
-		// Use DialogHelper to show confirmation dialog
+		// Use DialogUtils to show confirmation dialog
 		Scene scene = view.getScene();
-		DialogHelper.showDeleteConfirmation(admin, scene != null ? scene.getWindow() : null, this::handleConfirmDelete);
+		DialogUtils.showAdminDeleteConfirmation(admin, scene != null ? scene.getWindow() : null,
+				this::handleConfirmDelete);
 	}
 
 	/**
@@ -453,11 +455,8 @@ public class AdminManagementController {
 	 * @param isError Whether the message is an error
 	 */
 	private void showStatusMessage(String message, boolean isError) {
-		DialogHelper.showStatusMessage(statusLabel, message, isError);
-
-		// Auto-hide success messages
-		if (!isError) {
-			DialogHelper.autoHideStatusMessage(statusLabel, 5000);
-		}
+		// Use UIUtils instead of DialogUtils
+		UIUtils.showStatusMessage(statusLabel, message, isError);
 	}
+
 }

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 
 import com.lingotower.model.Category;
 import com.lingotower.service.WordService;
-import com.lingotower.ui.controllers.admin.ContentManagementController;
 import com.lingotower.utils.LoggingUtility;
 import com.lingotower.utils.ui.BackgroundTask;
 

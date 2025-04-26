@@ -9,7 +9,6 @@ import com.lingotower.model.Category;
 import com.lingotower.model.Difficulty;
 import com.lingotower.model.Word;
 import com.lingotower.service.WordService;
-import com.lingotower.ui.controllers.admin.ContentManagementController;
 import com.lingotower.utils.LoggingUtility;
 import com.lingotower.utils.ui.BackgroundTask;
 import com.lingotower.utils.ui.DialogUtils;

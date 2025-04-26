@@ -1,4 +1,4 @@
-package com.lingotower.ui.controllers.admin;
+package com.lingotower.ui.controllers.admin.content;
 
 import org.slf4j.Logger;
 
