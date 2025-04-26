@@ -297,112 +297,137 @@ public class AdminViewController {
 				logger.info("Background thread: Loading system stats...");
 				long startTime = System.currentTimeMillis();
 
+				// Set initial loading state in UI
+				updateStatsLabels("Loading...", "Loading...", "Loading...");
+
+				// Load statistics in parallel
+				StatsData statsData = loadAllStats();
+
+				// Update UI with loaded data
 				Platform.runLater(() -> {
-					totalUsersLabel.setText(LOADING_TEXT);
-					totalCategoriesLabel.setText(LOADING_TEXT);
-					totalWordsLabel.setText(LOADING_TEXT);
-				});
-
-				// Use the existing service instances for thread safety
-				final UserService localUserService = userService;
-				final CategoryService localCategoryService = categoryService;
-				final WordService localWordService = wordService;
-				final AdminService localAdminService = adminService;
-
-				// --- Load users ---
-				List<User> users = null;
-				int userCount = 0;
-				try {
-					logger.debug("Background thread: Trying to load users with AdminService...");
-					users = localAdminService.getAllUsers();
-					if (users == null) {
-						logger.debug("Background thread: AdminService returned null user list, trying UserService...");
-						users = localUserService.getAllUsers();
-					} else if (users.isEmpty()) {
-						logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
-						users = localUserService.getAllUsers();
-					}
-					userCount = (users != null) ? users.size() : 0;
-				} catch (Exception e) {
-					logger.warn(
-							"Background thread: Error loading users with AdminService: {}. Falling back to UserService.",
-							e.getMessage());
-					try {
-						logger.debug("Background thread: Falling back to UserService...");
-						users = localUserService.getAllUsers();
-						userCount = (users != null) ? users.size() : 0;
-					} catch (Exception ex) {
-						logger.error("Background thread: Error loading users with UserService after fallback.", ex);
-						userCount = 0;
-					}
-				}
-				logger.info("Background thread: User count calculated: {}", userCount);
-
-				// --- Load categories ---
-				List<Category> categories = null;
-				int categoryCount = 0;
-				try {
-					categories = localCategoryService.getAllCategories();
-					categoryCount = (categories != null) ? categories.size() : 0;
-				} catch (Exception e) {
-					logger.error("Background thread: Error loading categories: {}", e.getMessage());
-					logger.debug(UNKNOWN_TEXT, e);
-					categoryCount = 0;
-				}
-				// Only log once at INFO level, subsequent or detail logs at FINE
-				logger.debug("Background thread: Category count calculated: {}", categoryCount);
-
-				// --- Load words ---
-				List<Word> words = null;
-				int wordCount = 0;
-				try {
-					words = localWordService.getAllWords();
-					wordCount = (words != null) ? words.size() : 0;
-				} catch (Exception e) {
-					logger.error("Background thread: Error loading words: {}", e.getMessage());
-					logger.debug(UNKNOWN_TEXT, e);
-					wordCount = 0;
-				}
-				// Only log once at INFO level, subsequent or detail logs at FINE
-				logger.debug("Background thread: Word count calculated: {}", wordCount);
-
-				// --- Update UI labels ---
-				final int finalUserCount = userCount;
-				final int finalCategoryCount = categoryCount;
-				final int finalWordCount = wordCount;
-
-				// Log the summary once at INFO level
-				logger.info("Background thread: Stats collection complete - {} users, {} categories, {} words",
-						finalUserCount, finalCategoryCount, finalWordCount);
-
-				Platform.runLater(() -> {
-					totalUsersLabel.setText(String.valueOf(finalUserCount));
-					totalCategoriesLabel.setText(String.valueOf(finalCategoryCount));
-					totalWordsLabel.setText(String.valueOf(finalWordCount));
-					// Use debug level for UI update logs to reduce noise
+					totalUsersLabel.setText(String.valueOf(statsData.userCount));
+					totalCategoriesLabel.setText(String.valueOf(statsData.categoryCount));
+					totalWordsLabel.setText(String.valueOf(statsData.wordCount));
 					logger.debug("System stats UI updated");
 				});
 
+				// Log performance
 				long duration = System.currentTimeMillis() - startTime;
 				LoggingUtility.logPerformance(logger, "load_system_stats", duration,
-						String.format("users:%d,categories:%d,words:%d", userCount, categoryCount, wordCount));
+						String.format("users:%d,categories:%d,words:%d", statsData.userCount, statsData.categoryCount,
+								statsData.wordCount));
 
 			} catch (Exception e) {
-				logger.error("Error during background system stats loading: {}", e.getMessage());
-				logger.error(UNKNOWN_TEXT, e);
+				logger.error("Error during background system stats loading: {}", e.getMessage(), e);
 				LoggingUtility.logEvent(logger, "stats_loading", "FAILURE", e.getMessage());
 
 				Platform.runLater(() -> {
 					showError(String.format("Error loading system statistics: %s", e.getMessage()));
-					totalUsersLabel.setText(ERROR_TEXT);
-					totalCategoriesLabel.setText(ERROR_TEXT);
-					totalWordsLabel.setText(ERROR_TEXT);
+					updateStatsLabels("Error", "Error", "Error");
 				});
 			}
 		});
+
 		statsThread.setDaemon(true);
 		statsThread.setName("SystemStatsLoader");
 		statsThread.start();
+	}
+
+	/**
+	 * Helper class to store statistics data
+	 */
+	private static class StatsData {
+		int userCount = 0;
+		int categoryCount = 0;
+		int wordCount = 0;
+	}
+
+	/**
+	 * Updates all statistics labels with the given values
+	 */
+	private void updateStatsLabels(String userCount, String categoryCount, String wordCount) {
+		if (Platform.isFxApplicationThread()) {
+			totalUsersLabel.setText(userCount);
+			totalCategoriesLabel.setText(categoryCount);
+			totalWordsLabel.setText(wordCount);
+		} else {
+			Platform.runLater(() -> {
+				totalUsersLabel.setText(userCount);
+				totalCategoriesLabel.setText(categoryCount);
+				totalWordsLabel.setText(wordCount);
+			});
+		}
+	}
+
+	/**
+	 * Loads all statistics data
+	 */
+	private StatsData loadAllStats() {
+		StatsData data = new StatsData();
+
+		// Load users count
+		data.userCount = loadUserCount();
+		logger.info("User count calculated: {}", data.userCount);
+
+		// Load categories count
+		data.categoryCount = loadCategoryCount();
+		logger.debug("Category count calculated: {}", data.categoryCount);
+
+		// Load words count
+		data.wordCount = loadWordCount();
+		logger.debug("Word count calculated: {}", data.wordCount);
+
+		// Log the summary
+		logger.info("Stats collection complete - {} users, {} categories, {} words", data.userCount, data.categoryCount,
+				data.wordCount);
+
+		return data;
+	}
+
+	/**
+	 * Loads the user count
+	 */
+	private int loadUserCount() {
+		try {
+			logger.debug("Background thread: Trying to load users with AdminService...");
+			List<User> users = adminService.getAllUsers();
+
+			if (users == null || users.isEmpty()) {
+				logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
+				users = userService.getAllUsers();
+			}
+
+			return users != null ? users.size() : 0;
+		} catch (Exception e) {
+			logger.warn("Error loading users: {}", e.getMessage());
+			return 0;
+		}
+	}
+
+	/**
+	 * Loads the category count
+	 */
+	private int loadCategoryCount() {
+		try {
+			List<Category> categories = categoryService.getAllCategories();
+			return categories != null ? categories.size() : 0;
+		} catch (Exception e) {
+			logger.error("Error loading categories: {}", e.getMessage());
+			return 0;
+		}
+	}
+
+	/**
+	 * Loads the word count
+	 */
+	private int loadWordCount() {
+		try {
+			List<Word> words = wordService.getAllWords();
+			return words != null ? words.size() : 0;
+		} catch (Exception e) {
+			logger.error("Error loading words: {}", e.getMessage());
+			return 0;
+		}
 	}
 
 	private void showError(String message) {

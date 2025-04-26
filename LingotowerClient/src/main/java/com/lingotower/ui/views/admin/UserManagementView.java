@@ -2,7 +2,7 @@ package com.lingotower.ui.views.admin;
 
 import com.lingotower.model.Admin;
 import com.lingotower.service.AdminService;
-import com.lingotower.ui.controllers.admin.UserManagementController;
+import com.lingotower.ui.controllers.admin.user.UserManagementController;
 import com.lingotower.ui.views.AbstractContentView;
 
 /**

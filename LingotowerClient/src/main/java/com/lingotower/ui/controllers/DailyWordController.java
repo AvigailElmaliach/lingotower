@@ -321,19 +321,4 @@ public class DailyWordController {
 		}
 	}
 
-	/**
-	 * Checks if a string contains Hebrew characters.
-	 * 
-	 * @param text The text to check
-	 * @return True if the text contains Hebrew characters, false otherwise
-	 */
-//	private boolean containsHebrew(String text) {
-//		if (text == null || text.isEmpty()) {
-//			return false;
-//		}
-//
-//		// Check if any character in the string belongs to the Hebrew Unicode block
-//		return text.codePoints().anyMatch(c -> Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HEBREW);
-//	}
-
 }
