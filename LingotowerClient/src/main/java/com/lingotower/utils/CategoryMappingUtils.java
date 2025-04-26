@@ -36,6 +36,7 @@ public class CategoryMappingUtils {
 		map.put("עבודה וחינוך", "Work and Education");
 		map.put("בריאות ורווחה", "Health and Well-being");
 		map.put("נסיעות ופנאי", "Travel and Leisure");
+		map.put("טיולים ופנאי", "Travel and Leisure"); 
 		map.put("סביבה וטבע", "Environment and Nature");
 
 		return map;
@@ -43,7 +44,7 @@ public class CategoryMappingUtils {
 
 	/**
 	 * Maps between Hebrew and English category names.
-	 * 
+	 *
 	 * @param categoryName    The category name to map (could be Hebrew or English)
 	 * @param toEnglish       True if converting from Hebrew to English, false for
 	 *                        English to Hebrew
@@ -110,7 +111,21 @@ public class CategoryMappingUtils {
 	 * Maps a category ID to its name based on common categories
 	 */
 	public static Long getCategoryIdByName(String categoryName) {
-		switch (categoryName) {
+		if (categoryName == null) {
+			logger.warn("getCategoryIdByName received a null categoryName. Returning default category ID (1L).");
+			return 1L; // Return a default category ID if categoryName is null
+		}
+
+		// Trim the category name to handle leading/trailing whitespace
+		String trimmedCategoryName = categoryName.trim();
+		if (trimmedCategoryName.isEmpty()) {
+			logger.warn(
+					"getCategoryIdByName received an empty categoryName after trimming. Returning default category ID (1L).");
+			return 1L;
+		}
+
+		//  Check against hardcoded English names first
+		switch (trimmedCategoryName) {
 		case "Everyday Life and Essential Vocabulary":
 			return 1L;
 		case "People and Relationships":
@@ -123,21 +138,34 @@ public class CategoryMappingUtils {
 			return 5L;
 		case "Environment and Nature":
 			return 6L;
-		default:
-			// If not found, try to match partially
-			if (categoryName.contains("Everyday") || categoryName.contains("Essential"))
-				return 1L;
-			if (categoryName.contains("People") || categoryName.contains("Relationship"))
-				return 2L;
-			if (categoryName.contains("Work") || categoryName.contains("Education"))
-				return 3L;
-			if (categoryName.contains("Health") || categoryName.contains("Well"))
-				return 4L;
-			if (categoryName.contains("Travel") || categoryName.contains("Leisure"))
-				return 5L;
-			if (categoryName.contains("Environment") || categoryName.contains("Nature"))
-				return 6L;
-			return 1L; // Default to first category
 		}
+
+		// If not a direct English match, check if it's a known Hebrew name using the
+		// map
+		if (HEBREW_TO_ENGLISH_MAP.containsKey(trimmedCategoryName)) {
+			String englishName = HEBREW_TO_ENGLISH_MAP.get(trimmedCategoryName);
+			// Recursively call with the English name to get the ID
+			// This avoids duplicating the switch logic
+			return getCategoryIdByName(englishName);
+		}
+
+		// If still not found, try partial matching (original default logic)
+		if (trimmedCategoryName.contains("Everyday") || trimmedCategoryName.contains("Essential"))
+			return 1L;
+		if (trimmedCategoryName.contains("People") || trimmedCategoryName.contains("Relationship"))
+			return 2L;
+		if (trimmedCategoryName.contains("Work") || trimmedCategoryName.contains("Education"))
+			return 3L;
+		if (trimmedCategoryName.contains("Health") || trimmedCategoryName.contains("Well"))
+			return 4L;
+		if (trimmedCategoryName.contains("Travel") || trimmedCategoryName.contains("Leisure"))
+			return 5L;
+		if (trimmedCategoryName.contains("Environment") || trimmedCategoryName.contains("Nature"))
+			return 6L;
+
+		// If no match found
+		logger.warn("No specific category ID found for category name: {}. Returning default category ID (1L).",
+				trimmedCategoryName);
+		return 1L; // Default to first category
 	}
 }

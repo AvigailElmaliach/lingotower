@@ -1,43 +1,30 @@
 package com.lingotower.ui.controllers;
 
-import static com.lingotower.constants.QuizConstants.BLANK_PLACEHOLDER;
-import static com.lingotower.constants.QuizConstants.COMPLETION_PREFIX;
-import static com.lingotower.constants.QuizConstants.DIFFICULTIES;
-import static com.lingotower.constants.QuizConstants.FALLBACK_CATEGORIES;
-import static com.lingotower.constants.QuizConstants.STYLE_TEXT_FILL_GREEN;
-import static com.lingotower.constants.QuizConstants.STYLE_TEXT_FILL_RED;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 
-import com.lingotower.model.Category;
 import com.lingotower.model.Question;
 import com.lingotower.model.Quiz;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.QuizService;
+import com.lingotower.ui.quiz.QuizDisplayManager;
 import com.lingotower.ui.quiz.QuizGenerator;
+import com.lingotower.ui.quiz.QuizListManager;
+import com.lingotower.ui.quiz.QuizResultsManager;
+import com.lingotower.ui.quiz.QuizStateManager;
 import com.lingotower.ui.quiz.QuizUIHelper;
 import com.lingotower.utils.LoggingUtility;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 public class QuizController {
 
@@ -50,7 +37,7 @@ public class QuizController {
 	@FXML
 	private ComboBox<String> categoryComboBox;
 	@FXML
-	private javafx.scene.control.ProgressBar progressBar;
+	private ProgressBar progressBar;
 
 	// Different content containers
 	@FXML
@@ -112,13 +99,18 @@ public class QuizController {
 	// Services
 	private QuizService quizService;
 	private CategoryService categoryService;
+
+	// Managers
+	private QuizStateManager stateManager;
+	private QuizListManager listManager;
+	private QuizDisplayManager displayManager;
+	private QuizResultsManager resultsManager;
 	private QuizGenerator quizGenerator;
 
 	// State
 	private ToggleGroup answerGroup;
 	private Quiz currentQuiz;
 	private int currentQuestionIndex = 0;
-	private int correctAnswersCount = 0;
 
 	private static final Logger logger = LoggingUtility.getLogger(QuizController.class);
 
@@ -129,59 +121,18 @@ public class QuizController {
 		this.categoryService = new CategoryService();
 		this.quizGenerator = new QuizGenerator(quizService, categoryService);
 
-		// Initialize difficulty dropdown
-		difficultyComboBox.setItems(DIFFICULTIES);
-		difficultyComboBox.setValue("EASY");
-
-		// Load available categories
-		loadCategories();
-
 		// Set up ToggleGroup for radio buttons
 		setupRadioButtons();
 
-		// Set up quiz ListView display
-		setupQuizListView();
+		// Initialize managers
+		initializeManagers();
 
-		// Generate sample quizzes
-		generateSampleQuizzes();
-
-		// Ensure welcome content is visible initially
-		welcomeContent.setVisible(true);
-		previewContent.setVisible(false);
-		questionContent.setVisible(false);
-		summaryContent.setVisible(false);
+		// Initialize UI state
+		stateManager.initializeState();
 	}
 
 	/**
-	 * Load categories from the service
-	 */
-	private void loadCategories() {
-		try {
-			List<Category> categories = categoryService.getAllCategories();
-
-			if (categories != null && !categories.isEmpty()) {
-				ObservableList<String> categoryNames = FXCollections.observableArrayList();
-
-				for (Category category : categories) {
-					categoryNames.add(category.getName());
-				}
-
-				categoryComboBox.setItems(categoryNames);
-				categoryComboBox.setValue(categoryNames.get(0));
-			} else {
-				categoryComboBox.setItems(FALLBACK_CATEGORIES);
-				categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
-			}
-		} catch (Exception e) {
-			logger.error("Error loading categories: {}", e.getMessage(), e);
-			// Fallback categories
-			categoryComboBox.setItems(FALLBACK_CATEGORIES);
-			categoryComboBox.setValue(FALLBACK_CATEGORIES.get(0));
-		}
-	}
-
-	/**
-	 * Set up the radio button toggle group
+	 * Sets up the radio button toggle group
 	 */
 	private void setupRadioButtons() {
 		answerGroup = new ToggleGroup();
@@ -193,55 +144,50 @@ public class QuizController {
 	}
 
 	/**
-	 * Set up the quiz list view cell factory
+	 * Initializes all the managers
 	 */
-	private void setupQuizListView() {
-		quizListView.setCellFactory(lv -> new ListCell<Quiz>() {
-			@Override
-			protected void updateItem(Quiz quiz, boolean empty) {
-				super.updateItem(quiz, empty);
-				if (empty || quiz == null) {
-					setText(null);
-				} else {
-					setText(quiz.getName());
-				}
-			}
+	private void initializeManagers() {
+		// Initialize state manager
+		stateManager = new QuizStateManager(welcomeContent, previewContent, questionContent, summaryContent);
+
+		// Initialize list manager
+		listManager = new QuizListManager(quizListView, difficultyComboBox, categoryComboBox, categoryService,
+				quizGenerator);
+
+		// Create component groups for the display manager
+		QuizDisplayManager.PreviewComponents previewComponents = new QuizDisplayManager.PreviewComponents(quizNameLabel,
+				categoryLabel, difficultyLabel, sampleQuestionText);
+
+		QuizDisplayManager.QuestionComponents questionComponents = new QuizDisplayManager.QuestionComponents(
+				activeQuizNameLabel, progressLabel, progressBar, questionText, answerGroup, answer1, answer2, answer3,
+				answer4, answer5);
+
+		QuizDisplayManager.FeedbackComponents feedbackComponents = new QuizDisplayManager.FeedbackComponents(
+				feedbackBox, feedbackLabel, correctAnswerLabel);
+
+		// Initialize display manager with component groups instead of individual
+		// components
+		displayManager = new QuizDisplayManager(previewComponents, questionComponents, feedbackComponents);
+
+		// Initialize results manager
+		resultsManager = new QuizResultsManager(summaryLabel);
+
+		// Set up the quiz list selection listener
+		listManager.setSelectionListener(quiz -> {
+			currentQuiz = quiz;
+			showQuizPreview(quiz);
 		});
+
+		// Initialize the quiz list
+		listManager.initialize();
 	}
 
 	/**
-	 * Generate sample quizzes for selection
+	 * Shows the preview for a selected quiz
 	 */
-	private void generateSampleQuizzes() {
-		// Clear existing quizzes first to prevent duplicates
-		ObservableList<Quiz> sampleQuizzes = FXCollections.observableArrayList();
-
-		// Get categories and difficulties
-		List<String> categories = new ArrayList<>(categoryComboBox.getItems());
-		List<String> difficulties = new ArrayList<>(difficultyComboBox.getItems());
-
-		// For each category, create both regular quizzes and sentence completion
-		// quizzes
-		for (String categoryName : categories) {
-			for (String difficultyName : difficulties) {
-				// Create regular vocabulary quiz
-				sampleQuizzes.add(quizGenerator.createSampleQuiz(categoryName, difficultyName, false));
-
-				// Create sentence completion quiz
-				sampleQuizzes.add(quizGenerator.createSampleQuiz(categoryName, difficultyName, true));
-			}
-		}
-
-		// Set the items to the new list
-		quizListView.setItems(sampleQuizzes);
-
-		// Add selection listener to preview the selected quiz
-		quizListView.getSelectionModel().selectedItemProperty().addListener((obs, oldQuiz, newQuiz) -> {
-			if (newQuiz != null) {
-				currentQuiz = newQuiz;
-				showQuizPreview(newQuiz);
-			}
-		});
+	private void showQuizPreview(Quiz quiz) {
+		stateManager.showPreview(quiz);
+		displayManager.displayQuizPreview(quiz);
 	}
 
 	/**
@@ -249,71 +195,7 @@ public class QuizController {
 	 */
 	@FXML
 	private void handleFilterButtonClick(ActionEvent event) {
-		String selectedDifficulty = difficultyComboBox.getValue();
-		String selectedCategory = categoryComboBox.getValue();
-
-		logger.debug("Filter button clicked!");
-		logger.debug("Selected difficulty = {}", selectedDifficulty);
-		logger.debug("Selected category = {}", selectedCategory);
-
-		// Filter existing quizzes
-		ObservableList<Quiz> filteredQuizzes = FXCollections.observableArrayList();
-
-		// Get all quizzes
-		ObservableList<Quiz> allQuizzes = quizListView.getItems();
-
-		// Filter by category and difficulty
-		for (Quiz quiz : allQuizzes) {
-			boolean matchesCategory = quiz.getCategory().getName().equals(selectedCategory);
-			boolean matchesDifficulty = quiz.getDifficulty().toString().equals(selectedDifficulty);
-
-			if (matchesCategory && matchesDifficulty) {
-				filteredQuizzes.add(quiz);
-			}
-		}
-
-		// If no matches, create new filtered quizzes
-		if (filteredQuizzes.isEmpty()) {
-			// Create regular quiz with selected criteria
-			filteredQuizzes.add(quizGenerator.createSampleQuiz(selectedCategory, selectedDifficulty, false));
-
-			// Create sentence completion quiz
-			filteredQuizzes.add(quizGenerator.createSampleQuiz(selectedCategory, selectedDifficulty, true));
-		}
-
-		// Update the ListView
-		quizListView.setItems(filteredQuizzes);
-	}
-
-	/**
-	 * Displays preview info about the selected quiz.
-	 */
-	private void showQuizPreview(Quiz quiz) {
-		// Hide others, show preview
-		welcomeContent.setVisible(false);
-		questionContent.setVisible(false);
-		summaryContent.setVisible(false);
-		previewContent.setVisible(true);
-
-		// Check if this is a sentence completion quiz
-		boolean isSentenceCompletionQuiz = quiz.getName().startsWith(COMPLETION_PREFIX);
-
-		// Populate preview
-		quizNameLabel.setText(quiz.getName());
-		categoryLabel.setText("Category: " + (quiz.getCategory() != null ? quiz.getCategory().getName() : "N/A"));
-		difficultyLabel
-				.setText("Difficulty: " + (quiz.getDifficulty() != null ? quiz.getDifficulty().toString() : "N/A"));
-
-		// Set appropriate description based on quiz type
-		if (isSentenceCompletionQuiz) {
-			sampleQuestionText.setText("This quiz will test your language skills with sentence completion exercises. "
-					+ "You'll be shown sentences with missing words and asked to select the correct word "
-					+ "to fill in the blank.");
-		} else {
-			sampleQuestionText
-					.setText("This quiz will generate random vocabulary questions based on the selected category "
-							+ "and difficulty level. Test your language knowledge!");
-		}
+		listManager.applyFilter();
 	}
 
 	/**
@@ -321,9 +203,10 @@ public class QuizController {
 	 */
 	@FXML
 	private void handleStartQuizClick(ActionEvent event) {
-		if (currentQuiz != null) {
-			logger.info("Starting quiz: {}", currentQuiz.getName());
-			startQuiz(currentQuiz);
+		Quiz selectedQuiz = listManager.getSelectedQuiz();
+		if (selectedQuiz != null) {
+			logger.info("Starting quiz: {}", selectedQuiz.getName());
+			startQuiz(selectedQuiz);
 		} else {
 			QuizUIHelper.showError("Please select a quiz first");
 		}
@@ -335,17 +218,13 @@ public class QuizController {
 	private void startQuiz(Quiz quiz) {
 		// Reset state
 		currentQuestionIndex = 0;
-		correctAnswersCount = 0;
+		resultsManager.resetForNewQuiz(quiz);
 
-		// Show loading indication
-		activeQuizNameLabel.setText("Loading quiz questions...");
-		questionContent.setVisible(true);
-		previewContent.setVisible(false);
-		welcomeContent.setVisible(false);
-		summaryContent.setVisible(false);
+		// Show loading screen
+		stateManager.showQuestions();
+		displayManager.setLoadingState(true);
 
 		// Disable controls while loading
-		answersBox.setDisable(true);
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(true);
 
@@ -357,36 +236,11 @@ public class QuizController {
 				currentQuiz = generatedQuiz;
 
 				// Update quiz name display
-				activeQuizNameLabel.setText(currentQuiz.getName());
+				displayManager.setActiveQuizName(currentQuiz.getName());
 
 				// Enable controls
 				answersBox.setDisable(false);
-
-				// Check if fallback questions are being used
-				boolean usingFallback = false;
-				if (!currentQuiz.getQuestions().isEmpty()) {
-					Question firstQuestion = currentQuiz.getQuestions().get(0);
-					if (firstQuestion.getCategory() != null && firstQuestion.getCategory().getName() != null
-							&& firstQuestion.getCategory().getName().endsWith("_FALLBACK")) {
-						usingFallback = true;
-
-						// Clean up the category name for display purposes while keeping the flag
-						for (Question q : currentQuiz.getQuestions()) {
-							if (q.getCategory() != null && q.getCategory().getName().endsWith("_FALLBACK")) {
-								String originalName = q.getCategory().getName().replace("_FALLBACK", "");
-								q.getCategory().setName(originalName);
-							}
-						}
-
-						// Show a warning to the user
-						Platform.runLater(() -> {
-							QuizUIHelper.showWarning("Using sample questions",
-									"Could not retrieve real questions from the server. "
-											+ "Using sample questions instead.");
-
-						});
-					}
-				}
+				displayManager.setLoadingState(false);
 
 				// Show first question
 				showCurrentQuestion();
@@ -396,15 +250,13 @@ public class QuizController {
 				QuizUIHelper.showError(errorMessage);
 
 				// Go back to welcome screen
-				questionContent.setVisible(false);
-				welcomeContent.setVisible(true);
+				stateManager.returnToWelcome();
 			}
 		} catch (Exception e) {
 			QuizUIHelper.showError("Error starting quiz: " + e.getMessage());
 			e.printStackTrace();
 			// Go back to welcome screen
-			questionContent.setVisible(false);
-			welcomeContent.setVisible(true);
+			stateManager.returnToWelcome();
 		}
 	}
 
@@ -424,36 +276,10 @@ public class QuizController {
 		}
 
 		// Get current question
-		Question question = currentQuiz.getQuestions().get(currentQuestionIndex);
+		Question currentQuestion = currentQuiz.getQuestions().get(currentQuestionIndex);
 
-		// Check if this is a sentence completion question
-		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
-
-		// Update question text and style it appropriately
-		questionText.setText(question.getQuestionText());
-
-		if (isSentenceCompletion) {
-			// Add special styling for sentence completion questions
-			questionText.getStyleClass().add("sentence-completion");
-		} else {
-			// Remove the special styling if not a sentence completion
-			questionText.getStyleClass().removeAll("sentence-completion");
-		}
-
-		// Set up the answer options
-		QuizUIHelper.setUpAnswers(question, answer1, answer2, answer3, answer4, answer5);
-
-		// Clear previous selection
-		answerGroup.selectToggle(null);
-
-		// Hide feedback
-		feedbackBox.setVisible(false);
-
-		// Update progress label and bar
-		int total = currentQuiz.getQuestions().size();
-		double progress = (double) (currentQuestionIndex + 1) / total;
-		progressBar.setProgress(progress);
-		progressLabel.setText(String.format("Question %d of %d", currentQuestionIndex + 1, total));
+		// Display the question
+		displayManager.displayQuestion(currentQuestion, currentQuestionIndex, currentQuiz.getQuestions().size());
 
 		// Enable submit button, disable next button
 		submitBtn.setDisable(false);
@@ -465,53 +291,25 @@ public class QuizController {
 	 */
 	@FXML
 	private void handleSubmitAnswerClick(ActionEvent event) {
-		if (answerGroup.getSelectedToggle() == null) {
+		String selectedAnswer = displayManager.getSelectedAnswer();
+		if (selectedAnswer == null) {
 			return; // No answer selected
 		}
-
-		RadioButton selectedButton = (RadioButton) answerGroup.getSelectedToggle();
-		String selectedAnswer = selectedButton.getText();
 
 		Question question = currentQuiz.getQuestions().get(currentQuestionIndex);
 		boolean isCorrect = selectedAnswer.equals(question.getCorrectAnswer());
 
+		// Record result
 		if (isCorrect) {
-			correctAnswersCount++;
-			selectedButton.setStyle(STYLE_TEXT_FILL_GREEN); // Green for selected answer
-		} else {
-			selectedButton.setStyle(STYLE_TEXT_FILL_RED); // Red for selected answer
+			resultsManager.recordCorrectAnswer();
 		}
 
 		// Show feedback
-		QuizUIHelper.showAnswerFeedback(isCorrect, question.getCorrectAnswer(), feedbackBox, feedbackLabel,
-				correctAnswerLabel, question);
+		displayManager.showAnswerFeedback(question, selectedAnswer, isCorrect);
 
 		// Disable submit button, enable next
 		submitBtn.setDisable(true);
 		nextBtn.setDisable(false);
-
-		// If this is a sentence completion question, highlight the completed sentence
-		boolean isSentenceCompletion = question.getQuestionText().contains(BLANK_PLACEHOLDER);
-		if (isSentenceCompletion) {
-			// Replace the blank with the selected answer and show it in the question text
-			String completedSentence = QuizUIHelper.getCompleteSentence(question.getQuestionText(), selectedAnswer);
-			// Set a different color based on correctness
-			if (isCorrect) {
-				questionText.setStyle(STYLE_TEXT_FILL_GREEN); // Green for correct
-			} else {
-				questionText.setStyle(STYLE_TEXT_FILL_RED); // Red for incorrect
-			}
-			questionText.setText(completedSentence);
-		}
-
-		// Create a Timeline to reset the color after a delay
-		Timeline resetColorTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-			questionText.setStyle("-fx-text-fill: black;"); // Reset to black
-			selectedButton.setStyle("-fx-text-fill: black;"); // Reset to black
-		}));
-
-		resetColorTimeline.setCycleCount(1); // Run only once
-		resetColorTimeline.play();
 	}
 
 	/**
@@ -528,25 +326,9 @@ public class QuizController {
 			showCurrentQuestion();
 		} else {
 			// If we've gone past the last question, show summary
-			showQuizSummary();
+			stateManager.showSummary();
+			resultsManager.displaySummary();
 		}
-	}
-
-	/**
-	 * Display final score and switch to summary screen.
-	 */
-	private void showQuizSummary() {
-		questionContent.setVisible(false);
-		summaryContent.setVisible(true);
-
-		int totalQuestions = currentQuiz.getQuestions().size();
-		boolean isSentenceCompletionQuiz = currentQuiz.getName().startsWith(COMPLETION_PREFIX);
-
-		// Generate appropriate summary text
-		String summaryText = QuizUIHelper.generateSummaryText(correctAnswersCount, totalQuestions,
-				isSentenceCompletionQuiz);
-
-		summaryLabel.setText(summaryText);
 	}
 
 	/**
@@ -554,15 +336,14 @@ public class QuizController {
 	 */
 	@FXML
 	private void handleBackToQuizzesClick(ActionEvent event) {
-		summaryContent.setVisible(false);
-		welcomeContent.setVisible(true);
+		stateManager.returnToWelcome();
 	}
 
 	/**
 	 * Public method to manually refresh quizzes if needed from another controller
 	 */
 	public void refresh() {
-		loadCategories();
-		generateSampleQuizzes();
+		// Re-initialize the list manager
+		listManager.initialize();
 	}
 }

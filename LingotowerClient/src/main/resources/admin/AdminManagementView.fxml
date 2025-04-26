@@ -119,10 +119,7 @@
                   </Label>
                   <Label fx:id="confirmAdminInfoLabel" text="Username: admin1, Email: admin1@example.com" />
                   <HBox alignment="CENTER" spacing="20.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#handleCancelDelete" styleClass="secondary-button" text="Cancel" />
-                        <Button mnemonicParsing="false" onAction="#handleConfirmDelete" styleClass="danger-button" text="Delete Admin" />
-                     </children>
+                    
                   </HBox>
                </children>
                <padding>
