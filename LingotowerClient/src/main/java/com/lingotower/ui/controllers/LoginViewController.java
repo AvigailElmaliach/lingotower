@@ -151,7 +151,7 @@ public class LoginViewController implements Initializable {
 
 				// Log the user's details
 				logger.info("User ID: {}, Username: {}, Email: {}, Language: {}", loggedInUser.getId(),
-						loggedInUser.getUsername(), loggedInUser.getEmail(), loggedInUser.getLanguage());
+						loggedInUser.getUsername(), loggedInUser.getEmail(), loggedInUser.getSourceLanguage());
 
 				if (onLoginSuccess != null) {
 					onLoginSuccess.accept(loggedInUser);

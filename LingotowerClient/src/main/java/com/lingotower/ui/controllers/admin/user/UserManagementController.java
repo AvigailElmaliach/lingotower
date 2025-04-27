@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.lingotower.model.Admin;
 import com.lingotower.model.User;
 import com.lingotower.service.AdminService;
+import com.lingotower.service.UserService;
 import com.lingotower.ui.components.ActionButtonCell;
 import com.lingotower.ui.views.admin.UserManagementView;
 import com.lingotower.utils.LoggingUtility;
@@ -60,7 +61,7 @@ public class UserManagementController {
 	private UserEditorDelegate userEditor;
 	private UserUIDelegate uiDelegate;
 	private UserManagementView parentView;
-
+	 private final UserService userService;
 	// Core state
 	private Runnable returnToDashboard;
 	private Admin currentAdmin;
@@ -69,6 +70,7 @@ public class UserManagementController {
 	 * Constructor with default initialization
 	 */
 	public UserManagementController() {
+		 userService = new UserService(this);
 		logger.debug("UserManagementController initialized");
 	}
 
@@ -78,6 +80,7 @@ public class UserManagementController {
 	@FXML
 	private void initialize() {
 		// Initialize delegates
+		 logger.debug("UserManagementController initialize() method was called!");
 		this.userLoader = new UserLoaderDelegate(this);
 		this.userEditor = new UserEditorDelegate(this);
 		this.uiDelegate = new UserUIDelegate(this);
@@ -112,7 +115,9 @@ public class UserManagementController {
 					userEditor.showDeleteConfirmation(user);
 				}));
 	}
-
+	public UserEditorDelegate getUserEditor() {
+	    return userEditor;
+	}
 	/**
 	 * Sets the parent view reference
 	 */
@@ -169,7 +174,9 @@ public class UserManagementController {
 			logger.error("Dashboard callback is not set.");
 		}
 	}
-
+	 public UserService getUserService() {
+	        return userService;
+	    }
 	/**
 	 * Refresh button handler
 	 */
@@ -200,6 +207,7 @@ public class UserManagementController {
 	 */
 	@FXML
 	private void handleSaveUser() {
+		logger.debug("handleSaveUser method in UserManagementController was called!");
 		userEditor.saveUser(usernameField.getText().trim(), emailField.getText().trim(), languageField.getText().trim(),
 				passwordField.getText());
 	}

@@ -162,7 +162,7 @@ public class UserProfileController {
 			welcomeLabel.setText("Welcome, " + user.getUsername() + "!");
 
 			logger.debug("User set in UserProfileController: ID={}, Username={}, Email={}, Language={}", user.getId(),
-					user.getUsername(), user.getEmail(), user.getLanguage());
+					user.getUsername(), user.getEmail(), user.getSourceLanguage());
 
 			// Initialize handlers with user data
 			profileTabHandler.setUser(user);

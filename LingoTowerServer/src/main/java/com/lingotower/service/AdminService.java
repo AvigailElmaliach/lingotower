@@ -97,9 +97,9 @@ public class AdminService extends BaseUserService<Admin> {
 			throw new IllegalArgumentException("Email already exists");
 		}
 
-		if (!AuthHelperService.isPasswordStrong(adminCreateDTO.getPassword())) {
-			throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
-		}
+//		if (!AuthHelperService.isPasswordStrong(adminCreateDTO.getPassword())) {
+//			throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
+//		}
 
 		Admin newAdmin = new Admin(adminCreateDTO.getUsername(), passwordEncoder.encode(adminCreateDTO.getPassword()),
 				adminCreateDTO.getEmail(), adminCreateDTO.getSourceLanguage(), adminCreateDTO.getTargetLanguage(),

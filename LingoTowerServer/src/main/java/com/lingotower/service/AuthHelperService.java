@@ -57,22 +57,22 @@ public class AuthHelperService<T extends BaseUser> {
 			throw new IllegalArgumentException("Username is already taken");
 		}
 
-		if (!isPasswordStrong(plainPassword)) {
-			throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
-		}
+//		if (!isPasswordStrong(plainPassword)) {
+//			throw new IllegalArgumentException("Password is too weak. Please choose a stronger password.");
+//		}
 
 		newUser.setPassword(passwordEncoder.encode(plainPassword));
 		baseUserRepository.save(newUser);
 		return jwtTokenProvider.generateToken(newUser);
 	}
-
-	/*
-	 * Checks if the password is strong using the zxcvbn library. It returns true if
-	 * the strength score is 3 or more (scale is 0–4).
-	 */
-	public static boolean isPasswordStrong(String password) {
-		Zxcvbn zxcvbn = new Zxcvbn();
-		Strength strength = zxcvbn.measure(password);
-		return strength.getScore() >= 3;
-	}
+//
+//	/*
+//	 * Checks if the password is strong using the zxcvbn library. It returns true if
+//	 * the strength score is 3 or more (scale is 0–4).
+//	 */
+//	public static boolean isPasswordStrong(String password) {
+//		Zxcvbn zxcvbn = new Zxcvbn();
+//		Strength strength = zxcvbn.measure(password);
+//		return strength.getScore() >= 3;
+//	}
 }

@@ -19,18 +19,24 @@ import com.lingotower.dto.user.UserProgressDTO;
 import com.lingotower.dto.user.UserUpdateDTO;
 import com.lingotower.model.User;
 import com.lingotower.model.Word;
+import com.lingotower.ui.controllers.admin.user.UserManagementController;
 
 /**
  * Service for managing users and user-related functionality.
  */
 public class UserService extends BaseService {
-
+	private final UserManagementController controller;
 	/**
 	 * Constructor for UserService.
 	 */
-	public UserService() {
+	public UserService(UserManagementController controller) {
 		super(); // Initialize the base service
+		this.controller=controller;
 		logger.debug("UserService initialized");
+	}
+	public UserService() {
+	    this(null); 
+	    logger.warn("UserService initialized without controller. This might cause issues.");
 	}
 
 	/**
@@ -144,8 +150,8 @@ public class UserService extends BaseService {
 
 			// Validate required fields
 			if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getEmail() == null
-					|| user.getEmail().trim().isEmpty() || user.getLanguage() == null
-					|| user.getLanguage().trim().isEmpty()) {
+					|| user.getEmail().trim().isEmpty() || user.getSourceLanguage() == null
+					|| user.getSourceLanguage().trim().isEmpty()) {
 				logger.error("Cannot update user: required fields missing");
 				return false;
 			}
@@ -156,15 +162,22 @@ public class UserService extends BaseService {
 			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
 			userUpdateDTO.setUsername(user.getUsername());
 			userUpdateDTO.setEmail(user.getEmail());
-			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
+		//	userUpdateDTO.setSourceLanguage(user.getSourceLanguage()); // Map to sourceLanguage
+			userUpdateDTO.setSourceLanguage(controller.getUserEditor().getCurrentSourceLanguage());
 			userUpdateDTO.setPassword(user.getPassword());
 
 			HttpHeaders headers = createAuthHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-
+			logger.debug("UserUpdateDTO content - Username: {}, Email: {}, SourceLanguage: {}, Password: {}",
+					userUpdateDTO.getUsername(), userUpdateDTO.getEmail(), userUpdateDTO.getSourceLanguage(),
+					userUpdateDTO.getPassword());
 			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
 
 			String url = buildUrl(USERS_PATH, user.getId().toString());
+
+	        logger.debug(
+	                "Updating user profile - URL: {}, Method: PUT, Headers: {}, Body: {}",
+	                url, headers, userUpdateDTO); // הוסף את הלוג הזה לפני הבקשה
 
 			logger.debug(
 					"Updating user profile - URL: {}, User ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password: {}",

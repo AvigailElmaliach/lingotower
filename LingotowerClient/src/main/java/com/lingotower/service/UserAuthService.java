@@ -138,7 +138,7 @@ public class UserAuthService extends BaseService {
 				User user = new User();
 				user.setUsername(username);
 				user.setEmail(email);
-				user.setLanguage(language);
+				user.setSourceLanguage(language);
 
 				long duration = System.currentTimeMillis() - startTime;
 				LoggingUtility.logPerformance(logger, "register", duration, "success");

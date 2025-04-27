@@ -15,12 +15,13 @@ public class User {
 	private String password; // The password of the user
 	private String oldPassword;
 	private String email; // The email address of the user
-	private String language; // The preferred language of the user
+	 String language; // The preferred language of the user
 	private LocalDateTime atCreated; // The timestamp when the user was created
 	private Admin admin; // The admin associated with the user
 	private List<Word> learnedWords = new ArrayList<>(); // List of words learned by the user
 	private String role; // The role of the user (e.g., admin, regular user)
-
+	private String sourceLanguage;
+	private String targetLanguage;
 	/**
 	 * Default constructor.
 	 */
@@ -228,6 +229,18 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	public String getSourceLanguage() {
+		return sourceLanguage;
+	}
+	public void setSourceLanguage(String sourceLanguage) {
+		this.sourceLanguage = sourceLanguage;
+	}
+	public String getTargetLanguage() {
+		return targetLanguage;
+	}
+	public void setTargetLanguage(String targetLanguage) {
+		this.targetLanguage = targetLanguage;
+	}
 
 	/**
 	 * Checks if this user is equal to another object. Two users are considered
@@ -258,6 +271,6 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", username='" + username + '\'' + ", language='" + language + '\'' + '}';
+		return "User{" + "id=" + id + ", username='" + username + '\'' + ", language='" + sourceLanguage + '\'' + '}';
 	}
 }

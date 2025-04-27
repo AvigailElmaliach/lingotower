@@ -6,7 +6,7 @@ public class UserUpdateDTO {
 	private String sourceLanguage;
 	private String targetLanguage;
 	private String password;
-	private String oldPassword;
+	//private String oldPassword;
 
 	public UserUpdateDTO() {
 	}
@@ -19,14 +19,14 @@ public class UserUpdateDTO {
 		this.password = password;
 	}
 
-	public UserUpdateDTO(String username, String email, String sourceLanguage, String password, String oldPassword) {
-		this.username = username;
-		this.email = email;
-		this.sourceLanguage = sourceLanguage;
-		this.targetLanguage = determineTargetLanguage(sourceLanguage);
-		this.password = password;
-		this.oldPassword = oldPassword;
-	}
+//	public UserUpdateDTO(String username, String email, String sourceLanguage, String password, String oldPassword) {
+//		this.username = username;
+//		this.email = email;
+//		this.sourceLanguage = sourceLanguage;
+//		this.targetLanguage = determineTargetLanguage(sourceLanguage);
+//		this.password = password;
+//		//this.oldPassword = oldPassword;
+//	}
 
 	public String getUsername() {
 		return username;
@@ -69,11 +69,11 @@ public class UserUpdateDTO {
 		this.password = password;
 	}
 
-	public String getOldPassword() {
-		return oldPassword;
-	}
-
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
-	}
+//	public String getOldPassword() {
+//		return oldPassword;
+//	}
+//
+//	public void setOldPassword(String oldPassword) {
+//		this.oldPassword = oldPassword;
+//	}
 }

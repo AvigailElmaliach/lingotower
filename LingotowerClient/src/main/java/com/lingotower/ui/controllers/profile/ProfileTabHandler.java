@@ -79,7 +79,7 @@ public class ProfileTabHandler {
 		emailField.setText(user.getEmail() != null ? user.getEmail() : "");
 
 		// Handle language field which might be null
-		String userLanguage = user.getLanguage();
+		String userLanguage = user.getSourceLanguage();
 		if (userLanguage != null && !userLanguage.isEmpty()) {
 			// Convert language code to display value
 			if ("en".equals(userLanguage)) {
@@ -177,44 +177,83 @@ public class ProfileTabHandler {
 	private void updateUserModel(User user, String username, String email, String languageCode) {
 		user.setUsername(username);
 		user.setEmail(email);
-		user.setLanguage(languageCode);
+		user.setSourceLanguage(languageCode);
+		String password = passwordField.getText();
+		if (!password.isEmpty())
+			user.setPassword(password);
 	}
 
-	/**
-	 * Saves changes to the server
-	 */
+//	/**
+//	 * Saves changes to the server
+//	 */
+//	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
+//		try {
+//			boolean profileUpdated = false;
+//			boolean passwordUpdated = true; // Default to true if no password update needed
+//
+//			// Ensure user ID is present for profile update
+//			if (user.getId() == null) {
+//				logger.error("Cannot update profile: User ID is missing");
+//				uiStateManager.showErrorMessage(
+//						"Cannot update profile: User ID is missing. Please log out and log in again.");
+//				return;
+//			}
+//
+//			// Update profile
+//			logger.info("Updating user profile for ID: {}", user.getId());
+//			profileUpdated = userService.updateUser(user);
+//
+//			// Handle password update separately - works with just the JWT token
+//			if (!password.isEmpty()) {
+//				logger.info("Updating password using JWT token");
+//				passwordUpdated = userService.updateUserPassword(password);
+//			}
+//
+//			// Show appropriate message based on results
+//			handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
+//
+//		} catch (Exception ex) {
+//			logger.error("Error updating profile: {}", ex.getMessage(), ex);
+//			uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
+//		}
+//	}
 	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
-		try {
-			boolean profileUpdated = false;
-			boolean passwordUpdated = true; // Default to true if no password update needed
+	    try {
+	        boolean profileUpdated = false;
 
-			// Ensure user ID is present for profile update
-			if (user.getId() == null) {
-				logger.error("Cannot update profile: User ID is missing");
-				uiStateManager.showErrorMessage(
-						"Cannot update profile: User ID is missing. Please log out and log in again.");
-				return;
-			}
+	        // ודא שיש ID משתמש לעדכון פרופיל
+	        if (user.getId() == null) {
+	            logger.error("Cannot update profile: User ID is missing");
+	            uiStateManager.showErrorMessage(
+	                    "Cannot update profile: User ID is missing. Please log out and log in again.");
+	            return;
+	        }
 
-			// Update profile
-			logger.info("Updating user profile for ID: {}", user.getId());
-			profileUpdated = userService.updateUser(user);
+	        // עדכן פרופיל (כולל סיסמה אם הוזנה)
+	        logger.info("Updating user profile for ID: {}", user.getId());
+	        profileUpdated = userService.updateUser(user);
 
-			// Handle password update separately - works with just the JWT token
-			if (!password.isEmpty()) {
-				logger.info("Updating password using JWT token");
-				passwordUpdated = userService.updateUserPassword(password);
-			}
+	        // הצג הודעה מתאימה בהתאם לתוצאות
+	        if (profileUpdated) {
+	            logger.info("Profile updated successfully");
+	            uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
+	            passwordField.clear();
+	            confirmPasswordField.clear();
 
-			// Show appropriate message based on results
-			handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
+	            // הפעל את פונקציית ההצלחה אם קיימת
+	            if (onSaveSuccess != null) {
+	                onSaveSuccess.run();
+	            }
+	        } else {
+	            logger.error("Failed to update profile information");
+	            uiStateManager.showErrorMessage("Failed to update profile information");
+	        }
 
-		} catch (Exception ex) {
-			logger.error("Error updating profile: {}", ex.getMessage(), ex);
-			uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
-		}
+	    } catch (Exception ex) {
+	        logger.error("Error updating profile: {}", ex.getMessage(), ex);
+	        uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
+	    }
 	}
-
 	/**
 	 * Handles the results of the save operation
 	 */

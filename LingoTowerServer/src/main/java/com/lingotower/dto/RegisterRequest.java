@@ -5,14 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
-
 public class RegisterRequest {
 
-    @NotBlank(message = "Username is required")
+	@NotBlank(message = "Username is required")
 	private String username;
 
 	@NotEmpty(message = "Password cannot be empty")
-	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number")
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&#]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number. Special characters are optional.")
 	private String password;
 
 	@NotBlank(message = "Email cannot be empty")

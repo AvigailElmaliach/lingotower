@@ -16,7 +16,7 @@ import javafx.scene.control.Dialog;
  */
 public class UserEditorDelegate {
 	private static final Logger logger = LoggingUtility.getLogger(UserEditorDelegate.class);
-
+	private String currentSourceLanguage;
 	private final UserManagementController controller;
 	private UserService userService;
 	private User selectedUser;
@@ -25,7 +25,7 @@ public class UserEditorDelegate {
 
 	public UserEditorDelegate(UserManagementController controller) {
 		this.controller = controller;
-		this.userService = new UserService();
+		this.userService = new UserService(controller);
 		this.uiDelegate = new UserUIDelegate(controller);
 		this.loaderDelegate = new UserLoaderDelegate(controller);
 	}
@@ -41,13 +41,14 @@ public class UserEditorDelegate {
 
 		// Store the selected user
 		this.selectedUser = user;
+		this.currentSourceLanguage = user.getSourceLanguage();
 		// Log the action
 		logger.info("Showing edit form for user: {} (ID: {})", user.getUsername(), user.getId());
 
 		// Fill the form fields
 		controller.getUsernameField().setText(user.getUsername());
 		controller.getEmailField().setText(user.getEmail());
-		controller.getLanguageField().setText(user.getLanguage());
+		controller.getLanguageField().setText(user.getTargetLanguage());
 
 		// Show the edit form
 		controller.getEditUserForm().setVisible(true);
@@ -77,7 +78,8 @@ public class UserEditorDelegate {
 		if (!validateInput(username, email, language)) {
 			return; // Validation failed
 		}
-
+		logger.debug("saveUser called with - Username: {}, Email: {}, Language: {}, Password: {}", username, email,
+				language, newPassword);
 		// Update the selectedUser object with the new values
 		updateSelectedUser(username, email, language, newPassword);
 
@@ -172,13 +174,16 @@ public class UserEditorDelegate {
 	private void updateSelectedUser(String username, String email, String language, String newPassword) {
 		selectedUser.setUsername(username);
 		selectedUser.setEmail(email);
-		selectedUser.setLanguage(language);
+		selectedUser.setTargetLanguage(language);
 
 		if (newPassword != null && !newPassword.isEmpty()) {
 			selectedUser.setPassword(newPassword);
 		} else {
 			selectedUser.setPassword(null);
 		}
+		logger.debug("Updating selectedUser - Username: {}, Email: {}, TargetLanguage: {}, Password: {}",
+				selectedUser.getUsername(), selectedUser.getEmail(), selectedUser.getTargetLanguage(),
+				selectedUser.getPassword());
 	}
 
 	/**
@@ -187,9 +192,10 @@ public class UserEditorDelegate {
 	private void performUserUpdate(long startTime, String username) {
 		try {
 			if (userService == null) {
-				userService = new UserService();
+				userService = new UserService(controller);
 			}
-
+			logger.debug("Updating user - Username: {}, Email: {}, SourceLanguage from UI: {}",
+					selectedUser.getUsername(), selectedUser.getEmail(), currentSourceLanguage);
 			boolean success = userService.updateUser(selectedUser);
 			Platform.runLater(() -> handleUpdateResult(success, startTime, username));
 		} catch (Exception e) {
@@ -257,7 +263,7 @@ public class UserEditorDelegate {
 
 		// Initialize service if needed
 		if (userService == null) {
-			userService = new UserService();
+			userService = new UserService(controller);
 		}
 
 		// Delete in background thread
@@ -326,5 +332,9 @@ public class UserEditorDelegate {
 		LoggingUtility.logAction(logger, "delete",
 				controller.getCurrentAdmin() != null ? controller.getCurrentAdmin().getUsername() : "system",
 				"user:" + user.getUsername(), "error: " + e.getMessage());
+	}
+
+	public String getCurrentSourceLanguage() {
+		return currentSourceLanguage;
 	}
 }

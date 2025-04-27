@@ -1,9 +1,14 @@
 package com.lingotower.ui.views.admin;
 
+import java.io.IOException;
+
 import com.lingotower.model.Admin;
 import com.lingotower.ui.controllers.admin.AdminViewController;
+import com.lingotower.ui.controllers.admin.user.UserManagementController;
 import com.lingotower.ui.views.AbstractContentView;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 /**
@@ -14,6 +19,8 @@ public class AdminView extends AbstractContentView {
 	private Admin currentAdmin;
 	private Runnable onLogout;
 	private Stage primaryStage; // Store the primaryStage
+	private UserManagementController userManagementController;
+	private AdminViewController controller;
 
 	/**
 	 * Constructs a new AdminView.
@@ -49,6 +56,39 @@ public class AdminView extends AbstractContentView {
 		} else {
 			System.err.println("ERROR: Controller is null in AdminView.initializeController!");
 		}
+	}
+	@Override
+    public Parent createView() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/AdminView.fxml"));
+        loader.setControllerFactory(param -> new AdminViewController(userManagementController)); // הגדר Factory
+
+        try {
+            Parent view = loader.load();
+            controller = loader.getController();
+            controller.setAdmin(currentAdmin);
+            controller.setPrimaryStage(primaryStage);
+            controller.setOnLogout(onLogout);
+            controller.setUserManagementController(userManagementController); // ודא שזה מוגדר
+            return view;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // או לזרוק Exception
+        }
+    }
+
+	/**
+	 * Sets the UserManagementController for this view.
+	 *
+	 * @param userManagementController The UserManagementController to set
+	 * @return This view instance for method chaining
+	 */
+	public AdminView setUserManagementController(UserManagementController userManagementController) {
+		this.userManagementController = userManagementController;
+		AdminViewController controller = getController();
+		if (controller != null) {
+			controller.setUserManagementController(userManagementController);
+		}
+		return this;
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class UserLoaderDelegate {
 
 	public UserLoaderDelegate(UserManagementController controller) {
 		this.controller = controller;
-		this.userService = new UserService();
+		this.userService = new UserService(controller);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class UserLoaderDelegate {
 			users = adminService.getAllUsers();
 		} else {
 			if (userService == null) {
-				userService = new UserService();
+				userService = new UserService(controller);
 			}
 			users = userService.getAllUsers();
 		}

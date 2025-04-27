@@ -13,6 +13,7 @@ import com.lingotower.service.AdminService;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.UserService;
 import com.lingotower.service.WordService;
+import com.lingotower.ui.controllers.admin.user.UserManagementController;
 import com.lingotower.ui.views.admin.AdminManagementView;
 import com.lingotower.ui.views.admin.ContentManagementView;
 import com.lingotower.ui.views.admin.UserManagementView;
@@ -59,24 +60,29 @@ public class AdminViewController {
 	private Stage primaryStage;
 
 	// Use final for services that are initialized once
-	private final UserService userService;
+	// private final UserService userService;
 	private final CategoryService categoryService;
 	private final WordService wordService;
 	private final AdminService adminService;
-
+	private UserManagementController userManagementController;
 	private static final String LOADING_TEXT = "Loading...";
 	private static final String ERROR_TEXT = "Error";
 	private static final String UNKNOWN_TEXT = "unknown";
 	private static final String EXCEPTION_DETAILS_TEXT = "Exception details:";
 	private static final String ACTION_NAVIGATE_TEXT = "navigate";
 
-	public AdminViewController() {
-		userService = new UserService();
+	public AdminViewController(UserManagementController userManagementController) {
+		// userService = new UserService();
 		categoryService = new CategoryService();
 		wordService = new WordService();
 		adminService = new AdminService();
+		this.userManagementController=userManagementController;
 		logger.debug("AdminViewController services initialized.");
 	}
+
+    public void setUserManagementController(UserManagementController userManagementController) {
+        this.userManagementController = userManagementController;
+    }
 
 	@FXML
 	private void initialize() {
@@ -387,23 +393,39 @@ public class AdminViewController {
 	/**
 	 * Loads the user count
 	 */
+//	private int loadUserCount() {
+//		try {
+//			logger.debug("Background thread: Trying to load users with AdminService...");
+//			List<User> users = adminService.getAllUsers();
+//
+//			if (users == null || users.isEmpty()) {
+//				logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
+//				users = userService.getAllUsers();
+//			}
+//
+//			return users != null ? users.size() : 0;
+//		} catch (Exception e) {
+//			logger.warn("Error loading users: {}", e.getMessage());
+//			return 0;
+//		}
+//	}
 	private int loadUserCount() {
-		try {
-			logger.debug("Background thread: Trying to load users with AdminService...");
-			List<User> users = adminService.getAllUsers();
+	    try {
+	        logger.debug("Background thread: Trying to load users with AdminService...");
+	        List<User> users = adminService.getAllUsers();
 
-			if (users == null || users.isEmpty()) {
-				logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
-				users = userService.getAllUsers();
-			}
+	        if (users == null || users.isEmpty()) {
+	            logger.debug("Background thread: AdminService returned empty user list, trying UserService...");
+	            UserService userService = userManagementController.getUserService(); // השתמש ב-Getter
+	            users = userService.getAllUsers();
+	        }
 
-			return users != null ? users.size() : 0;
-		} catch (Exception e) {
-			logger.warn("Error loading users: {}", e.getMessage());
-			return 0;
-		}
+	        return users != null ? users.size() : 0;
+	    } catch (Exception e) {
+	        logger.warn("Error loading users: {}", e.getMessage());
+	        return 0;
+	    }
 	}
-
 	/**
 	 * Loads the category count
 	 */
