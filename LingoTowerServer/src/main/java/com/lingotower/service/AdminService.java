@@ -7,6 +7,7 @@ import com.lingotower.dto.admin.AdminCreateDTO;
 import com.lingotower.dto.admin.AdminResponseDTO;
 import com.lingotower.dto.admin.AdminUpdateDTO;
 import com.lingotower.exception.AdminNotFoundException;
+import com.lingotower.exception.IncorrectPasswordException;
 import com.lingotower.model.Admin;
 import com.lingotower.model.Role;
 import com.lingotower.model.User;
@@ -21,10 +22,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AdminService extends BaseUserService<Admin> {
 
+	private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 	private final AdminRepository adminRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
@@ -108,16 +112,33 @@ public class AdminService extends BaseUserService<Admin> {
 		adminRepository.save(newAdmin);
 	}
 
-//	// Update an existing admin's fields
+	@Transactional
+	public void resetUserPasswordByAdmin(Long userId, String newPassword) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+	}
+
 	public AdminResponseDTO updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
 		Admin admin = adminRepository.findById(id)
 				.orElseThrow(() -> new AdminNotFoundException("Admin not found with ID: " + id));
+		logger.info("Attempting to update admin with ID: {}", id);
+		logger.debug("Old password received from client: {}", adminUpdateDTO.getOldPassword());
+		logger.debug("Current password stored in database: {}", admin.getPassword());
 
-		updateAdminFields(admin, adminUpdateDTO);
-		Admin updatedAdmin = adminRepository.save(admin);
-
-		return new AdminResponseDTO(updatedAdmin.getId(), updatedAdmin.getUsername(), updatedAdmin.getEmail(),
-				updatedAdmin.getRole());
+		// Check if the old password matches
+		if (passwordEncoder.matches(adminUpdateDTO.getOldPassword(), admin.getPassword())) {
+			// Only if the old password is correct, proceed to update other fields
+			updateAdminFields(admin, adminUpdateDTO);
+			Admin updatedAdmin = adminRepository.save(admin);
+			logger.info("Successfully updated admin with ID: {}", id);
+			return new AdminResponseDTO(updatedAdmin.getId(), updatedAdmin.getUsername(), updatedAdmin.getEmail(),
+					updatedAdmin.getRole());
+		} else {
+			logger.warn("Incorrect current password provided for admin ID: {}", id);
+			throw new IncorrectPasswordException("Incorrect current password");
+		}
 	}
 
 	// Helper method to update fields of the admin if they are not null
@@ -138,13 +159,5 @@ public class AdminService extends BaseUserService<Admin> {
 			String encodedPassword = passwordEncoder.encode(adminUpdateDTO.getPassword());
 			admin.setPassword(encodedPassword);
 		}
-	}
-
-	@Transactional
-	public void resetUserPasswordByAdmin(Long userId, String newPassword) {
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
-		user.setPassword(passwordEncoder.encode(newPassword));
-		userRepository.save(user);
 	}
 }

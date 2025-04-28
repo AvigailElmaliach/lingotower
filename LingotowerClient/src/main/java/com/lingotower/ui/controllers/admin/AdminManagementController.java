@@ -2,7 +2,9 @@ package com.lingotower.ui.controllers.admin;
 
 import org.slf4j.Logger;
 
+import com.lingotower.dto.admin.AdminUpdateDTO;
 import com.lingotower.model.Admin;
+import com.lingotower.model.Role;
 import com.lingotower.ui.controllers.admin.admin.AdminFormValidator;
 import com.lingotower.ui.controllers.admin.admin.AdminFormValidator.ValidationResult;
 import com.lingotower.ui.controllers.admin.admin.AdminRepository;
@@ -330,15 +332,16 @@ public class AdminManagementController {
 	@FXML
 	private void handleSaveAdmin() {
 		logger.info("Save admin button clicked (mode: {})", isAddMode ? "add" : "edit");
-		
+
 		// Get values from form
 		String username = usernameField.getText().trim();
 		String email = emailField.getText().trim();
 		String password = passwordField.getText().trim();
+		String oldPassword = oldPasswordField.getText().trim();
 		String role = roleComboBox.getValue();
 		String sourceLanguage = "en";
 		String targetLanguage = "he";
-		
+
 		// Validate inputs using the validator
 		ValidationResult validationResult = AdminFormValidator.validateAdminForm(username, email, password, role,
 				isAddMode);
@@ -380,16 +383,22 @@ public class AdminManagementController {
 				return;
 			}
 
-			// Update fields
-			selectedAdmin.setUsername(username);
-			selectedAdmin.setEmail(email);
+			AdminUpdateDTO adminUpdateDTO = new AdminUpdateDTO();
+			adminUpdateDTO.setUsername(username);
+			adminUpdateDTO.setEmail(email);
+			adminUpdateDTO.setOldPassword(oldPassword);
 			if (!password.isEmpty()) {
-				selectedAdmin.setPassword(password);
+				adminUpdateDTO.setPassword(password);
 			}
-			selectedAdmin.setRole(role);
+			try {
+				adminUpdateDTO.setRole(Role.valueOf(role));
+			} catch (IllegalArgumentException e) {
+				logger.error("Invalid role selected: {}", role, e);
+				showStatusMessage("Invalid role selected", true);
+				return;
+			}
 
-			// Use repository to update admin
-			adminRepository.updateAdmin(selectedAdmin,
+			adminRepository.updateAdmin(selectedAdmin.getId(), adminUpdateDTO,
 					// Success callback
 					() -> {
 						editAdminForm.setVisible(false);

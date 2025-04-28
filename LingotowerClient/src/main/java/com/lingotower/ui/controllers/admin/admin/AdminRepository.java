@@ -1,9 +1,15 @@
 package com.lingotower.ui.controllers.admin.admin;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lingotower.dto.admin.AdminResponseDTO;
+import com.lingotower.dto.admin.AdminUpdateDTO;
 import com.lingotower.model.Admin;
 import com.lingotower.security.TokenStorage;
 import com.lingotower.service.AdminService;
@@ -135,11 +141,10 @@ public class AdminRepository {
 								"success");
 						LoggingUtility.logPerformance(logger, "create_admin", duration, "success");
 
-						// Add to list (assuming createdAdmin is populated in AdminService)
-						adminsList.add(newAdmin); // או שתצטרך לקבל את האוביקט שנוצר מהשירות
+						adminsList.add(newAdmin);
 
 						if (onSuccess != null) {
-							onSuccess.onAdminOperation(newAdmin); // או שתצטרך לקבל את האוביקט שנוצר מהשירות
+							onSuccess.onAdminOperation(newAdmin);
 						}
 					} else {
 						logger.warn("Failed to create admin: service returned error - {}", errorMessage);
@@ -173,83 +178,42 @@ public class AdminRepository {
 		createThread.start();
 	}
 
-	/**
-	 * Updates an existing admin.
-	 * 
-	 * @param admin     The admin to update
-	 * @param onSuccess Callback when update is successful
-	 * @param onError   Callback when an error occurs
-	 */
-	public void updateAdmin(Admin admin, Runnable onSuccess, StatusMessageCallback onError) {
-		if (admin == null || admin.getId() == null) {
-			logger.error("Cannot update null admin or admin without ID");
-			if (onError != null) {
-				onError.onStatusMessage("Invalid admin data for update", true);
-			}
-			return;
-		}
 
-		long startTime = System.currentTimeMillis();
-
-		Thread updateThread = new Thread(() -> {
-			try {
-				logger.info("Updating admin with ID: {}, username: {}", admin.getId(), admin.getUsername());
-				LoggingUtility.logAction(logger, "edit_admin", "system", "admin:" + admin.getUsername(), "processing");
-
-				// Save using service
-				boolean success = adminService.updateAdmin(admin.getId(), admin);
-				long duration = System.currentTimeMillis() - startTime;
-
-				Platform.runLater(() -> {
-					if (success) {
-						logger.info("Admin updated successfully");
-						LoggingUtility.logAction(logger, "edit_admin", "system", "admin:" + admin.getUsername(),
-								"success");
-						LoggingUtility.logPerformance(logger, "update_admin", duration, "success");
-
-						// Update in the list
-						int index = findAdminIndexById(admin.getId());
-						if (index >= 0) {
-							adminsList.set(index, admin);
-						}
-
-						if (onSuccess != null) {
-							onSuccess.run();
-						}
-					} else {
-						logger.warn("Failed to update admin: service returned false");
-						LoggingUtility.logAction(logger, "edit_admin", "system", "admin:" + admin.getUsername(),
-								"failed");
-						LoggingUtility.logPerformance(logger, "update_admin", duration, "failed");
-
-						if (onError != null) {
-							onError.onStatusMessage(
-									"Failed to update admin. Make sure the password is strong enough and the email is in the correct format",
-									true);
-						}
-					}
-				});
-			} catch (Exception e) {
-				logger.error("Error updating admin: {}", e.getMessage(), e);
-				LoggingUtility.logAction(logger, "edit_admin", "system", "admin:" + admin.getUsername(),
-						"error: " + e.getMessage());
-
-				long duration = System.currentTimeMillis() - startTime;
-				LoggingUtility.logPerformance(logger, "update_admin", duration, "error");
-
-				Platform.runLater(() -> {
-					if (onError != null) {
-						onError.onStatusMessage("Error updating admin: " + e.getMessage(), true);
-					}
-				});
-			}
-		});
-
-		updateThread.setDaemon(true);
-		updateThread.setName("AdminUpdater");
-		updateThread.start();
+	
+	public void updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO, Runnable onSuccess, StatusMessageCallback onError) {
+	    Thread updateThread = new Thread(() -> {
+	        try {
+	            // Call the admin update service
+	            AdminResponseDTO response = adminService.updateAdmin(id, adminUpdateDTO);
+	            Platform.runLater(() -> {
+	                if (response != null) {
+	                    if (onSuccess != null) {
+	                        onSuccess.run();
+	                    }
+	                } else {
+	                    if (onError != null) {
+	                        onError.onStatusMessage("Failed to update admin", true);
+	                    }
+	                }
+	            });
+	        } catch (HttpClientErrorException e) {
+	            String errorMessage = "Failed to update admin";
+	            if (e.getStatusCode() == HttpStatus.BAD_REQUEST && e.getMessage().contains("Incorrect current password")) {
+	                errorMessage = "סיסמה נוכחית שגויה"; // או "Incorrect current password"
+	            }
+	            String finalErrorMessage = errorMessage;
+	            Platform.runLater(() -> onError.onStatusMessage(finalErrorMessage, true));
+	        } catch (Exception e) {
+	            Platform.runLater(() -> onError.onStatusMessage("Error updating admin: " + e.getMessage(), true));
+	        }
+	    });
+	    updateThread.setDaemon(true);
+	    updateThread.setName("AdminUpdater");
+	    updateThread.start();
 	}
-
+	
+	
+	
 	/**
 	 * Deletes an admin.
 	 * 

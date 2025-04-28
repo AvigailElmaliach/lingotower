@@ -149,12 +149,12 @@ public class AdminService extends BaseService {
 
 	/**
 	 * Updates an existing admin on the server. Requires ADMIN role.
-	 * 
+	 *
 	 * @param id             The ID of the admin to update
 	 * @param adminUpdateDTO DTO containing updated details
-	 * @return true if update was successful, false otherwise
+	 * @return AdminResponseDTO of the updated admin
 	 */
-	public boolean updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
+	public AdminResponseDTO updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
 		try {
 			logger.info("Updating admin with ID: {}", id);
 
@@ -168,16 +168,16 @@ public class AdminService extends BaseService {
 			ResponseEntity<AdminResponseDTO> response = restTemplate.exchange(url, HttpMethod.PUT, entity,
 					AdminResponseDTO.class);
 
-			boolean success = response.getStatusCode() == HttpStatus.OK;
-			if (success) {
+			if (response.getStatusCode() == HttpStatus.OK) {
 				logger.info("Successfully updated admin with ID: {}", id);
+				return response.getBody();
 			} else {
 				logger.error("Failed to update admin with ID: {}. Status code: {}", id, response.getStatusCode());
+				return null;
 			}
-			return success;
 		} catch (RestClientException e) {
 			logger.error("Error updating admin {}: {}", id, e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 
@@ -263,7 +263,7 @@ public class AdminService extends BaseService {
 
 			if (response.getStatusCode() == HttpStatus.CREATED) {
 				logger.info("Successfully created admin: {}", newAdmin.getUsername());
-				return null; // הצלחה, אין הודעת שגיאה
+				return null;
 			} else {
 				logger.error("Failed to create admin: {}", response.getBody());
 				return response.getBody();
@@ -271,36 +271,6 @@ public class AdminService extends BaseService {
 		} catch (Exception e) {
 			logger.error("Error creating admin: {}", e.getMessage(), e);
 			return "An unexpected error occurred.";
-		}
-	}
-
-	/**
-	 * Updates an existing admin.
-	 * 
-	 * @param id    The ID of the admin to update
-	 * @param admin The updated admin information
-	 * @return true if update was successful, false otherwise
-	 */
-	public boolean updateAdmin(Long id, Admin admin) {
-		try {
-			logger.info("Updating admin with ID: {}", id);
-
-			AdminUpdateDTO dto = new AdminUpdateDTO();
-			dto.setUsername(admin.getUsername());
-			dto.setEmail(admin.getEmail());
-
-			// Only set password if not empty
-			if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
-				dto.setPassword(admin.getPassword());
-			}
-
-			dto.setRole(Role.valueOf(admin.getRole()));
-
-			// Call the update method with the DTO
-			return updateAdmin(id, dto);
-		} catch (Exception e) {
-			logger.error("Error updating admin with ID {}: {}", id, e.getMessage(), e);
-			return false;
 		}
 	}
 

@@ -94,17 +94,6 @@ public class AdminController {
 		}
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id,
-			@Valid @RequestBody AdminUpdateDTO adminUpdateDTO) {
-		try {
-			AdminResponseDTO updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);
-			return ResponseEntity.ok(updatedAdmin);
-		} catch (AdminNotFoundException ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-	}
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
 		try {
@@ -151,6 +140,23 @@ public class AdminController {
 			return ResponseEntity.ok("Password reset successfully for user ID: " + id);
 		} catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id,
+			@Valid @RequestBody AdminUpdateDTO adminUpdateDTO) {
+		try {
+			AdminResponseDTO updatedAdmin = adminService.updateAdmin(id, adminUpdateDTO);
+			return ResponseEntity.ok(updatedAdmin);
+		} catch (AdminNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (IllegalArgumentException ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new AdminResponseDTO(null, null, ex.getMessage(), null));
+		} catch (SecurityException ex) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new AdminResponseDTO(null, null, ex.getMessage(), null));
 		}
 	}
 }
