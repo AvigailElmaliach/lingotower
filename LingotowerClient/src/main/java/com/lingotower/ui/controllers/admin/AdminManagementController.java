@@ -330,13 +330,15 @@ public class AdminManagementController {
 	@FXML
 	private void handleSaveAdmin() {
 		logger.info("Save admin button clicked (mode: {})", isAddMode ? "add" : "edit");
-
+		
 		// Get values from form
 		String username = usernameField.getText().trim();
 		String email = emailField.getText().trim();
 		String password = passwordField.getText().trim();
 		String role = roleComboBox.getValue();
-
+		String sourceLanguage = "en";
+		String targetLanguage = "he";
+		
 		// Validate inputs using the validator
 		ValidationResult validationResult = AdminFormValidator.validateAdminForm(username, email, password, role,
 				isAddMode);
@@ -354,6 +356,8 @@ public class AdminManagementController {
 			newAdmin.setEmail(email);
 			newAdmin.setPassword(password);
 			newAdmin.setRole(role);
+			newAdmin.setSourceLanguage(sourceLanguage);
+			newAdmin.setTargetLanguage(targetLanguage);
 
 			// Use repository to create admin
 			adminRepository.createAdmin(newAdmin,

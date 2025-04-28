@@ -103,7 +103,7 @@ public class AdminRepository {
 
 	/**
 	 * Creates a new admin.
-	 * 
+	 *
 	 * @param newAdmin  The admin to create
 	 * @param onSuccess Callback when creation is successful
 	 * @param onError   Callback when an error occurs
@@ -124,31 +124,31 @@ public class AdminRepository {
 				LoggingUtility.logAction(logger, "add_admin", "system", "admin:" + newAdmin.getUsername(),
 						"processing");
 
-				// Save using service
-				Admin createdAdmin = adminService.createAdmin(newAdmin);
+				// Save using service and get potential error message
+				String errorMessage = adminService.createAdmin(newAdmin);
 				long duration = System.currentTimeMillis() - startTime;
 
 				Platform.runLater(() -> {
-					if (createdAdmin != null) {
+					if (errorMessage == null) {
 						logger.info("Admin created successfully");
 						LoggingUtility.logAction(logger, "add_admin", "system", "admin:" + newAdmin.getUsername(),
 								"success");
 						LoggingUtility.logPerformance(logger, "create_admin", duration, "success");
 
-						// Add to list
-						adminsList.add(createdAdmin);
+						// Add to list (assuming createdAdmin is populated in AdminService)
+						adminsList.add(newAdmin); // או שתצטרך לקבל את האוביקט שנוצר מהשירות
 
 						if (onSuccess != null) {
-							onSuccess.onAdminOperation(createdAdmin);
+							onSuccess.onAdminOperation(newAdmin); // או שתצטרך לקבל את האוביקט שנוצר מהשירות
 						}
 					} else {
-						logger.warn("Failed to create admin: service returned null");
+						logger.warn("Failed to create admin: service returned error - {}", errorMessage);
 						LoggingUtility.logAction(logger, "add_admin", "system", "admin:" + newAdmin.getUsername(),
-								"failed");
+								"failed: " + errorMessage);
 						LoggingUtility.logPerformance(logger, "create_admin", duration, "failed");
 
 						if (onError != null) {
-							onError.onStatusMessage("Failed to create admin", true);
+							onError.onStatusMessage("Failed to create admin: " + errorMessage, true);
 						}
 					}
 				});
