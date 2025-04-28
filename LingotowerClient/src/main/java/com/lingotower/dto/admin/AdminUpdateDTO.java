@@ -12,15 +12,19 @@ import com.lingotower.model.Role;
  * fields for username, role, password, and email.
  */
 public class AdminUpdateDTO {
-	//@NotBlank(message = "Username is required")
+	// @NotBlank(message = "Username is required")
 	private String username;
 	private Role role;
-	//@NotEmpty(message = "Password cannot be empty")
-	//@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number")
+	// @NotEmpty(message = "Password cannot be empty")
+	// @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message =
+	// "Password must be at least 8 characters long and contain at least one letter
+	// and one number")
 	private String password;
-	//@NotBlank(message = "Email cannot be empty")
-	//@Email(message = "Invalid email format")
+	// @NotBlank(message = "Email cannot be empty")
+	// @Email(message = "Invalid email format")
 	private String email;
+
+	private String oldPassword;
 
 	/**
 	 * Gets the username of the admin.
@@ -92,5 +96,13 @@ public class AdminUpdateDTO {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 }
