@@ -1,5 +1,5 @@
 package com.lingotower.dto;
-
+import com.lingotower.constants.LanguageConstants;
 /**
  * Represents a registration request containing user details and language
  * preferences.
@@ -115,6 +115,6 @@ public class RegisterRequest {
 	 * @return The corresponding target language.
 	 */
 	private String determineTargetLanguage(String sourceLanguage) {
-		return "he".equals(sourceLanguage) ? "en" : "he";
+		return LanguageConstants.HEBREW.equals(sourceLanguage) ? LanguageConstants.ENGLISH : LanguageConstants.HEBREW;
 	}
 }
