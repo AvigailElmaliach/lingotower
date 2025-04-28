@@ -366,7 +366,6 @@ public class UserService extends BaseService {
 
 			logger.info("Updating user password");
 
-			// Create the password update DTO
 			PasswordUpdateDTO passwordDTO = new PasswordUpdateDTO(newPassword);
 
 			String url = buildUrl(USERS_PATH, "password");

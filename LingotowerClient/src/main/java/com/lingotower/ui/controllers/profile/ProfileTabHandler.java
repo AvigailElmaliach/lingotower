@@ -136,7 +136,7 @@ public class ProfileTabHandler {
 		String languageCode = convertToLanguageCode(language);
 
 		// Update user model with new values
-		updateUserModel(user, username, email, languageCode);
+		updateUserModel(user, username, email, languageCode, password);
 
 		// Save changes to server
 		saveChangesToServer(user, password, onSaveSuccess);
@@ -174,21 +174,20 @@ public class ProfileTabHandler {
 	/**
 	 * Updates the user model with form values
 	 */
-	private void updateUserModel(User user, String username, String email, String languageCode) {
+	private void updateUserModel(User user, String username, String email, String languageCode, String password) {
 		user.setUsername(username);
 		user.setEmail(email);
 		user.setLanguage(languageCode);
+		user.setPassword(password);
 	}
 
 	/**
-	 * Saves changes to the server
+	 * Saves changes to the server and handles the result.
 	 */
 	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
 		try {
-			boolean profileUpdated = false;
-			boolean passwordUpdated = true; // Default to true if no password update needed
+			boolean updatedSuccessfully = false;
 
-			// Ensure user ID is present for profile update
 			if (user.getId() == null) {
 				logger.error("Cannot update profile: User ID is missing");
 				uiStateManager.showErrorMessage(
@@ -196,18 +195,22 @@ public class ProfileTabHandler {
 				return;
 			}
 
-			// Update profile
 			logger.info("Updating user profile for ID: {}", user.getId());
-			profileUpdated = userService.updateUser(user);
+			updatedSuccessfully = userService.updateUser(user);
 
-			// Handle password update separately - works with just the JWT token
-			if (!password.isEmpty()) {
-				logger.info("Updating password using JWT token");
-				passwordUpdated = userService.updateUserPassword(password);
+			if (updatedSuccessfully) {
+				logger.info("Profile updated successfully");
+				uiStateManager
+						.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
+				passwordField.clear();
+				confirmPasswordField.clear();
+				if (onSaveSuccess != null) {
+					onSaveSuccess.run();
+				}
+			} else {
+				logger.error("Failed to update profile information");
+				uiStateManager.showErrorMessage("Failed to update profile information");
 			}
-
-			// Show appropriate message based on results
-			handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
 
 		} catch (Exception ex) {
 			logger.error("Error updating profile: {}", ex.getMessage(), ex);
@@ -215,31 +218,4 @@ public class ProfileTabHandler {
 		}
 	}
 
-	/**
-	 * Handles the results of the save operation
-	 */
-	private void handleSaveResults(boolean profileUpdated, boolean passwordUpdated, String password,
-			Runnable onSaveSuccess) {
-		if (profileUpdated && passwordUpdated) {
-			logger.info("Profile and password updated successfully");
-			uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
-			passwordField.clear();
-			confirmPasswordField.clear();
-
-			// Call the success callback
-			if (onSaveSuccess != null) {
-				onSaveSuccess.run();
-			}
-		} else if (!profileUpdated && !passwordUpdated) {
-			logger.error("Failed to update profile and password");
-			uiStateManager.showErrorMessage("Failed to update profile and password");
-		} else if (!profileUpdated) {
-			logger.error("Failed to update profile information");
-			uiStateManager.showErrorMessage("Failed to update profile information"
-					+ (password.isEmpty() ? "" : ", but password was updated successfully"));
-		} else {
-			logger.error("Profile information updated successfully, but password update failed");
-			uiStateManager.showErrorMessage("Profile information updated successfully, but password update failed");
-		}
-	}
 }
