@@ -147,40 +147,45 @@ public class AdminService extends BaseService {
 		}
 	}
 
-	/**
-	 * Updates an existing admin on the server. Requires ADMIN role.
-	 *
-	 * @param id             The ID of the admin to update
-	 * @param adminUpdateDTO DTO containing updated details
-	 * @return AdminResponseDTO of the updated admin
-	 */
-	public AdminResponseDTO updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
-		try {
-			logger.info("Updating admin with ID: {}", id);
+	 /**
+     * Updates an existing admin on the server. Requires ADMIN role.
+     *
+     * @param id             The ID of the admin to update
+     * @param adminUpdateDTO DTO containing updated details
+     * @return AdminResponseDTO of the updated admin
+     */
+    public AdminResponseDTO updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO) {
+        try {
+            logger.info("Updating admin with ID: {}", id);
 
-			String url = buildUrl(ADMINS_PATH, id.toString());
+            String url = buildUrl(ADMINS_PATH, id.toString());
 
-			HttpHeaders headers = createAuthHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpHeaders headers = createAuthHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<AdminUpdateDTO> entity = new HttpEntity<>(adminUpdateDTO, headers);
+            HttpEntity<AdminUpdateDTO> entity = new HttpEntity<>(adminUpdateDTO, headers);
 
-			ResponseEntity<AdminResponseDTO> response = restTemplate.exchange(url, HttpMethod.PUT, entity,
-					AdminResponseDTO.class);
+            ResponseEntity<AdminResponseDTO> response = restTemplate.exchange(url, HttpMethod.PUT, entity,
+                    AdminResponseDTO.class);
 
-			if (response.getStatusCode() == HttpStatus.OK) {
-				logger.info("Successfully updated admin with ID: {}", id);
-				return response.getBody();
-			} else {
-				logger.error("Failed to update admin with ID: {}. Status code: {}", id, response.getStatusCode());
-				return null;
-			}
-		} catch (RestClientException e) {
-			logger.error("Error updating admin {}: {}", id, e.getMessage(), e);
-			return null;
-		}
-	}
-
+            if (response.getStatusCode() == HttpStatus.OK) {
+                logger.info("Successfully updated admin with ID: {}", id);
+                return response.getBody();
+            } else {
+                logger.error("Failed to update admin with ID: {}. Status code: {}", id, response.getStatusCode());
+                return null;
+            }
+        } catch (HttpClientErrorException e) {
+            logger.error("Client error updating admin {}: Status={}, Body={}", id, e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RestClientException(e.getResponseBodyAsString());
+        } catch (HttpServerErrorException e) {
+            logger.error("Server error updating admin {}: Status={}, Body={}", id, e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RestClientException(e.getResponseBodyAsString());
+        } catch (RestClientException e) {
+            logger.error("Generic error updating admin {}: {}", id, e.getMessage(), e);
+            throw e; 
+        }
+    }
 	/**
 	 * Deletes an admin from the server. Requires ADMIN role.
 	 * 

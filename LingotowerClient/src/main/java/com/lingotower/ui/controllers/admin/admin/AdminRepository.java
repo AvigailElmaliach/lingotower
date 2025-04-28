@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingotower.dto.admin.AdminResponseDTO;
@@ -178,42 +179,55 @@ public class AdminRepository {
 		createThread.start();
 	}
 
-
-	
+	/**
+	 * Updates an existing admin on the server asynchronously and handles the UI
+	 * update through a callback. Provides specific error messages based on the
+	 * server response.
+	 *
+	 * @param id             The ID of the admin to update.
+	 * @param adminUpdateDTO DTO containing the updated admin details.
+	 * @param onSuccess      Runnable to execute on successful update.
+	 * @param onError        Callback to handle and display status messages
+	 *                       (including errors).
+	 */
 	public void updateAdmin(Long id, AdminUpdateDTO adminUpdateDTO, Runnable onSuccess, StatusMessageCallback onError) {
-	    Thread updateThread = new Thread(() -> {
-	        try {
-	            // Call the admin update service
-	            AdminResponseDTO response = adminService.updateAdmin(id, adminUpdateDTO);
-	            Platform.runLater(() -> {
-	                if (response != null) {
-	                    if (onSuccess != null) {
-	                        onSuccess.run();
-	                    }
-	                } else {
-	                    if (onError != null) {
-	                        onError.onStatusMessage("Failed to update admin", true);
-	                    }
-	                }
-	            });
-	        } catch (HttpClientErrorException e) {
-	            String errorMessage = "Failed to update admin";
-	            if (e.getStatusCode() == HttpStatus.BAD_REQUEST && e.getMessage().contains("Incorrect current password")) {
-	                errorMessage = "סיסמה נוכחית שגויה"; // או "Incorrect current password"
-	            }
-	            String finalErrorMessage = errorMessage;
-	            Platform.runLater(() -> onError.onStatusMessage(finalErrorMessage, true));
-	        } catch (Exception e) {
-	            Platform.runLater(() -> onError.onStatusMessage("Error updating admin: " + e.getMessage(), true));
-	        }
-	    });
-	    updateThread.setDaemon(true);
-	    updateThread.setName("AdminUpdater");
-	    updateThread.start();
+		Thread updateThread = new Thread(() -> {
+			try {
+				// Call the admin update service
+				AdminResponseDTO response = adminService.updateAdmin(id, adminUpdateDTO);
+				Platform.runLater(() -> {
+					if (response != null) {
+						if (onSuccess != null) {
+							onSuccess.run();
+						}
+					} else {
+						if (onError != null) {
+							onError.onStatusMessage("Failed to update admin", true); // Generic failure message
+						}
+					}
+				});
+			} catch (RestClientException e) {
+				String errorMessage = "Failed to update admin";
+				String detailedErrorMessage = e.getMessage();
+				if (detailedErrorMessage != null && !detailedErrorMessage.isEmpty()) {
+					errorMessage = detailedErrorMessage;
+					if (errorMessage.contains("Incorrect current password")) {
+						errorMessage = "Incorrect current password";
+					} else if (errorMessage.contains("Admin not found")) {
+						errorMessage = "Admin not found";
+					}
+				}
+				String finalErrorMessage = errorMessage;
+				Platform.runLater(() -> onError.onStatusMessage(finalErrorMessage, true));
+			} catch (Exception e) {
+				Platform.runLater(() -> onError.onStatusMessage("Error updating admin: " + e.getMessage(), true));
+			}
+		});
+		updateThread.setDaemon(true);
+		updateThread.setName("AdminUpdater");
+		updateThread.start();
 	}
-	
-	
-	
+
 	/**
 	 * Deletes an admin.
 	 * 
