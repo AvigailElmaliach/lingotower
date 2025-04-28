@@ -15,6 +15,8 @@ public class Admin extends User {
 	private String role; // The role of the admin
 	private List<User> users = new ArrayList<>(); // List of users managed by the admin
 	private List<Quiz> quizzes = new ArrayList<>(); // List of quizzes created by the admin
+	private String sourceLanguage;
+	private String targetLanguage;
 
 	/**
 	 * Default constructor.
@@ -170,4 +172,19 @@ public class Admin extends User {
 		return id != null ? id.hashCode() : 0;
 	}
 
+	public String getSourceLanguage() {
+		return sourceLanguage;
+	}
+
+	public void setSourceLanguage(String sourceLanguage) {
+		this.sourceLanguage = sourceLanguage;
+	}
+
+	public String getTargetLanguage() {
+		return targetLanguage;
+	}
+
+	public void setTargetLanguage(String targetLanguage) {
+		this.targetLanguage = targetLanguage;
+	}
 }

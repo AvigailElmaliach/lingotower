@@ -11,6 +11,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 
 import com.lingotower.dto.admin.AdminCreateDTO;
@@ -108,13 +110,7 @@ public class AdminService extends BaseService {
 		}
 	}
 
-	/**
-	 * Registers a new admin on the server. Requires current user to be an Admin.
-	 * 
-	 * @param adminCreateDTO DTO containing new admin's details
-	 * @return true if registration was successful, false otherwise
-	 */
-	public boolean registerAdmin(AdminCreateDTO adminCreateDTO) {
+	public ResponseEntity<String> registerAdmin(AdminCreateDTO adminCreateDTO) {
 		try {
 			logger.info("Registering new admin: {}", adminCreateDTO.getUsername());
 
@@ -127,16 +123,27 @@ public class AdminService extends BaseService {
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
-			boolean success = response.getStatusCode() == HttpStatus.CREATED;
-			if (success) {
+			logger.debug("Register admin response status: {}", response.getStatusCode());
+			if (response.getStatusCode() == HttpStatus.CREATED) {
 				logger.info("Successfully registered admin: {}", adminCreateDTO.getUsername());
 			} else {
 				logger.error("Failed to register admin. Status code: {}", response.getStatusCode());
+				if (response.hasBody()) {
+					logger.error("Error details: {}", response.getBody());
+				}
 			}
-			return success;
+			return response;
 		} catch (RestClientException e) {
 			logger.error("Error registering admin: {}", e.getMessage(), e);
-			return false;
+			// Handle RestClientException to potentially extract error message
+			if (e instanceof HttpClientErrorException) {
+				return ResponseEntity.status(((HttpClientErrorException) e).getStatusCode())
+						.body(((HttpClientErrorException) e).getResponseBodyAsString());
+			} else if (e instanceof HttpServerErrorException) {
+				return ResponseEntity.status(((HttpServerErrorException) e).getStatusCode())
+						.body(((HttpServerErrorException) e).getResponseBodyAsString());
+			}
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 		}
 	}
 
@@ -240,13 +247,7 @@ public class AdminService extends BaseService {
 		}
 	}
 
-	/**
-	 * Creates a new admin.
-	 * 
-	 * @param newAdmin The admin to create
-	 * @return The created admin or null if creation failed
-	 */
-	public Admin createAdmin(Admin newAdmin) {
+	public String createAdmin(Admin newAdmin) {
 		try {
 			logger.info("Creating new admin: {}", newAdmin.getUsername());
 
@@ -255,20 +256,21 @@ public class AdminService extends BaseService {
 			dto.setPassword(newAdmin.getPassword());
 			dto.setEmail(newAdmin.getEmail());
 			dto.setRole(Role.valueOf(newAdmin.getRole()));
+			dto.setSourceLanguage(newAdmin.getSourceLanguage());
+			dto.setTargetLanguage(newAdmin.getTargetLanguage());
 
-			// Call the register method with the DTO
-			boolean success = registerAdmin(dto);
+			ResponseEntity<String> response = registerAdmin(dto);
 
-			if (success) {
+			if (response.getStatusCode() == HttpStatus.CREATED) {
 				logger.info("Successfully created admin: {}", newAdmin.getUsername());
-				return newAdmin; // Return the admin object (note: ID might not be set)
+				return null; // הצלחה, אין הודעת שגיאה
 			} else {
-				logger.error("Failed to create admin: {}", newAdmin.getUsername());
-				return null;
+				logger.error("Failed to create admin: {}", response.getBody());
+				return response.getBody();
 			}
 		} catch (Exception e) {
 			logger.error("Error creating admin: {}", e.getMessage(), e);
-			return null;
+			return "An unexpected error occurred.";
 		}
 	}
 
