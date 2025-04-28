@@ -83,23 +83,25 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/**
-     * Gets the old password of the user (used for password change).
-     *
-     * @return the old password of the user
-     */
-    public String getOldPassword() {
-        return oldPassword;
-    }
 
-    /**
-     * Sets the old password of the user (used for password change).
-     *
-     * @param oldPassword the old password of the user
-     */
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
+	/**
+	 * Gets the old password of the user (used for password change).
+	 *
+	 * @return the old password of the user
+	 */
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	/**
+	 * Sets the old password of the user (used for password change).
+	 *
+	 * @param oldPassword the old password of the user
+	 */
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
 	/**
 	 * Gets the email address of the user.
 	 *

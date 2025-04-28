@@ -21,8 +21,8 @@ import com.lingotower.model.User;
 import com.lingotower.model.Word;
 
 /**
- * Service for managing users and user-related functionality.
- */
+ * Service for managing users and user-related functionality.
+ */
 public class UserService extends BaseService {
 
 	/**
@@ -35,9 +35,9 @@ public class UserService extends BaseService {
 
 	/**
 	 * Fetches all users from the server.
-	 * 
+	 * 
 	 * @return A list of all users or an empty list if none are found or an error
-	 *         occurs
+	 *         occurs
 	 */
 	public List<User> getAllUsers() {
 		try {
@@ -66,7 +66,7 @@ public class UserService extends BaseService {
 
 	/**
 	 * Fetches a user by their ID.
-	 * 
+	 * 
 	 * @param id The ID of the user to fetch
 	 * @return The user if found, null otherwise
 	 */
@@ -95,7 +95,7 @@ public class UserService extends BaseService {
 
 	/**
 	 * Creates a new user.
-	 * 
+	 * 
 	 * @param user The user to create
 	 * @return The created user with its assigned ID, or null if creation failed
 	 */
@@ -123,214 +123,54 @@ public class UserService extends BaseService {
 		}
 	}
 
-//	/**
-//	 * Updates an existing user.
-//	 *
-//	 * @param user The updated user information
-//	 * @return true if update was successful, false otherwise
-//	 */
-//	public boolean updateUser(User user) {
-//		try {
-//			// Validate user object
-//			if (user == null) {
-//				logger.error("Cannot update user: user object is null");
-//				return false;
-//			}
-//
-//			if (user.getId() == null) {
-//				logger.error("Cannot update user: user ID is null");
-//				return false;
-//			}
-//
-//			// Validate required fields
-//			if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getEmail() == null
-//					|| user.getEmail().trim().isEmpty() || user.getLanguage() == null
-//					|| user.getLanguage().trim().isEmpty()) {
-//				logger.error("Cannot update user: required fields missing");
-//				return false;
-//			}
-//
-//			logger.info("Updating user with ID: {}", user.getId());
-//
-//			// Create a DTO with the required fields
-//			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-//			userUpdateDTO.setUsername(user.getUsername());
-//			userUpdateDTO.setEmail(user.getEmail());
-//			userUpdateDTO.setSourceLanguage(user.getLanguage()); // Map to sourceLanguage
-//			userUpdateDTO.setPassword(user.getPassword());
-//
-//			HttpHeaders headers = createAuthHeaders();
-//			headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//			HttpEntity<UserUpdateDTO> entity = new HttpEntity<>(userUpdateDTO, headers);
-//
-//			String url = buildUrl(USERS_PATH, user.getId().toString());
-//
-//			logger.debug(
-//					"Updating user profile - URL: {}, User ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password: {}",
-//					url, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(),
-//					userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
-//
-//			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
-//
-//			boolean success = response.getStatusCode().is2xxSuccessful();
-//			logger.debug("User update response: {}", response.getStatusCode());
-//
-//			if (success) {
-//				logger.info("Successfully updated user with ID: {}", user.getId());
-//			} else {
-//				logger.error("Failed to update user with ID: {}. Status code: {}", user.getId(),
-//						response.getStatusCode());
-//			}
-//
-//			return success;
-//		} catch (Exception e) {
-//			logger.error("Error updating user: {}", e.getMessage(), e);
-//			return false;
-//		}
-//	}
-	/**
-//	 * Updates an existing user.
-//	 * If both username and password are updated, password is updated first using the old username.
-//	 *
-//	 * @param oldUsername The existing username before update
-//	 * @param user The updated user information
-//	 * @return true if update was successful, false otherwise
-//	 */
-//	public boolean updateUser(String oldUsername, User user) {
-//	    try {
-//	        if (user == null) {
-//	            logger.error("Cannot update user: user object is null");
-//	            return false;
-//	        }
-//
-//	        if (user.getId() == null) {
-//	            logger.error("Cannot update user: user ID is null");
-//	            return false;
-//	        }
-//
-//	        if (user.getUsername() == null || user.getUsername().trim().isEmpty()
-//	                || user.getEmail() == null || user.getEmail().trim().isEmpty()
-//	                || user.getLanguage() == null || user.getLanguage().trim().isEmpty()) {
-//	            logger.error("Cannot update user: required fields missing");
-//	            return false;
-//	        }
-//
-//	        logger.info("Starting update process for user ID: {}", user.getId());
-//
-//	        HttpHeaders headers = createAuthHeaders();
-//	        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//	        // First: Update password if it changed
-//	        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-//	            logger.info("Updating password for user: {}", oldUsername);
-//
-//	            PasswordUpdateDTO passwordUpdateDTO = new PasswordUpdateDTO();
-//	            passwordUpdateDTO.setOldUsername(oldUsername);
-//	            passwordUpdateDTO.setNewPassword(user.getPassword());
-//
-//	            HttpEntity<PasswordUpdateDTO> passwordEntity = new HttpEntity<>(passwordUpdateDTO, headers);
-//	            String passwordUpdateUrl = buildUrl(USERS_PATH,"password");
-//
-//	            ResponseEntity<Void> passwordResponse = restTemplate.exchange(passwordUpdateUrl, HttpMethod.PUT, passwordEntity, Void.class);
-//
-//	            if (!passwordResponse.getStatusCode().is2xxSuccessful()) {
-//	                logger.error("Failed to update password for user: {}", oldUsername);
-//	                return false;
-//	            }
-//	            logger.info("Successfully updated password for user: {}", oldUsername);
-//	        }
-//
-//	        // Second: Update user profile (including new username)
-//	        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-//	        userUpdateDTO.setUsername(user.getUsername());
-//	        userUpdateDTO.setEmail(user.getEmail());
-//	        userUpdateDTO.setSourceLanguage(user.getLanguage());
-//	        userUpdateDTO.setPassword(null); 
-//
-//	        HttpEntity<UserUpdateDTO> userEntity = new HttpEntity<>(userUpdateDTO, headers);
-//	        String userUpdateUrl = buildUrl(USERS_PATH, user.getId().toString());
-//
-//	        logger.debug("Updating user profile - URL: {}, Username: {}, Email: {}, SourceLanguage: {}",
-//	                userUpdateUrl, userUpdateDTO.getUsername(), userUpdateDTO.getEmail(), userUpdateDTO.getSourceLanguage());
-//
-//	        ResponseEntity<Void> userResponse = restTemplate.exchange(userUpdateUrl, HttpMethod.PUT, userEntity, Void.class);
-//
-//	        boolean success = userResponse.getStatusCode().is2xxSuccessful();
-//	        if (success) {
-//	            logger.info("Successfully updated user profile for ID: {}", user.getId());
-//	        } else {
-//	            logger.error("Failed to update user profile for ID: {}. Status code: {}", user.getId(), userResponse.getStatusCode());
-//	        }
-//
-//	        return success;
-//
-//	    } catch (Exception e) {
-//	        logger.error("Error updating user: {}", e.getMessage(), e);
-//	        return false;
-//	    }
-//	}
 	/**
 	 * Updates an existing user.
 	 *
 	 * @param oldUsername The existing username before update (may not be needed if ID is the primary identifier)
-	 * @param user        The updated user information
+	 * @param user        The updated user information
 	 * @return true if update was successful, false otherwise
 	 */
 	public boolean updateUser(String oldUsername, User user) {
-	    try {
-	        if (user == null || user.getId() == null || user.getUsername() == null || user.getUsername().trim().isEmpty()
-	                || user.getEmail() == null || user.getEmail().trim().isEmpty()
-	                || user.getLanguage() == null || user.getLanguage().trim().isEmpty()) {
-	            logger.error("Cannot update user: required fields missing");
-	            return false;
-	        }
+	    try {
+	        if (user == null || user.getId() == null || user.getUsername() == null || user.getUsername().trim().isEmpty()
+	                || user.getEmail() == null || user.getEmail().trim().isEmpty()
+	                || user.getLanguage() == null || user.getLanguage().trim().isEmpty()) {
+	            logger.error("Cannot update user: required fields missing");
+	            return false;
+	        }
 
-	        logger.info("Starting update process for user ID: {}", user.getId());
+	        logger.info("Starting update process for user ID: {}", user.getId());
 
-	        HttpHeaders headers = createAuthHeaders();
-	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        HttpHeaders headers = createAuthHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
 
-	        logger.debug("נתונים באובייקט user בתוך BaseService.updateUser לפני יצירת DTO:");
-	        logger.debug("שם משתמש: {}", user.getUsername());
-	        logger.debug("אימייל: {}", user.getEmail());
-	        logger.debug("שפה: {}", user.getLanguage());
-	        logger.debug("סיסמה: {}", user.getPassword());
+	        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+	        userUpdateDTO.setUsername(user.getUsername());
+	        userUpdateDTO.setEmail(user.getEmail());
+	        userUpdateDTO.setSourceLanguage(user.getLanguage());
+	        userUpdateDTO.setPassword(user.getPassword()); 
+	        
+	        HttpEntity<UserUpdateDTO> userEntity = new HttpEntity<>(userUpdateDTO, headers);
+	        String userUpdateUrl = buildUrl(USERS_PATH, user.getId().toString());
 
-	        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-	        userUpdateDTO.setUsername(user.getUsername());
-	        userUpdateDTO.setEmail(user.getEmail());
-	        userUpdateDTO.setSourceLanguage(user.getLanguage());
-	        userUpdateDTO.setPassword(user.getPassword()); 
+	        logger.debug("Updating user - URL: {}, ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password (if any): {}",
+	                userUpdateUrl, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(), userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
 
-	        logger.debug("נתונים ב-UserUpdateDTO לפני שליחה לשרת:");
-	        logger.debug("שם משתמש: {}", userUpdateDTO.getUsername());
-	        logger.debug("אימייל: {}", userUpdateDTO.getEmail());
-	        logger.debug("שפה (sourceLanguage): {}", userUpdateDTO.getSourceLanguage());
-	        logger.debug("סיסמה: {}", userUpdateDTO.getPassword());
+	        ResponseEntity<Void> userResponse = restTemplate.exchange(userUpdateUrl, HttpMethod.PUT, userEntity, Void.class);
 
-	        
-	        HttpEntity<UserUpdateDTO> userEntity = new HttpEntity<>(userUpdateDTO, headers);
-	        String userUpdateUrl = buildUrl(USERS_PATH, user.getId().toString());
+	        boolean success = userResponse.getStatusCode().is2xxSuccessful();
+	        if (success) {
+	            logger.info("Successfully updated user with ID: {}", user.getId());
+	        } else {
+	            logger.error("Failed to update user with ID: {}. Status code: {}", user.getId(), userResponse.getStatusCode());
+	        }
 
-	        logger.debug("Updating user - URL: {}, ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password (if any): {}",
-	                userUpdateUrl, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(), userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
+	        return success;
 
-	        ResponseEntity<Void> userResponse = restTemplate.exchange(userUpdateUrl, HttpMethod.PUT, userEntity, Void.class);
-
-	        boolean success = userResponse.getStatusCode().is2xxSuccessful();
-	        if (success) {
-	            logger.info("Successfully updated user with ID: {}", user.getId());
-	        } else {
-	            logger.error("Failed to update user with ID: {}. Status code: {}", user.getId(), userResponse.getStatusCode());
-	        }
-
-	        return success;
-
-	    } catch (Exception e) {
-	        logger.error("Error updating user: {}", e.getMessage(), e);
-	        return false;
-	    }
+	    } catch (Exception e) {
+	        logger.error("Error updating user: {}", e.getMessage(), e);
+	        return false;
+	    }
 	}
 	public boolean deleteUser(Long id) {
 		try {
@@ -361,7 +201,7 @@ public class UserService extends BaseService {
 
 	/**
 	 * Gets the currently authenticated user's progress.
-	 * 
+	 * 
 	 * @return The user's progress or null if an error occurs
 	 */
 	public UserProgressDTO getUserProgress() {
@@ -391,9 +231,9 @@ public class UserService extends BaseService {
 
 	/**
 	 * Gets learned words for the authenticated user.
-	 * 
+	 * 
 	 * @return List of learned words or an empty list if none found or an error
-	 *         occurs
+	 *         occurs
 	 */
 	public List<Word> getLearnedWords() {
 		try {
@@ -430,7 +270,7 @@ public class UserService extends BaseService {
 	 * Gets learned words for the authenticated user filtered by category. The
 	 * filtering is done client-side since the server doesn't have a
 	 * category-specific endpoint.
-	 * 
+	 * 
 	 * @param categoryId The category ID to filter by
 	 * @return List of learned words in the specified category
 	 */
@@ -458,7 +298,7 @@ public class UserService extends BaseService {
 
 	/**
 	 * Adds a word to the authenticated user's learned words list.
-	 * 
+	 * 
 	 * @param wordId The ID of the word to add
 	 * @return true if successful, false otherwise
 	 */
@@ -493,77 +333,10 @@ public class UserService extends BaseService {
 		}
 	}
 
-//	/**
-//	 * Updates a user's password.
-//	 * 
-//	 * @param newPassword The new password
-//	 * @return true if successful, false otherwise
-//	 */
-//	public boolean updateUserPassword(String newPassword) {
-//		try {
-//			if (newPassword == null || newPassword.isEmpty()) {
-//				logger.error("Cannot update password: New password is null or empty");
-//				return false;
-//			}
-//
-//			logger.info("Updating user password");
-//
-//			// Create the password update DTO
-//			PasswordUpdateDTO passwordDTO = new PasswordUpdateDTO(newPassword);
-//
-//			String url = buildUrl(USERS_PATH, "password");
-//			HttpEntity<PasswordUpdateDTO> entity = createAuthEntity(passwordDTO);
-//
-//			ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
-//
-//			boolean success = response.getStatusCode().is2xxSuccessful();
-//			if (success) {
-//				logger.info("Successfully updated user password");
-//			} else {
-//				logger.error("Failed to update user password. Status code: {}", response.getStatusCode());
-//			}
-//			return success;
-//		} catch (Exception e) {
-//			logger.error("Error updating user password: {}", e.getMessage(), e);
-//			return false;
-//		}
-//	}
-	
-	public boolean updateUserPassword(String oldUsername, String newPassword) {
-	    try {
-	        if (newPassword == null || newPassword.isEmpty()) {
-	            logger.error("Cannot update password: New password is null or empty");
-	            return false;
-	        }
-
-	        logger.info("Updating user password");
-
-	        PasswordUpdateDTO passwordDTO = new PasswordUpdateDTO();
-	        passwordDTO.setOldUsername(oldUsername); // שליחה של שם המשתמש הישן
-	        passwordDTO.setNewPassword(newPassword); // שליחה של הסיסמה החדשה
-
-	        String url = buildUrl(USERS_PATH, "password");
-	        HttpEntity<PasswordUpdateDTO> entity = createAuthEntity(passwordDTO);
-
-	        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
-
-	        boolean success = response.getStatusCode().is2xxSuccessful();
-	        if (success) {
-	            logger.info("Successfully updated user password");
-	        } else {
-	            logger.error("Failed to update user password. Status code: {}", response.getStatusCode());
-	        }
-	        return success;
-	    } catch (Exception e) {
-	        logger.error("Error updating user password: {}", e.getMessage(), e);
-	        return false;
-	    }
-	}
-
 
 	/**
 	 * Gets the currently authenticated user's full details.
-	 * 
+	 * 
 	 * @return User object with complete details or null if not authenticated
 	 */
 	public User getCurrentUser() {
