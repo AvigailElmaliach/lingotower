@@ -37,8 +37,6 @@ public class Category {
 	private String sourceLanguage;
 	private String targetLanguage;
 
-//	 @OneToMany(mappedBy = "category")
-//	 private List<Word> words;
 	public Category() {
 	}
 
@@ -100,8 +98,4 @@ public class Category {
 		this.translation = translation;
 	}
 
-	/*
-	 * @Override public String toString() { return "Category{" + "id=" + id +
-	 * ", name='" + name + '\'' + '}'; }
-	 */
 }

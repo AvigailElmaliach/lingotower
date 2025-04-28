@@ -52,29 +52,6 @@ public class WordController {
 		return ResponseEntity.ok(wordService.getAllWords());
 	}
 
-///
-//    @GetMapping("/category/{categoryId}/difficulty/{difficulty}/random")
-//    public ResponseEntity<List<TranslationResponseDTO>> getRandomTranslatedWordsByCategoryAndDifficulty(
-//            @PathVariable Long categoryId, 
-//            @PathVariable Difficulty difficulty,
-//            Principal principal) {
-//        
-//        // קבלת המשתמש המחובר
-//        User user = userService.getUserByUsername(principal.getName());
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        // קבלת שפת היעד של המשתמש
-//        String userLanguage = user.getTargetLanguage();
-//
-//        // קבלת המילים האקראיות לפי קטגוריה ודרגת קושי
-//        List<TranslationResponseDTO> randomWords = wordService.getRandomTranslatedWordsByCategoryAndDifficulty(categoryId, difficulty, userLanguage);
-//        
-//                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-//                : ResponseEntity.ok(randomWords);
-//    }
-
 	@PutMapping("/{wordId}")
 	public ResponseEntity<Void> updateWord(@PathVariable Long wordId, @RequestBody WordByCategory updateDTO,
 			Principal principal) {
@@ -140,28 +117,7 @@ public class WordController {
 		return randomWords.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 				: ResponseEntity.ok(randomWords);
 	}
-///
 
-// // שיטה להחזרת מילים לפי קטגוריה ושפת המשתמש
-//    @GetMapping("/category/{categoryId}/translate")
-//    public ResponseEntity<List<TranslationResponseDTO>> getTranslatedWordsByCategory(
-//            @PathVariable Long categoryId,
-//            Principal principal) {
-//
-//        // קבלת פרטי המשתמש והעברית או אנגלית
-//        User user = userService.getUserByUsername(principal.getName());
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//        String userLanguage = user.getTargetLanguage();
-//
-//        // שליפת המילים בקטגוריה לפי שפת המשתמש
-//        List<TranslationResponseDTO> translatedWords = wordService.getTranslatedWordsByCategory(categoryId, userLanguage);
-//        
-//        return translatedWords.isEmpty()
-//                ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-//                : ResponseEntity.ok(translatedWords);
-//    }
 	@GetMapping("/category/{categoryId}/translate")
 	public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategory(@PathVariable Long categoryId,
 			Principal principal) {
@@ -174,11 +130,9 @@ public class WordController {
 				: ResponseEntity.ok(translatedWords);
 	}
 
-	// שיטה להחזרת מילים לפי קטגוריה, רמת קושי ושפת המשתמש
 	@GetMapping("/category/{categoryId}/difficulty/{difficulty}/translate")
 	public ResponseEntity<List<WordByCategory>> getTranslatedWordsByCategoryAndDifficulty(@PathVariable Long categoryId,
 			@PathVariable Difficulty difficulty, Principal principal) {
-		// קבלת פרטי המשתמש והעברית או אנגלית
 		User user = userService.getUserByUsername(principal.getName());
 		if (user == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -191,7 +145,6 @@ public class WordController {
 		return ResponseEntity.ok(translatedWords);
 	}
 
-	// שיטה להחזרת מילים אקראיות לפי קטגוריה, רמת קושי ושפת המשתמש
 	@GetMapping("/category/{categoryId}/difficulty/{difficulty}/random/translate")
 	public ResponseEntity<List<WordByCategory>> getRandomTranslatedWordsByCategoryAndDifficulty(
 			@PathVariable Long categoryId, @PathVariable Difficulty difficulty, Principal principal) {
@@ -219,12 +172,12 @@ public class WordController {
 		}
 	}
 
-	@PostMapping("/add")
-	public ResponseEntity<Void> addWordWithTranslation(/// כרגע פונקציה מיותרת
-			@RequestBody WordDTO wordDTO, @RequestParam String targetLang) {
-		wordService.addWordWithTranslation(wordDTO, targetLang);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
-	}
+//	@PostMapping("/add")
+//	public ResponseEntity<Void> addWordWithTranslation(/// כרגע פונקציה מיותרת
+//			@RequestBody WordDTO wordDTO, @RequestParam String targetLang) {
+//		wordService.addWordWithTranslation(wordDTO, targetLang);
+//		return ResponseEntity.status(HttpStatus.CREATED).build();
+//	}
 
 	@DeleteMapping("/deleteAll")
 	public ResponseEntity<String> deleteAllWords() {
@@ -253,7 +206,7 @@ public class WordController {
 			return ResponseEntity.ok("המילים נוספו בהצלחה");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().body("שגיאהעעעע: " + e.getMessage());
+			return ResponseEntity.badRequest().body("שגיאה: " + e.getMessage());
 		}
 	}
 

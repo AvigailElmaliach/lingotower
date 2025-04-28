@@ -1,5 +1,7 @@
 package com.lingotower.dto;
 
+import com.lingotower.constants.LanguageConstants;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -70,6 +72,6 @@ public class RegisterRequest {
 	}
 
 	private String determineTargetLanguage(String sourceLanguage) {
-		return "he".equals(sourceLanguage) ? "en" : "he";
+		return LanguageConstants.HEBREW.equals(sourceLanguage) ? LanguageConstants.ENGLISH : LanguageConstants.HEBREW;
 	}
 }

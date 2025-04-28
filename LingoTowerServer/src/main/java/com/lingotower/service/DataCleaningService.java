@@ -9,19 +9,20 @@ import java.util.List;
 @Service
 public class DataCleaningService {
 
-    @Autowired
-    private ExampleSentenceRepository exampleSentenceRepository;
+	@Autowired
+	private ExampleSentenceRepository exampleSentenceRepository;
 
-    public void cleanExampleSentenceText() {
-        List<ExampleSentence> allSentences = exampleSentenceRepository.findAll();
-        for (ExampleSentence sentence : allSentences) {
-            String cleanedSentenceText = sentence.getSentenceText().trim().replaceAll("\\s{2,}", " ");
-            String cleanedTranslatedText = (sentence.getTranslatedText() != null) ?
-                    sentence.getTranslatedText().trim().replaceAll("\\s{2,}", " ") : null;
+	public void cleanExampleSentenceText() {
+		List<ExampleSentence> allSentences = exampleSentenceRepository.findAll();
+		for (ExampleSentence sentence : allSentences) {
+			String cleanedSentenceText = sentence.getSentenceText().trim().replaceAll("\\s{2,}", " ");
+			String cleanedTranslatedText = (sentence.getTranslatedText() != null)
+					? sentence.getTranslatedText().trim().replaceAll("\\s{2,}", " ")
+					: null;
 
-            sentence.setSentenceText(cleanedSentenceText);
-            sentence.setTranslatedText(cleanedTranslatedText);
-            exampleSentenceRepository.save(sentence);
-        }
-    }
+			sentence.setSentenceText(cleanedSentenceText);
+			sentence.setTranslatedText(cleanedTranslatedText);
+			exampleSentenceRepository.save(sentence);
+		}
+	}
 }

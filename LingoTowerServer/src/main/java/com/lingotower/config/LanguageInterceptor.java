@@ -29,12 +29,10 @@ public class LanguageInterceptor implements HandlerInterceptor {
                 request.setAttribute("sourceLanguage", user.getSourceLanguage());
                 request.setAttribute("targetLanguage", user.getTargetLanguage());
             } else {
-                // הגדרת שפות ברירת מחדל אם המשתמש לא הגדר אותן
                 request.setAttribute("sourceLanguage", "en");  
                 request.setAttribute("targetLanguage", "he");  
             }
         } else {
-            // אם אין פרינציפל מחובר
             request.setAttribute("sourceLanguage", "en");
             request.setAttribute("targetLanguage", "he");
         }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lingotower.constants.LanguageConstants;
+
 @Entity
 public class Admin extends BaseUser {
 
@@ -16,7 +18,7 @@ public class Admin extends BaseUser {
     public Admin() {}
     
     public Admin(String username, String password, String email, String sourceLanguage,String targetLanguage,Role role) {
-        super(username, password, email,sourceLanguage,"en",  role);  // מעביר את הערכים ל־BaseUser
+        super(username, password, email,sourceLanguage,LanguageConstants.ENGLISH,  role); 
     }
     
   

@@ -9,71 +9,71 @@ import jakarta.validation.constraints.Pattern;
 
 public class AdminUpdateDTO {
 
-    @NotBlank(message = "Username is required")
-    private String username;
-    private Role role;
+	@NotBlank(message = "Username is required")
+	private String username;
+	private Role role;
 
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number")
-    private String password; 
-    
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
-    private String email;
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number")
+	private String password;
 
-    @NotEmpty(message = "Current password is required for update")
-    private String oldPassword;
+	@Email(message = "Invalid email format")
+	@NotBlank(message = "Email is required")
+	private String email;
 
-    public AdminUpdateDTO() {
-    }
+	@NotEmpty(message = "Current password is required for update")
+	private String oldPassword;
 
-    public AdminUpdateDTO(@NotBlank(message = "Username is required") String username, Role role,
-                          @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number") String password,
-                          @Email(message = "Invalid email format") @NotBlank(message = "Email is required") String email,
-                          @NotEmpty(message = "Current password is required for update") String oldPassword) {
-        this.username = username;
-        this.role = role;
-        this.password = password;
-        this.email = email;
-        this.oldPassword = oldPassword;
-    }
+	public AdminUpdateDTO() {
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public AdminUpdateDTO(@NotBlank(message = "Username is required") String username, Role role,
+			@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password must be at least 8 characters long and contain at least one letter and one number") String password,
+			@Email(message = "Invalid email format") @NotBlank(message = "Email is required") String email,
+			@NotEmpty(message = "Current password is required for update") String oldPassword) {
+		this.username = username;
+		this.role = role;
+		this.password = password;
+		this.email = email;
+		this.oldPassword = oldPassword;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public Role getRole() {
-        return role;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+	public Role getRole() {
+		return role;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getOldPassword() {
-        return oldPassword;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
 }

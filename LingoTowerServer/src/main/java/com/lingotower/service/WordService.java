@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.lingotower.constants.LanguageConstants;
 import com.lingotower.data.AdminRepository;
 import com.lingotower.data.CategoryRepository;
 import com.lingotower.data.UserRepository;
@@ -73,18 +74,16 @@ public class WordService {
 			if (translatedText != null && !translatedText.isEmpty()) {
 				word.setTranslation(translatedText);
 			} else {
-				System.out.println(" תרגום לא נמצא עבור: " + word.getWord());
+				System.out.println("Translation not found for this word:" + word.getWord());
 			}
 		}
 		return wordRepository.save(word);
 	}
 
 	public List<Word> findWordsWithoutTranslation() {
-		// מניח שמדובר בשדה 'translation' במילת המפתח
 		return wordRepository.findByTranslationIsNull();
 	}
 
-	////
 	public List<WordByCategory> getRandomTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty,
 			String userLanguage) {
 		List<Word> words = wordRepository.findByCategoryIdAndDifficulty(categoryId, difficulty);
@@ -109,9 +108,7 @@ public class WordService {
 		List<Word> randomWords = getRandomWords(words, 10);
 		return mapWordsToLanguage(randomWords, userLanguage);
 	}
-////
 
-	///
 	private List<Word> getRandomWords(List<Word> words, int limit) {
 		if (words.isEmpty()) {
 			return Collections.emptyList();
@@ -126,48 +123,41 @@ public class WordService {
 		return wordRepository.findByWord(wordText);
 	}
 
-//	public void addWordWithTranslation(WordDTO wordDTO, String targetLang) {
-//		final String translatedText = translationService.translateText(wordDTO.getWord(), wordDTO.getLanguage(),
-//				targetLang);
-
 	public void addWordWithTranslation(WordDTO wordDTO, String targetLang) {
 		final String translatedText = translationService.translateText(wordDTO.getWord(), wordDTO.getSourceLanguage(),
 				targetLang);
 
-		// מציאת קטגוריה קיימת או יצירת חדשה
 		Category category = categoryRepository.findByName(wordDTO.getCategory()).orElseGet(() -> {
 			Category newCategory = new Category(wordDTO.getCategory());
 			return categoryRepository.save(newCategory);
 		});
 
-		// יצירת מילה חדשה עם התרגום
 		Word word = new Word(wordDTO.getWord(), translatedText, wordDTO.getSourceLanguage());
 		word.setCategory(category);
-		word.setDifficulty(wordDTO.getDifficulty()); // גם פה חשוב לוודא שממלאים את כל הפרטים
+		word.setDifficulty(wordDTO.getDifficulty());
 
-		// שמירת המילה עם התרגום
 		wordRepository.save(word);
 	}
 
 	public WordByCategory getTranslatedWordById(Long id, String userLanguage) {
 		Word word = wordRepository.findById(id).orElseThrow(() -> new RuntimeException("Word not found"));
 
-		String translation = "he".equals(userLanguage) ? word.getTranslation() : word.getWord();
+		String translation = LanguageConstants.HEBREW.equals(userLanguage) ? word.getTranslation() : word.getWord();
 		return new WordByCategory(word.getId(), word.getWord(), translation, word.getCategory(), word.getDifficulty());// אפשר
 																														// במקום
 																														// לקרוא
-																														// לפונקציה
+																														// לפונקצי
+																														// //
 																														// MAP
 	}
 
-	// שיטה להחזרת מילה לפי טקסט ומקור שפה
 	public Optional<Word> getWordByWordAndSourceLanguage(String word, String sourceLanguage) {
 		return wordRepository.findByWordAndSourceLanguage(word, sourceLanguage);
 	}
 
 	public List<WordByCategory> mapWordsToLanguage(List<Word> words, String userLanguage) {
 		return words.stream().map(word -> {
-			if ("he".equals(userLanguage))
+			if (LanguageConstants.HEBREW.equals(userLanguage))
 				return new WordByCategory(word.getId(), word.getTranslation(), word.getWord(), word.getCategory(),
 						word.getDifficulty());
 			return new WordByCategory(word.getId(), word.getWord(), word.getTranslation(), word.getCategory(),
@@ -175,25 +165,6 @@ public class WordService {
 		}).collect(Collectors.toList());
 	}
 
-//	public List<TranslationResponseDTO> mapWordsToLanguage(List<Word> words, String userLanguage) {
-//		return words.stream().map(word -> {
-//			if ("he".equals(userLanguage))
-//				return new TranslationResponseDTO(word.getTranslation(), word.getWord());
-//			return new TranslationResponseDTO(word.getWord(), word.getTranslation());
-//		}).collect(Collectors.toList());
-//	}
-
-//	public List<TranslationResponseDTO> getTranslatedWordsByCategory(Long categoryId, String userLanguage) {
-//		List<Word> words = wordRepository.findByCategoryId(categoryId);
-//
-//		if (words.isEmpty()) {
-//			return Collections.emptyList();
-//		}
-//
-//		return mapWordsToLanguage(words, userLanguage);
-//	}
-
-	/// 3
 	public List<WordByCategory> getTranslatedWordsByCategory(Long categoryId, String username) {
 		List<Word> words = wordRepository.findByCategoryId(categoryId);
 
@@ -201,27 +172,23 @@ public class WordService {
 			return Collections.emptyList();
 		}
 
-		String userLanguage = getUserLanguage(username); // פונקציה שמחזירה את שפת המשתמש
+		String userLanguage = getUserLanguage(username);
 		return mapWordsToLanguage(words, userLanguage);
 	}
 
 	public String getUserLanguage(String username) {
 		Optional<User> user = userRepository.findByUsername(username);
-		if (user.isPresent()) { 
-			return user.get().getTargetLanguage(); 
+		if (user.isPresent()) {
+			return user.get().getTargetLanguage();
 		}
 
-		// אם לא נמצא משתמש רגיל, ננסה לחפש את המנהל ב-AdminRepository
 		Optional<Admin> admin = adminRepository.findByUsername(username);
-		if (admin.isPresent()) { // בודקים אם ה-Optional מכיל ערך
-			return admin.get().getTargetLanguage(); // אם כן, מחזירים את שפת היעד של המנהל
+		if (admin.isPresent()) {
+			return admin.get().getTargetLanguage();
 		}
 
-		// אם לא נמצא אף אחד, החזר שגיאה או התנהגות ברירת מחדל
 		throw new UsernameNotFoundException("User not found: " + username);
 	}
-
-///3	
 
 	public List<WordByCategory> getTranslatedWordsByCategoryAndDifficulty(Long categoryId, Difficulty difficulty,
 			String userLanguage) {
@@ -257,26 +224,18 @@ public class WordService {
 	}
 
 	public WordByCategory getDailyWord(String username) {
-		// 1. קבלת שפת היעד של המשתמש
 		String userLanguage = getUserLanguage(username);
-
-		// 2. שליפת כל המילים הקיימות
 		List<Word> allWords = wordRepository.findAll();
-
 		if (allWords.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No words available in the system.");
 		}
-
-		// 3. יצירת ערך ייחודי על בסיס תאריך ושם משתמש
 		String uniqueSeed = username + LocalDate.now().toString();
 		int hash = Math.abs(uniqueSeed.hashCode());
 
-		// 4. קביעת אינדקס לפי גודל הרשימה
 		int index = hash % allWords.size();
 		Word selectedWord = allWords.get(index);
 
-		// 5. התאמה לשפת המשתמש
-		if ("he".equals(userLanguage)) {
+		if (LanguageConstants.HEBREW.equals(userLanguage)) {
 			return new WordByCategory(selectedWord.getId(), selectedWord.getTranslation(), selectedWord.getWord(),
 					selectedWord.getCategory(), selectedWord.getDifficulty());
 		} else {

@@ -1,4 +1,5 @@
 package com.lingotower.data;
+
 import com.lingotower.model.Category;
 import com.lingotower.model.Word;
 
@@ -10,21 +11,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByName(String name);
-    Optional<Category> findById(Long id);
+	Optional<Category> findByName(String name);
 
-   // Optional<Category> findByWordAndSourceLanguage(String word, String sourceLang);
-   // public List<Word> findByCategory(Category category);//שינוי אחרון 
-   // public List<Word> findByCategory_Id(Long categoryId);
-    List<Category> findByTranslationIsNullOrTranslationIs(String translation);
-  
+	Optional<Category> findById(Long id);
 
-    void deleteAll();
+	List<Category> findByTranslationIsNullOrTranslationIs(String translation);
 
-
+	void deleteAll();
 
 }
-
-
-
-

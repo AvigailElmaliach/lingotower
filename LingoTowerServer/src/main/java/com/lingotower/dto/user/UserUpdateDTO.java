@@ -1,5 +1,7 @@
 package com.lingotower.dto.user;
 
+import com.lingotower.constants.LanguageConstants;
+
 public class UserUpdateDTO {
 	private String username;
 	private String email;
@@ -59,7 +61,7 @@ public class UserUpdateDTO {
 	}
 
 	private String determineTargetLanguage(String sourceLanguage) {
-		return "he".equals(sourceLanguage) ? "en" : "he";
+		return "he".equals(sourceLanguage) ? LanguageConstants.ENGLISH : LanguageConstants.HEBREW;
 	}
 
 	public String getPassword() {
