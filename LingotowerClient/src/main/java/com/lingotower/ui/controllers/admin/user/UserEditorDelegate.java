@@ -181,20 +181,39 @@ public class UserEditorDelegate {
 		}
 	}
 
+//	/**
+//	 * Perform user update in background
+//	 */
+//	private void performUserUpdate(long startTime, String username) {
+//		try {
+//			if (userService == null) {
+//				userService = new UserService();
+//			}
+//
+//			boolean success = userService.updateUser(selectedUser);
+//			Platform.runLater(() -> handleUpdateResult(success, startTime, username));
+//		} catch (Exception e) {
+//			Platform.runLater(() -> handleUpdateError(e, startTime, username));
+//		}
+//	}
 	/**
 	 * Perform user update in background
 	 */
 	private void performUserUpdate(long startTime, String username) {
-		try {
-			if (userService == null) {
-				userService = new UserService();
-			}
+	    try {
+	        if (userService == null) {
+	            userService = new UserService();
+	        }
 
-			boolean success = userService.updateUser(selectedUser);
-			Platform.runLater(() -> handleUpdateResult(success, startTime, username));
-		} catch (Exception e) {
-			Platform.runLater(() -> handleUpdateError(e, startTime, username));
-		}
+	        // Get the old username (you may already have this from the selectedUser object)
+	        String oldUsername = selectedUser.getUsername();  // assuming selectedUser has the current username
+
+	        // Now call the updateUser method with both the old username and the selectedUser
+	        boolean success = userService.updateUser(oldUsername, selectedUser);
+	        Platform.runLater(() -> handleUpdateResult(success, startTime, username));
+	    } catch (Exception e) {
+	        Platform.runLater(() -> handleUpdateError(e, startTime, username));
+	    }
 	}
 
 	/**
