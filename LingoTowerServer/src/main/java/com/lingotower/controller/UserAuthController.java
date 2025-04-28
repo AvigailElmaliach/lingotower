@@ -19,21 +19,13 @@ public class UserAuthController {
 		this.userAuthService = userAuthService;
 	}
 
-//	@PostMapping("/register")
-//	public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
-//		try {
-//			return ResponseEntity.ok(userAuthService.registerUser(request));
-//		} catch (IllegalArgumentException e) {
-//			throw new IllegalArgumentException(e.getMessage());
-//		}
-//	}
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
-	    return ResponseEntity.ok(userAuthService.registerUser(request));
+		return ResponseEntity.ok(userAuthService.registerUser(request));
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@Valid @RequestBody  LoginRequest request) {
+	public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
 		try {
 			return ResponseEntity.ok(userAuthService.login(request));
 		} catch (IllegalArgumentException e) {

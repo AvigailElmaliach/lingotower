@@ -12,36 +12,36 @@ import java.util.Optional;
 @RequestMapping("/questions")
 public class QuestionController {
 
-    private final QuestionService questionService;
+	private final QuestionService questionService;
 
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
+	public QuestionController(QuestionService questionService) {
+		this.questionService = questionService;
+	}
 
-    @GetMapping
-    public List<Question> getAllQuestions() {
-        return questionService.getAllQuestions();
-    }
+	@GetMapping
+	public List<Question> getAllQuestions() {
+		return questionService.getAllQuestions();
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
-        Optional<Question> question = questionService.getQuestionById(id);
-        return question.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
+		Optional<Question> question = questionService.getQuestionById(id);
+		return question.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	}
 
-    @GetMapping("/quiz/{quizId}")
-    public List<Question> getQuestionsByQuiz(@PathVariable Long quizId) {
-        return questionService.getQuestionsByQuizId(quizId);
-    }
+	@GetMapping("/quiz/{quizId}")
+	public List<Question> getQuestionsByQuiz(@PathVariable Long quizId) {
+		return questionService.getQuestionsByQuizId(quizId);
+	}
 
-    @PostMapping
-    public Question addQuestion(@RequestBody Question question) {
-        return questionService.addQuestion(question);
-    }
+	@PostMapping
+	public Question addQuestion(@RequestBody Question question) {
+		return questionService.addQuestion(question);
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
-        questionService.deleteQuestion(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
+		questionService.deleteQuestion(id);
+		return ResponseEntity.noContent().build();
+	}
 }

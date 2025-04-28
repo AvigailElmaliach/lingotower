@@ -57,12 +57,10 @@ public class UserService {
 	}
 
 	public User saveUser(User user) {
-		// אם המשתמש קיים לא עשתי בדיקה
 		return userRepository.save(user);
 	}
 
 	public void deleteUser(Long id) {
-		// כאן להוסיף בדיקה אם המשתמש קיים לפני המחיקה
 		userRepository.deleteById(id);
 	}
 
@@ -93,7 +91,6 @@ public class UserService {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-		// טיפול בעדכון סיסמה אם סופקה סיסמה חדשה וישנה
 		if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()
 				&& userUpdateDTO.getOldPassword() != null && !userUpdateDTO.getOldPassword().isEmpty()) {
 			if (!passwordEncoder.matches(userUpdateDTO.getOldPassword(), user.getPassword())) {
@@ -101,7 +98,6 @@ public class UserService {
 			}
 			user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
 		} else if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()) {
-			// אפשרות לעדכון סיסמה ללא סיסמה ישנה - שקול אם לאפשר זאת
 			user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
 		}
 

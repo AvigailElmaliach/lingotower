@@ -42,7 +42,7 @@ public class CompletionPracticeService {
 			String username) {
 		Optional<Category> categoryOptional = categoryService.findByName(categoryName);
 		if (categoryOptional.isEmpty()) {
-			System.err.println("שגיאה: לא נמצאה קטגוריה מתאימה");
+			System.err.println("Error: No matching category found");
 			return Optional.empty();
 		}
 		Category category = categoryOptional.get();
@@ -58,7 +58,7 @@ public class CompletionPracticeService {
 
 		Optional<Word> wordOptional = wordRepository.findById(wordByCategory.getId());
 		if (wordOptional.isEmpty()) {
-			System.err.println("שגיאה: לא נמצאה מילה מתאימה");
+			System.err.println("Error: No matching word found");
 			return Optional.empty();
 		}
 		Word word = wordOptional.get();
@@ -116,7 +116,7 @@ public class CompletionPracticeService {
 		String[] wordsInSentence = sentenceText.split("\\s+");
 		List<String> commonShortWords = List.of("a", "the", "is", "are", "in", "on", "at", "to", "for", "with");
 
-		// מתחילים מהמילה השנייה במשפט
+		// Starting from the second word in the sentence
 		for (int i = 1; i < wordsInSentence.length; i++) {
 			String word = wordsInSentence[i];
 			if (word.length() > 2 && !commonShortWords.contains(word.toLowerCase())) {

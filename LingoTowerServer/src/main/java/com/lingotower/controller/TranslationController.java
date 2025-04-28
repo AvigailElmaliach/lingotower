@@ -15,67 +15,39 @@ import java.util.List;
 @RequestMapping("/api/translate")
 public class TranslationController {
 
-    private final TranslationService translationService;
+	private final TranslationService translationService;
 
-    public TranslationController(TranslationService translationService) {
-        this.translationService = translationService;
-    }
+	public TranslationController(TranslationService translationService) {
+		this.translationService = translationService;
+	}
 
-    
-    @GetMapping("/translate")
-    public ResponseEntity<String> translateText(@RequestParam String text, HttpServletRequest request) {
-        String sourceLang = (String) request.getAttribute("sourceLanguage");
-        String targetLang = (String) request.getAttribute("targetLanguage");
+	@GetMapping("/translate")
+	public ResponseEntity<String> translateText(@RequestParam String text, HttpServletRequest request) {
+		String sourceLang = (String) request.getAttribute("sourceLanguage");
+		String targetLang = (String) request.getAttribute("targetLanguage");
 
-        String translatedText = translationService.translateText(text, sourceLang, targetLang);
-        return ResponseEntity.ok(translatedText);
-    }
-    
-//    @PostMapping("/translate-sentence")
-//    public ResponseEntity<String> translateSentence(@RequestBody TranslationRequestDTO request, HttpServletRequest httpRequest) {
-//        String sourceLang = (String) httpRequest.getAttribute("sourceLanguage");
-//        String targetLang = (String) httpRequest.getAttribute("targetLanguage");
-//
-//        String translatedSentence = translationService.translateText(request.getWord(), sourceLang, targetLang); 
-//        return ResponseEntity.ok(translatedSentence);
-//    }
+		String translatedText = translationService.translateText(text, sourceLang, targetLang);
+		return ResponseEntity.ok(translatedText);
+	}
 
-    @PostMapping("/translate-sentence")
-    public ResponseEntity<String> translateSentence(
-            @RequestBody TranslationRequestDTO request, HttpServletRequest httpRequest) {
+	@PostMapping("/translate-sentence")
+	public ResponseEntity<String> translateSentence(@RequestBody TranslationRequestDTO request,
+			HttpServletRequest httpRequest) {
 
-        String sourceLang = (String) httpRequest.getAttribute("sourceLanguage");
-        String targetLang = (String) httpRequest.getAttribute("targetLanguage");
+		String sourceLang = (String) httpRequest.getAttribute("sourceLanguage");
+		String targetLang = (String) httpRequest.getAttribute("targetLanguage");
 
-        // קריאה לשירות השירות מחליט אם להחליף שפות או לא)
-        String translatedSentence = translationService.translateSentence(request.getWord(), sourceLang, targetLang, request.getSwapLanguages());
+		String translatedSentence = translationService.translateSentence(request.getWord(), sourceLang, targetLang,
+				request.getSwapLanguages());
 
-        return ResponseEntity.ok(translatedSentence);
-    }
-    @PostMapping("/free-translate")
-    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {
-        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());
-        return ResponseEntity.ok(translatedText);
-    }
-//    @PostMapping("/translate")
-//    public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {
-//        String translatedText = translationService.translateText(request.getText(), request.getSourceLang(), request.getTargetLang());
-//        return ResponseEntity.ok(translatedText);
-//    }
+		return ResponseEntity.ok(translatedSentence);
+	}
 
+	@PostMapping("/free-translate")
+	public ResponseEntity<String> translateTextPost(@RequestBody FreeTranslationRequest request) {
+		String translatedText = translationService.translateText(request.getText(), request.getSourceLang(),
+				request.getTargetLang());
+		return ResponseEntity.ok(translatedText);
+	}
 
-//    @PostMapping("/translate-batch")
-//    public ResponseEntity<List<TranslationResponseDTO>> translateWords(@RequestBody List<TranslationRequestDTO> translationRequestList, HttpServletRequest request) {
-//        String sourceLang = (String) request.getAttribute("sourceLanguage");
-//        String targetLang = (String) request.getAttribute("targetLanguage");
-//
-//        // עדכון השפות לכל הבקשות
-//        for (TranslationRequestDTO requestDTO : translationRequestList) {
-//            requestDTO.setSourceLang(sourceLang);
-//            requestDTO.setTargetLang(targetLang);
-//        }
-//
-//        List<TranslationResponseDTO> translatedWords = translationService.translateWords(translationRequestList);
-//        return ResponseEntity.status(HttpStatus.OK).body(translatedWords);
-//    }
 }

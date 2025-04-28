@@ -1,70 +1,65 @@
 package com.lingotower.dto.translation;
 
 public class TranslationDTO {
-    private String word;        
-    private String translation; 
-    private String sourceLanguage; // שפת המקור
-    private String targetLanguage; // שפת היעד
-    private int difficultyLevel;  
-    
-    public String getWord() {
-        return word;
-    }
+	private String word;
+	private String translation;
+	private String sourceLanguage;
+	private String targetLanguage;
+	private int difficultyLevel;
 
-    public void setWord(String word) {
-        this.word = word;
-    }
+	public String getWord() {
+		return word;
+	}
 
-    public String getTranslation() {
-        return translation;
-    }
+	public void setWord(String word) {
+		this.word = word;
+	}
 
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
+	public String getTranslation() {
+		return translation;
+	}
 
-    public String getSourceLanguage() {
-        return sourceLanguage;
-    }
+	public void setTranslation(String translation) {
+		this.translation = translation;
+	}
 
-    public void setSourceLanguage(String sourceLanguage) {
-        this.sourceLanguage = sourceLanguage;
-    }
+	public String getSourceLanguage() {
+		return sourceLanguage;
+	}
 
-    public String getTargetLanguage() {
-        return targetLanguage;
-    }
+	public void setSourceLanguage(String sourceLanguage) {
+		this.sourceLanguage = sourceLanguage;
+	}
 
-    public void setTargetLanguage(String targetLanguage) {
-        this.targetLanguage = targetLanguage;
-    }
+	public String getTargetLanguage() {
+		return targetLanguage;
+	}
 
-    public int getDifficultyLevel() {
-        return difficultyLevel;
-    }
+	public void setTargetLanguage(String targetLanguage) {
+		this.targetLanguage = targetLanguage;
+	}
 
-    public void setDifficultyLevel(int difficultyLevel) {
-        this.difficultyLevel = difficultyLevel;
-    }
+	public int getDifficultyLevel() {
+		return difficultyLevel;
+	}
 
-    public TranslationDTO(String word, String translation, String sourceLanguage, String targetLanguage, int difficultyLevel) {
-        this.word = word;
-        this.translation = translation;
-        this.sourceLanguage = sourceLanguage;
-        this.targetLanguage = targetLanguage;
-        this.difficultyLevel = difficultyLevel;
-    }
+	public void setDifficultyLevel(int difficultyLevel) {
+		this.difficultyLevel = difficultyLevel;
+	}
 
-    @Override
-    public String toString() {
-        return "TranslationDTO{" +
-                "word='" + word + '\'' +
-                ", translation='" + translation + '\'' +
-                ", sourceLanguage='" + sourceLanguage + '\'' +
-                ", targetLanguage='" + targetLanguage + '\'' +
-                ", difficultyLevel=" + difficultyLevel +
-                '}';
-    }
+	public TranslationDTO(String word, String translation, String sourceLanguage, String targetLanguage,
+			int difficultyLevel) {
+		this.word = word;
+		this.translation = translation;
+		this.sourceLanguage = sourceLanguage;
+		this.targetLanguage = targetLanguage;
+		this.difficultyLevel = difficultyLevel;
+	}
+
+	@Override
+	public String toString() {
+		return "TranslationDTO{" + "word='" + word + '\'' + ", translation='" + translation + '\''
+				+ ", sourceLanguage='" + sourceLanguage + '\'' + ", targetLanguage='" + targetLanguage + '\''
+				+ ", difficultyLevel=" + difficultyLevel + '}';
+	}
 }
-    
-

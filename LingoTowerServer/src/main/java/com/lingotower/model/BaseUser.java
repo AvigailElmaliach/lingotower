@@ -1,5 +1,7 @@
 package com.lingotower.model;
 
+import com.lingotower.constants.LanguageConstants;
+
 import jakarta.persistence.*;
 
 /**
@@ -45,8 +47,8 @@ public abstract class BaseUser {
 	 * The preferred language of the user. This field can be used for localization
 	 * purposes.
 	 */
-	private String sourceLanguage = "en";
-	private String targetLanguage = "he";
+	private String sourceLanguage = LanguageConstants.ENGLISH;
+	private String targetLanguage = LanguageConstants.HEBREW;
 
 	/**
 	 * The role of the user. This defines the level of access or permissions a user
@@ -179,7 +181,7 @@ public abstract class BaseUser {
 	}
 
 	private String determineTargetLanguage(String sourceLanguage) {
-		return "he".equals(sourceLanguage) ? "en" : "he";
+		return LanguageConstants.HEBREW.equals(sourceLanguage) ? LanguageConstants.ENGLISH : LanguageConstants.HEBREW;
 	}
 
 }

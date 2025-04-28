@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingotower.model.Category;
 import com.lingotower.model.Word;
+import com.lingotower.constants.LanguageConstants;
 import com.lingotower.dto.word.WordDTO;
 import com.lingotower.service.CategoryService;
 import com.lingotower.service.TranslationService;
@@ -84,8 +85,8 @@ public class WordDataInitializer implements CommandLineRunner {
                 wordDTO.setCategory(categoryName);  
                 wordDTO.setTranslate(word.getTranslation());
                 wordDTO.setDifficulty(word.getDifficulty());  
-                wordDTO.setSourceLanguage("en");
-                wordDTO.setTargetLanguage("he");
+                wordDTO.setSourceLanguage(LanguageConstants.ENGLISH);
+                wordDTO.setTargetLanguage(LanguageConstants.HEBREW);
 
             }
 
@@ -114,11 +115,11 @@ public class WordDataInitializer implements CommandLineRunner {
         }
 
         if (word.getTranslation() == null || word.getTranslation().isBlank()) {
-            String translated = translationService.translateText(word.getWord(), "en", "he");
+            String translated = translationService.translateText(word.getWord(), LanguageConstants.ENGLISH, LanguageConstants.HEBREW);
             word.setTranslation(translated);
         }
 
-        wordService.saveWord(word, "en", "he");
+        wordService.saveWord(word, LanguageConstants.ENGLISH, LanguageConstants.HEBREW);
         return true;
     }
 }

@@ -53,6 +53,7 @@ public class Word {
 	@JsonIgnore
 	@OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExampleSentence> sentences;
+
 	public Word() {
 	}
 

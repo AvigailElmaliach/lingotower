@@ -35,6 +35,4 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
 	Optional<Word> findByWordIgnoreCase(String targetEnglishWord);
 
-	
-
 }

@@ -18,26 +18,18 @@ import java.util.List;
 public class ExampleSentenceController {
 
 	@Autowired
-    private ExampleSentenceService exampleSentenceService;
+	private ExampleSentenceService exampleSentenceService;
 
-//    @GetMapping("/word/{word}")
-//    public ResponseEntity<ExampleSentenceCreateDTO> getTwoSentencesForWord(@PathVariable String word) {
-//    	ExampleSentenceCreateDTO result = exampleSentenceService.getTwoExampleSentencesForWord(word);
-//        if (result != null) {
-//            return new ResponseEntity<>(result, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
 	@GetMapping("/word/{word}")
-	public ResponseEntity<ExampleSentenceCreateDTO> getTwoSentencesForWord(@PathVariable String word, Principal principal) {
-	    String username = principal.getName();
-	    ExampleSentenceCreateDTO result = exampleSentenceService.getTwoExampleSentencesForWord(word, username);
-	    if (result != null) {
-	        return new ResponseEntity<>(result, HttpStatus.OK);
-	    } else {
-	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
+	public ResponseEntity<ExampleSentenceCreateDTO> getTwoSentencesForWord(@PathVariable String word,
+			Principal principal) {
+		String username = principal.getName();
+		ExampleSentenceCreateDTO result = exampleSentenceService.getTwoExampleSentencesForWord(word, username);
+		if (result != null) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }
