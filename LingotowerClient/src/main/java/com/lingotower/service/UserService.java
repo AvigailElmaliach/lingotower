@@ -21,8 +21,8 @@ import com.lingotower.model.User;
 import com.lingotower.model.Word;
 
 /**
- * Service for managing users and user-related functionality.
- */
+ *  * Service for managing users and user-related functionality.  
+ */
 public class UserService extends BaseService {
 
 	/**
@@ -34,10 +34,10 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Fetches all users from the server.
-	 * 
-	 * @return A list of all users or an empty list if none are found or an error
-	 *         occurs
+	 * Fetches all users from the server.  
+	 * 
+	 * @return A list of all users or an empty list if none are found or an error  
+	 *                occurs
 	 */
 	public List<User> getAllUsers() {
 		try {
@@ -65,8 +65,8 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Fetches a user by their ID.
-	 * 
+	 * Fetches a user by their ID.  
+	 * 
 	 * @param id The ID of the user to fetch
 	 * @return The user if found, null otherwise
 	 */
@@ -94,8 +94,8 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Creates a new user.
-	 * 
+	 * Creates a new user.  
+	 * 
 	 * @param user The user to create
 	 * @return The created user with its assigned ID, or null if creation failed
 	 */
@@ -126,52 +126,59 @@ public class UserService extends BaseService {
 	/**
 	 * Updates an existing user.
 	 *
-	 * @param oldUsername The existing username before update (may not be needed if ID is the primary identifier)
-	 * @param user        The updated user information
+	 * @param oldUsername The existing username before update (may not be needed if
+	 *                    ID is the primary identifier)
+	 * @param user              The updated user information
 	 * @return true if update was successful, false otherwise
 	 */
 	public boolean updateUser(String oldUsername, User user) {
-	    try {
-	        if (user == null || user.getId() == null || user.getUsername() == null || user.getUsername().trim().isEmpty()
-	                || user.getEmail() == null || user.getEmail().trim().isEmpty()
-	                || user.getLanguage() == null || user.getLanguage().trim().isEmpty()) {
-	            logger.error("Cannot update user: required fields missing");
-	            return false;
-	        }
+		try {
+			if (user == null || user.getId() == null || user.getUsername() == null
+					|| user.getUsername().trim().isEmpty() || user.getEmail() == null
+					|| user.getEmail().trim().isEmpty() || user.getLanguage() == null
+					|| user.getLanguage().trim().isEmpty()) {
+				logger.error("Cannot update user: required fields missing");
+				return false;
+			}
 
-	        logger.info("Starting update process for user ID: {}", user.getId());
+			logger.info("Starting update process for user ID: {}", user.getId());
 
-	        HttpHeaders headers = createAuthHeaders();
-	        headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpHeaders headers = createAuthHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
 
-	        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-	        userUpdateDTO.setUsername(user.getUsername());
-	        userUpdateDTO.setEmail(user.getEmail());
-	        userUpdateDTO.setSourceLanguage(user.getLanguage());
-	        userUpdateDTO.setPassword(user.getPassword()); 
-	        
-	        HttpEntity<UserUpdateDTO> userEntity = new HttpEntity<>(userUpdateDTO, headers);
-	        String userUpdateUrl = buildUrl(USERS_PATH, user.getId().toString());
+			UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+			userUpdateDTO.setUsername(user.getUsername());
+			userUpdateDTO.setEmail(user.getEmail());
+			userUpdateDTO.setSourceLanguage(user.getLanguage());
+			userUpdateDTO.setPassword(user.getPassword());
 
-	        logger.debug("Updating user - URL: {}, ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password (if any): {}",
-	                userUpdateUrl, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(), userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
+			HttpEntity<UserUpdateDTO> userEntity = new HttpEntity<>(userUpdateDTO, headers);
+			String userUpdateUrl = buildUrl(USERS_PATH, user.getId().toString());
 
-	        ResponseEntity<Void> userResponse = restTemplate.exchange(userUpdateUrl, HttpMethod.PUT, userEntity, Void.class);
+			logger.debug(
+					"Updating user - URL: {}, ID: {}, Username: {}, Email: {}, SourceLanguage: {}, Password (if any): {}",
+					userUpdateUrl, user.getId(), userUpdateDTO.getUsername(), userUpdateDTO.getEmail(),
+					userUpdateDTO.getSourceLanguage(), userUpdateDTO.getPassword());
 
-	        boolean success = userResponse.getStatusCode().is2xxSuccessful();
-	        if (success) {
-	            logger.info("Successfully updated user with ID: {}", user.getId());
-	        } else {
-	            logger.error("Failed to update user with ID: {}. Status code: {}", user.getId(), userResponse.getStatusCode());
-	        }
+			ResponseEntity<Void> userResponse = restTemplate.exchange(userUpdateUrl, HttpMethod.PUT, userEntity,
+					Void.class);
 
-	        return success;
+			boolean success = userResponse.getStatusCode().is2xxSuccessful();
+			if (success) {
+				logger.info("Successfully updated user with ID: {}", user.getId());
+			} else {
+				logger.error("Failed to update user with ID: {}. Status code: {}", user.getId(),
+						userResponse.getStatusCode());
+			}
 
-	    } catch (Exception e) {
-	        logger.error("Error updating user: {}", e.getMessage(), e);
-	        return false;
-	    }
+			return success;
+
+		} catch (Exception e) {
+			logger.error("Error updating user: {}", e.getMessage(), e);
+			return false;
+		}
 	}
+
 	public boolean deleteUser(Long id) {
 		try {
 			if (id == null) {
@@ -200,8 +207,8 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Gets the currently authenticated user's progress.
-	 * 
+	 * Gets the currently authenticated user's progress.  
+	 * 
 	 * @return The user's progress or null if an error occurs
 	 */
 	public UserProgressDTO getUserProgress() {
@@ -230,10 +237,10 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Gets learned words for the authenticated user.
-	 * 
-	 * @return List of learned words or an empty list if none found or an error
-	 *         occurs
+	 * Gets learned words for the authenticated user.  
+	 * 
+	 * @return List of learned words or an empty list if none found or an error    
+	 *              occurs
 	 */
 	public List<Word> getLearnedWords() {
 		try {
@@ -269,8 +276,8 @@ public class UserService extends BaseService {
 	/**
 	 * Gets learned words for the authenticated user filtered by category. The
 	 * filtering is done client-side since the server doesn't have a
-	 * category-specific endpoint.
-	 * 
+	 * category-specific endpoint.  
+	 * 
 	 * @param categoryId The category ID to filter by
 	 * @return List of learned words in the specified category
 	 */
@@ -297,8 +304,8 @@ public class UserService extends BaseService {
 	}
 
 	/**
-	 * Adds a word to the authenticated user's learned words list.
-	 * 
+	 * Adds a word to the authenticated user's learned words list.  
+	 * 
 	 * @param wordId The ID of the word to add
 	 * @return true if successful, false otherwise
 	 */
@@ -333,10 +340,9 @@ public class UserService extends BaseService {
 		}
 	}
 
-
 	/**
-	 * Gets the currently authenticated user's full details.
-	 * 
+	 * Gets the currently authenticated user's full details.  
+	 * 
 	 * @return User object with complete details or null if not authenticated
 	 */
 	public User getCurrentUser() {
