@@ -10,6 +10,7 @@ public class UserUpdateDTO {
 	private String email; // The updated email address of the user
 	private String sourceLanguage; // The updated source language preference of the user
 	private String password;
+	private String oldPassword;
 
 	/**
 	 * Default constructor.
@@ -32,6 +33,14 @@ public class UserUpdateDTO {
 		this.sourceLanguage = sourceLanguage;
 		this.password = password;
 
+	}
+
+	public UserUpdateDTO(String username, String email, String sourceLanguage, String password, String oldPassword) {
+		this.username = username;
+		this.email = email;
+		this.sourceLanguage = sourceLanguage;
+		this.password = password;
+		this.oldPassword = oldPassword;
 	}
 
 	/**
@@ -94,6 +103,14 @@ public class UserUpdateDTO {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 
 }

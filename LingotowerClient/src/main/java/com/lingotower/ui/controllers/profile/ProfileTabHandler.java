@@ -131,12 +131,16 @@ public class ProfileTabHandler {
 		if (!validateInputs(username, email, password, confirmPassword, language)) {
 			return;
 		}
-
+		logger.debug("נתונים באובייקט user לפני שליחה לשירות:");
+		logger.debug("שם משתמש: {}", user.getUsername());
+		logger.debug("אימייל: {}", user.getEmail());
+		logger.debug("שפה: {}", user.getLanguage());
+		logger.debug("סיסמה: {}", user.getPassword());
 		// Convert UI language value to language code if needed
 		String languageCode = convertToLanguageCode(language);
 
 		// Update user model with new values
-		updateUserModel(user, username, email, languageCode);
+		updateUserModel(user, username, email, languageCode, password);
 
 		// Save changes to server
 		saveChangesToServer(user, password, onSaveSuccess);
@@ -174,21 +178,144 @@ public class ProfileTabHandler {
 	/**
 	 * Updates the user model with form values
 	 */
-	private void updateUserModel(User user, String username, String email, String languageCode) {
+//	private void updateUserModel(User user, String username, String email, String languageCode) {
+//		user.setUsername(username);
+//		user.setEmail(email);
+//		user.setLanguage(languageCode);
+//	}
+	private void updateUserModel(User user, String username, String email, String languageCode, String password) {
 		user.setUsername(username);
 		user.setEmail(email);
 		user.setLanguage(languageCode);
+		if (password != null && !password.isEmpty()) {
+			user.setPassword(password);
+		}
 	}
 
+//	/**
+//	 * Saves changes to the server
+////	 */
+//	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
+//		try {
+//			boolean profileUpdated = false;
+//			boolean passwordUpdated = true; // Default to true if no password update needed
+//
+//			// Ensure user ID is present for profile update
+//			if (user.getId() == null) {
+//				logger.error("Cannot update profile: User ID is missing");
+//				uiStateManager.showErrorMessage(
+//						"Cannot update profile: User ID is missing. Please log out and log in again.");
+//				return;
+//			}
+//
+//			// Update profile
+//			logger.info("Updating user profile for ID: {}", user.getId());
+//			profileUpdated = userService.updateUser(user);
+//
+//			// Handle password update separately - works with just the JWT token
+//			if (!password.isEmpty()) {
+//				logger.info("Updating password using JWT token");
+//				passwordUpdated = userService.updateUserPassword(password);
+//			}
+//
+//			// Show appropriate message based on results
+//			handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
+//
+//		} catch (Exception ex) {
+//			logger.error("Error updating profile: {}", ex.getMessage(), ex);
+//			uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
+//		}
+//	}
+//	/**
+//	 * Saves changes to the server
+//	 */
+//	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
+//	    try {
+//	        boolean profileUpdated = false;
+//	        boolean passwordUpdated = true; // Default to true if no password update needed
+//
+//	        // Ensure user ID is present for profile update
+//	        if (user.getId() == null) {
+//	            logger.error("Cannot update profile: User ID is missing");
+//	            uiStateManager.showErrorMessage(
+//	                    "Cannot update profile: User ID is missing. Please log out and log in again.");
+//	            return;
+//	        }
+//
+//	        // Get the old username (assuming it's part of the user object)
+//	        String oldUsername = user.getUsername();  // Assuming `user` has a `getUsername()` method
+//
+//	        // Update profile
+//	        logger.info("Updating user profile for ID: {}", user.getId());
+//	        profileUpdated = userService.updateUser(oldUsername, user);
+//
+//	        // Handle password update separately
+//	        if (!password.isEmpty()) {
+//	            logger.info("Updating password using JWT token");
+//	            passwordUpdated = userService.updateUserPassword(oldUsername, password);
+//	        }
+//
+//	        // Show appropriate message based on results
+//	        handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
+//
+//	    } catch (Exception ex) {
+//	        logger.error("Error updating profile: {}", ex.getMessage(), ex);
+//	        uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
+//	    }
+////	}
+//	/**
+//	 * Saves changes to the server
+//	 */
+//	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
+//	    try {
+//	        boolean updatedSuccessfully = false;
+//
+//	        // Ensure user ID is present for update
+//	        if (user.getId() == null) {
+//	            logger.error("Cannot update profile: User ID is missing");
+//	            uiStateManager.showErrorMessage(
+//	                    "Cannot update profile: User ID is missing. Please log out and log in again.");
+//	            return;
+//	        }
+//
+//	        // Get the old username
+//	        String oldUsername = user.getUsername();
+//
+//	        // Update profile (this will include the new password if it was set in the user object)
+//	        logger.info("Updating user profile for ID: {}", user.getId());
+//	        updatedSuccessfully = userService.updateUser(oldUsername, user);
+//
+//	        // Show appropriate message based on the result
+//	        if (updatedSuccessfully) {
+//	            logger.info("Profile updated successfully");
+//	            uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
+//	            passwordField.clear();
+//	            confirmPasswordField.clear();
+//
+//	            // Call the success callback
+//	            if (onSaveSuccess != null) {
+//	                onSaveSuccess.run();
+//	            }
+//	        } else {
+//	            logger.error("Failed to update profile information");
+//	            uiStateManager.showErrorMessage("Failed to update profile information");
+//	        }
+//
+//	    } catch (Exception ex) {
+//	        logger.error("Error updating profile: {}", ex.getMessage(), ex);
+//	        uiStateManager.showErrorMessage("Error updating profile: " + ex.getMessage());
+//	    }
+//	}
 	/**
-	 * Saves changes to the server
+	 * Saves changes to the server and calls handleSaveResults to process the
+	 * result.
 	 */
 	private void saveChangesToServer(User user, String password, Runnable onSaveSuccess) {
 		try {
 			boolean profileUpdated = false;
-			boolean passwordUpdated = true; // Default to true if no password update needed
+			boolean passwordUpdated = true; // ברירת מחדל להצלחה אם לא מנסים לעדכן סיסמה
 
-			// Ensure user ID is present for profile update
+			// ודא ש-ID משתמש קיים לעדכון פרופיל
 			if (user.getId() == null) {
 				logger.error("Cannot update profile: User ID is missing");
 				uiStateManager.showErrorMessage(
@@ -196,17 +323,22 @@ public class ProfileTabHandler {
 				return;
 			}
 
-			// Update profile
-			logger.info("Updating user profile for ID: {}", user.getId());
-			profileUpdated = userService.updateUser(user);
+			// קבל את שם המשתמש הישן
+			String oldUsername = user.getUsername();
 
-			// Handle password update separately - works with just the JWT token
+			// עדכן פרופיל
+			logger.info("Updating user profile for ID: {}", user.getId());
+			profileUpdated = userService.updateUser(oldUsername, user);
+
+			// טפל בעדכון סיסמה בנפרד רק אם סופקה סיסמה חדשה
 			if (!password.isEmpty()) {
-				logger.info("Updating password using JWT token");
-				passwordUpdated = userService.updateUserPassword(password);
+				logger.info("Updating password for user: {}", oldUsername);
+				passwordUpdated = userService.updateUserPassword(oldUsername, password);
+			} else {
+				logger.debug("No new password provided, skipping password update.");
 			}
 
-			// Show appropriate message based on results
+			// הצג הודעה בהתאם לתוצאות
 			handleSaveResults(profileUpdated, passwordUpdated, password, onSaveSuccess);
 
 		} catch (Exception ex) {
@@ -216,30 +348,83 @@ public class ProfileTabHandler {
 	}
 
 	/**
-	 * Handles the results of the save operation
+	 * Handles the results of the save operation.
 	 */
+//	private void handleSaveResults(boolean profileUpdated, boolean passwordUpdated, String password,
+//	                               Runnable onSaveSuccess) {
+//	    if (profileUpdated && passwordUpdated) {
+//	        logger.info("Profile and password updated successfully");
+//	        uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
+//	        passwordField.clear();
+//	        confirmPasswordField.clear();
+//	        if (onSaveSuccess != null) {
+//	            onSaveSuccess.run();
+//	        }
+//	    } else if (!profileUpdated && !passwordUpdated) {
+//	        logger.error("Failed to update profile information");
+//	        uiStateManager.showErrorMessage("Failed to update profile information");
+//	    } else if (!profileUpdated) {
+//	        logger.error("Failed to update profile information");
+//	        uiStateManager.showErrorMessage("Failed to update profile information"
+//	                + (password.isEmpty() ? "" : ", but password update status is unknown"));
+//	    } else if (!passwordUpdated) {
+//	        logger.error("Profile information updated successfully, but password update failed");
+//	        uiStateManager.showErrorMessage("Profile information updated successfully, but password update failed");
+//	    }
+//	}
 	private void handleSaveResults(boolean profileUpdated, boolean passwordUpdated, String password,
 			Runnable onSaveSuccess) {
-		if (profileUpdated && passwordUpdated) {
-			logger.info("Profile and password updated successfully");
+		if (profileUpdated && (!password.isEmpty() ? passwordUpdated : true)) {
+// אם הפרופיל עודכן, ואם ניסינו לעדכן סיסמה - היא גם עודכנה,
+// או שלא ניסינו לעדכן סיסמה (ואז נניח שהיא "עודכנה בהצלחה")
+			logger.info(
+					"Profile updated successfully" + (!password.isEmpty() ? " and password updated successfully" : ""));
 			uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
 			passwordField.clear();
 			confirmPasswordField.clear();
-
-			// Call the success callback
 			if (onSaveSuccess != null) {
 				onSaveSuccess.run();
 			}
-		} else if (!profileUpdated && !passwordUpdated) {
-			logger.error("Failed to update profile and password");
-			uiStateManager.showErrorMessage("Failed to update profile and password");
+		} else if (!profileUpdated && (!password.isEmpty() ? !passwordUpdated : false)) {
+// אם הפרופיל נכשל, ואם ניסינו לעדכן סיסמה - היא גם נכשלה,
+// או שלא ניסינו לעדכן סיסמה (ואז נניח שהיא לא נכשלה)
+			logger.error("Failed to update profile information"
+					+ (!password.isEmpty() ? " and password update failed" : ""));
+			uiStateManager.showErrorMessage("Failed to update profile information");
 		} else if (!profileUpdated) {
 			logger.error("Failed to update profile information");
-			uiStateManager.showErrorMessage("Failed to update profile information"
-					+ (password.isEmpty() ? "" : ", but password was updated successfully"));
-		} else {
+			uiStateManager.showErrorMessage("Failed to update profile information");
+		} else if (!passwordUpdated && !password.isEmpty()) {
+// אם הפרופיל הצליח, אבל עדכון הסיסמה נכשל (ורק אם ניסינו לעדכן סיסמה)
 			logger.error("Profile information updated successfully, but password update failed");
 			uiStateManager.showErrorMessage("Profile information updated successfully, but password update failed");
 		}
 	}
+//	/**
+//	 * Handles the results of the save operation
+//	 */
+//	private void handleSaveResults(boolean profileUpdated, boolean passwordUpdated, String password,
+//			Runnable onSaveSuccess) {
+//		if (profileUpdated && passwordUpdated) {
+//			logger.info("Profile and password updated successfully");
+//			uiStateManager.showSuccessMessage("Profile updated successfully! Log out and log in again to see changes");
+//			passwordField.clear();
+//			confirmPasswordField.clear();
+//
+//			// Call the success callback
+//			if (onSaveSuccess != null) {
+//				onSaveSuccess.run();
+//			}
+//		} else if (!profileUpdated && !passwordUpdated) {
+//			logger.error("Failed to update profile and password");
+//			uiStateManager.showErrorMessage("Failed to update profile and password");
+//		} else if (!profileUpdated) {
+//			logger.error("Failed to update profile information");
+//			uiStateManager.showErrorMessage("Failed to update profile information"
+//					+ (password.isEmpty() ? "" : ", but password was updated successfully"));
+//		} else {
+//			logger.error("Profile information updated successfully, but password update failed");
+//			uiStateManager.showErrorMessage("Profile information updated successfully, but password update failed");
+//		}
+//	}
 }

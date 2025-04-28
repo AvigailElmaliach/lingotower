@@ -4,10 +4,10 @@ public class UserUpdateDTO {
 	private String username;
 	private String email;
 	private String sourceLanguage;
-	private String targetLanguage;
 	private String password;
 	private String oldPassword;
-
+	private String targetLanguage;
+	
 	public UserUpdateDTO() {
 	}
 
@@ -15,8 +15,9 @@ public class UserUpdateDTO {
 		this.username = username;
 		this.email = email;
 		this.sourceLanguage = sourceLanguage;
-		this.targetLanguage = determineTargetLanguage(sourceLanguage);
 		this.password = password;
+		this.targetLanguage = determineTargetLanguage(sourceLanguage);
+		
 	}
 
 	public UserUpdateDTO(String username, String email, String sourceLanguage, String password, String oldPassword) {
