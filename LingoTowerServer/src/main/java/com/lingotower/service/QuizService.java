@@ -22,13 +22,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
+	private static final int DEFAULT_QUIZ_SIZE = 10;
+	private static final int NUMBER_OF_WRONG_OPTIONS = 4;
+	private static final int NUMBER_OF_QUIZ_OPTIONS = 5;
+
 	@Autowired
 	private QuizRepository quizRepository;
 	private final WordRepository wordRepository;
 	private final UserRepository userRepository;
 	private final AdminRepository adminRepository;
 	private final WordService wordService;
-	private static final int DEFAULT_QUIZ_SIZE = 10;
 
 	public QuizService(WordRepository wordRepository, UserRepository userRepository, AdminRepository adminRepository,
 			WordService wordService) {
@@ -64,6 +67,17 @@ public class QuizService {
 		});
 	}
 
+	/**
+	 * Generates a list of quiz questions. It selects random words based on category
+	 * and difficulty, retrieves wrong options, and creates QuestionDTO objects.
+	 * 
+	 * @param categoryId        The ID of the category for the quiz.
+	 * @param difficulty        The difficulty level for the quiz.
+	 * @param username          The username of the user to determine the target
+	 *                          language.
+	 * @param numberOfQuestions The desired number of questions in the quiz.
+	 * @return A list of QuestionDTO objects.
+	 */
 	public List<QuestionDTO> generateQuiz(Long categoryId, Difficulty difficulty, String username,
 			Integer numberOfQuestions) {
 		int numQuestions = (numberOfQuestions != null) ? numberOfQuestions : DEFAULT_QUIZ_SIZE;
@@ -78,13 +92,14 @@ public class QuizService {
 		for (WordByCategory correctWord : selectedWords) {
 			List<String> wrongOptions = allWords.stream()
 					.filter(w -> !w.getTranslatedText().equals(correctWord.getTranslatedText()))
-					.map(WordByCategory::getTranslatedText).distinct().limit(4).collect(Collectors.toList());
+					.map(WordByCategory::getTranslatedText).distinct().limit(NUMBER_OF_WRONG_OPTIONS)
+					.collect(Collectors.toList());
 
 			List<String> options = new ArrayList<>(wrongOptions);
 			options.add(correctWord.getTranslatedText());
 			Collections.shuffle(options);
 
-			List<String> finalOptions = options.stream().limit(5).collect(Collectors.toList());
+			List<String> finalOptions = options.stream().limit(NUMBER_OF_QUIZ_OPTIONS).collect(Collectors.toList());
 
 			QuestionDTO question = new QuestionDTO(correctWord.getId(), correctWord.getWord(), finalOptions,
 					correctWord.getTranslatedText(), correctWord.getCategory());
@@ -96,7 +111,8 @@ public class QuizService {
 
 	private List<String> getWrongOptions(List<WordByCategory> allWords, WordByCategory correctWord) {
 		return allWords.stream().filter(w -> !w.getTranslatedText().equals(correctWord.getTranslatedText()))
-				.map(WordByCategory::getTranslatedText).distinct().limit(4).collect(Collectors.toList());
+				.map(WordByCategory::getTranslatedText).distinct().limit(NUMBER_OF_WRONG_OPTIONS)
+				.collect(Collectors.toList());
 	}
 
 	private QuestionDTO createQuestion(WordByCategory correctWord, List<String> options) {

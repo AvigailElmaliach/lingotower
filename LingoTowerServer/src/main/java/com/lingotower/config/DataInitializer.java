@@ -8,13 +8,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired
-    private DataCleaningService dataCleaningService;
+	@Autowired
+	private DataCleaningService dataCleaningService;
 
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println("Starting data cleaning process...");
-        dataCleaningService.cleanExampleSentenceText();
-        System.out.println("Data cleaning process completed.");
-    }
+	/**
+	 * Runs after the application context is loaded to perform initial data
+	 * operations. In this case, it triggers the data cleaning process for example
+	 * sentences.
+	 * 
+	 * @param args Command line arguments passed to the application.
+	 * @throws Exception If an error occurs during the execution of this method.
+	 */
+	@Override
+	public void run(String... args) throws Exception {
+		System.out.println("Starting data cleaning process...");
+		dataCleaningService.cleanExampleSentenceText();
+		System.out.println("Data cleaning process completed.");
+	}
 }

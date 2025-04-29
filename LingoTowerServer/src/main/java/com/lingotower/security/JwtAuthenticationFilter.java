@@ -15,50 +15,60 @@ import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+	/**
+	 * This filter intercepts incoming HTTP requests to authenticate users based on
+	 * JWT tokens. It extracts the token from the "Authorization" header, validates
+	 * it, and if valid, sets the authentication context for the current request. If
+	 * the token is expired or invalid, it sends an unauthorized (401) response.
+	 * 
+	 * @param request     The incoming HttpServletRequest.
+	 * @param response    The outgoing HttpServletResponse.
+	 * @param filterChain The FilterChain for passing the request to the next
+	 *                    filter.
+	 * @throws ServletException If a servlet-specific error occurs.
+	 * @throws IOException      If an I/O error occurs during the processing of the
+	 *                          filter.
+	 */
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String token = request.getHeader("Authorization");
-        System.out.println("Token received: " + token);
+		String token = request.getHeader("Authorization");
+		System.out.println("Token received: " + token);
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // חותך את המילה "Bearer "
+		if (token != null && token.startsWith("Bearer ")) {
+			token = token.substring(7);
 
-            try {
-                String username = jwtTokenProvider.extractUsername(token);
-                String role = jwtTokenProvider.extractRole(token); // הוספת שליפת תפקיד
+			try {
+				String username = jwtTokenProvider.extractUsername(token);
+				String role = jwtTokenProvider.extractRole(token);
 
-                // >>> פה תכניסי את ההדפסות:
-                System.out.println("Token received: " + token);
-                System.out.println("Extracted username: " + username);
-                System.out.println("Extracted role: " + role);
+				System.out.println("Token received: " + token);
+				System.out.println("Extracted username: " + username);
+				System.out.println("Extracted role: " + role);
 
-                
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // יצירת GrantedAuthority על בסיס ה-role מהטוקן
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
-                    SecurityContextHolder.getContext().setAuthentication(
-                            new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority))
-                    );
-                }
-            } catch (ExpiredJwtException e) {
-                response.setStatus(401);
-                response.getWriter().write("Token has expired");
-                return;
-            } catch (Exception e) {
-                response.setStatus(401);
-                response.getWriter().write("Invalid token");
-                return;
-            }
-        }
+				if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+					SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+					SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+							username, null, Collections.singletonList(authority)));
+				}
+			} catch (ExpiredJwtException e) {
+				response.setStatus(401);
+				response.getWriter().write("Token has expired");
+				return;
+			} catch (Exception e) {
+				response.setStatus(401);
+				response.getWriter().write("Invalid token");
+				return;
+			}
+		}
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 }

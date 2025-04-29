@@ -41,8 +41,17 @@ public class AdminController {
 	private final UserService userService;
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private WordService wordService;
+	private final WordService wordService;
 
+	/**
+	 * Constructor for the AdminController, injecting required services and
+	 * utilities.
+	 * 
+	 * @param adminService     The service layer for admin-related operations.
+	 * @param jwtTokenProvider The utility for handling JWT tokens.
+	 * @param userService      The service layer for user-related operations.
+	 * @param wordService      The service layer for word-related operations.
+	 */
 	public AdminController(AdminService adminService, JwtTokenProvider jwtTokenProvider, UserService userService,
 			WordService wordService) {
 		this.adminService = adminService;
@@ -51,6 +60,12 @@ public class AdminController {
 		this.wordService = wordService;
 	}
 
+	/**
+	 * Retrieves a list of all admins.
+	 * 
+	 * @return ResponseEntity containing a list of AdminResponseDTO and HTTP status
+	 *         OK.
+	 */
 	@GetMapping
 	public List<AdminResponseDTO> getAllAdmins() {
 		List<Admin> admins = adminService.getAllAdmins();
@@ -59,6 +74,13 @@ public class AdminController {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Retrieves an admin by their ID.
+	 * 
+	 * @param id The ID of the admin to retrieve.
+	 * @return ResponseEntity containing the AdminResponseDTO and HTTP status OK if
+	 *         found, or HTTP status NOT FOUND if the admin does not exist.
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<AdminResponseDTO> getAdminById(@PathVariable Long id) {
 		try {
@@ -71,6 +93,15 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Registers a new admin. Requires a valid JWT token in the Authorization
+	 * header.
+	 * 
+	 * @param adminCreateDTO The DTO containing the information for the new admin.
+	 * @param token          The JWT token from the Authorization header.
+	 * @return ResponseEntity with a success message and HTTP status CREATED, or an
+	 *         error message and appropriate HTTP status (FORBIDDEN, BAD_REQUEST).
+	 */
 	@PostMapping("/register")
 	public ResponseEntity<String> createAdmin(@Valid @RequestBody AdminCreateDTO adminCreateDTO,
 			@RequestHeader("Authorization") String token) {
@@ -84,16 +115,32 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Deletes a word by its ID. Accessible to admins.
+	 * 
+	 * @param wordId    The ID of the word to delete.
+	 * @param principal The Principal object representing the currently logged-in
+	 *                  user (admin).
+	 * @return ResponseEntity with HTTP status OK if the word was deleted, or an
+	 *         appropriate HTTP status based on the ResponseStatusException.
+	 */
 	@DeleteMapping("word/{wordId}")
 	public ResponseEntity<Void> deleteWord(@PathVariable Long wordId, Principal principal) {
 		try {
 			wordService.deleteWord(wordId, principal.getName());
 			return ResponseEntity.ok().build();
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).build();// לבדוק אם נכון סטוטס קוד
+			return ResponseEntity.status(e.getStatusCode()).build();
 		}
 	}
 
+	/**
+	 * Deletes an admin by their ID.
+	 * 
+	 * @param id The ID of the admin to delete.
+	 * @return ResponseEntity with HTTP status NO CONTENT if the admin was deleted,
+	 *         or HTTP status NOT FOUND if the admin does not exist.
+	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
 		try {
@@ -104,6 +151,11 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Retrieves a list of all users. Accessible to admins.
+	 * 
+	 * @return ResponseEntity containing a list of UserDTO and HTTP status OK.
+	 */
 	@GetMapping("/users")
 	public ResponseEntity<List<UserDTO>> getAllUsers() {
 		List<User> users = userService.getAllUsers();
@@ -113,6 +165,15 @@ public class AdminController {
 		return ResponseEntity.ok(userDTOs);
 	}
 
+	/**
+	 * Updates the password of the currently logged-in admin.
+	 * 
+	 * @param passwordUpdateRequest The DTO containing the new password.
+	 * @param principal             The Principal object representing the currently
+	 *                              logged-in admin.
+	 * @return ResponseEntity with a success message and HTTP status OK, or an error
+	 *         message and appropriate HTTP status (NOT FOUND, BAD_REQUEST).
+	 */
 	@PutMapping("/password")
 	public ResponseEntity<?> updatePassword(@Valid @RequestBody PasswordUpdateRequestDTO passwordUpdateRequest,
 			Principal principal) {
@@ -127,6 +188,14 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Resets the password of a specific user by an admin. Requires ADMIN role.
+	 * 
+	 * @param id      The ID of the user whose password needs to be reset.
+	 * @param request A map containing the new password under the key "newPassword".
+	 * @return ResponseEntity with a success message and HTTP status OK, or an error
+	 *         message and appropriate HTTP status (BAD_REQUEST, NOT_FOUND).
+	 */
 	@PutMapping("/admin/reset-password/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> resetUserPasswordByAdmin(@PathVariable Long id, @RequestBody Map<String, String> request) {
@@ -143,6 +212,16 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Updates an existing admin's information.
+	 * 
+	 * @param id             The ID of the admin to update.
+	 * @param adminUpdateDTO The DTO containing the updated information for the
+	 *                       admin.
+	 * @return ResponseEntity containing the updated AdminResponseDTO and HTTP
+	 *         status OK if successful, or an error message and appropriate HTTP
+	 *         status (NOT FOUND, BAD_REQUEST, FORBIDDEN).
+	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<AdminResponseDTO> updateAdmin(@PathVariable Long id,
 			@Valid @RequestBody AdminUpdateDTO adminUpdateDTO) {

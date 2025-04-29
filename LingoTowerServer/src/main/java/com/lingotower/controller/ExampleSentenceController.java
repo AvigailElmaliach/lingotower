@@ -20,6 +20,14 @@ public class ExampleSentenceController {
 	@Autowired
 	private ExampleSentenceService exampleSentenceService;
 
+	/**
+	 * Retrieves two example sentences for a given word for the authenticated user.
+	 * The language of the sentences will be based on the user's target language.
+	 * @param word The word for which to retrieve example sentences.
+	 * @param principal The Principal object representing the currently logged-in user.
+	 * @return ResponseEntity containing an ExampleSentenceCreateDTO with two example sentences
+	 * and HTTP status OK if sentences are found. Returns HTTP status NOT FOUND if no sentences are found for the word.
+	 */
 	@GetMapping("/word/{word}")
 	public ResponseEntity<ExampleSentenceCreateDTO> getTwoSentencesForWord(@PathVariable String word,
 			Principal principal) {

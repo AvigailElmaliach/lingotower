@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lingotower.constants.LanguageConstants;
 
 //import javax.persistence.CascadeType;
 //import javax.persistence.Entity;
@@ -42,8 +43,8 @@ public class Category {
 
 	public Category(String name) {
 		this.name = name;
-		this.sourceLanguage = "en";
-		this.targetLanguage = "he";
+		this.sourceLanguage = LanguageConstants.ENGLISH;
+		this.targetLanguage = LanguageConstants.HEBREW;
 	}
 
 	public Long getId() {

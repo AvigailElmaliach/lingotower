@@ -172,13 +172,6 @@ public class WordController {
 		}
 	}
 
-//	@PostMapping("/add")
-//	public ResponseEntity<Void> addWordWithTranslation(/// כרגע פונקציה מיותרת
-//			@RequestBody WordDTO wordDTO, @RequestParam String targetLang) {
-//		wordService.addWordWithTranslation(wordDTO, targetLang);
-//		return ResponseEntity.status(HttpStatus.CREATED).build();
-//	}
-
 	@DeleteMapping("/deleteAll")
 	public ResponseEntity<String> deleteAllWords() {
 		try {
@@ -203,10 +196,10 @@ public class WordController {
 					: parseJson(file, category);
 
 			wordService.saveWords(words);
-			return ResponseEntity.ok("המילים נוספו בהצלחה");
+			return ResponseEntity.ok("Words added successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().body("שגיאה: " + e.getMessage());
+			return ResponseEntity.badRequest().body("Error: " + e.getMessage());
 		}
 	}
 

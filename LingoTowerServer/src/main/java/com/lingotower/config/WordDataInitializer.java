@@ -25,101 +25,148 @@ import com.lingotower.service.WordService;
 @Order(2) // Ensures words are loaded after categories
 public class WordDataInitializer implements CommandLineRunner {
 
-    @Autowired
-    private WordService wordService;
+	@Autowired
+	private WordService wordService;
 
-    @Autowired
-    private CategoryService categoryService;
+	@Autowired
+	private CategoryService categoryService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+	@Autowired
+	private ResourceLoader resourceLoader;
 
-    @Autowired
-    private TranslationService translationService;
+	@Autowired
+	private TranslationService translationService;
 
-    @Override
-    public void run(String... args) {
-        System.out.println("Initializing words...");
-        loadAllCategoriesAndWords();
-        System.out.println("Word initialization completed.");
-    }
+	/**
+	 * Runs after the application context is loaded to initialize word data. It
+	 * loads words from JSON files based on a predefined category mapping. This
+	 * initializer is ordered to run after CategoryDataInitializer.
+	 * 
+	 * @param args Command line arguments passed to the application.
+	 */
+	@Override
+	public void run(String... args) {
+		System.out.println("Initializing words...");
+		loadAllCategoriesAndWords();
+		System.out.println("Word initialization completed.");
+	}
 
-    private void loadAllCategoriesAndWords() {
-        Map<String, String> categoryMapping = getCategoryMapping();
+	/**
+	 * Loads words for all predefined categories from their respective JSON files.
+	 * It iterates through the category mapping, loads words for each category, and
+	 * processes them to save into the database.
+	 */
+	private void loadAllCategoriesAndWords() {
+		Map<String, String> categoryMapping = getCategoryMapping();
 
-        for (Map.Entry<String, String> entry : categoryMapping.entrySet()) {
-            String resourcePath = "classpath:" + entry.getKey();
-            String categoryName = entry.getValue();
-            loadWordsForCategory(resourcePath, categoryName);
-        }
-    }
+		for (Map.Entry<String, String> entry : categoryMapping.entrySet()) {
+			String resourcePath = "classpath:" + entry.getKey();
+			String categoryName = entry.getValue();
+			loadWordsForCategory(resourcePath, categoryName);
+		}
+	}
 
-    private Map<String, String> getCategoryMapping() {
-        Map<String, String> mapping = new HashMap<>();
-        mapping.put("everyday.json", "Everyday Life and Essential Vocabulary");
-        mapping.put("people.json", "People and Relationships");
-        mapping.put("work.json", "Work and Education");
-        mapping.put("health.json", "Health and Well being");
-        mapping.put("travel.json", "Travel and Leisure");
-        mapping.put("environment.json", "Environment and Nature");
-        return mapping;
-    }
+	/**
+	 * Defines a mapping between JSON file names and their corresponding category
+	 * names. This mapping is used to load words into the correct categories.
+	 * 
+	 * @return A map where the key is the JSON file name and the value is the
+	 *         category name.
+	 */
+	private Map<String, String> getCategoryMapping() {
+		Map<String, String> mapping = new HashMap<>();
+		mapping.put("everyday.json", "Everyday Life and Essential Vocabulary");
+		mapping.put("people.json", "People and Relationships");
+		mapping.put("work.json", "Work and Education");
+		mapping.put("health.json", "Health and Well being");
+		mapping.put("travel.json", "Travel and Leisure");
+		mapping.put("environment.json", "Environment and Nature");
+		return mapping;
+	}
 
-    private void loadWordsForCategory(String resourcePath, String categoryName) {
-        try {
-            Word[] wordsArray = loadWordsFromFile(resourcePath);
-            Category category = categoryService.getOrCreateCategory(categoryName);
+	/**
+	 * Loads words for a specific category from a JSON file and saves them to the
+	 * database. It retrieves or creates the category, loads words from the file,
+	 * and then processes each word.
+	 * 
+	 * @param resourcePath The classpath path to the JSON file containing words for
+	 *                     the category.
+	 * @param categoryName The name of the category to which the words belong.
+	 */
+	private void loadWordsForCategory(String resourcePath, String categoryName) {
+		try {
+			Word[] wordsArray = loadWordsFromFile(resourcePath);
+			Category category = categoryService.getOrCreateCategory(categoryName);
 
-            int addedCount = 0;
+			int addedCount = 0;
 
-            for (Word word : wordsArray) {
-                if (processSingleWord(word, category)) {
-                    addedCount++;
-                }
-                
-                WordDTO wordDTO = new WordDTO();
-                wordDTO.setWord(word.getWord());
-                wordDTO.setCategory(categoryName);  
-                wordDTO.setTranslate(word.getTranslation());
-                wordDTO.setDifficulty(word.getDifficulty());  
-                wordDTO.setSourceLanguage(LanguageConstants.ENGLISH);
-                wordDTO.setTargetLanguage(LanguageConstants.HEBREW);
+			for (Word word : wordsArray) {
+				if (processSingleWord(word, category)) {
+					addedCount++;
+				}
 
-            }
+				WordDTO wordDTO = new WordDTO();
+				wordDTO.setWord(word.getWord());
+				wordDTO.setCategory(categoryName);
+				wordDTO.setTranslate(word.getTranslation());
+				wordDTO.setDifficulty(word.getDifficulty());
+				wordDTO.setSourceLanguage(LanguageConstants.ENGLISH);
+				wordDTO.setTargetLanguage(LanguageConstants.HEBREW);
 
-            int existingCount = wordsArray.length - addedCount;
-            System.out.println("Category: " + categoryName + " - Added: " + addedCount + ", Existing: " + existingCount);
+			}
 
-        } catch (IOException e) {
-            System.err.println("Error loading words from file " + resourcePath + ": " + e.getMessage());
-        }
-    }
+			int existingCount = wordsArray.length - addedCount;
+			System.out
+					.println("Category: " + categoryName + " - Added: " + addedCount + ", Existing: " + existingCount);
 
-    private Word[] loadWordsFromFile(String resourcePath) throws IOException {
-        Resource resource = resourceLoader.getResource(resourcePath);
-        if (!resource.exists()) {
-            throw new IOException("File not found: " + resourcePath);
-        }
-        return objectMapper.readValue(resource.getInputStream(), Word[].class);
-    }
+		} catch (IOException e) {
+			System.err.println("Error loading words from file " + resourcePath + ": " + e.getMessage());
+		}
+	}
 
-    private boolean processSingleWord(Word word, Category category) {
-        word.setCategory(category);
-        Optional<Word> existingWord = wordService.findByWord(word.getWord());
+	/**
+	 * Loads an array of Word objects from a JSON file.
+	 * 
+	 * @param resourcePath The classpath path to the JSON file containing the words.
+	 * @return An array of Word objects parsed from the JSON file.
+	 * @throws IOException If the file is not found or an error occurs during
+	 *                     reading.
+	 */
+	private Word[] loadWordsFromFile(String resourcePath) throws IOException {
+		Resource resource = resourceLoader.getResource(resourcePath);
+		if (!resource.exists()) {
+			throw new IOException("File not found: " + resourcePath);
+		}
+		return objectMapper.readValue(resource.getInputStream(), Word[].class);
+	}
 
-        if (existingWord.isPresent()) {
-            return false;
-        }
+	/**
+	 * Processes a single Word object by setting its category, checking for existing
+	 * words, translating if necessary, and saving it to the database.
+	 * 
+	 * @param word     The Word object to process.
+	 * @param category The Category object to which the word belongs.
+	 * @return true if the word was successfully processed and saved, false if it
+	 *         already existed.
+	 */
+	private boolean processSingleWord(Word word, Category category) {
+		word.setCategory(category);
+		Optional<Word> existingWord = wordService.findByWord(word.getWord());
 
-        if (word.getTranslation() == null || word.getTranslation().isBlank()) {
-            String translated = translationService.translateText(word.getWord(), LanguageConstants.ENGLISH, LanguageConstants.HEBREW);
-            word.setTranslation(translated);
-        }
+		if (existingWord.isPresent()) {
+			return false;
+		}
 
-        wordService.saveWord(word, LanguageConstants.ENGLISH, LanguageConstants.HEBREW);
-        return true;
-    }
+		if (word.getTranslation() == null || word.getTranslation().isBlank()) {
+			String translated = translationService.translateText(word.getWord(), LanguageConstants.ENGLISH,
+					LanguageConstants.HEBREW);
+			word.setTranslation(translated);
+		}
+
+		wordService.saveWord(word, LanguageConstants.ENGLISH, LanguageConstants.HEBREW);
+		return true;
+	}
 }

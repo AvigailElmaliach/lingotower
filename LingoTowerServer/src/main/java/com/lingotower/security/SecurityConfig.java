@@ -10,88 +10,50 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.lingotower.security.JwtTokenProvider;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) 
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll() 
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") 
-                //.requestMatchers("/api/user/**").hasRole("USER") 
-               // .requestMatchers("/word/upload").permitAll() 
-                .anyRequest().authenticated() 
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+	/**
+	 * Configures the security filter chain for the application. It disables CSRF
+	 * protection, configures authorization rules for different API endpoints, sets
+	 * the session management policy to stateless, and adds the
+	 * JwtAuthenticationFilter before the UsernamePasswordAuthenticationFilter to
+	 * handle JWT-based authentication.
+	 * 
+	 * @param http The HttpSecurity builder to configure security settings.
+	 * @return The configured SecurityFilterChain.
+	 * @throws Exception If an error occurs during the configuration.
+	 */
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(authz -> authz.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/admin/**").hasRole("ADMIN")
+						// .requestMatchers("/api/user/**").hasRole("USER")
+						.anyRequest().authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+						UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); 
-    }
+	/**
+	 * Defines a bean for the PasswordEncoder. It uses BCryptPasswordEncoder, which
+	 * is a strong hashing algorithm for password encoding.
+	 * 
+	 * @return An instance of BCryptPasswordEncoder.
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }
-
-
-//@Configuration
-//@EnableWebSecurity
-//public class SecurityConfig {
-//
-//	private final JwtTokenProvider jwtTokenProvider;
-//
-//    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//    }
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//            .csrf(csrf -> csrf.disable()) // נסה לבטל CSRF אם אתה משתמש ב-Postman
-//            .authorizeHttpRequests(authz -> authz
-//            		//  .requestMatchers("/api/categories/**").hasRole("USER") // אם למשל רק למשתמשים עם תפקיד USER
-//            	.requestMatchers("/api/auth/**").permitAll() // פתוח לכולם
-//            		    .requestMatchers("/", "/about", "/contact", "/api/auth/register","/api/auth/login").permitAll()
-//
-//            	.anyRequest().authenticated()
-//            )
-//            .sessionManagement(session -> session
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            )
-//            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//            .authorizeHttpRequests(authz -> authz
-//                .requestMatchers("/api/auth/**").permitAll() // מאפשר גישה חופשית לדפים של auth
-//                //.requestMatchers("/categories/**").permitAll()//בדיקה אפשר למחוק
-//                .anyRequest().authenticated() // כל בקשה אחרת חייבת להיות מאומתת
-//            )
-//            .sessionManagement(session -> session
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // אין סשנים - שימוש בטוקנים בלבד
-//            )
-//            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // מוסיף את המסנן של ה-JWT
-//
-//        return http.build(); 
-//    }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(); 
-//    }
-//}
